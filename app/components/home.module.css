@@ -142,7 +142,7 @@
   f***REMOVED***-direction: row; 
 }
 
-.chat-message-reverse {
+.chat-message-user {
   display: f***REMOVED***;
   f***REMOVED***-direction: row-reverse;
 }
@@ -154,7 +154,7 @@
   align-items: f***REMOVED***-start;
 }
 
-.chat-message-reverse > .chat-message-container {
+.chat-message-user > .chat-message-container {
   align-items: f***REMOVED***-end;
 }
 
@@ -167,6 +167,11 @@
   margin-top: 5px;
   user-select: text;
 }
+
+.chat-message-user > .chat-message-container > .chat-message-item {
+  background-color: var(--second);
+}
+
 .chat-message-actions{
   display: f***REMOVED***;
   f***REMOVED***-direction: row-reverse;
