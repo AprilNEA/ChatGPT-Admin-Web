@@ -4,8 +4,8 @@ import RemarkMath from "remark-math";
 import RehypeKatex from "rehype-katex";
 import RemarkGfm from "remark-gfm";
 import RehypePrsim from "rehype-prism-plus";
-import { useRef } from "react";
-import { copyToClipboard } from "@/utils/utils";
+import {useRef} from "react";
+import {copyToClipboard} from "@/utils/utils";
 
 export function PreCode(props: { children: any }) {
   const ref = useRef<HTMLPreElement>(null);
@@ -26,11 +26,16 @@ export function PreCode(props: { children: any }) {
   );
 }
 
+/**
+ * 渲染 Markdown 文本
+ * @param props
+ * @constructor
+ */
 export function Markdown(props: { content: string }) {
   return (
     <ReactMarkdown
       remarkPlugins={[RemarkMath, RemarkGfm]}
-      rehypePlugins={[RehypeKatex, [RehypePrsim, { ignoreMissing: true }]]}
+      rehypePlugins={[RehypeKatex, [RehypePrsim, {ignoreMissing: true}]]}
       components={{
         pre: PreCode,
       }}

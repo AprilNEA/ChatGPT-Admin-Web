@@ -1,6 +1,6 @@
-import { useState, useEffect, useRef, useMemo } from "react";
+import {useState, useEffect, useRef, useMemo} from "react";
 
-import EmojiPicker, { Theme as EmojiTheme } from "emoji-picker-react";
+import EmojiPicker, {Theme as EmojiTheme} from "emoji-picker-react";
 
 import styles from "@/styles/settings.module.scss";
 
@@ -8,23 +8,18 @@ import ResetIcon from "@/assets/icons/reload.svg";
 import CloseIcon from "@/assets/icons/close.svg";
 import ClearIcon from "@/assets/icons/clear.svg";
 
-import { List, ListItem, Popover } from "@/components/ui-lib";
+import {List, ListItem, Popover} from "@/components/ui-lib";
 
-import { IconButton } from "../button";
+import {IconButton} from "../button";
 import {
-  SubmitKey,
   useChatStore,
-  Theme,
   ALL_MODELS,
-  useUpdateStore,
   useAccessStore,
 } from "@/store";
-import { Avatar } from "@/components/avatar";
+import {SubmitKey, Theme} from "@/types/setting";
+import {Avatar} from "@/components/avatar";
 
-import Locale, { changeLang, getLang } from "@/locales";
-import { getCurrentCommitId } from "@/utils/utils";
-import Link from "next/link";
-import { UPDATE_URL } from "@/utils/constant";
+import Locale, {changeLang, getLang} from "@/locales";
 
 function SettingItem(props: {
   title: string;
@@ -55,23 +50,6 @@ export function Settings(props: { closeSettings: () => void }) {
     ]
   );
 
-  const updateStore = useUpdateStore();
-  const [checkingUpdate, setCheckingUpdate] = useState(false);
-  const currentId = getCurrentCommitId();
-  const remoteId = updateStore.remoteId;
-  const hasNewVersion = currentId !== remoteId;
-
-  function checkUpdate(force = false) {
-    setCheckingUpdate(true);
-    updateStore.getLatestCommitId(force).then(() => {
-      setCheckingUpdate(false);
-    });
-  }
-
-  useEffect(() => {
-    checkUpdate();
-  }, []);
-
   const accessStore = useAccessStore();
   const enabledAccessControl = useMemo(
     () => accessStore.enabledAccessControl(),
@@ -92,7 +70,7 @@ export function Settings(props: { closeSettings: () => void }) {
         <div className={styles["window-actions"]}>
           <div className={styles["window-action-button"]}>
             <IconButton
-              icon={<ClearIcon />}
+              icon={<ClearIcon/>}
               onClick={clearAllData}
               bordered
               title={Locale.Settings.Actions.ClearAll}
@@ -100,7 +78,7 @@ export function Settings(props: { closeSettings: () => void }) {
           </div>
           <div className={styles["window-action-button"]}>
             <IconButton
-              icon={<ResetIcon />}
+              icon={<ResetIcon/>}
               onClick={resetConfig}
               bordered
               title={Locale.Settings.Actions.ResetAll}
@@ -108,7 +86,7 @@ export function Settings(props: { closeSettings: () => void }) {
           </div>
           <div className={styles["window-action-button"]}>
             <IconButton
-              icon={<CloseIcon />}
+              icon={<CloseIcon/>}
               onClick={props.closeSettings}
               bordered
               title={Locale.Settings.Actions.Close}
@@ -137,36 +115,45 @@ export function Settings(props: { closeSettings: () => void }) {
                 className={styles.avatar}
                 onClick={() => setShowEmojiPicker(true)}
               >
-                <Avatar role="user" />
+                <Avatar role="user"/>
               </div>
             </Popover>
           </SettingItem>
 
-          <SettingItem
-            title={Locale.Settings.Update.Version(currentId)}
-            subTitle={
-              checkingUpdate
-                ? Locale.Settings.Update.IsChecking
-                : hasNewVersion
-                ? Locale.Settings.Update.FoundUpdate(remoteId ?? "ERROR")
-                : Locale.Settings.Update.IsLatest
-            }
-          >
-            {checkingUpdate ? (
-              <div />
-            ) : hasNewVersion ? (
-              <Link href={UPDATE_URL} target="_blank" className="link">
-                {Locale.Settings.Update.GoToUpdate}
-              </Link>
-            ) : (
-              <IconButton
-                icon={<ResetIcon></ResetIcon>}
-                text={Locale.Settings.Update.CheckUpdate}
-                onClick={() => checkUpdate(true)}
-              />
-            )}
-          </SettingItem>
+          {/*<SettingItem*/}
+          {/*  title={Locale.Settings.Update.Version(currentId)}*/}
+          {/*  subTitle={*/}
+          {/*    checkingUpdate*/}
+          {/*      ? Locale.Settings.Update.IsChecking*/}
+          {/*      : hasNewVersion*/}
+          {/*      ? Locale.Settings.Update.FoundUpdate(remoteId ?? "ERROR")*/}
+          {/*      : Locale.Settings.Update.IsLatest*/}
+          {/*  }*/}
+          {/*>*/}
+          {/*  {checkingUpdate ? (*/}
+          {/*    <div />*/}
+          {/*  ) : hasNewVersion ? (*/}
+          {/*    <Link href={UPDATE_URL} target="_blank" className="link">*/}
+          {/*      {Locale.Settings.Update.GoToUpdate}*/}
+          {/*    </Link>*/}
+          {/*  ) : (*/}
+          {/*    <IconButton*/}
+          {/*      icon={<ResetIcon></ResetIcon>}*/}
+          {/*      text={Locale.Settings.Update.CheckUpdate}*/}
+          {/*      onClick={() => checkUpdate(true)}*/}
+          {/*    />*/}
+          {/*  )}*/}
+          {/*</SettingItem>*/}
 
+          <SettingItem title={Locale.Settings.Account}>
+            <div>My Account
+              <div className={styles["settings-sub-title"]}>sku@sku.moe</div>
+            </div>
+
+          </SettingItem>
+        </List>
+
+        <List>
           <SettingItem title={Locale.Settings.SendKey}>
             <select
               value={config.submitKey}
@@ -184,6 +171,7 @@ export function Settings(props: { closeSettings: () => void }) {
               ))}
             </select>
           </SettingItem>
+
 
           <ListItem>
             <div className={styles["settings-title"]}>
@@ -238,6 +226,7 @@ export function Settings(props: { closeSettings: () => void }) {
             </SettingItem>
           </div>
         </List>
+
         <List>
           {enabledAccessControl ? (
             <SettingItem
@@ -328,6 +317,7 @@ export function Settings(props: { closeSettings: () => void }) {
               ))}
             </select>
           </SettingItem>
+
           <SettingItem
             title={Locale.Settings.Temperature.Title}
             subTitle={Locale.Settings.Temperature.SubTitle}
@@ -354,7 +344,7 @@ export function Settings(props: { closeSettings: () => void }) {
             <input
               type="number"
               min={100}
-              max={4000}
+              max={4096}
               value={config.modelConfig.max_tokens}
               onChange={(e) =>
                 updateConfig(

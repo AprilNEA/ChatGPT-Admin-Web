@@ -2,6 +2,11 @@ import * as React from "react";
 
 import styles from "@/styles/button.module.scss";
 
+/**
+ * 按钮
+ * @param props
+ * @constructor
+ */
 export function IconButton(props: {
   onClick?: () => void;
   icon: JSX.Element;

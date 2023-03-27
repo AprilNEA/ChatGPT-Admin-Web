@@ -50,6 +50,7 @@ const cn = {
       },
     },
     Avatar: "头像",
+    Account: "账号",
     Update: {
       Version: (x: string) => `当前版本：${x}`,
       IsLatest: "已是最新版本",

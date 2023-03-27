@@ -1,13 +1,16 @@
-import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import {create} from "zustand";
+import {persist} from "zustand/middleware";
 
-import { type ChatCompletionResponseMessage } from "openai";
+import {type ChatCompletionResponseMessage} from "openai";
+import {SubmitKey, Theme, ChatConfig} from "@/types/setting";
+import type {ChatStat, ChatSession, ChatStore} from "@/types/chat";
+
 import {
   ControllerPool,
   requestChatStream,
   requestWithPrompt,
 } from "@/utils/requests";
-import { trimTopic } from "@/utils/utils";
+import {trimTopic} from "@/utils/utils";
 
 import Locale from "@/locales";
 
@@ -16,36 +19,6 @@ export type Message = ChatCompletionResponseMessage & {
   streaming?: boolean;
 };
 
-export enum SubmitKey {
-  Enter = "Enter",
-  CtrlEnter = "Ctrl + Enter",
-  ShiftEnter = "Shift + Enter",
-  AltEnter = "Alt + Enter",
-}
-
-export enum Theme {
-  Auto = "auto",
-  Dark = "dark",
-  Light = "light",
-}
-
-export interface ChatConfig {
-  maxToken?: number;
-  historyMessageCount: number; // -1 means all
-  compressMessageLengthThreshold: number;
-  sendBotMessages: boolean; // send bot's message or not
-  submitKey: SubmitKey;
-  avatar: string;
-  theme: Theme;
-  tightBorder: boolean;
-
-  modelConfig: {
-    model: string;
-    temperature: number;
-    max_tokens: number;
-    presence_penalty: number;
-  };
-}
 
 export type ModelConfig = ChatConfig["modelConfig"];
 
@@ -56,26 +29,30 @@ export const ALL_MODELS = [
     name: "gpt-4",
     available: ENABLE_GPT4,
   },
+  // {
+  //   name: "gpt-4-0314",
+  //   available: ENABLE_GPT4,
+  // },
+  // {
+  //   name: "gpt-4-32k",
+  //   available: ENABLE_GPT4,
+  // },
+  // {
+  //   name: "gpt-4-32k-0314",
+  //   available: ENABLE_GPT4,
+  // },
   {
-    name: "gpt-4-0314",
-    available: ENABLE_GPT4,
-  },
-  {
-    name: "gpt-4-32k",
-    available: ENABLE_GPT4,
-  },
-  {
-    name: "gpt-4-32k-0314",
-    available: ENABLE_GPT4,
-  },
-  {
-    name: "gpt-3.5-turbo",
+    name: "gpt-3.5",
     available: true,
   },
-  {
-    name: "gpt-3.5-turbo-0301",
-    available: true,
-  },
+  // {
+  //   name: "gpt-3.5-turbo",
+  //   available: true,
+  // },
+  // {
+  //   name: "gpt-3.5-turbo-0301",
+  //   available: true,
+  // },
 ];
 
 export function isValidModel(name: string) {
@@ -114,38 +91,26 @@ export function filterConfig(config: ModelConfig): Partial<ModelConfig> {
   return config;
 }
 
+/***
+ * 默认设置
+ */
 const DEFAULT_CONFIG: ChatConfig = {
-  historyMessageCount: 4,
+  historyMessageCount: 8,
   compressMessageLengthThreshold: 1000,
   sendBotMessages: true as boolean,
-  submitKey: SubmitKey.CtrlEnter as SubmitKey,
+  submitKey: SubmitKey.Enter as SubmitKey,
   avatar: "1f603",
   theme: Theme.Auto as Theme,
   tightBorder: false,
 
   modelConfig: {
-    model: "gpt-3.5-turbo",
+    model: "gpt-3.5",
     temperature: 1,
     max_tokens: 2000,
     presence_penalty: 0,
   },
 };
 
-export interface ChatStat {
-  tokenCount: number;
-  wordCount: number;
-  charCount: number;
-}
-
-export interface ChatSession {
-  id: number;
-  topic: string;
-  memoryPrompt: string;
-  messages: Message[];
-  stat: ChatStat;
-  lastUpdate: string;
-  lastSummarizeIndex: number;
-}
 
 const DEFAULT_TOPIC = Locale.Store.DefaultTopic;
 
@@ -173,32 +138,6 @@ function createEmptySession(): ChatSession {
   };
 }
 
-interface ChatStore {
-  config: ChatConfig;
-  sessions: ChatSession[];
-  currentSessionIndex: number;
-  removeSession: (index: number) => void;
-  selectSession: (index: number) => void;
-  newSession: () => void;
-  currentSession: () => ChatSession;
-  onNewMessage: (message: Message) => void;
-  onUserInput: (content: string) => Promise<void>;
-  summarizeSession: () => void;
-  updateStat: (message: Message) => void;
-  updateCurrentSession: (updater: (session: ChatSession) => void) => void;
-  updateMessage: (
-    sessionIndex: number,
-    messageIndex: number,
-    updater: (message?: Message) => void
-  ) => void;
-  getMessagesWithMemory: () => Message[];
-  getMemoryPrompt: () => Message;
-
-  getConfig: () => ChatConfig;
-  resetConfig: () => void;
-  updateConfig: (updater: (config: ChatConfig) => void) => void;
-  clearAllData: () => void;
-}
 
 const LOCAL_KEY = "chat-next-web-store";
 
@@ -212,7 +151,7 @@ export const useChatStore = create<ChatStore>()(
       },
 
       resetConfig() {
-        set(() => ({ config: { ...DEFAULT_CONFIG } }));
+        set(() => ({config: {...DEFAULT_CONFIG}}));
       },
 
       getConfig() {
@@ -222,7 +161,7 @@ export const useChatStore = create<ChatStore>()(
       updateConfig(updater) {
         const config = get().config;
         updater(config);
-        set(() => ({ config }));
+        set(() => ({config}));
       },
 
       selectSession(index: number) {
@@ -269,7 +208,7 @@ export const useChatStore = create<ChatStore>()(
 
         if (index < 0 || index >= sessions.length) {
           index = Math.min(sessions.length - 1, Math.max(0, index));
-          set(() => ({ currentSessionIndex: index }));
+          set(() => ({currentSessionIndex: index}));
         }
 
         const session = sessions[index];
@@ -372,6 +311,12 @@ export const useChatStore = create<ChatStore>()(
         return recentMessages;
       },
 
+      /**
+       * 更新消息
+       * @param sessionIndex 对话 ID
+       * @param messageIndex 消息 ID
+       * @param updater
+       */
       updateMessage(
         sessionIndex: number,
         messageIndex: number,
@@ -381,9 +326,12 @@ export const useChatStore = create<ChatStore>()(
         const session = sessions.at(sessionIndex);
         const messages = session?.messages;
         updater(messages?.at(messageIndex));
-        set(() => ({ sessions }));
+        set(() => ({sessions}));
       },
 
+      /**
+       * 总结对话
+       */
       summarizeSession() {
         const session = get().currentSession();
 
@@ -460,7 +408,7 @@ export const useChatStore = create<ChatStore>()(
         const sessions = get().sessions;
         const index = get().currentSessionIndex;
         updater(sessions[index]);
-        set(() => ({ sessions }));
+        set(() => ({sessions}));
       },
 
       clearAllData() {

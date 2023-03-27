@@ -70,14 +70,3 @@ export function queryMeta(key: string, defaultValue?: string): string {
 
   return ret;
 }
-
-let currentId: string;
-export function getCurrentCommitId() {
-  if (currentId) {
-    return currentId;
-  }
-
-  currentId = queryMeta("version");
-
-  return currentId;
-}

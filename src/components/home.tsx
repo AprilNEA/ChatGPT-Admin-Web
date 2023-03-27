@@ -1,53 +1,31 @@
 "use client";
 
-import { useState, useRef, useEffect, useLayoutEffect } from "react";
+import {useState, useRef, useEffect, useLayoutEffect} from "react";
 
-import { IconButton } from "@/components/button";
+import {IconButton} from "@/components/button";
 import styles from "@/styles/home.module.scss";
 
 import SettingsIcon from "@/assets/icons/settings.svg";
-import GithubIcon from "@/assets/icons/github.svg";
 import ChatGptIcon from "@/assets/icons/chatgpt.svg";
 import BotIcon from "@/assets/icons/bot.svg";
 import AddIcon from "@/assets/icons/add.svg";
 import LoadingIcon from "@/assets/icons/three-dots.svg";
 import CloseIcon from "@/assets/icons/close.svg";
-import { Message, useChatStore } from "@/store";
+import {Message, useChatStore} from "@/store";
 
 import Locale from "@/locales";
 
 import {Chat} from "@/components/chat";
 import {ChatList} from "@/components/chat/chat-list";
+import {useSwitchTheme} from "@/components/switch-theme";
+import {Loading} from "@/components/loading";
 
 import dynamic from "next/dynamic";
-import { REPO_URL } from "@/utils/constant";
-
-export function Loading(props: { noLogo?: boolean }) {
-  return (
-    <div className={styles["loading-content"]}>
-      {!props.noLogo && <BotIcon />}
-      <LoadingIcon />
-    </div>
-  );
-}
 
 const Settings = dynamic(async () => (await import("@/components/settings")).Settings, {
-  loading: () => <Loading noLogo />,
+  loading: () => <Loading noLogo/>,
 });
 
-function useSwitchTheme() {
-  const config = useChatStore((state) => state.config);
-
-  useEffect(() => {
-    document.body.classList.remove("light");
-    document.body.classList.remove("dark");
-    if (config.theme === "dark") {
-      document.body.classList.add("dark");
-    } else if (config.theme === "light") {
-      document.body.classList.add("light");
-    }
-  }, [config.theme]);
-}
 
 /**
  * 修复水合错误
@@ -80,7 +58,7 @@ export function Home() {
   useSwitchTheme();
 
   if (loading) {
-    return <Loading />;
+    return <Loading/>;
   }
 
   return (
@@ -98,7 +76,7 @@ export function Home() {
             Build your own AI assistant.
           </div>
           <div className={styles["sidebar-logo"]}>
-            <ChatGptIcon />
+            <ChatGptIcon/>
           </div>
         </div>
 
@@ -109,14 +87,14 @@ export function Home() {
             setShowSideBar(false);
           }}
         >
-          <ChatList />
+          <ChatList/>
         </div>
 
         <div className={styles["sidebar-tail"]}>
           <div className={styles["sidebar-actions"]}>
             <div className={styles["sidebar-action"] + " " + styles.mobile}>
               <IconButton
-                icon={<CloseIcon />}
+                icon={<CloseIcon/>}
                 onClick={() => {
                   if (confirm(Locale.Home.DeleteChat)) {
                     removeSession(currentIndex);
@@ -126,22 +104,23 @@ export function Home() {
             </div>
             <div className={styles["sidebar-action"]}>
               <IconButton
-                icon={<SettingsIcon />}
+                icon={<SettingsIcon/>}
                 onClick={() => {
                   setOpenSettings(true);
                   setShowSideBar(false);
                 }}
               />
             </div>
+            {/*TODO add about us*/}
             <div className={styles["sidebar-action"]}>
-              <a href={REPO_URL} target="_blank">
-                <IconButton icon={<GithubIcon />} />
+              <a href="#" target="_blank">
+                {/*<IconButton icon={<GithubIcon />} />*/}
               </a>
             </div>
           </div>
           <div>
             <IconButton
-              icon={<AddIcon />}
+              icon={<AddIcon/>}
               text={Locale.Home.NewChat}
               onClick={createNewSession}
             />
@@ -158,7 +137,7 @@ export function Home() {
             }}
           />
         ) : (
-          <Chat key="chat" showSideBar={() => setShowSideBar(true)} />
+          <Chat key="chat" showSideBar={() => setShowSideBar(true)}/>
         )}
       </div>
     </div>

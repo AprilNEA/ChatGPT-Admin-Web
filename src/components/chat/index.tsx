@@ -1,19 +1,26 @@
-import {ChatSession, Message, SubmitKey, useChatStore} from "@/store";
+import {Message, useChatStore} from "@/store";
+import {ChatSession} from "@/types/chat"
+import {SubmitKey} from "@/types/setting"
+
 import {useLayoutEffect, useRef, useState} from "react";
 import {ControllerPool} from "@/utils/requests";
 import {copyToClipboard, downloadAs, isIOS, selectOrCopy} from "@/utils/utils";
 import styles from "@/styles/home.module.scss";
 import Locale from "@/locales";
-import {IconButton} from "@/components/button";
+
 import MenuIcon from "@/assets/icons/menu.svg";
 import BrainIcon from "@/assets/icons/brain.svg";
 import ExportIcon from "@/assets/icons/export.svg";
 import LoadingIcon from "@/assets/icons/three-dots.svg";
 import SendWhiteIcon from "@/assets/icons/send-white.svg";
-import {Avatar} from "@/components/avatar";
-import {showModal} from "@/components/ui-lib";
 import CopyIcon from "@/assets/icons/copy.svg";
 import DownloadIcon from "@/assets/icons/download.svg";
+
+import {Avatar} from "@/components/avatar";
+import {IconButton} from "@/components/button";
+import {showModal} from "@/components/ui-lib";
+
+
 import dynamic from "next/dynamic";
 
 function useSubmitHandler() {
@@ -60,14 +67,14 @@ function exportMessages(messages: Message[], topic: string) {
     actions: [
       <IconButton
         key="copy"
-        icon={<CopyIcon />}
+        icon={<CopyIcon/>}
         bordered
         text={Locale.Export.Copy}
         onClick={() => copyToClipboard(mdText)}
       />,
       <IconButton
         key="download"
-        icon={<DownloadIcon />}
+        icon={<DownloadIcon/>}
         bordered
         text={Locale.Export.Download}
         onClick={() => downloadAs(mdText, filename)}
@@ -89,7 +96,7 @@ function showMemoryPrompt(session: ChatSession) {
     actions: [
       <IconButton
         key="copy"
-        icon={<CopyIcon />}
+        icon={<CopyIcon/>}
         bordered
         text={Locale.Memory.Copy}
         onClick={() => copyToClipboard(session.memoryPrompt)}
@@ -99,7 +106,7 @@ function showMemoryPrompt(session: ChatSession) {
 }
 
 const Markdown = dynamic(async () => (await import("@/components/markdown")).Markdown, {
-  loading: () => <LoadingIcon />,
+  loading: () => <LoadingIcon/>,
 });
 
 
@@ -112,7 +119,7 @@ export function Chat(props: { showSideBar?: () => void }) {
   ]);
   const [userInput, setUserInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const { submitKey, shouldSubmit } = useSubmitHandler();
+  const {submitKey, shouldSubmit} = useSubmitHandler();
 
   const onUserInput = useChatStore((state) => state.onUserInput);
 
@@ -223,7 +230,7 @@ export function Chat(props: { showSideBar?: () => void }) {
         <div className={styles["window-actions"]}>
           <div className={styles["window-action-button"] + " " + styles.mobile}>
             <IconButton
-              icon={<MenuIcon />}
+              icon={<MenuIcon/>}
               bordered
               title={Locale.Chat.Actions.ChatList}
               onClick={props?.showSideBar}
@@ -231,7 +238,7 @@ export function Chat(props: { showSideBar?: () => void }) {
           </div>
           <div className={styles["window-action-button"]}>
             <IconButton
-              icon={<BrainIcon />}
+              icon={<BrainIcon/>}
               bordered
               title={Locale.Chat.Actions.CompressedHistory}
               onClick={() => {
@@ -241,7 +248,7 @@ export function Chat(props: { showSideBar?: () => void }) {
           </div>
           <div className={styles["window-action-button"]}>
             <IconButton
-              icon={<ExportIcon />}
+              icon={<ExportIcon/>}
               bordered
               title={Locale.Chat.Actions.Export}
               onClick={() => {
@@ -265,7 +272,7 @@ export function Chat(props: { showSideBar?: () => void }) {
             >
               <div className={styles["chat-message-container"]}>
                 <div className={styles["chat-message-avatar"]}>
-                  <Avatar role={message.role} />
+                  <Avatar role={message.role}/>
                 </div>
                 {(message.preview || message.streaming) && (
                   <div className={styles["chat-message-status"]}>
@@ -301,13 +308,13 @@ export function Chat(props: { showSideBar?: () => void }) {
                   )}
                   {(message.preview || message.content.length === 0) &&
                   !isUser ? (
-                    <LoadingIcon />
+                    <LoadingIcon/>
                   ) : (
                     <div
                       className="markdown-body"
                       onContextMenu={(e) => onRightClick(e, message)}
                     >
-                      <Markdown content={message.content} />
+                      <Markdown content={message.content}/>
                     </div>
                   )}
                 </div>
@@ -322,7 +329,7 @@ export function Chat(props: { showSideBar?: () => void }) {
             </div>
           );
         })}
-        <div ref={latestMessageRef} style={{ opacity: 0, height: "2em" }}>
+        <div ref={latestMessageRef} style={{opacity: 0, height: "2em"}}>
           -
         </div>
       </div>
@@ -341,7 +348,7 @@ export function Chat(props: { showSideBar?: () => void }) {
             autoFocus
           />
           <IconButton
-            icon={<SendWhiteIcon />}
+            icon={<SendWhiteIcon/>}
             text={Locale.Chat.Send}
             className={styles["chat-input-send"] + " no-dark"}
             onClick={onUserSubmit}

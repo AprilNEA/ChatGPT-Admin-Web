@@ -54,6 +54,7 @@ const en: LocaleType = {
       },
     },
     Avatar: "Avatar",
+    Account: "Account",
     Update: {
       Version: (x: string) => `Version: ${x}`,
       IsLatest: "Latest version",

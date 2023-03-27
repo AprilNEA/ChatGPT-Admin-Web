@@ -8,6 +8,11 @@ const Emoji = dynamic(async () => (await import("emoji-picker-react")).Emoji, {
   loading: () => <LoadingIcon/>,
 });
 
+/**
+ * Emoji 头像
+ * @param props
+ * @constructor
+ */
 export function Avatar(props: { role: Message["role"] }) {
   const config = useChatStore((state) => state.config);
 
