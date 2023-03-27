@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { ACCESS_CODES } from "./src/app/api/access";
+import { ACCESS_CODES } from "./app/api/access";
 import md5 from "spark-md5";
 
 export const config = {

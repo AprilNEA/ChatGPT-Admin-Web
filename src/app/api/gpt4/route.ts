@@ -10,10 +10,17 @@ export async function POST(req: NextRequest) {
       ({role, content}) => ({role, text: content}),
     );
 
-    const stream = readableStreamFromIterable(await askGPT({
+    const gptStream = await askGPT({
       conversations,
       system_message: "You are ChatGPT based on GPT-4.",
-    }, {max_tokens, temperature, cookie: process.env.***REMOVED***!}))
+    }, {max_tokens, temperature, cookie: process.env.***REMOVED***!})
+
+    if (!gptStream) {
+      console.error("[Chat Stream]", "[***REMOVED*** API ERROR]");
+      return new Response('[INTERNAL ERROR]', {status: 500})
+    }
+
+    const stream = readableStreamFromIterable(gptStream)
 
     const headers = new Headers();
     headers.append("Content-Type", "text/event-stream");
