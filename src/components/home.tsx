@@ -31,27 +31,9 @@ export function Loading(props: { noLogo?: boolean }) {
   );
 }
 
-const Settings = dynamic(async () => (await import("./settings")).Settings, {
+const Settings = dynamic(async () => (await import("@/components/settings")).Settings, {
   loading: () => <Loading noLogo />,
 });
-
-const Emoji = dynamic(async () => (await import("emoji-picker-react")).Emoji, {
-  loading: () => <LoadingIcon />,
-});
-
-export function Avatar(props: { role: Message["role"] }) {
-  const config = useChatStore((state) => state.config);
-
-  if (props.role === "assistant") {
-    return <BotIcon className={styles["user-avtar"]} />;
-  }
-
-  return (
-    <div className={styles["user-avtar"]}>
-      <Emoji unified={config.avatar} size={18} />
-    </div>
-  );
-}
 
 function useSwitchTheme() {
   const config = useChatStore((state) => state.config);
@@ -139,11 +121,11 @@ export function Home() {
                 }}
               />
             </div>
-            <div className={styles["sidebar-action"]}>
-              <a href={REPO_URL} target="_blank">
-                <IconButton icon={<GithubIcon />} />
-              </a>
-            </div>
+            {/*<div className={styles["sidebar-action"]}>*/}
+            {/*  <a href={REPO_URL} target="_blank">*/}
+            {/*    <IconButton icon={<GithubIcon />} />*/}
+            {/*  </a>*/}
+            {/*</div>*/}
           </div>
           <div>
             <IconButton

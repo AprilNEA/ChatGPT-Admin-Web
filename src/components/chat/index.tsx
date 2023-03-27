@@ -10,7 +10,7 @@ import BrainIcon from "@/assets/icons/brain.svg";
 import ExportIcon from "@/assets/icons/export.svg";
 import LoadingIcon from "@/assets/icons/three-dots.svg";
 import SendWhiteIcon from "@/assets/icons/send-white.svg";
-import {Avatar} from "@/components/home";
+import {Avatar} from "@/components/avatar";
 import {showModal} from "@/components/ui-lib";
 import CopyIcon from "@/assets/icons/copy.svg";
 import DownloadIcon from "@/assets/icons/download.svg";

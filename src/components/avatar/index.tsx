@@ -1,0 +1,23 @@
+import {Message, useChatStore} from "@/store";
+import BotIcon from "@/assets/icons/bot.svg";
+import styles from "@/styles/home.module.scss";
+import dynamic from "next/dynamic";
+import LoadingIcon from "@/assets/icons/three-dots.svg";
+
+const Emoji = dynamic(async () => (await import("emoji-picker-react")).Emoji, {
+  loading: () => <LoadingIcon/>,
+});
+
+export function Avatar(props: { role: Message["role"] }) {
+  const config = useChatStore((state) => state.config);
+
+  if (props.role === "assistant") {
+    return <BotIcon className={styles["user-avtar"]}/>;
+  }
+
+  return (
+    <div className={styles["user-avtar"]}>
+      <Emoji unified={config.avatar} size={18}/>
+    </div>
+  );
+}

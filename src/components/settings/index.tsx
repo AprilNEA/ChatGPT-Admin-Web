@@ -10,7 +10,7 @@ import ClearIcon from "@/assets/icons/clear.svg";
 
 import { List, ListItem, Popover } from "@/components/ui-lib";
 
-import { IconButton } from "./button";
+import { IconButton } from "../button";
 import {
   SubmitKey,
   useChatStore,
@@ -19,7 +19,7 @@ import {
   useUpdateStore,
   useAccessStore,
 } from "@/store";
-import { Avatar } from "./home";
+import { Avatar } from "@/components/avatar";
 
 import Locale, { changeLang, getLang } from "@/locales";
 import { getCurrentCommitId } from "@/utils/utils";
