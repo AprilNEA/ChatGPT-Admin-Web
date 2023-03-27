@@ -1,6 +1,6 @@
-import styles from "./ui-lib.module.scss";
-import LoadingIcon from "../icons/three-dots.svg";
-import CloseIcon from "../icons/close.svg";
+import styles from "@/styles/ui-lib.module.scss";
+import LoadingIcon from "@/assets/icons/three-dots.svg";
+import CloseIcon from "@/assets/icons/close.svg";
 import { createRoot } from "react-dom/client";
 
 export function Popover(props: {

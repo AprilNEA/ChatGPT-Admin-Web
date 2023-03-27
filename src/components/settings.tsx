@@ -2,13 +2,13 @@ import { useState, useEffect, useRef, useMemo } from "react";
 
 import EmojiPicker, { Theme as EmojiTheme } from "emoji-picker-react";
 
-import styles from "./settings.module.scss";
+import styles from "@/styles/settings.module.scss";
 
-import ResetIcon from "../icons/reload.svg";
-import CloseIcon from "../icons/close.svg";
-import ClearIcon from "../icons/clear.svg";
+import ResetIcon from "@/assets/icons/reload.svg";
+import CloseIcon from "@/assets/icons/close.svg";
+import ClearIcon from "@/assets/icons/clear.svg";
 
-import { List, ListItem, Popover } from "./ui-lib";
+import { List, ListItem, Popover } from "@/components/ui-lib";
 
 import { IconButton } from "./button";
 import {
@@ -18,13 +18,13 @@ import {
   ALL_MODELS,
   useUpdateStore,
   useAccessStore,
-} from "../store";
+} from "@/store";
 import { Avatar } from "./home";
 
-import Locale, { changeLang, getLang } from "../locales";
-import { getCurrentCommitId } from "../utils";
+import Locale, { changeLang, getLang } from "@/locales";
+import { getCurrentCommitId } from "@/utils/utils";
 import Link from "next/link";
-import { UPDATE_URL } from "../constant";
+import { UPDATE_URL } from "@/utils/constant";
 
 function SettingItem(props: {
   title: string;

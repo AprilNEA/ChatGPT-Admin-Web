@@ -5,7 +5,7 @@ import RehypeKatex from "rehype-katex";
 import RemarkGfm from "remark-gfm";
 import RehypePrsim from "rehype-prism-plus";
 import { useRef } from "react";
-import { copyToClipboard } from "../utils";
+import { copyToClipboard } from "@/utils/utils";
 
 export function PreCode(props: { children: any }) {
   const ref = useRef<HTMLPreElement>(null);

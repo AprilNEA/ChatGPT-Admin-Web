@@ -1,6 +1,6 @@
-import type { ChatRequest, ChatReponse } from "./api/chat/typing";
-import { filterConfig, Message, ModelConfig, useAccessStore } from "./store";
-import Locale from "./locales";
+import type { ChatRequest, ChatReponse } from "../app/api/chat/typing";
+import { filterConfig, Message, ModelConfig, useAccessStore } from "../store";
+import Locale from "../locales";
 
 const TIME_OUT_MS = 30000;
 

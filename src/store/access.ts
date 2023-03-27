@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { queryMeta } from "../utils";
+import { queryMeta } from "@/utils/utils";
 
 export interface AccessControlStore {
   accessCode: string;

@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { FETCH_COMMIT_URL } from "../constant";
-import { getCurrentCommitId } from "../utils";
+import { FETCH_COMMIT_URL } from "@/utils/constant";
+import { getCurrentCommitId } from "@/utils/utils";
 
 export interface UpdateStore {
   lastUpdate: number;

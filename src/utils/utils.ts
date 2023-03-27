@@ -1,5 +1,5 @@
-import { showToast } from "./components/ui-lib";
-import Locale from "./locales";
+import { showToast } from "../components/ui-lib";
+import Locale from "../locales";
 
 export function trimTopic(topic: string) {
   const s = topic.split("");

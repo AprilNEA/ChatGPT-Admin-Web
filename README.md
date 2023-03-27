@@ -1,5 +1,5 @@
 <div align="center">
-<img src="./static/icon.svg" alt="预览"/>
+<img src="docs/icon.svg" alt="预览"/>
 
 <h1 align="center">ChatGPT Next Web</h1>
 
@@ -13,7 +13,7 @@ One-Click to deploy your own ChatGPT web UI.
 
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/Yidadaa/ChatGPT-Next-Web)
 
-![主界面](./static/cover.png)
+![主界面](docs/cover.png)
 
 </div>
 
@@ -145,9 +145,9 @@ how to deploy nextjs project with docker on my ubuntu server, the build command 
 
 ## 截图 Screenshots
 
-![设置 Settings](./static/settings.png)
+![设置 Settings](docs/settings.png)
 
-![更多展示 More](./static/more.png)
+![更多展示 More](docs/more.png)
 
 ## 说明 Attention
 

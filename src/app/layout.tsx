@@ -1,9 +1,9 @@
 /* eslint-disable @next/next/no-page-custom-font */
-import "./styles/globals.scss";
-import "./styles/markdown.scss";
-import "./styles/prism.scss";
+import "@/styles/globals.scss";
+import "@/styles/markdown.scss";
+import "@/styles/prism.scss";
 import process from "child_process";
-import { ACCESS_CODES } from "./api/access";
+import { ACCESS_CODES } from "@/app/api/access";
 
 let COMMIT_ID: string | undefined;
 try {
@@ -48,7 +48,7 @@ export default function RootLayout({
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
         />
         <Meta />
-        <link rel="manifest" href="/site.webmanifest"></link>
+        <link rel="manifest" href="/public/site.webmanifest"></link>
         <link rel="preconnect" href="https://fonts.googleapis.com"></link>
         <link rel="preconnect" href="https://fonts.gstatic.com"></link>
         <link

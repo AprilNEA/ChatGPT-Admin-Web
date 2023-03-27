@@ -6,10 +6,10 @@ import {
   ControllerPool,
   requestChatStream,
   requestWithPrompt,
-} from "../requests";
-import { trimTopic } from "../utils";
+} from "@/utils/requests";
+import { trimTopic } from "@/utils/utils";
 
-import Locale from "../locales";
+import Locale from "@/locales";
 
 export type Message = ChatCompletionResponseMessage & {
   date: string;
