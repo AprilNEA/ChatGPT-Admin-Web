@@ -31,6 +31,7 @@ export async function POST(req: NextRequest) {
     return new Response(stream, {headers})
   } catch (error) {
     console.error("[Chat Stream]", error);
+    return new Response('[INTERNAL ERROR]', {status: 500})
   }
 }
 
