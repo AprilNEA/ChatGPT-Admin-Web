@@ -49,6 +49,18 @@ function useSwitchTheme() {
   }, [config.theme]);
 }
 
+/**
+ * 修复水合错误
+ */
+const useHasHydrated = () => {
+  const [hasHydrated, setHasHydrated] = useState<boolean>(false);
+
+  useEffect(() => {
+    setHasHydrated(true);
+  }, []);
+
+  return hasHydrated;
+};
 
 export function Home() {
   const [createNewSession, currentIndex, removeSession] = useChatStore(
@@ -58,7 +70,7 @@ export function Home() {
       state.removeSession,
     ]
   );
-  const loading = !useChatStore?.persist?.hasHydrated();
+  const loading = !useHasHydrated();
   const [showSideBar, setShowSideBar] = useState(true);
 
   // setting
@@ -121,11 +133,11 @@ export function Home() {
                 }}
               />
             </div>
-            {/*<div className={styles["sidebar-action"]}>*/}
-            {/*  <a href={REPO_URL} target="_blank">*/}
-            {/*    <IconButton icon={<GithubIcon />} />*/}
-            {/*  </a>*/}
-            {/*</div>*/}
+            <div className={styles["sidebar-action"]}>
+              <a href={REPO_URL} target="_blank">
+                <IconButton icon={<GithubIcon />} />
+              </a>
+            </div>
           </div>
           <div>
             <IconButton
