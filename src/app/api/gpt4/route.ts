@@ -1,5 +1,5 @@
 import {NextRequest} from "next/server";
-import {askGPT} from '@/lib/***REMOVED***/gpt4'
+import {askGPT} from '@/app/api/gpt4/gpt4'
 
 
 export async function POST(req: NextRequest) {

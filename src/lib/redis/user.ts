@@ -1,4 +1,5 @@
 import {Redis} from "@upstash/redis";
+import md5 from "spark-md5";
 
 const redis = new Redis({
   url: "https://above-camel-33559.upstash.io",
@@ -7,41 +8,28 @@ const redis = new Redis({
 });
 
 export interface User {
-  username: string;
   password: string;
   created_at: number;
   last_login: number;
-  is_active: boolean;
-  is_blocked: boolean;
+  activated: boolean;
+  blocked: boolean;
 }
 
+/**
+ * Get user by email
+ * @param email
+ */
 const getUserByEmail = async (email: string) => {
   const user = await redis.hgetall(`user:${email}`);
   return Object.keys(user ?? {}).length > 0 ? user : null;
 };
 
-export const newUser = async (
-  username: string,
-  password: string,
-  email: string,
-) => {
-  const existingUser = await getUserByEmail(email);
-  if (existingUser !== null) {
-    throw new Error("user already exists");
-  }
-
-  await redis.hset(`user:${email}`, {
-    username,
-    password,
-    created_at: Date.now(),
-    last_login: 0,
-    is_active: false,
-    is_blocked: false,
-  });
-
-  return email;
-};
-
+/**
+ * 登录
+ * @param email
+ * @param password
+ * @return 返回 hash_password 后的密码
+ */
 export const loginUserWithEmail = async (email: string, password: string) => {
   const user = await getUserByEmail(email);
   if (user === null) {
@@ -57,14 +45,39 @@ export const loginUserWithEmail = async (email: string, password: string) => {
   return success;
 };
 
+/**
+ * 新建用户
+ * @param email
+ * @param password
+ * @return 返回 md5 hash 后的密码
+ */
+export const newUser = async (
+  email: string,
+  password: string
+) => {
+  const existingUser = await getUserByEmail(email);
+  if (existingUser !== null) {
+    throw new Error("user already exists");
+  }
+  await redis.hset(`user:${email}`, {
+    password,
+    created_at: Date.now(),
+    last_login: 0,
+    activated: false,
+    blocked: false,
+  });
+
+  return md5.hash(password.trim());
+};
+
+/**
+ *
+ */
 export const listUserEmails = async () => {
   const keys = await redis.keys("user:*");
   return keys.map((key) => key.split(":")[1]);
 };
 
-export const getUserWithEmail = async (email: string) => {
-  return await getUserByEmail(email);
-};
 
 export const updateUserWithEmail = async (
   email: string,
@@ -72,7 +85,10 @@ export const updateUserWithEmail = async (
 ) => {
   await redis.hset(`user:${email}`, updatedData);
 };
-
+/**
+ * Never Delete, only block
+ * @param email
+ */
 export const deleteUserWithEmail = async (email: string) => {
   await redis.del(`user:${email}`);
 };
