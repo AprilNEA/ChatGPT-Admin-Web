@@ -35,10 +35,6 @@ export async function POST(req: NextRequest) {
   }
 }
 
-export const config = {
-  runtime: "edge",
-};
-
 // copied from deno/std
 function readableStreamFromIterable(
   iterable: Iterable<string> | AsyncIterable<string>,
@@ -68,3 +64,7 @@ function readableStreamFromIterable(
     },
   });
 }
+
+// export const config = {
+//   runtime: "edge",
+// };
