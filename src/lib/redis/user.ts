@@ -1,94 +1,120 @@
-import {Redis} from "@upstash/redis";
+import { redis } from "./instance";
+import { User } from "./typing";
 import md5 from "spark-md5";
 
-const redis = new Redis({
-  url: "https://above-camel-33559.upstash.io",
-  token:
-    "AYMXACQgNGI5NzdlNTUtYjVlMy00ZGJlLTk1NGUtOTQ4YzYzZWZmZTQwMjlmMDEzYzUxODM1NGVhNTljNzg5ZmFlOWZjYzlhZTU=",
-});
+/**
+ * User utility functions.
+ */
+export const user = {
+  /**
+   * Create a new UserRef instance for the given email.
+   * @param email - The user's email.
+   * @returns A UserRef instance.
+   */
+  withEmail(email: string): UserRef {
+    return new UserRef(email);
+  },
 
-export interface User {
-  password: string;
-  created_at: number;
-  last_login: number;
-  activated: boolean;
-  blocked: boolean;
+  /**
+   * List all registered user emails.
+   * @returns An array of user emails.
+   */
+  async listEmails(): Promise<string[]> {
+    const keys = await redis.keys("user:*");
+    return keys.map((key) => key.split(":")[1]);
+  },
+};
+
+class UserRef {
+  readonly key: string;
+
+  /**
+   * Constructs a UserRef instance.
+   * @param email - The user's email.
+   */
+  constructor(email: string) {
+    this.key = `user:${email}`;
+  }
+
+  private cache: User | null = null;
+
+  /**
+   * Get the user data from cache or Redis.
+   * @returns The user data or null if not found.
+   */
+  async get(): Promise<User | null> {
+    if (!this.cache) this.cache = await redis.hgetall(this.key) as User | null;
+    return this.cache;
+  }
+
+  /**
+   * Set/update the user data in Redis.
+   * @param user - The user data to set/update.
+   * @returns True if successful, false otherwise.
+   */
+  async set(user: Partial<User>): Promise<boolean> {
+    const success = await redis.hmset(this.key, user) === "OK";
+    if (success && this.cache) this.cache = { ...this.cache, ...user };
+    return success;
+  }
+
+  /**
+   * Check if the user exists in Redis.
+   * @returns True if the user exists, false otherwise.
+   */
+  async exists(): Promise<boolean> {
+    return !!(await redis.exists(this.key));
+  }
+
+  /**
+   * Clear the user data from Redis.
+   * @returns True if successful, false otherwise.
+   */
+  async clear(): Promise<boolean> {
+    const success = await redis.del(this.key) === 1;
+    if (success) this.cache = null;
+    return success;
+  }
+
+  /**
+   * Register a new user.
+   * @param username - The user's username.
+   * @param password - The user's password.
+   * @returns True if successful, false otherwise.
+   */
+  async register(username: string, password: string): Promise<boolean> {
+    const user = await this.get();
+    if (user !== null) {
+      return false;
+    }
+
+    return this.set({
+      username,
+      password_hash: md5.hash(password.trim()),
+      last_login: Date.now(),
+      created_at: Date.now(),
+      subscription_level: 0,
+      is_active_until: Date.now(),
+      is_blocked: false,
+    });
+  }
+
+  /**
+   * Attempt to log in a user.
+   * @param password - The user's password.
+   * @returns True if successful, false otherwise.
+   */
+  async login(password: string): Promise<boolean> {
+    const user = await this.get();
+    if (user === null) {
+      return false;
+    }
+
+    const success = md5.hash(password.trim()) === user.password_hash;
+    if (success) {
+      await this.set({ last_login: Date.now() });
+    }
+    return success;
+  }
 }
 
-/**
- * Get user by email
- * @param email
- */
-const getUserByEmail = async (email: string) => {
-  const user = await redis.hgetall(`user:${email}`);
-  return Object.keys(user ?? {}).length > 0 ? user : null;
-};
-
-/**
- * 登录
- * @param email
- * @param password
- * @return 返回 hash_password 后的密码
- */
-export const loginUserWithEmail = async (email: string, password: string) => {
-  const user = await getUserByEmail(email);
-  if (user === null) {
-    return false;
-  }
-
-  const success = password == user.password;
-
-  if (success) {
-    await redis.hset(`user:${email}`, {last_login: Date.now()});
-  }
-
-  return success;
-};
-
-/**
- * 新建用户
- * @param email
- * @param password
- * @return 返回 md5 hash 后的密码
- */
-export const newUser = async (
-  email: string,
-  password: string
-) => {
-  const existingUser = await getUserByEmail(email);
-  if (existingUser !== null) {
-    throw new Error("user already exists");
-  }
-  await redis.hset(`user:${email}`, {
-    password,
-    created_at: Date.now(),
-    last_login: 0,
-    activated: false,
-    blocked: false,
-  });
-
-  return md5.hash(password.trim());
-};
-
-/**
- *
- */
-export const listUserEmails = async () => {
-  const keys = await redis.keys("user:*");
-  return keys.map((key) => key.split(":")[1]);
-};
-
-
-export const updateUserWithEmail = async (
-  email: string,
-  updatedData: Partial<User>,
-) => {
-  await redis.hset(`user:${email}`, updatedData);
-};
-/**
- * Never Delete, only block
- * @param email
- */
-export const deleteUserWithEmail = async (email: string) => {
-  await redis.del(`user:${email}`);
-};
