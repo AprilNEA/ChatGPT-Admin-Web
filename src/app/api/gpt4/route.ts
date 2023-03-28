@@ -4,7 +4,7 @@ import {askGPT} from '@/lib/***REMOVED***/gpt4'
 
 export async function POST(req: NextRequest) {
   try {
-    const {messages, max_tokens, temperature} = await req.json();
+    const {messages, max_tokens, temperature} = await new Response(req.body).json()
     const conversations = messages.map(
       // @ts-ignore
       ({role, content}) => ({role, text: content}),
