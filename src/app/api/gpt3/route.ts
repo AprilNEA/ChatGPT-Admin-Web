@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { LexGPT } from "@/lib/***REMOVED***/gpt3";
+import { LexGPT } from "@/app/api/gpt3/gpt3";
 
 interface CompletionRequest {
   text: string;

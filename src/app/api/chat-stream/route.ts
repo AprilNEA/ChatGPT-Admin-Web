@@ -22,7 +22,7 @@ async function createStream(req: NextRequest) {
     body: req.body,
   });
 
-  const stream = new ReadableStream({
+  return new ReadableStream({
     async start(controller) {
       function onParse(event: any) {
         if (event.type === "event") {
@@ -49,7 +49,6 @@ async function createStream(req: NextRequest) {
       }
     },
   });
-  return stream;
 }
 
 export async function POST(req: NextRequest) {
