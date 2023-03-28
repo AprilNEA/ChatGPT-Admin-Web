@@ -80,7 +80,7 @@ class UserRef {
    * Register a new user.
    * @param username - The user's username.
    * @param password - The user's password.
-   * @returns True if successful, false otherwise.
+   * @returns True if successful, false if failed or user already exists.
    */
   async register(username: string, password: string): Promise<boolean> {
     const user = await this.get();
