@@ -126,9 +126,14 @@ export function Chat(props: { showSideBar?: () => void }) {
   // submit user input
   const onUserSubmit = () => {
     if (userInput.length <= 0) return;
-    setIsLoading(true);
-    onUserInput(userInput).then(() => setIsLoading(false));
-    setUserInput("");
+
+    if (['习近平'].includes(userInput)) {
+      setUserInput("您的回答中包含非法内容.")
+    } else {
+      setIsLoading(true);
+      onUserInput(userInput).then(() => setIsLoading(false));
+      setUserInput("");
+    }
   };
 
   // stop response
