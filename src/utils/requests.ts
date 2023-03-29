@@ -1,5 +1,5 @@
-import type { ChatRequest, ChatReponse } from "@/app/api/chat/typing";
-import { filterConfig, Message, ModelConfig, useAccessStore } from "@/store";
+import type {ChatRequest, ChatReponse} from "@/app/api/chat/typing";
+import {filterConfig, Message, ModelConfig, useUserStore} from "@/store";
 import Locale from "@/locales";
 
 const TIME_OUT_MS = 30000;
@@ -28,22 +28,20 @@ const makeRequestParam = (
 };
 
 function getHeaders() {
-  const accessStore = useAccessStore.getState();
+  const userStore = useUserStore.getState();
+  const cookie = userStore.cookie;
   let headers: Record<string, string> = {};
 
-  if (accessStore.enabledAccessControl()) {
-    headers["access-code"] = accessStore.accessCode;
-  }
-
-  if (accessStore.token && accessStore.token.length > 0) {
-    headers["token"] = accessStore.token;
+  if (cookie && cookie.key) {
+    headers["token"] = cookie.key;
+    headers["email"] = cookie.email;
   }
 
   return headers;
 }
 
 export async function requestChat(messages: Message[]) {
-  const req: ChatRequest = makeRequestParam(messages, { filterBot: true });
+  const req: ChatRequest = makeRequestParam(messages, {filterBot: true});
 
   const res = await fetch("/api/chat", {
     method: "POST",
@@ -83,7 +81,7 @@ export async function requestChatStream(
   const reqTimeoutId = setTimeout(() => controller.abort(), TIME_OUT_MS);
 
   try {
-    const res = await fetch("/api/gpt3", {
+    const res = await fetch("/api/gpt4", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -1,25 +1,20 @@
-import { NextRequest, NextResponse } from "next/server";
-import { ACCESS_CODES } from "./app/api/access";
-import md5 from "spark-md5";
+import {NextRequest, NextResponse} from "next/server";
+import {ACCESS_CODES} from "./app/api/access";
+import {validateCookie} from "@/lib/redis";
 
 export const config = {
-  matcher: ["/api/chat", "/api/chat-stream"],
+  matcher: ["/api/chat", "/api/chat-stream", "/api/gpt3", "/api/gpt4"],
 };
 
 export function middleware(req: NextRequest, res: NextResponse) {
-  const accessCode = req.headers.get("access-code");
+  const email = req.headers.get("email");
   const token = req.headers.get("token");
-  const hashedCode = md5.hash(accessCode ?? "").trim();
 
-  console.log("[Auth] allowed hashed codes: ", [...ACCESS_CODES]);
-  console.log("[Auth] got access code:", accessCode);
-  console.log("[Auth] hashed access code:", hashedCode);
-
-  if (ACCESS_CODES.size > 0 && !ACCESS_CODES.has(hashedCode) && !token) {
+  if (!email || !token || !validateCookie(email, token)) {
     return NextResponse.json(
       {
         needAccessCode: true,
-        hint: "Please go settings page and fill your access code.",
+        hint: "Unauthenticated, illegal access",
       },
       {
         status: 401,

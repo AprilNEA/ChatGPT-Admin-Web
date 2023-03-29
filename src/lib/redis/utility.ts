@@ -28,12 +28,12 @@ async function listEmails(): Promise<string[]> {
 /**
  * Validate a cookie.
  */
-async function validateCookie(email: string, cookieKey: string): Promise<boolean> {
-  const cookie: Cookie | null = await redis.get(`cookies:${email}:${cookieKey}`);
-  if (!cookie) {
+export async function validateCookie(email: string, key: string): Promise<boolean> {
+  const cookie_exist: Cookie | null = await redis.get(`cookies:${email}:${key}`);
+  if (!cookie_exist) {
     return false;
   }
-  return cookie.exp > Date.now();
+  return cookie_exist.exp > Date.now();
 }
 
 /**
