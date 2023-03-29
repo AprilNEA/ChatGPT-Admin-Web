@@ -13,7 +13,7 @@ async function createStream(req: NextRequest) {
     console.log("[Stream] using user api key");
   }
 
-  const res = await fetch("https://forward.idontplay.cf/https://api.openai.com/v1/chat/completions", {
+  const res = await fetch("https://api.openai.com/v1/chat/completions", {
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${apiKey}`,
@@ -60,6 +60,6 @@ export async function POST(req: NextRequest) {
   }
 }
 
-export const config = {
-  runtime: "edge",
-};
+// export const config = {
+//   runtime: "edge",
+// };
