@@ -29,11 +29,25 @@ async function listEmails(): Promise<string[]> {
  * Validate a cookie.
  */
 export async function validateCookie(email: string, key: string): Promise<boolean> {
-  const cookie_exist: Cookie | null = await redis.get(`cookies:${email}:${key}`);
+  const cookie_exist: Cookie | null = await redis.get(`cookies:${email.trim()}:${key.trim()}`);
   if (!cookie_exist) {
     return false;
   }
   return cookie_exist.exp > Date.now();
+}
+
+export async function rateLimit(email: string): Promise<boolean> {
+  // 首先移除所有过期的时间戳
+  await redis.zremrangebyscore(`limit:${email}`, 0, Date.now() - 3 * 60 * 60 * 1000);
+
+  const requests_number = await redis.zcard(`limit:${email}`) ?? 0;
+  if (requests_number >= 25) {
+    return false;
+  } else {
+    const timestamp = Date.now();
+    const limit = await redis.zadd(`limit:${email}`, {score: timestamp, member: timestamp});
+    return true;
+  }
 }
 
 /**
