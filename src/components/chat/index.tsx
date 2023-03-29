@@ -5,7 +5,7 @@ import {SubmitKey} from "@/types/setting"
 import {useLayoutEffect, useRef, useState} from "react";
 import {ControllerPool} from "@/utils/requests";
 import {copyToClipboard, downloadAs, isIOS, selectOrCopy} from "@/utils/utils";
-import styles from "@/styles/home.module.scss";
+import styles from "@/styles/module/home.module.scss";
 import Locale from "@/locales";
 
 import MenuIcon from "@/assets/icons/menu.svg";

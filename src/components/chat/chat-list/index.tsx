@@ -1,4 +1,4 @@
-import styles from "@/styles/home.module.scss";
+import styles from "@/styles/module/home.module.scss";
 import Locale from "@/locales";
 import DeleteIcon from "@/assets/icons/delete.svg";
 import {useChatStore} from "@/store";

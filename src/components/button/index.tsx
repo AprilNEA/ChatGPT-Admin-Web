@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import styles from "@/styles/button.module.scss";
+import styles from "@/styles/module/button.module.scss";
 
 /**
  * 按钮

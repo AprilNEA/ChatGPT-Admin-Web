@@ -1,4 +1,4 @@
-import styles from "@/styles/home.module.scss";
+import styles from "@/styles/module/home.module.scss";
 import BotIcon from "@/assets/icons/bot.svg";
 import LoadingIcon from "@/assets/icons/three-dots.svg";
 

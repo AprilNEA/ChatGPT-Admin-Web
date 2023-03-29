@@ -1,6 +1,6 @@
 import {Message, useChatStore} from "@/store";
 import BotIcon from "@/assets/icons/bot.svg";
-import styles from "@/styles/home.module.scss";
+import styles from "@/styles/module/home.module.scss";
 import dynamic from "next/dynamic";
 import LoadingIcon from "@/assets/icons/three-dots.svg";
 

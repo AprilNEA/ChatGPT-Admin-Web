@@ -5,8 +5,8 @@ import "@/styles/prism.scss";
 import { ACCESS_CODES } from "@/app/api/access";
 
 export const metadata = {
-  title: "ChatGPT Next Web",
-  description: "Your personal ChatGPT Chat Bot.",
+  title: "ChatGPT",
+  description: "Your personal ChatGPT Bot.",
 };
 
 function Meta() {
@@ -34,7 +34,7 @@ export default function RootLayout({
       <head>
         <meta
           name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+          content="width=device-width, userRef-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
         />
         <Meta />
         <link rel="manifest" href="/public/site.webmanifest"></link>

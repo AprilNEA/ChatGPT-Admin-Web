@@ -1,0 +1,96 @@
+// LoginForm.scss
+//.login-form-container {
+//  display: f***REMOVED***;
+//  justify-content: center;
+//  align-items: center;
+//  height: 100%;
+//  width: 100%;
+//  padding: 2rem;
+//  box-sizing: border-box;
+//}
+
+.login-form {
+  width: 100%;
+  max-width: 400px;
+  background-color: var(--white);
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+}
+
+.login-form-title {
+  font-size: 24px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.login-form-input-group {
+  display: f***REMOVED***;
+  f***REMOVED***-direction: column;
+  margin-bottom: 15px;
+
+  label {
+    font-size: 14px;
+    margin-bottom: 5px;
+  }
+
+  input {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    padding: 8px 12px;
+  }
+}
+
+.login-form-submit {
+  background-color: #007bff;
+  border: none;
+  border-radius: 5px;
+  color: #ffffff;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 10px;
+  text-align: center;
+  width: 100%;
+
+  &:hover {
+    background-color: #0056b3;
+  }
+}
+
+.login-form-container {
+  display: f***REMOVED***;
+  justify-content: center;
+  align-items: center;
+  f***REMOVED***-direction: column;
+  padding: 20px;
+}
+
+.sidebar-header {
+  display: f***REMOVED***;
+  f***REMOVED***-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  position: relative;
+}
+
+.sidebar-title {
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 5px;
+}
+
+.sidebar-sub-title {
+  font-size: 14px;
+  font-weight: 400;
+  text-align: center;
+}
+
+.sidebar-logo {
+  position: absolute;
+  right: 0;
+  bottom: 18px;
+}
