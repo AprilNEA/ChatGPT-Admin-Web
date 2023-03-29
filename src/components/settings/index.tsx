@@ -2,7 +2,7 @@ import {useState, useEffect, useRef, useMemo} from "react";
 
 import EmojiPicker, {Theme as EmojiTheme} from "emoji-picker-react";
 
-import styles from "@/styles/settings.module.scss";
+import styles from "@/styles/module/settings.module.scss";
 
 import ResetIcon from "@/assets/icons/reload.svg";
 import CloseIcon from "@/assets/icons/close.svg";
@@ -15,6 +15,7 @@ import {
   useChatStore,
   ALL_MODELS,
   useAccessStore,
+  useUserStore
 } from "@/store";
 import {SubmitKey, Theme} from "@/types/setting";
 import {Avatar} from "@/components/avatar";
@@ -49,7 +50,7 @@ export function Settings(props: { closeSettings: () => void }) {
       state.clearAllData,
     ]
   );
-
+  const [email] = useUserStore((state) => [state.email]);
   const accessStore = useAccessStore();
   const enabledAccessControl = useMemo(
     () => accessStore.enabledAccessControl(),
@@ -146,9 +147,7 @@ export function Settings(props: { closeSettings: () => void }) {
           {/*</SettingItem>*/}
 
           <SettingItem title={Locale.Settings.Account}>
-            <div>Beta Version
-              <div className={styles["settings-sub-title"]}>Beta</div>
-            </div>
+            <div>{email}</div>
 
           </SettingItem>
         </List>

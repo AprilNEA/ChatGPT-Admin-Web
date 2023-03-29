@@ -1,16 +1,21 @@
 import {NextRequest, NextResponse} from "next/server";
-import {newUser} from "@/lib/redis/user";
+import {registerUser} from "@/lib/redis";
 
 export async function POST(req: NextRequest) {
   try {
     const {email, password} = await req.json()
-    const hash_password = await newUser(email, password)
+    const cookie = await registerUser(email, password)
+    if (cookie) {
+      return NextResponse.json({
+        success: true,
+        data: {
+          email: email,
+          cookie,
+        }
+      })
+    }
     return NextResponse.json({
-      success: true,
-      data: {
-        email: email,
-        password: hash_password
-      }
+      success: false,
     })
   } catch (error) {
     console.error("[Chat Stream]", error);

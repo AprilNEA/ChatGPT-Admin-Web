@@ -3,7 +3,7 @@
 import {useState, useRef, useEffect, useLayoutEffect} from "react";
 
 import {IconButton} from "@/components/button";
-import styles from "@/styles/home.module.scss";
+import styles from "@/styles/module/home.module.scss";
 
 import SettingsIcon from "@/assets/icons/settings.svg";
 import ChatGptIcon from "@/assets/icons/chatgpt.svg";
@@ -11,7 +11,7 @@ import BotIcon from "@/assets/icons/bot.svg";
 import AddIcon from "@/assets/icons/add.svg";
 import LoadingIcon from "@/assets/icons/three-dots.svg";
 import CloseIcon from "@/assets/icons/close.svg";
-import {Message, useChatStore} from "@/store";
+import {Message, useChatStore, useUserStore} from "@/store";
 
 import Locale from "@/locales";
 
@@ -26,6 +26,9 @@ const Settings = dynamic(async () => (await import("@/components/settings")).Set
   loading: () => <Loading noLogo/>,
 });
 
+const Login = dynamic(async () => (await import("@/components/login")).Login, {
+  loading: () => <Loading noLogo/>,
+});
 
 /**
  * 修复水合错误
@@ -41,6 +44,18 @@ const useHasHydrated = () => {
 };
 
 export function Home() {
+  const [isLogin, setIsLogin] = useState(false)
+  const [cookie, validateCookie] = useUserStore((state) => [state.cookie, state.validateCookie]);
+
+  useEffect(() => {
+    if (validateCookie()) {
+      setIsLogin(true)
+    } else {
+      setIsLogin(false)
+    }
+  }, [cookie])
+
+  // 对话
   const [createNewSession, currentIndex, removeSession] = useChatStore(
     (state) => [
       state.newSession,
@@ -48,17 +63,30 @@ export function Home() {
       state.removeSession,
     ]
   );
+
+  // 是否加载中
   const loading = !useHasHydrated();
   const [showSideBar, setShowSideBar] = useState(true);
 
-  // setting
+  // 设置面板
   const [openSettings, setOpenSettings] = useState(false);
   const config = useChatStore((state) => state.config);
 
+  // 暗色模式切换
   useSwitchTheme();
 
   if (loading) {
     return <Loading/>;
+  }
+
+  if (!isLogin) {
+    return (
+      <div
+        className={`${
+          config.tightBorder ? styles["tight-container"] : styles.container
+        }`}
+      ><Login setIsLogin={() => setIsLogin(true)}/></div>
+    )
   }
 
   return (

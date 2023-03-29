@@ -83,7 +83,7 @@ export async function requestChatStream(
   const reqTimeoutId = setTimeout(() => controller.abort(), TIME_OUT_MS);
 
   try {
-    const res = await fetch("/api/chat-stream", {
+    const res = await fetch("/api/gpt3", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

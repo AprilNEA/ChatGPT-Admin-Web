@@ -1,5 +1,9 @@
+import {Cookie} from "@/lib/redis/typing";
+
 export interface UserStore {
-  cookie: string;
+  cookie: Cookie | null;
   email: string;
-  Login: (email: string, password: string) => string;
+  updateEmail: (email: string) => void;
+  updateCookie: (cookie: Cookie) => void;
+  validateCookie: () => boolean;
 }
