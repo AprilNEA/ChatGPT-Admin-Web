@@ -1,10 +1,16 @@
+export interface Cookie {
+  key: string;
+  email: string;
+  exp: number;
+}
+
 export interface User {
-    username: string;
-    password_hash: string;
-    created_at: number;
-    last_login: number;
-    subscription_level: number;
-    is_active_until: number;
-    is_blocked: boolean;
-  }
-  
+  email: string;
+  password_hash: string;
+  created_at: number;
+  last_login: number;
+  subscription_level: number;
+  subscription_until: number;
+  is_activated: boolean
+  is_blocked: boolean;
+}
