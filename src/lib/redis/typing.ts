@@ -1,3 +1,7 @@
+export interface Limit {
+  requests: number[];
+}
+
 export interface Cookie {
   key: string;
   email: string;

@@ -10,7 +10,7 @@ export class UserRef {
    * @param email - The user's email.
    */
   constructor(email: string) {
-    this.key = `user:${email}`;
+    this.key = `user:${email.trim()}`;
   }
 
   private cache: User | null = null;
@@ -66,7 +66,7 @@ export class UserRef {
     }
 
     return this.set({
-      email,
+      email: email.trim(),
       password_hash: md5.hash(password.trim()),
       last_login: Date.now(),
       created_at: Date.now(),
@@ -104,15 +104,16 @@ export class UserRef {
     if (user === null) {
       return null;
     }
-    const key = md5.hash(`${user.email}:${Date.now()}`);
+    const email = user.email.trim();
+    const key = md5.hash(`${email}:${Date.now()}`);
 
     const cookie: Cookie = {
       key,
-      email: user.email,
+      email,
       exp: Date.now() + 24 * 60 * 60 * 1000, // 设置过期时间为一天
     };
 
-    const success = await redis.set(`cookies:${user.email}:${key}`, cookie) === "OK"
+    const success = await redis.set(`cookies:${email}:${key}`, cookie) === "OK"
     if (success) {
       return cookie;
     }

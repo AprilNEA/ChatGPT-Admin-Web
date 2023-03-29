@@ -5,6 +5,7 @@ const en: LocaleType = {
   Error: {
     Unauthorized:
       "Unauthorized access, please enter access code in settings page.",
+    TooManyRequests: "The IP address reaches the maximum number of requests per second, please request later.",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} messages`,
