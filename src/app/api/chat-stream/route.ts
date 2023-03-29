@@ -60,6 +60,6 @@ export async function POST(req: NextRequest) {
   }
 }
 
-// export const config = {
-//   runtime: "edge",
-// };
+export const config = {
+  runtime: "edge",
+};
