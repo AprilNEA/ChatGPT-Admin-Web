@@ -1,4 +1,4 @@
-import styles from "@/styles/ui-lib.module.scss";
+import styles from "@/styles/module/ui-lib.module.scss";
 import LoadingIcon from "@/assets/icons/three-dots.svg";
 import CloseIcon from "@/assets/icons/close.svg";
 import { createRoot } from "react-dom/client";
