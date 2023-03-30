@@ -37,7 +37,8 @@ function useSubmitHandler() {
       (config.submitKey === SubmitKey.Enter &&
         !e.altKey &&
         !e.ctrlKey &&
-        !e.shiftKey)
+        !e.shiftKey &&
+        !e.metaKey)
     );
   };
 
@@ -130,9 +131,10 @@ export function Chat(props: { showSideBar?: () => void }) {
     // if (['fff'].includes(userInput)) {
     //   setUserInput("您的回答中包含非法内容.")
     // } else {
-      setIsLoading(true);
-      onUserInput(userInput).then(() => setIsLoading(false));
-      setUserInput("");
+    setIsLoading(true);
+    onUserInput(userInput).then(() => setIsLoading(false));
+    setUserInput("");
+    inputRef.current?.focus();
     // }
   };
 
@@ -177,6 +179,7 @@ export function Chat(props: { showSideBar?: () => void }) {
 
   // wont scroll while hovering messages
   const [autoScroll, setAutoScroll] = useState(false);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
 
   // preview messages
   const messages = (session.messages as RenderMessage[])
@@ -342,6 +345,7 @@ export function Chat(props: { showSideBar?: () => void }) {
       <div className={styles["chat-input-panel"]}>
         <div className={styles["chat-input-panel-inner"]}>
           <textarea
+            ref={inputRef}
             className={styles["chat-input"]}
             placeholder={Locale.Chat.Input(submitKey)}
             rows={3}
