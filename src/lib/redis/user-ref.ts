@@ -43,7 +43,7 @@ export class UserRef {
    * @returns True if the user exists, false otherwise.
    */
   async exists(): Promise<boolean> {
-    return !!(await redis.exists(this.key));
+    return await this.get() !== null;
   }
 
   /**

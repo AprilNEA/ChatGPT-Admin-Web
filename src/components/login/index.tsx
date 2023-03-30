@@ -76,10 +76,6 @@ export function Login(props: { setIsLogin: () => void }) {
 
 
   const accessStore = useAccessStore();
-  const enabledAccessControl = useMemo(
-    () => accessStore.enabledAccessControl(),
-    []
-  );
 
   return (
     <>

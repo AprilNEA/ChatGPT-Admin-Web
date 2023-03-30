@@ -47,7 +47,7 @@ export async function rateLimit(email: string): Promise<LimitReason> {
   const last_request = Number(await redis.get(`limit:rate:${email}`)) ?? 0 as number;
 
   // 请求速率
-  if (last_request + 30000 > Date.now()) return 'tooFast';
+  if (last_request + 5000 > Date.now()) return 'tooFast';
 
   // 首先移除所有过期的时间戳
   await redis.zremrangebyscore(`limit:${email}`, 0, Date.now() - 3 * 60 * 60 * 1000);
