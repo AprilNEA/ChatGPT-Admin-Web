@@ -1,19 +1,29 @@
 import {NextRequest, NextResponse} from "next/server";
-import {getWithEmail} from "@/lib/redis";
+import {getWithEmail, newRegisterCode} from "@/lib/redis";
 import type {Cookie} from "@/lib/redis/typing";
+import {sendEmail} from "@/lib/email";
 
 export async function POST(req: NextRequest) {
   try {
     const {email, password} = await req.json()
-    const cookie: Cookie | null = await getWithEmail(email).login(password)
-    if (cookie){
+    const user = getWithEmail(email)
+    if (!await user.exists()) {
+      const randomCode = await newRegisterCode(email)
+      await sendEmail([email], "", `${randomCode}`)
       return NextResponse.json({
-        success: true,
+        status: "new",
+      })
+    }
+
+    const cookie: Cookie | null = await user.login(password)
+    if (cookie) {
+      return NextResponse.json({
+        status: "success",
         cookie,
       })
     } else {
       return NextResponse.json({
-        success: false,
+        status: "failed",
       })
     }
 

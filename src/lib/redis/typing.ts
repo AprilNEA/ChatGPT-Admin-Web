@@ -1,4 +1,5 @@
 export interface Limit {
+  last_request: number;
   requests: number[];
 }
 
@@ -6,6 +7,7 @@ export interface Cookie {
   key: string;
   email: string;
   exp: number;
+  activated?: boolean;
 }
 
 export interface User {

@@ -2,8 +2,10 @@ import {redis} from "./instance";
 import {Cookie, User} from "./typing";
 import md5 from "spark-md5";
 
+
 export class UserRef {
   readonly key: string;
+  private readonly email: string;
 
   /**
    * Constructs a UserRef instance.
@@ -11,6 +13,7 @@ export class UserRef {
    */
   constructor(email: string) {
     this.key = `user:${email.trim()}`;
+    this.email = email;
   }
 
   private cache: User | null = null;
@@ -112,6 +115,7 @@ export class UserRef {
       email,
       exp: Date.now() + 24 * 60 * 60 * 1000, // 设置过期时间为一天
     };
+    if (!user.is_activated) cookie.activated = false;
 
     const success = await redis.set(`cookies:${email}:${key}`, cookie) === "OK"
     if (success) {
@@ -120,14 +124,5 @@ export class UserRef {
     return null;
   }
 
-  // async get_cookies(): Promise<Cookie[] | null> {
-  //   const user = await this.get();
-  //   if (user === null) {
-  //     return null;
-  //   }
-  //
-  //   const cookies = await redis.keys(`cookies:${user.email}:*`);
-  //   return cookies;
-  // }
 }
 

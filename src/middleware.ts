@@ -23,10 +23,11 @@ export async function middleware(req: NextRequest, res: NextResponse) {
     );
 
   // 速率限制
-  if (!await rateLimit(email))
+  const limit_reason = await rateLimit(email)
+  if (limit_reason !== 'OK')
     return NextResponse.json(
       {
-        hint: "The IP address reaches the maximum number of requests per second, please request later.",
+        hint: limit_reason
       },
       {
         status: 429,

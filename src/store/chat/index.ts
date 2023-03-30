@@ -29,30 +29,10 @@ export const ALL_MODELS = [
     name: "gpt-4",
     available: ENABLE_GPT4,
   },
-  // {
-  //   name: "gpt-4-0314",
-  //   available: ENABLE_GPT4,
-  // },
-  // {
-  //   name: "gpt-4-32k",
-  //   available: ENABLE_GPT4,
-  // },
-  // {
-  //   name: "gpt-4-32k-0314",
-  //   available: ENABLE_GPT4,
-  // },
   {
     name: "gpt-3.5",
     available: true,
   },
-  // {
-  //   name: "gpt-3.5-turbo",
-  //   available: true,
-  // },
-  // {
-  //   name: "gpt-3.5-turbo-0301",
-  //   available: true,
-  // },
 ];
 
 export function isValidModel(name: string) {
@@ -139,7 +119,7 @@ function createEmptySession(): ChatSession {
 }
 
 
-const LOCAL_KEY = "chat-next-web-store";
+const LOCAL_KEY = "chat-store";
 
 export const useChatStore = create<ChatStore>()(
   persist(

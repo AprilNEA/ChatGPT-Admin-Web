@@ -1,19 +1,14 @@
 import {NextRequest} from "next/server";
 import {askGPT} from '@/app/api/gpt4/gpt4'
-import p from "@/lib/words/p.json"
-
-const regex = new RegExp(p.join('|'), 'i'); // 合并所有关键词为一个正则表达式
-
-function hasKeyword(str: string): boolean {
-  return regex.test(str); // 对字符串进行匹配操作
-}
 
 export async function POST(req: NextRequest) {
   try {
     const {messages, max_tokens, temperature} = await new Response(req.body).json()
-    if (hasKeyword(messages[messages.length - 1].content)){
-      return new Response('[INTERNAL ERROR]', {status: 404})
-    }
+
+    // 在此做关键词过滤
+    // if (hasKeyword(messages[messages.length - 1].content)) {
+    //   return new Response('[INTERNAL ERROR]', {status: 404})
+    // }
     const conversations = messages.map(
       // @ts-ignore
       ({role, content}) => ({role, text: content}),

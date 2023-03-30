@@ -127,8 +127,15 @@ export async function requestChatStream(
       responseText = Locale.Error.Unauthorized;
       finish();
     } else if (res.status == 429){
-      console.error("Too Many Requests");
-      responseText = Locale.Error.TooManyRequests;
+      const data = (await res.json())
+      switch (data.hint){
+        case 'tooMuch':
+          responseText = Locale.Error.TooManyRequests;
+          break
+        case 'tooFast':
+          responseText = Locale.Error.TooFastRequests;
+          break
+      }
       finish();
     } else {
       console.error("Stream Error");

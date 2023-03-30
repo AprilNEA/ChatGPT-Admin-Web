@@ -5,7 +5,8 @@ const en: LocaleType = {
   Error: {
     Unauthorized:
       "Unauthorized access, please enter access code in settings page.",
-    TooManyRequests: "The IP address reaches the maximum number of requests per second, please request later.",
+    TooManyRequests: "Your account has reached the maximum number of requests within three hours.",
+    TooFastRequests: "The request is too fast, wait a bit (15s between requests)",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} messages`,

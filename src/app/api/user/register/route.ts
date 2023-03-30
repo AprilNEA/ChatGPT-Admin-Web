@@ -1,21 +1,25 @@
 import {NextRequest, NextResponse} from "next/server";
-import {registerUser} from "@/lib/redis";
+import {registerUser, activateRegisterCode} from "@/lib/redis";
 
 export async function POST(req: NextRequest) {
   try {
-    const {email, password} = await req.json()
+    const {email, password, code} = await req.json()
+    // 激活验证码
+    const success = await activateRegisterCode(email, code)
+    if (!success) {
+      return NextResponse.json({
+        status: 'wrongCode',
+      })
+    }
     const cookie = await registerUser(email, password)
     if (cookie) {
       return NextResponse.json({
-        success: true,
-        data: {
-          email: email,
-          cookie,
-        }
+        status: 'success',
+        cookie,
       })
     }
     return NextResponse.json({
-      success: false,
+      success: 'failed',
     })
   } catch (error) {
     console.error("[Chat Stream]", error);

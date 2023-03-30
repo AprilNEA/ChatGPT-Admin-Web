@@ -5,6 +5,8 @@ import {redis} from "@/lib/redis/instance";
 import {UserRef} from "@/lib/redis/user-ref";
 import type {Cookie} from "@/lib/redis/typing";
 
+type LimitReason = 'OK' | 'tooFast' | 'tooMuch'
+
 /**
  * Create a new UserRef instance for the given email.
  * @param email - The user's email.
@@ -33,20 +35,31 @@ export async function validateCookie(email: string, key: string): Promise<boolea
   if (!cookie_exist) {
     return false;
   }
+  // 如果存在说明未激活, 不存在的话肯定是激活的(由[Login/Register]=>newCookie()保证), 存在且为True则为当次激活
+  if (cookie_exist.activated !== undefined && !cookie_exist.activated) {
+    return false;
+  }
+
   return cookie_exist.exp > Date.now();
 }
 
-export async function rateLimit(email: string): Promise<boolean> {
+export async function rateLimit(email: string): Promise<LimitReason> {
+  const last_request = Number(await redis.get(`limit:rate:${email}`)) ?? 0 as number;
+
+  // 请求速率
+  if (last_request + 30000 > Date.now()) return 'tooFast';
+
   // 首先移除所有过期的时间戳
   await redis.zremrangebyscore(`limit:${email}`, 0, Date.now() - 3 * 60 * 60 * 1000);
 
   const requests_number = await redis.zcard(`limit:${email}`) ?? 0;
   if (requests_number >= 25) {
-    return false;
+    return 'tooMuch';
   } else {
     const timestamp = Date.now();
+    await redis.set(`limit:rate:${email}`, timestamp);
     const limit = await redis.zadd(`limit:${email}`, {score: timestamp, member: timestamp});
-    return true;
+    return 'OK';
   }
 }
 
@@ -64,4 +77,29 @@ export async function registerUser(email: string, password: string): Promise<Coo
     return cookieKey;
   }
   return null;
+}
+
+function generateRandomSixDigitNumber() {
+  const min = 100000;
+  const max = 999999;
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+
+export async function newRegisterCode(email: string): Promise<number> {
+  const randomNumber = generateRandomSixDigitNumber();
+  if (await redis.set(`register:code:${email.trim()}`, randomNumber) == "OK")
+    return randomNumber;
+  return -1;
+}
+
+export async function activateRegisterCode(email: string, code: string): Promise<boolean> {
+  const randomNumber = await redis.get(`register:code:${email.trim()}`);
+  console.log()
+  if (randomNumber == code) {
+    await redis.del(`register:code:${email.trim()}`);
+    // await this.set({is_activated: true});
+    return true;
+  }
+  return false;
 }
