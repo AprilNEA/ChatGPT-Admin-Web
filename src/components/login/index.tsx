@@ -79,16 +79,6 @@ export function Login(props: { setIsLogin: () => void }) {
 
   return (
     <>
-      <div className={styles["sidebar-header"]}>
-        <div className={styles["sidebar-title"]}>ChatGPT (GPT-4)</div>
-        <div className={styles["sidebar-sub-title"]}>
-          Your own AI assistant.
-        </div>
-        <div className={styles["sidebar-logo"]}>
-          <ChatGptIcon/>
-        </div>
-      </div>
-
       <div className={styles["login-form-container"]}>
         <form className={styles["login-form"]} onSubmit={handleSubmit}>
           <h2 className={styles["login-form-title"]}>Login/Register</h2>
@@ -116,18 +106,31 @@ export function Login(props: { setIsLogin: () => void }) {
           </div>
           {isNew && <div className={styles["login-form-input-group"]}>
               <label htmlFor="email">Verification Code</label>
-              <input
-                  type="text"
-                  id="verification-code"
-                  maxLength={6}
-                  pattern="\d{6}"
-                  onChange={(e) => setVerificationCode(e.target.value)}
-                  required
-              />
+              <div className={styles["verification-code-container"]}>
+                  <input
+                      type="text"
+                      id="verification-code"
+                      maxLength={6}
+                      pattern="\d{6}"
+                      onChange={(e) => setVerificationCode(e.target.value)}
+                      required
+                  />
+                  <button
+                      className={styles["send-verification-button"]}
+                    // onClick={handleSendVerification}
+                  >
+                      Already Send to Email
+                  </button>
+              </div>
           </div>}
-          <button className={styles["login-form-submit"]} type="submit" disabled={submitting}>
-            Login/Register
-          </button>
+          <div className={styles["button-container"]}>
+            {!isNew && <button className={styles["login-form-submit"]} type="submit" disabled={submitting}>
+                Login
+            </button>}
+            <button className={styles["login-form-submit"]} type="submit">
+              Register
+            </button>
+          </div>
         </form>
       </div>
     </>
