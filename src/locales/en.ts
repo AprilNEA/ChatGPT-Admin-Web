@@ -4,7 +4,7 @@ const en: LocaleType = {
   WIP: "WIP...",
   Error: {
     Unauthorized:
-      "Unauthorized access, please enter access code in settings page.",
+      "Now you are not logged in, please refresh your browser cache and log in.",
     TooManyRequests: "Your account has reached the maximum number of requests within three hours.",
     TooFastRequests: "The request is too fast, wait a bit (15s between requests)",
   },
