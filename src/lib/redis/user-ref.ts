@@ -16,15 +16,16 @@ export class UserRef {
     this.email = email;
   }
 
-  private cache: User | null = null;
+  // private cache: User | null = null;
 
   /**
    * Get the user data from cache or Redis.
    * @returns The user data or null if not found.
    */
   async get(): Promise<User | null> {
-    if (!this.cache) this.cache = await redis.hgetall(this.key) as User | null;
-    return this.cache;
+    // if (!this.cache) this.cache = await redis.hgetall(this.key) as User | null;
+    return await redis.hgetall(this.key) as User | null;
+    // return this.cache;
   }
 
   /**
@@ -33,9 +34,8 @@ export class UserRef {
    * @returns True if successful, false otherwise.
    */
   async set(user: Partial<User>): Promise<boolean> {
-    const success = await redis.hmset(this.key, user) === "OK";
-    if (success && this.cache) this.cache = {...this.cache, ...user};
-    return success;
+    // if (success && this.cache) this.cache = {...this.cache, ...user};
+    return await redis.hmset(this.key, user) === "OK";
   }
 
   /**
@@ -50,11 +50,11 @@ export class UserRef {
    * Clear the user data from Redis.
    * @returns True if successful, false otherwise.
    */
-  async clear(): Promise<boolean> {
-    const success = await redis.del(this.key) === 1;
-    if (success) this.cache = null;
-    return success;
-  }
+  // async clear(): Promise<boolean> {
+  //   const success = await redis.del(this.key) === 1;
+  //   if (success) this.cache = null;
+  //   return success;
+  // }
 
   /**
    * Register a new user.
