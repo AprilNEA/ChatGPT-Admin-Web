@@ -103,11 +103,7 @@ export class UserRef {
    * @returns The cookie key or null if failed.
    */
   async newCookie(): Promise<Cookie | null> {
-    const user = await this.get();
-    if (user === null) {
-      return null;
-    }
-    const email = user.email.trim();
+    const email = this.email.trim();
     const key = md5.hash(`${email}:${Date.now()}`);
 
     const cookie: Cookie = {
