@@ -3,7 +3,7 @@ const cn = {
   Error: {
     Unauthorized: "现在是未登录状态，请刷新浏览器缓存并登录。",
     TooManyRequests: "您的账户在内三小时内已达到最大请求数，请稍后再试。",
-    TooFastRequests: "请求地太快啦，稍等一下(请求间隔15秒)。",
+    TooFastRequests: "请求地太快啦，稍等一下（请求间隔5秒）。",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} 条对话`,
