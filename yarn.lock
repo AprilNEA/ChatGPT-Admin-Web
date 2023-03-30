@@ -1601,7 +1601,7 @@
     "@typescript-eslint/types" "5.54.1"
     eslint-visitor-keys "^3.3.0"
 
-"@upstash/redis@^1.20.1":
+"@upstash/redis@^1.20.2":
   version "1.20.2"
   resolved "https://registry.yarnpkg.com/@upstash/redis/-/redis-1.20.2.tgz#f797915c90054764b26d2289f5da5dd4b68d8480"
   integrity sha512-9QS/SypDxeeh672H7dEEmuYOX5TtPYnaDLlhxWJEPd8LzcEQ6hohwDJuojpqGkvvvrK58mlWOkN1GrMxbXPTeQ==
@@ -4339,6 +4339,15 @@ rehype-prism-plus@^1.5.1:
     refractor "^4.7.0"
     rehype-parse "^8.0.2"
     unist-util-filter "^4.0.0"
+    unist-util-visit "^4.0.0"
+
+remark-breaks@^3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/remark-breaks/-/remark-breaks-3.0.2.tgz#f466b9d3474d7323146c0149fc1496dabadd908e"
+  integrity sha512-x96YDJ9X+Ry0/JNZFKfr1hpcAKvGYWfUTszxY9RbxKEqq6uzPPoLCuHdZsLPZZUdAv3nCROyc7FPrQLWr2rxyw==
+  dependencies:
+    "@types/mdast" "^3.0.0"
+    unified "^10.0.0"
     unist-util-visit "^4.0.0"
 
 remark-gfm@^3.0.1:
