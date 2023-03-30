@@ -102,10 +102,18 @@ export async function newRegisterCode(email: string): Promise<number> {
   return -1;
 }
 
+const token = process.env.REDIS_TOKEN!
+
 export async function activateRegisterCode(email: string, code: string): Promise<boolean> {
   const key = `register:code:${email.trim()}`
-  const randomNumber = await redis.get(key);
-  if (randomNumber == code) {
+  const remote = await (await fetch(`https://above-camel-33559.upstash.io/get/${key}`, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })).json()
+  console.log(remote, code)
+  // const randomNumber = await redis.get(key);
+  if (remote.result.trim() == code) {
     await redis.del(key);
     // await this.set({is_activated: true});
     return true;
