@@ -38,6 +38,7 @@ export function Login(props: { setIsLogin: () => void }) {
     }
 
     const res = await (await fetch(isNew ? '/api/user/register' : '/api/user/login', {
+      cache:'no-store',
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
