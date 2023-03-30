@@ -87,17 +87,26 @@ function generateRandomSixDigitNumber() {
 
 
 export async function newRegisterCode(email: string): Promise<number> {
+  const key = `register:code:${email.trim()}`
+  const code = await redis.get(key)
+
+  // 如果存在 Code 那么直接返回存在的 Code
+  if (code) {
+    return Number(code);
+  }
+  // TODO 这里需要设置过期时间
   const randomNumber = generateRandomSixDigitNumber();
-  await redis.del(`register:code:${email.trim()}`)
-  if (await redis.set(`register:code:${email.trim()}`, randomNumber) == "OK")
+  if (await redis.set(key, randomNumber) == "OK")
     return randomNumber;
+
   return -1;
 }
 
 export async function activateRegisterCode(email: string, code: string): Promise<boolean> {
-  const randomNumber = await redis.get(`register:code:${email.trim()}`);
+  const key = `register:code:${email.trim()}`
+  const randomNumber = await redis.get(key);
   if (randomNumber == code) {
-    await redis.del(`register:code:${email.trim()}`);
+    await redis.del(key);
     // await this.set({is_activated: true});
     return true;
   }
