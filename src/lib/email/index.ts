@@ -12,6 +12,7 @@ export async function sendEmail(to: string[], name: string, code: string) {
   formData.append('h:X-Mailgun-Variables', JSON.stringify({name, code}));
 
   const response = await fetch(url, {
+    cache: 'no-store',
     method: 'POST',
     headers: {
       'Authorization': `Basic ${btoa(`api:${api_key}`)}`,

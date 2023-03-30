@@ -21,7 +21,7 @@ export function getWithEmail(email: string): UserRef {
  * List all registered user emails.
  * @returns An array of user emails.
  */
-async function listEmails(): Promise<string[]> {
+export async function listEmails(): Promise<string[]> {
   const keys = await redis.keys("user:*");
   return keys.map((key) => key.split(":")[1]);
 }
