@@ -88,6 +88,7 @@ function generateRandomSixDigitNumber() {
 
 export async function newRegisterCode(email: string): Promise<number> {
   const randomNumber = generateRandomSixDigitNumber();
+  await redis.del(`register:code:${email.trim()}`)
   if (await redis.set(`register:code:${email.trim()}`, randomNumber) == "OK")
     return randomNumber;
   return -1;
@@ -95,7 +96,6 @@ export async function newRegisterCode(email: string): Promise<number> {
 
 export async function activateRegisterCode(email: string, code: string): Promise<boolean> {
   const randomNumber = await redis.get(`register:code:${email.trim()}`);
-  console.log()
   if (randomNumber == code) {
     await redis.del(`register:code:${email.trim()}`);
     // await this.set({is_activated: true});

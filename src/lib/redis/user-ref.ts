@@ -115,7 +115,7 @@ export class UserRef {
       email,
       exp: Date.now() + 24 * 60 * 60 * 1000, // 设置过期时间为一天
     };
-    if (!user.is_activated) cookie.activated = false;
+    // if (!user.is_activated) cookie.activated = false;
 
     const success = await redis.set(`cookies:${email}:${key}`, cookie) === "OK"
     if (success) {

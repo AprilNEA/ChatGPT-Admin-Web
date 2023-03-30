@@ -5,7 +5,7 @@ export async function POST(req: NextRequest) {
   try {
     const {email, password, code} = await req.json()
     // 激活验证码
-    const success = await activateRegisterCode(email, code)
+    const success = await activateRegisterCode(email, code.trim())
     if (!success) {
       return NextResponse.json({
         status: 'wrongCode',
