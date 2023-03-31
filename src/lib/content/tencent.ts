@@ -105,7 +105,7 @@ export async function textSecurity(text: string) {
   const date = getDate(timestamp);
 
   // ************* 步骤 1：拼接规范请求串 *************
-  let payloadObj = { Content: utf8ToBase64(text) };
+  let payloadObj = { Content: utf8ToBase64(text), BizType: "default" };
   const payload = JSON.stringify(payloadObj);
   const hashedRequestPayload = toHexString(await getHash(payload));
 
