@@ -126,6 +126,11 @@ export async function requestChatStream(
       console.error("Anauthorized");
       responseText = Locale.Error.Unauthorized;
       finish();
+    }
+    else if (res.status === 402) {
+        console.error("Block");
+        responseText = Locale.Error.ContentBlock;
+        finish();
     } else if (res.status == 429){
       const data = (await res.json())
       switch (data.hint){

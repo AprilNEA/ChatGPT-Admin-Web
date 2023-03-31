@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@edge-runtime/ponyfill": "^2.1.2",
+    "@edge-runtime/types": "^2.0.8",
     "@svgr/webpack": "^6.5.1",
     "@types/node": "^18.14.6",
     "@types/react": "^18.0.28",
@@ -18,6 +20,7 @@
     "@upstash/redis": "^1.20.2",
     "@vercel/analytics": "^0.1.11",
     "cross-env": "^7.0.3",
+    "edge-runtime": "^2.1.2",
     "emoji-picker-react": "^4.4.7",
     "eslint": "8.35.0",
     "eslint-config-next": "13.2.3",
