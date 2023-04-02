@@ -1,16 +1,16 @@
-import {create} from "zustand";
-import {persist} from "zustand/middleware";
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
-import {type ChatCompletionResponseMessage} from "openai";
-import {SubmitKey, Theme, ChatConfig} from "@/types/setting";
-import type {ChatStat, ChatSession, ChatStore} from "@/types/chat";
+import { type ChatCompletionResponseMessage } from "openai";
+import { SubmitKey, Theme, ChatConfig } from "@/types/setting";
+import type { ChatStat, ChatSession, ChatStore } from "@/types/chat";
 
 import {
   ControllerPool,
   requestChatStream,
   requestWithPrompt,
 } from "@/utils/requests";
-import {trimTopic} from "@/utils/utils";
+import { trimTopic } from "@/utils/utils";
 
 import Locale from "@/locales";
 
@@ -18,7 +18,6 @@ export type Message = ChatCompletionResponseMessage & {
   date: string;
   streaming?: boolean;
 };
-
 
 export type ModelConfig = ChatConfig["modelConfig"];
 
@@ -29,10 +28,10 @@ export const ALL_MODELS = [
     name: "gpt-4",
     available: ENABLE_GPT4,
   },
-  {
-    name: "gpt-3.5",
-    available: true,
-  },
+  // {
+  //   name: "gpt-3.5",
+  //   available: true,
+  // },
 ];
 
 export function isValidModel(name: string) {
@@ -91,7 +90,6 @@ const DEFAULT_CONFIG: ChatConfig = {
   },
 };
 
-
 const DEFAULT_TOPIC = Locale.Store.DefaultTopic;
 
 function createEmptySession(): ChatSession {
@@ -118,7 +116,6 @@ function createEmptySession(): ChatSession {
   };
 }
 
-
 const LOCAL_KEY = "chat-store";
 
 export const useChatStore = create<ChatStore>()(
@@ -130,8 +127,15 @@ export const useChatStore = create<ChatStore>()(
         ...DEFAULT_CONFIG,
       },
 
+      resetSessions() {
+        set(() => ({
+          sessions: [createEmptySession()],
+          currentSessionIndex: 0,
+        }));
+      },
+
       resetConfig() {
-        set(() => ({config: {...DEFAULT_CONFIG}}));
+        set(() => ({ config: { ...DEFAULT_CONFIG } }));
       },
 
       getConfig() {
@@ -141,7 +145,7 @@ export const useChatStore = create<ChatStore>()(
       updateConfig(updater) {
         const config = get().config;
         updater(config);
-        set(() => ({config}));
+        set(() => ({ config }));
       },
 
       selectSession(index: number) {
@@ -188,7 +192,7 @@ export const useChatStore = create<ChatStore>()(
 
         if (index < 0 || index >= sessions.length) {
           index = Math.min(sessions.length - 1, Math.max(0, index));
-          set(() => ({currentSessionIndex: index}));
+          set(() => ({ currentSessionIndex: index }));
         }
 
         const session = sessions[index];
@@ -245,8 +249,8 @@ export const useChatStore = create<ChatStore>()(
               set(() => ({}));
             }
           },
-          onBlock(){
-            userMessage.content = '你好, 请问你可以帮我解决什么';
+          onBlock() {
+            userMessage.content = "你好, 请问你可以帮我解决什么";
             set(() => ({}));
           },
           onError(error) {
@@ -310,7 +314,7 @@ export const useChatStore = create<ChatStore>()(
         const session = sessions.at(sessionIndex);
         const messages = session?.messages;
         updater(messages?.at(messageIndex));
-        set(() => ({sessions}));
+        set(() => ({ sessions }));
       },
 
       /**
@@ -373,8 +377,8 @@ export const useChatStore = create<ChatStore>()(
                   session.lastSummarizeIndex = lastSummarizeIndex;
                 }
               },
-              onBlock(){
-                session.memoryPrompt = '你好, 请问你可以帮我解决什么';
+              onBlock() {
+                session.memoryPrompt = "你好, 请问你可以帮我解决什么";
               },
               onError(error) {
                 console.error("[Summarize] ", error);
@@ -395,7 +399,7 @@ export const useChatStore = create<ChatStore>()(
         const sessions = get().sessions;
         const index = get().currentSessionIndex;
         updater(sessions[index]);
-        set(() => ({sessions}));
+        set(() => ({ sessions }));
       },
 
       clearAllData() {
