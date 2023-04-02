@@ -21,7 +21,7 @@ import { useSwitchTheme } from "@/components/switch-theme";
 import { Loading } from "@/components/loading";
 
 import dynamic from "next/dynamic";
-import { showModal } from "@/components/ui-lib";
+import { Announcement } from "@/hooks/use-notice";
 
 const Settings = dynamic(
   async () => (await import("@/components/settings")).Settings,
@@ -49,14 +49,16 @@ const useHasHydrated = () => {
 
 export function Home() {
   const [isLogin, setIsLogin] = useState(false);
-  const [cookie, validateCookie] = useUserStore((state) => [
-    state.cookie,
-    state.validateCookie,
-  ]);
-
+  const [cookie, validateCookie, versionId, updateVersionId] = useUserStore(
+    (state) => [
+      state.cookie,
+      state.validateCookie,
+      state.versionId,
+      state.updateVersionId,
+    ]
+  );
   useEffect(() => {
-    showModal({ title: "Hello" });
-
+    Announcement(versionId, updateVersionId);
     if (validateCookie()) {
       setIsLogin(true);
     } else {
@@ -112,7 +114,8 @@ export function Home() {
         <div className={styles["sidebar-header"]}>
           <div className={styles["sidebar-title"]}>{Locale.Index.Title}</div>
           <div className={styles["sidebar-sub-title"]}>
-            {Locale.Index.SubTitle} <span className={styles["sidebar-ad"]}>Magic万事屋</span>
+            {Locale.Index.SubTitle}{" "}
+            <span className={styles["sidebar-ad"]}>Magic万事屋</span>
           </div>
           <div className={styles["sidebar-logo"]}>
             <ChatGptIcon />
