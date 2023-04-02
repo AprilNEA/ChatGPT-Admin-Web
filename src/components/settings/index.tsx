@@ -1,6 +1,6 @@
-import {useState, useEffect, useRef, useMemo} from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 
-import EmojiPicker, {Theme as EmojiTheme} from "emoji-picker-react";
+import EmojiPicker, { Theme as EmojiTheme } from "emoji-picker-react";
 
 import styles from "@/styles/module/settings.module.scss";
 
@@ -8,19 +8,19 @@ import ResetIcon from "@/assets/icons/reload.svg";
 import CloseIcon from "@/assets/icons/close.svg";
 import ClearIcon from "@/assets/icons/clear.svg";
 
-import {List, ListItem, Popover} from "@/components/ui-lib";
+import { List, ListItem, Popover } from "@/components/ui-lib";
 
-import {IconButton} from "../button";
+import { IconButton } from "../button";
 import {
   useChatStore,
   ALL_MODELS,
   useAccessStore,
-  useUserStore
+  useUserStore,
 } from "@/store";
-import {SubmitKey, Theme} from "@/types/setting";
-import {Avatar} from "@/components/avatar";
+import { SubmitKey, Theme } from "@/types/setting";
+import { Avatar } from "@/components/avatar";
 
-import Locale, {changeLang, getLang} from "@/locales";
+import Locale, { changeLang, getLang } from "@/locales";
 
 function SettingItem(props: {
   title: string;
@@ -71,7 +71,7 @@ export function Settings(props: { closeSettings: () => void }) {
         <div className={styles["window-actions"]}>
           <div className={styles["window-action-button"]}>
             <IconButton
-              icon={<ClearIcon/>}
+              icon={<ClearIcon />}
               onClick={clearAllData}
               bordered
               title={Locale.Settings.Actions.ClearAll}
@@ -79,7 +79,7 @@ export function Settings(props: { closeSettings: () => void }) {
           </div>
           <div className={styles["window-action-button"]}>
             <IconButton
-              icon={<ResetIcon/>}
+              icon={<ResetIcon />}
               onClick={resetConfig}
               bordered
               title={Locale.Settings.Actions.ResetAll}
@@ -87,7 +87,7 @@ export function Settings(props: { closeSettings: () => void }) {
           </div>
           <div className={styles["window-action-button"]}>
             <IconButton
-              icon={<CloseIcon/>}
+              icon={<CloseIcon />}
               onClick={props.closeSettings}
               bordered
               title={Locale.Settings.Actions.Close}
@@ -116,7 +116,7 @@ export function Settings(props: { closeSettings: () => void }) {
                 className={styles.avatar}
                 onClick={() => setShowEmojiPicker(true)}
               >
-                <Avatar role="user"/>
+                <Avatar role="user" />
               </div>
             </Popover>
           </SettingItem>
@@ -148,7 +148,6 @@ export function Settings(props: { closeSettings: () => void }) {
 
           <SettingItem title={Locale.Settings.Account}>
             <div>{email}</div>
-
           </SettingItem>
         </List>
 
@@ -170,7 +169,6 @@ export function Settings(props: { closeSettings: () => void }) {
               ))}
             </select>
           </SettingItem>
-
 
           <ListItem>
             <div className={styles["settings-title"]}>
@@ -211,19 +209,17 @@ export function Settings(props: { closeSettings: () => void }) {
             </div>
           </SettingItem>
 
-          <div className="no-mobile">
-            <SettingItem title={Locale.Settings.TightBorder}>
-              <input
-                type="checkbox"
-                checked={config.tightBorder}
-                onChange={(e) =>
-                  updateConfig(
-                    (config) => (config.tightBorder = e.currentTarget.checked)
-                  )
-                }
-              ></input>
-            </SettingItem>
-          </div>
+          <SettingItem title={Locale.Settings.TightBorder}>
+            <input
+              type="checkbox"
+              checked={config.tightBorder}
+              onChange={(e) =>
+                updateConfig(
+                  (config) => (config.tightBorder = e.currentTarget.checked)
+                )
+              }
+            ></input>
+          </SettingItem>
         </List>
 
         <List>

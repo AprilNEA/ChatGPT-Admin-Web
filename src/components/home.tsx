@@ -14,6 +14,7 @@ import AnnouncementIcon from "@/assets/icons/announcement.svg";
 import CloseIcon from "@/assets/icons/close.svg";
 import { Message, useChatStore, useUserStore } from "@/store";
 
+import {isMobileScreen} from "@/utils/utils";
 import Locale from "@/locales";
 
 import { Chat } from "@/components/chat";
@@ -95,7 +96,9 @@ export function Home() {
     return (
       <div
         className={`${
-          config.tightBorder ? styles["tight-container"] : styles.container
+          config.tightBorder && !isMobileScreen()
+            ? styles["tight-container"]
+            : styles.container
         }`}
       >
         <Login setIsLogin={() => setIsLogin(true)} />
@@ -106,7 +109,9 @@ export function Home() {
   return (
     <div
       className={`${
-        config.tightBorder ? styles["tight-container"] : styles.container
+        config.tightBorder && !isMobileScreen()
+          ? styles["tight-container"]
+          : styles.container
       }`}
     >
       <div
