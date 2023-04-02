@@ -61,6 +61,7 @@ export async function requestChatStream(
     filterBot?: boolean;
     modelConfig?: ModelConfig;
     onMessage: (message: string, done: boolean) => void;
+    onBlock: () => void;
     onError: (error: Error) => void;
     onController?: (controller: AbortController) => void;
   }
@@ -126,6 +127,12 @@ export async function requestChatStream(
       console.error("Anauthorized");
       responseText = Locale.Error.Unauthorized;
       finish();
+    }
+    else if (res.status === 402) {
+        console.error("Block");
+        responseText = Locale.Error.ContentBlock;
+        options?.onBlock();
+        finish();
     } else if (res.status == 429){
       const data = (await res.json())
       switch (data.hint){

@@ -5,8 +5,12 @@ const en: LocaleType = {
   Error: {
     Unauthorized:
       "Now you are not logged in, please refresh your browser cache and log in.",
-    TooManyRequests: "Your account has reached the maximum number of requests within three hours.",
-    TooFastRequests: "The request is too fast, wait a bit (5s between requests)",
+    TooManyRequests:
+      "Your account has reached the maximum number of requests in three hours, please try again later.",
+    TooFastRequests:
+      "The request is too fast, wait a bit (5s between requests)",
+    ContentBlock:
+      "Please check the text for sensitive words, and contact customer service if you have been killed by mistake.",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} messages`,

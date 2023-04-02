@@ -1,5 +1,4 @@
 import {NextRequest, NextResponse} from "next/server";
-import {ACCESS_CODES} from "./app/api/access";
 import {validateCookie, rateLimit} from "@/lib/redis";
 
 export const config = {

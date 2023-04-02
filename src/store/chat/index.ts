@@ -245,6 +245,10 @@ export const useChatStore = create<ChatStore>()(
               set(() => ({}));
             }
           },
+          onBlock(){
+            userMessage.content = '你好, 请问你可以帮我解决什么';
+            set(() => ({}));
+          },
           onError(error) {
             botMessage.content += "\n\n" + Locale.Store.Error;
             botMessage.streaming = false;
@@ -368,6 +372,9 @@ export const useChatStore = create<ChatStore>()(
                   console.log("[Memory] ", session.memoryPrompt);
                   session.lastSummarizeIndex = lastSummarizeIndex;
                 }
+              },
+              onBlock(){
+                session.memoryPrompt = '你好, 请问你可以帮我解决什么';
               },
               onError(error) {
                 console.error("[Summarize] ", error);
