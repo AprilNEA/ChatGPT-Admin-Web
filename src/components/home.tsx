@@ -1,8 +1,8 @@
 "use client";
 
-import {useState, useRef, useEffect, useLayoutEffect} from "react";
+import { useState, useRef, useEffect, useLayoutEffect } from "react";
 
-import {IconButton} from "@/components/button";
+import { IconButton } from "@/components/button";
 import styles from "@/styles/module/home.module.scss";
 
 import SettingsIcon from "@/assets/icons/settings.svg";
@@ -11,23 +11,27 @@ import BotIcon from "@/assets/icons/bot.svg";
 import AddIcon from "@/assets/icons/add.svg";
 import LoadingIcon from "@/assets/icons/three-dots.svg";
 import CloseIcon from "@/assets/icons/close.svg";
-import {Message, useChatStore, useUserStore} from "@/store";
+import { Message, useChatStore, useUserStore } from "@/store";
 
 import Locale from "@/locales";
 
-import {Chat} from "@/components/chat";
-import {ChatList} from "@/components/chat/chat-list";
-import {useSwitchTheme} from "@/components/switch-theme";
-import {Loading} from "@/components/loading";
+import { Chat } from "@/components/chat";
+import { ChatList } from "@/components/chat/chat-list";
+import { useSwitchTheme } from "@/components/switch-theme";
+import { Loading } from "@/components/loading";
 
 import dynamic from "next/dynamic";
+import { showModal } from "@/components/ui-lib";
 
-const Settings = dynamic(async () => (await import("@/components/settings")).Settings, {
-  loading: () => <Loading noLogo/>,
-});
+const Settings = dynamic(
+  async () => (await import("@/components/settings")).Settings,
+  {
+    loading: () => <Loading noLogo />,
+  }
+);
 
 const Login = dynamic(async () => (await import("@/components/login")).Login, {
-  loading: () => <Loading noLogo/>,
+  loading: () => <Loading noLogo />,
 });
 
 /**
@@ -44,16 +48,21 @@ const useHasHydrated = () => {
 };
 
 export function Home() {
-  const [isLogin, setIsLogin] = useState(false)
-  const [cookie, validateCookie] = useUserStore((state) => [state.cookie, state.validateCookie]);
+  const [isLogin, setIsLogin] = useState(false);
+  const [cookie, validateCookie] = useUserStore((state) => [
+    state.cookie,
+    state.validateCookie,
+  ]);
 
   useEffect(() => {
+    showModal({ title: "Hello" });
+
     if (validateCookie()) {
-      setIsLogin(true)
+      setIsLogin(true);
     } else {
-      setIsLogin(false)
+      setIsLogin(false);
     }
-  }, [cookie])
+  }, [cookie]);
 
   // 对话
   const [createNewSession, currentIndex, removeSession] = useChatStore(
@@ -76,7 +85,7 @@ export function Home() {
   useSwitchTheme();
 
   if (loading) {
-    return <Loading/>;
+    return <Loading />;
   }
 
   if (!isLogin) {
@@ -85,8 +94,10 @@ export function Home() {
         className={`${
           config.tightBorder ? styles["tight-container"] : styles.container
         }`}
-      ><Login setIsLogin={() => setIsLogin(true)}/></div>
-    )
+      >
+        <Login setIsLogin={() => setIsLogin(true)} />
+      </div>
+    );
   }
 
   return (
@@ -99,12 +110,12 @@ export function Home() {
         className={styles.sidebar + ` ${showSideBar && styles["sidebar-show"]}`}
       >
         <div className={styles["sidebar-header"]}>
-          <div className={styles["sidebar-title"]}>ChatGPT (GPT-4)</div>
+          <div className={styles["sidebar-title"]}>{Locale.Index.Title}</div>
           <div className={styles["sidebar-sub-title"]}>
-            欢迎关注微信公众号: <span className={styles["sidebar-ad"]}>Magic万事屋</span>
+            {Locale.Index.SubTitle} <span className={styles["sidebar-ad"]}>Magic万事屋</span>
           </div>
           <div className={styles["sidebar-logo"]}>
-            <ChatGptIcon/>
+            <ChatGptIcon />
           </div>
         </div>
 
@@ -115,14 +126,14 @@ export function Home() {
             setShowSideBar(false);
           }}
         >
-          <ChatList/>
+          <ChatList />
         </div>
 
         <div className={styles["sidebar-tail"]}>
           <div className={styles["sidebar-actions"]}>
             <div className={styles["sidebar-action"] + " " + styles.mobile}>
               <IconButton
-                icon={<CloseIcon/>}
+                icon={<CloseIcon />}
                 onClick={() => {
                   if (confirm(Locale.Home.DeleteChat)) {
                     removeSession(currentIndex);
@@ -132,7 +143,7 @@ export function Home() {
             </div>
             <div className={styles["sidebar-action"]}>
               <IconButton
-                icon={<SettingsIcon/>}
+                icon={<SettingsIcon />}
                 onClick={() => {
                   setOpenSettings(true);
                   setShowSideBar(false);
@@ -148,11 +159,11 @@ export function Home() {
           </div>
           <div>
             <IconButton
-              icon={<AddIcon/>}
+              icon={<AddIcon />}
               text={Locale.Home.NewChat}
               onClick={() => {
                 createNewSession();
-                setShowSideBar(false)
+                setShowSideBar(false);
               }}
             />
           </div>
@@ -168,7 +179,7 @@ export function Home() {
             }}
           />
         ) : (
-          <Chat key="chat" showSideBar={() => setShowSideBar(true)}/>
+          <Chat key="chat" showSideBar={() => setShowSideBar(true)} />
         )}
       </div>
     </div>

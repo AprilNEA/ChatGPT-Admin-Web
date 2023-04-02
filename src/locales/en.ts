@@ -1,6 +1,10 @@
 import type { LocaleType } from "./index";
 
 const en: LocaleType = {
+  Index: {
+    Title: "ChatGPT (GPT-4)",
+    SubTitle: "Follow WeChat OA:",
+  },
   WIP: "WIP...",
   Error: {
     Unauthorized:

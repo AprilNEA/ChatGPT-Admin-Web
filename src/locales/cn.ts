@@ -1,4 +1,8 @@
 const cn = {
+  Index: {
+    Title: "ChatGPT (GPT-4)",
+    SubTitle: "欢迎关注微信公众号：",
+  },
   WIP: "该功能仍在开发中……",
   Error: {
     Unauthorized: "现在是未登录状态，请刷新浏览器缓存并登录。",
