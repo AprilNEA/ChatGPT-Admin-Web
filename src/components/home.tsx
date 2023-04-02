@@ -10,6 +10,7 @@ import ChatGptIcon from "@/assets/icons/chatgpt.svg";
 import BotIcon from "@/assets/icons/bot.svg";
 import AddIcon from "@/assets/icons/add.svg";
 import LoadingIcon from "@/assets/icons/three-dots.svg";
+import AnnouncementIcon from "@/assets/icons/announcement.svg";
 import CloseIcon from "@/assets/icons/close.svg";
 import { Message, useChatStore, useUserStore } from "@/store";
 
@@ -21,7 +22,7 @@ import { useSwitchTheme } from "@/components/switch-theme";
 import { Loading } from "@/components/loading";
 
 import dynamic from "next/dynamic";
-import { Announcement } from "@/hooks/use-notice";
+import { Announcement, showAnnouncement } from "@/hooks/use-notice";
 
 const Settings = dynamic(
   async () => (await import("@/components/settings")).Settings,
@@ -155,9 +156,10 @@ export function Home() {
             </div>
             {/*TODO add about us*/}
             <div className={styles["sidebar-action"]}>
-              <a href="#" target="_blank">
-                {/*<IconButton icon={<GithubIcon />} />*/}
-              </a>
+              <IconButton
+                icon={<AnnouncementIcon />}
+                onClick={showAnnouncement}
+              />
             </div>
           </div>
           <div>
