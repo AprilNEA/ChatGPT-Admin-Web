@@ -1,6 +1,7 @@
-import type {ChatRequest, ChatReponse} from "@/app/api/chat/typing";
-import {filterConfig, Message, ModelConfig, useUserStore} from "@/store";
+import type { ChatRequest, ChatReponse } from "@/app/api/chat/typing";
+import { filterConfig, Message, ModelConfig, useUserStore } from "@/store";
 import Locale from "@/locales";
+import { LimitReason } from "@/lib/redis";
 
 /* 请求的超时时间 */
 const TIME_OUT_MS = 30000;
@@ -44,8 +45,12 @@ function getHeaders() {
   return headers;
 }
 
+/**
+ * 直接返回的请求
+ * @param messages
+ */
 export async function requestChat(messages: Message[]) {
-  const req: ChatRequest = makeRequestParam(messages, {filterBot: true});
+  const req: ChatRequest = makeRequestParam(messages, { filterBot: true });
 
   const res = await fetch("/api/chat", {
     method: "POST",
@@ -130,30 +135,37 @@ export async function requestChatStream(
       }
 
       finish();
-    } else if (res.status === 401) {
-      console.error("Anauthorized");
-      responseText = Locale.Error.Unauthorized;
-      finish();
-    }
-    else if (res.status === 402) {
-        console.error("Block");
-        responseText = Locale.Error.ContentBlock;
-        options?.onBlock();
-        finish();
-    } else if (res.status == 429){
-      const data = (await res.json())
-      switch (data.hint){
-        case 'tooMuch':
-          responseText = Locale.Error.TooManyRequests;
-          break
-        case 'tooFast':
-          responseText = Locale.Error.TooFastRequests;
-          break
-      }
-      finish();
     } else {
-      console.error("Stream Error");
-      options?.onError(new Error("Stream Error"));
+      switch (res.status) {
+        case 401:
+          console.error("Anauthorized");
+          responseText = Locale.Error.Unauthorized;
+          return finish();
+
+        case 402:
+          console.error("Block");
+          responseText = Locale.Error.ContentBlock;
+          options?.onBlock();
+          return finish();
+
+        case 429:
+          const data = await res.json();
+          switch (data.code) {
+            case LimitReason.TooMuch:
+              responseText = Locale.Error.TooManyRequests;
+              break;
+            case LimitReason.TooFast:
+              responseText = Locale.Error.TooFastRequests;
+              break;
+            default:
+              break;
+          }
+          return finish();
+
+        default:
+          console.error("Stream Error");
+          options?.onError(new Error("Stream Error"));
+      }
     }
   } catch (err) {
     console.error("NetWork Error", err);
