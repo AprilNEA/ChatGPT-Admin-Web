@@ -24,6 +24,10 @@ export type ModelConfig = ChatConfig["modelConfig"];
 
 const ENABLE_GPT4 = true;
 
+if (!Array.prototype.at) {
+  require('array.prototype.at/auto');
+}
+
 export const ALL_MODELS = [
   {
     name: "gpt-4",

@@ -6,6 +6,10 @@ import { LimitReason } from "@/lib/redis";
 /* 请求的超时时间 */
 const TIME_OUT_MS = 30000;
 
+if (!Array.prototype.at) {
+  require('array.prototype.at/auto');
+}
+
 const makeRequestParam = (
   messages: Message[],
   options?: {
