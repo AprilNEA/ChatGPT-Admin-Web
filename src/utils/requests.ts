@@ -2,6 +2,7 @@ import type {ChatRequest, ChatReponse} from "@/app/api/chat/typing";
 import {filterConfig, Message, ModelConfig, useUserStore} from "@/store";
 import Locale from "@/locales";
 
+/* 请求的超时时间 */
 const TIME_OUT_MS = 30000;
 
 const makeRequestParam = (
@@ -27,6 +28,9 @@ const makeRequestParam = (
   };
 };
 
+/**
+ * 通过提取 Headers 拿到认证信息
+ */
 function getHeaders() {
   const userStore = useUserStore.getState();
   const cookie = userStore.cookie;
@@ -55,6 +59,9 @@ export async function requestChat(messages: Message[]) {
   return (await res.json()) as ChatReponse;
 }
 
+/**
+ * 流式传输的请求
+ */
 export async function requestChatStream(
   messages: Message[],
   options?: {
@@ -164,7 +171,7 @@ export async function requestWithPrompt(messages: Message[], prompt: string) {
   ]);
 
   const res = await requestChat(messages);
-
+  // FIXME: 有时候会返回空的内容
   return res.choices.at(0)?.message?.content ?? "";
 }
 
