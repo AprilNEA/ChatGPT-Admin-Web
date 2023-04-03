@@ -4,7 +4,7 @@ import { textSecurity } from "@/lib/content/tencent";
 
 export async function POST(req: NextRequest) {
   try {
-    const { messages, max_tokens, temperature } = await new Response(
+    const { messages, max_tokens, temperature, model } = await new Response(
       req.body
     ).json();
 
@@ -26,11 +26,11 @@ export async function POST(req: NextRequest) {
         conversations,
         system_message: "You are ChatGPT based on GPT-4.",
       },
-      { max_tokens, temperature, cookie: process.env.***REMOVED***! }
+      { max_tokens, temperature , model}
     );
 
     if (!gptStream) {
-      console.error("[Chat Stream]", "[***REMOVED*** API ERROR]");
+      console.error("[Chat Stream]", "[API ERROR]");
       return new Response("[INTERNAL ERROR]", { status: 500 });
     }
 

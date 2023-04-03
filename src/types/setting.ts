@@ -1,3 +1,5 @@
+export type Model = "gpt-3.5-turbo" | "gpt-4";
+
 export enum SubmitKey {
   Enter = "Enter",
   CtrlEnter = "Ctrl + Enter",
@@ -23,7 +25,7 @@ export interface ChatConfig {
   tightBorder: boolean;
 
   modelConfig: {
-    model: string;
+    model: Model;
     temperature: number;
     max_tokens: number;
     presence_penalty: number;

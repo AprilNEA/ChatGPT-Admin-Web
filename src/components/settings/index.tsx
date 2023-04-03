@@ -17,7 +17,7 @@ import {
   useAccessStore,
   useUserStore,
 } from "@/store";
-import { SubmitKey, Theme } from "@/types/setting";
+import {Model, SubmitKey, Theme} from "@/types/setting";
 import { Avatar } from "@/components/avatar";
 
 import Locale, { changeLang, getLang } from "@/locales";
@@ -301,7 +301,7 @@ export function Settings(props: { closeSettings: () => void }) {
               value={config.modelConfig.model}
               onChange={(e) => {
                 updateConfig(
-                  (config) => (config.modelConfig.model = e.currentTarget.value)
+                  (config) => (config.modelConfig.model = e.currentTarget.value as Model)
                 );
               }}
             >

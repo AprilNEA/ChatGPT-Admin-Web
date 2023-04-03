@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 import { type ChatCompletionResponseMessage } from "openai";
-import { SubmitKey, Theme, ChatConfig } from "@/types/setting";
+import { SubmitKey, Theme, ChatConfig, Model } from "@/types/setting";
 import type { ChatStat, ChatSession, ChatStore } from "@/types/chat";
 
 import {
@@ -17,6 +17,7 @@ import Locale from "@/locales";
 export type Message = ChatCompletionResponseMessage & {
   date: string;
   streaming?: boolean;
+  model?: Model;
 };
 
 export type ModelConfig = ChatConfig["modelConfig"];
@@ -28,10 +29,10 @@ export const ALL_MODELS = [
     name: "gpt-4",
     available: ENABLE_GPT4,
   },
-  // {
-  //   name: "gpt-3.5",
-  //   available: true,
-  // },
+  {
+    name: "gpt-3.5-turbo",
+    available: true,
+  },
 ];
 
 export function isValidModel(name: string) {
@@ -83,7 +84,7 @@ const DEFAULT_CONFIG: ChatConfig = {
   tightBorder: false,
 
   modelConfig: {
-    model: "gpt-3.5",
+    model: "gpt-3.5-turbo",
     temperature: 0.7,
     max_tokens: 2000,
     presence_penalty: 0,
@@ -220,6 +221,7 @@ export const useChatStore = create<ChatStore>()(
           role: "assistant",
           date: new Date().toLocaleString(),
           streaming: true,
+          model: get().config.modelConfig.model,
         };
 
         // get recent messages
@@ -234,7 +236,7 @@ export const useChatStore = create<ChatStore>()(
           session.messages.push(botMessage);
         });
 
-        // make request
+        // make request 请求对话
         console.log("[User Input] ", sendMessages);
         requestChatStream(sendMessages, {
           onMessage(content, done) {
