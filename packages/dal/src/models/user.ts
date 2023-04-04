@@ -150,7 +150,7 @@ export class UserDAL {
 
     if (isSuccess) {
       const delKey = redis.del(key);
-      const storePhone = this.update({ phone });
+      const storePhone = phone && this.update({ phone });
 
       await Promise.all([delKey, storePhone]);
     }

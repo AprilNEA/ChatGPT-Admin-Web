@@ -1,4 +1,4 @@
-import { useMemo, useState, FormEvent, useEffect } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
 import { ALL_MODELS, useAccessStore, useUserStore } from "@/store";
 import styles from "@/styles/module/login.module.scss";
 import ChatGptIcon from "@/assets/icons/chatgpt.svg";
@@ -75,7 +75,12 @@ export function Login(props: { setIsLogin: () => void }) {
         cache: "no-store",
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password, verificationCode }),
+        body: JSON.stringify({
+          email,
+          password,
+          code: verificationCode,
+          code_type: "email",
+        }),
       })
     ).json();
 
