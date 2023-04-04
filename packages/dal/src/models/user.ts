@@ -20,16 +20,18 @@ export class UserDAL {
   }
 
   async get(): Promise<Model.User | null> {
-    const user = await redis.hgetall<Model.User>(this.userKey);
-    return user;
+    return await redis.json.get(this.userKey, '.');
   }
 
-  async create(data: Model.User): Promise<boolean> {
-    return (await redis.hmset(this.userKey, data)) === 'OK';
+  async set(data: Model.User): Promise<boolean> {
+    return (await redis.json.set(this.userKey, '.', data)) === 'OK';
   }
 
-  async update(data: Partial<Model.User>): Promise<boolean> {
-    return (await redis.hmset(this.userKey, data)) === 'OK';
+  async update(
+    path: string,
+    data: Model.User[keyof Model.User]
+  ): Promise<boolean> {
+    return (await redis.json.set(this.userKey, path, data!)) === 'OK';
   }
 
   async exists(): Promise<boolean> {
@@ -49,7 +51,7 @@ export class UserDAL {
 
     if (await userDAL.exists()) return null;
 
-    await userDAL.create({
+    await userDAL.set({
       name: 'Anonymous',
       passwordHash: md5.hash(password.trim()),
       createdAt: Date.now(),
@@ -68,7 +70,7 @@ export class UserDAL {
 
     if (isSuccess) {
       // Set last login
-      await this.update({ lastLoginAt: Date.now() });
+      await this.update('.lastLoginAt', Date.now());
     }
     return isSuccess;
   }
@@ -156,7 +158,7 @@ export class UserDAL {
 
     if (isSuccess) {
       const delKey = redis.del(key);
-      const storePhone = phone && this.update({ phone });
+      const storePhone = phone && this.update('.phone', phone);
 
       await Promise.all([delKey, storePhone]);
     }
