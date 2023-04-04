@@ -1,13 +1,13 @@
 import type { ChatRequest, ChatReponse } from "@/app/api/chat/typing";
 import { filterConfig, Message, ModelConfig, useUserStore } from "@/store";
 import Locale from "@/locales";
-import { LimitReason } from "@/lib/redis";
+import { LimitReason } from "@/typing.d";
 
 /* 请求的超时时间 */
 const TIME_OUT_MS = 30000;
 
 if (!Array.prototype.at) {
-  require('array.prototype.at/auto');
+  require("array.prototype.at/auto");
 }
 
 const makeRequestParam = (
@@ -38,12 +38,12 @@ const makeRequestParam = (
  */
 function getHeaders() {
   const userStore = useUserStore.getState();
-  const cookie = userStore.cookie;
+  const sessionToken = userStore.sessionToken;
   let headers: Record<string, string> = {};
 
-  if (cookie && cookie.key) {
-    headers["token"] = cookie.key;
-    headers["email"] = cookie.email;
+  if (sessionToken && sessionToken.token) {
+    headers["token"] = sessionToken.token;
+    headers["email"] = sessionToken.userEmail;
   }
 
   return headers;
@@ -155,7 +155,7 @@ export async function requestChatStream(
         case 429:
           const data = await res.json();
           switch (data.code) {
-            case LimitReason.TooMuch:
+            case LimitReason.TooMany:
               responseText = Locale.Error.TooManyRequests;
               break;
             case LimitReason.TooFast:

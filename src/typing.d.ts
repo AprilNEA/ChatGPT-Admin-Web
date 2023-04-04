@@ -1,0 +1,14 @@
+export enum LimitReason {
+  NoLimit,
+  TooFast,
+  TooMany,
+}
+
+export type SessionToken = {
+  id: number
+  token: string
+  createdAt: Date | number
+  expiresAt: Date | number
+  isRevoked: boolean
+  userEmail: string
+}

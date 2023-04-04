@@ -1,88 +1,177 @@
-import {useMemo, useState, FormEvent, useEffect} from "react";
-import {ALL_MODELS, useAccessStore, useUserStore} from "@/store";
+import { useMemo, useState, FormEvent, useEffect } from "react";
+import { ALL_MODELS, useAccessStore, useUserStore } from "@/store";
 import styles from "@/styles/module/login.module.scss";
 import ChatGptIcon from "@/assets/icons/chatgpt.svg";
-import {showToast} from "@/components/ui-lib";
+import { showToast } from "@/components/ui-lib";
+import { RegisterResponse, ResponseStatus } from "@/app/api/typing.d";
 
 export function Login(props: { setIsLogin: () => void }) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [isNew, setIsNew] = useState(false);
-  const [verificationCode, setVerificationCode] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isRegister, setIsRegister] = useState(false);
+  const [isSending, setIsSending] = useState(false);
+  const [verificationCode, setVerificationCode] = useState("");
 
   // 防止表单重复 提交
   const [submitting, setSubmitting] = useState(false);
-  const [updateCookie, updateEmail] = useUserStore(
-    (state) => [
-      state.updateCookie,
-      state.updateEmail
-    ]
-  );
+  const updateSessionToken = useUserStore((state) => state.updateSessionToken);
 
   useEffect(() => {
-    showToast("新用户直接登录即可注册", 5000)
-  }, [])
+    showToast("新用户直接登录即可注册", 1000);
+  }, []);
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setSubmitting(true)
-    if (isNew && verificationCode.length !== 6) {
-      showToast("请输入六位数验证码")
-      setSubmitting(false)
-      return;
-    }
+  const handleLogin = async () => {
     if (!email || !password) {
-      showToast("请输入邮箱密码")
-      setSubmitting(false)
+      showToast("请输入邮箱密码");
+      setSubmitting(false);
       return;
     }
 
-    const res = await (await fetch(isNew ? '/api/user/register' : '/api/user/login', {
-      cache:'no-store',
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        email,
-        password,
-        code: verificationCode
+    const res = await (
+      await fetch("/api/user/login", {
+        cache: "no-store",
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
       })
-    })).json()
+    ).json();
 
+    handleLoginResponse(res);
+  };
+
+  const handleLoginResponse = (res: any) => {
     switch (res.status) {
-      case 'success': {
-        updateCookie(res.cookie)
-        updateEmail(email)
-        showToast("成功登录!", 3000)
-        props.setIsLogin()
+      case ResponseStatus.Success: {
+        updateSessionToken(res.sessionToken);
+        showToast("成功登录!", 3000);
+        props.setIsLogin();
         break;
       }
-      case 'new': {
-        setIsNew(true)
-        showToast("新用户, 请注册")
+      case ResponseStatus.notExist: {
+        showToast("新用户, 请注册");
         break;
       }
-      case 'wrongCode': {
-        showToast("验证码错误")
+      case ResponseStatus.wrongPassword: {
+        showToast("密码错误");
         break;
       }
       default: {
-        showToast("未知错误")
-        break
+        showToast("未知错误");
+        break;
       }
     }
-    setSubmitting(false)
+    setSubmitting(false);
   };
 
+  const handleRegister = async () => {
+    if (!email || !password || !verificationCode) {
+      showToast("请输入邮箱密码和验证码");
+      setSubmitting(false);
+      return;
+    }
 
-  const accessStore = useAccessStore();
+    const res = await (
+      await fetch("/api/user/register", {
+        cache: "no-store",
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password, verificationCode }),
+      })
+    ).json();
+
+    handleRegisterResponse(res);
+  };
+
+  const handleRegisterResponse = (res: RegisterResponse) => {
+    switch (res.status) {
+      case ResponseStatus.Success: {
+        updateSessionToken(res.sessionToken);
+        showToast("注册成功!", 3000);
+        props.setIsLogin();
+        break;
+      }
+      case ResponseStatus.alreadyExisted: {
+        showToast("该邮箱已经注册，请尝试更换邮箱!");
+        break;
+      }
+      case ResponseStatus.invalidCode: {
+        showToast("验证码错误");
+        break;
+      }
+      default: {
+        showToast("未知错误");
+        break;
+      }
+    }
+    setSubmitting(false);
+  };
+
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setSubmitting(true);
+
+    if (isRegister) {
+      handleRegister();
+    } else {
+      handleLogin();
+    }
+    setSubmitting(false);
+  };
+
+  const handleSendVerification = async (codeType: string) => {
+    setSubmitting(true);
+    if (!email) {
+      showToast("请输入邮箱");
+      setSubmitting(false);
+      return;
+    }
+    const res = await (
+      await fetch("/api/user/register", {
+        cache: "no-store",
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      })
+    ).json();
+
+    switch (res.status) {
+      case ResponseStatus.Success: {
+        switch (res.code_data) {
+          case 0:
+            showToast("验证码成功发送!");
+            break;
+          case 1:
+            showToast("该邮箱已经注册，请尝试更换邮箱!");
+            break;
+          case 2:
+            showToast("请求验证码过快，请稍后再试!");
+            break;
+          case 4:
+          default:
+            showToast("未知错误，请联系管理员!");
+            break;
+        }
+        break;
+      }
+      case ResponseStatus.notExist: {
+        showToast("邮箱不存在，请重新输入");
+        break;
+      }
+      default: {
+        showToast("未知错误");
+        break;
+      }
+    }
+    setSubmitting(false);
+  };
 
   return (
     <>
       <div className={styles["login-form-container"]}>
         <form className={styles["login-form"]} onSubmit={handleSubmit}>
-          <h2 className={styles["login-form-title"]}>Login/Register</h2>
+          <h2 className={styles["login-form-title"]}>
+            {isRegister ? "Register" : "Login"}
+          </h2>
           <div className={styles["login-form-input-group"]}>
             <label htmlFor="email">Email</label>
             <input
@@ -91,7 +180,7 @@ export function Login(props: { setIsLogin: () => void }) {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              disabled={isNew}
+              disabled={isRegister}
             />
           </div>
           <div className={styles["login-form-input-group"]}>
@@ -102,33 +191,45 @@ export function Login(props: { setIsLogin: () => void }) {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              disabled={isNew}
+              disabled={isRegister}
             />
           </div>
-          {isNew && <div className={styles["login-form-input-group"]}>
+          {isRegister && (
+            <div className={styles["login-form-input-group"]}>
               <label htmlFor="email">Verification Code</label>
               <div className={styles["verification-code-container"]}>
-                  <input
-                      type="text"
-                      id="verification-code"
-                      maxLength={6}
-                      pattern="\d{6}"
-                      onChange={(e) => setVerificationCode(e.target.value)}
-                      required
-                  />
-                  <button
-                      className={styles["send-verification-button"]}
-                    // onClick={handleSendVerification}
-                  >
-                      Already Send to Email
-                  </button>
+                <input
+                  type="text"
+                  id="verification-code"
+                  maxLength={6}
+                  pattern="\d{6}"
+                  onChange={(e) => setVerificationCode(e.target.value)}
+                />
+                <button
+                  className={styles["send-verification-button"]}
+                  onClick={() => handleSendVerification("email")}
+                  disabled={submitting}
+                >
+                  {isSending ? "Already Send to Email" : "Get Code"}
+                </button>
               </div>
-          </div>}
+            </div>
+          )}
           <div className={styles["button-container"]}>
-            {!isNew && <button className={styles["login-form-submit"]} type="submit" disabled={submitting}>
+            {!isRegister && (
+              <button
+                className={styles["login-form-submit"]}
+                type="submit"
+                disabled={submitting}
+              >
                 Login
-            </button>}
-            <button className={styles["login-form-submit"]} type="submit">
+              </button>
+            )}
+            <button
+              className={styles["login-form-submit"]}
+              type="submit"
+              onClick={() => setIsRegister(true)}
+            >
               Register
             </button>
           </div>

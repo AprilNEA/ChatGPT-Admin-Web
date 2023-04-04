@@ -51,22 +51,22 @@ const useHasHydrated = () => {
 
 export function Home() {
   const [isLogin, setIsLogin] = useState(false);
-  const [cookie, validateCookie, versionId, updateVersionId] = useUserStore(
+  const [sessionToken, validateSessionToken, versionId, updateVersionId] = useUserStore(
     (state) => [
-      state.cookie,
-      state.validateCookie,
+      state.sessionToken,
+      state.validateSessionToken,
       state.versionId,
       state.updateVersionId,
     ]
   );
   useEffect(() => {
     Announcement(versionId, updateVersionId);
-    if (validateCookie()) {
+    if (validateSessionToken()) {
       setIsLogin(true);
     } else {
       setIsLogin(false);
     }
-  }, [cookie]);
+  }, [sessionToken]);
 
   // 对话
   const [createNewSession, currentIndex, removeSession] = useChatStore(

@@ -1,4 +1,3 @@
-// LoginForm.scss
 .login-form-container {
   display: f***REMOVED***;
   justify-content: center;
@@ -40,6 +39,11 @@
     border-radius: 5px;
     font-size: 14px;
     padding: 8px 12px;
+    text-align: left;
+  }
+
+  input:focus {
+    border: 1px solid #eefcfd;
   }
 
   .verification-code-container {
@@ -64,9 +68,9 @@
       border-radius: 10px;
       box-shadow: var(--shadow);
 
-      //&:hover {
-      //  background-color: var(--second); // 鼠标悬停时的背景颜色
-      //}
+      &:hover {
+        background-color: var(--second); // 鼠标悬停时的背景颜色
+      }
 
       &:disabled {
         background-color: #ccc; // 按钮禁用时的背景颜色
@@ -78,7 +82,7 @@
 }
 
 .login-form-submit {
-  background-color: #007bff;
+  background-color: #1daabd;
   border: none;
   border-radius: 5px;
   color: #ffffff;
@@ -91,7 +95,7 @@
   margin-right: 10px;
 
   &:hover {
-    background-color: #0056b3;
+    background-color: #1d93ab;
   }
 }
 

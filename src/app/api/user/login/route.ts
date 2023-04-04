@@ -1,36 +1,33 @@
-import {NextRequest, NextResponse} from "next/server";
-import {getWithEmail, newRegisterCode} from "@/lib/redis";
-import type {Cookie} from "@/lib/redis/typing";
-import {sendEmail} from "@/lib/email";
+import { NextRequest, NextResponse } from "next/server";
+import { UserDAL, Register } from "database";
+import { ResponseStatus } from "@/app/api/typing.d";
 
 export async function POST(req: NextRequest) {
   try {
-    const {email, password} = await req.json()
-    const user = getWithEmail(email)
+    const { email, password } = await req.json();
+    const user = new UserDAL(email);
 
-    // 如果用户不存在, 则发送验证码
-    if (!await user.exists()) {
-      const randomCode = await newRegisterCode(email)
-      await sendEmail([email], "", `${randomCode}`)
-      return NextResponse.json({
-        status: "new",
-      })
-    }
+    // 如果用户不存在, 则返回错误
+    if (!(await user.exists()))
+      return NextResponse.json({ status: ResponseStatus.notExist });
 
-    const cookie: Cookie | null = await user.login(password)
-    if (cookie) {
+    if(!(await user.login(password)))
+      return NextResponse.json({ status: ResponseStatus.wrongPassword });
+
+    const sessionToken = await user.accessControl.newSessionToken()
+    if (sessionToken) {
       return NextResponse.json({
-        status: "success",
-        cookie,
-      })
+        status: ResponseStatus.Success,
+        sessionToken,
+      });
     } else {
       return NextResponse.json({
-        status: "failed",
-      })
+        status: ResponseStatus.Failed,
+      });
     }
 
   } catch (error) {
-    console.error("[Chat Stream]", error);
-    return new Response('[INTERNAL ERROR]', {status: 500})
+    console.error("[SERVER ERROR]", error);
+    return new Response("[INTERNAL ERROR]", { status: 500 });
   }
 }
