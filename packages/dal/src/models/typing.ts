@@ -28,8 +28,14 @@ export namespace Model {
   export type Subscription = {
     startsAt: number;
     endsAt: number;
-    level: 'Pro' | 'Pro Plus';
+    level: SubscriptionLevel;
   };
+
+  export enum SubscriptionLevel {
+    // use 10 and 20 to leave room for feature
+    PRO = 10,
+    PRO_PLUS = 20,
+  }
 
   // key: sessionToken:${token}
   export type SessionToken = {
