@@ -238,7 +238,7 @@ export class UserDAL {
     return this.get('.resetChances');
   }
 
-  async changeResetChances(value: number): Promise<boolean> {
+  async changeResetChancesBy(value: number): Promise<boolean> {
     return (
       await redis.json.numincrby(this.userKey, '.resetChances', value)
     ).every(code => code !== null);
