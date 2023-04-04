@@ -8,7 +8,7 @@ importers:
         specifier: latest
         version: 1.8.8
 
-  applications/chat:
+  apps/chat:
     dependencies:
       '@edge-runtime/ponyfill':
         specifier: ^2.1.2
