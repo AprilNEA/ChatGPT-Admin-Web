@@ -21,7 +21,6 @@ export namespace Model {
 
   export type SessionToken = {
     createdAt: number;
-    expiresAt: number;
     isRevoked: boolean;
     userEmail: string;
   };
