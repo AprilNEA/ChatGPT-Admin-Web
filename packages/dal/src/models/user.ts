@@ -55,6 +55,7 @@ export class UserDAL {
       lastLoginAt: Date.now(),
       isBlocked: false,
       resetChances: 0,
+      invitationCodes: [],
       ...extraData,
     });
 
@@ -161,5 +162,66 @@ export class UserDAL {
     }
 
     return isSuccess;
+  }
+
+  private async appendInvitationCode(code: string): Promise<boolean> {
+    return (
+      await redis.json.arrappend(this.userKey, '.invitationCodes', code)
+    ).every(code => code !== null);
+  }
+
+  /**
+   * Generate a new invitation code, create related key in Redis, and append the code to the user's invitationCodes
+   * @returns the invitation code
+   */
+  async newInvitationCode(type: string): Promise<string> {
+    const code = md5.hash(this.email + Date.now());
+    const key = `invitationCode:${code}`;
+
+    const invitationCode: Model.InvitationCode = {
+      inviterEmail: this.email,
+      inviteeEmails: [],
+      type,
+    };
+
+    const setCode = redis.json.set(key, '.', invitationCode);
+    const appendCode = this.appendInvitationCode(code);
+    await Promise.all([setCode, appendCode]);
+
+    return code;
+  }
+
+  /**
+   * The following method does the following:
+   * 1. Check if the inviter code is valid
+   * 2. Set the inviter code to the user
+   * 3. Append the email of invitee to the list in the code's inviteeEmails
+   * 4. Find the email of inviter
+   * 5. Return the email of inviter
+   * @param code
+   * @returns the email of inviter
+   */
+  async setInviterCode(code: string): Promise<string | null> {
+    const inviterCodeKey = `invitationCode:${code}`;
+    const inviterCode = await redis.json.get(inviterCodeKey, '.');
+    if (!inviterCode) return null;
+
+    const inviterEmail = inviterCode.inviterEmail;
+    const inviterKey = `user:${inviterEmail}`;
+
+    const setCode = this.update('.inviterCode', code);
+    const appendEmail = redis.json.arrappend(
+      inviterKey,
+      '.invitationCodes.inviteeEmails',
+      this.email
+    );
+
+    await Promise.all([setCode, appendEmail]);
+
+    return inviterEmail;
+  }
+
+  async getInviterCode(): Promise<string | null> {
+    return await this.get('.inviterCode');
   }
 }

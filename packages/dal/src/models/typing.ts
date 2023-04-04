@@ -10,6 +10,7 @@ export namespace Register {
 }
 
 export namespace Model {
+  // key: user:${email}
   export type User = {
     name: string;
     passwordHash: string;
@@ -17,13 +18,22 @@ export namespace Model {
     lastLoginAt: number;
     isBlocked: boolean;
     resetChances: number;
-    invitedByCode?: string;
+    inviterCode?: string;
+    invitationCodes: string[];
     phone?: string;
   };
 
+  // key: sessionToken:${token}
   export type SessionToken = {
     createdAt: number;
     isRevoked: boolean;
     userEmail: string;
+  };
+
+  // key: invitationCode:${code}
+  export type InvitationCode = {
+    type: string;
+    inviterEmail: string;
+    inviteeEmails: string[];
   };
 }
