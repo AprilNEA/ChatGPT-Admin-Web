@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { UserDAL, Register } from "database";
+import { UserDAL, Register } from "dal";
 import { ResponseStatus } from "@/app/api/typing.d";
 
 export async function POST(req: NextRequest) {

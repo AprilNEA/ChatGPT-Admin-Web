@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { UserDAL, Register } from "database";
+import { UserDAL, Register } from "dal";
 import { sendEmail } from "@/lib/email";
 import { sendPhone } from "@/lib/phone";
-import { ResponseStatus } from "@/app/api/typing";
+import { ResponseStatus } from "@/app/api/typing.d";
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);

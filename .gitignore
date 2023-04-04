@@ -1,3 +1,8 @@
 # IDE
 .vscode/
 /.idea/
+
+# Turbopack
+.turbo
+
+*node_modules/

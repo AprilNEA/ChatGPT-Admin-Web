@@ -1,7 +1,7 @@
 {
-  "name": "chatgpt-next-web",
-  "version": "1.1",
-  "private": false,
+  "name": "chat",
+  "version": "2.0.0",
+  "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -21,6 +21,7 @@
     "@vercel/analytics": "^0.1.11",
     "array.prototype.at": "^1.1.1",
     "cross-env": "^7.0.3",
+    "dal": "^0.1.0",
     "edge-runtime": "^2.1.2",
     "emoji-picker-react": "^4.4.7",
     "eslint": "8.35.0",
@@ -41,8 +42,5 @@
     "spark-md5": "^3.0.2",
     "typescript": "4.9.5",
     "zustand": "^4.3.6"
-  },
-  "devDependencies": {
-    "@prisma/nextjs-monorepo-workaround-plugin": "^4.12.0"
   }
 }

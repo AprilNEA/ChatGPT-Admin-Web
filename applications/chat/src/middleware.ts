@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { UserDAL } from "database";
+import { UserDAL } from "dal";
 import { LimitReason } from "@/typing.d";
 
 export const config = {
