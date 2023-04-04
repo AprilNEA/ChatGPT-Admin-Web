@@ -2,7 +2,7 @@ import { redis } from '../redis/client';
 import md5 from 'spark-md5';
 import { generateRandomSixDigitNumber } from './utils';
 import { AccessControlDAL } from './access_control';
-import { Model, Register } from './typing';
+import { Role, Plan, Model, Register } from './typing';
 
 export class UserDAL {
   email: string;
@@ -79,6 +79,10 @@ export class UserDAL {
       await this.update('.lastLoginAt', Date.now());
     }
     return isSuccess;
+  }
+
+  async getPlan(): Promise<Role | Plan> {
+    return (await this.get('.role')) || (await this.get('.planNow')) || 'Free';
   }
 
   /**
