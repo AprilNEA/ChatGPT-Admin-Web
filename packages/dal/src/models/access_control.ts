@@ -21,7 +21,6 @@ export class AccessControlDAL {
 
     const sessionToken: Model.SessionToken = {
       createdAt: Date.now(),
-      expiresAt: Date.now() + 24 * 60 * 60 * 1000, // Expire in 1 day
       isRevoked: false,
       userEmail: this.emailOrIP,
     };
@@ -46,10 +45,6 @@ export class AccessControlDAL {
 
     if (!sessionToken) return null;
     if (sessionToken.isRevoked) return null;
-    if (sessionToken.expiresAt < Date.now()) {
-      await redis.del(`sessionToken:${token.trim()}`);
-      return null;
-    }
 
     return sessionToken.userEmail;
   }
