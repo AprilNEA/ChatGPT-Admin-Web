@@ -30,8 +30,7 @@ export class UserDAL {
   }
 
   async exists(): Promise<boolean> {
-    const user = await this.get();
-    return user !== null;
+    return await redis.exists(this.userKey) === 1;
   }
 
   async delete(): Promise<boolean> {
@@ -101,11 +100,13 @@ export class UserDAL {
     const key = `register:code:${codeType}:${phone ?? this.email}`;
     const code = await redis.get<number>(key);
 
+    // code is found
     if (code) {
       const ttl = await redis.ttl(key);
       if (ttl >= 240) return { status: Register.ReturnStatus.TooFast, ttl };
     }
 
+    // code is not found, generate a new one
     const randomNumber = generateRandomSixDigitNumber();
     if ((await redis.set(key, randomNumber)) === "OK") {
       await redis.expire(key, 60 * 5); // Expiration time: 5 minutes

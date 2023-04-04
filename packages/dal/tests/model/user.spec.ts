@@ -1,15 +1,13 @@
 import { describe, expect, test } from "@jest/globals";
-import { UserDAL } from "../../src";
+import { Register, UserDAL } from "../../src";
 
 const TEST_EMAIL = "test@lmo.best";
 const TEST_PASSWORD = "12345";
 
 describe("register and login user", () => {
-  beforeAll(() => {
-    test("should create a new user", async () => {
-      const user = await UserDAL.fromRegistration(TEST_EMAIL, TEST_PASSWORD);
-      expect(user).not.toBeNull();
-    });
+  beforeAll(async () => {
+    const user = await UserDAL.fromRegistration(TEST_EMAIL, TEST_PASSWORD);
+    expect(user).not.toBeNull();
   });
 
   test("should not create a new user if the email is already taken", async () => {
@@ -38,23 +36,25 @@ describe("register and login user", () => {
   });
 
   afterAll(async () => {
-    test("should delete the user", async () => {
-      const success = await new UserDAL(TEST_EMAIL).delete();
+    const success = await new UserDAL(TEST_EMAIL).delete();
 
-      expect(success).toBeTruthy();
-    });
+    expect(success).toBeTruthy();
   });
 });
 
 describe("get and activate email register code", () => {
   test("should get the email register code", async () => {
-    const { code } = await new UserDAL(TEST_EMAIL).newRegisterCode("email");
+    const { code, status } = await new UserDAL(TEST_EMAIL).newRegisterCode(
+      "email",
+    );
+    expect(status).toBe(Register.ReturnStatus.Success);
     expect(code).toBeDefined();
   });
 
   test("should activate the email register code", async () => {
     const user = new UserDAL(TEST_EMAIL);
-    const { code } = await user.newRegisterCode("email");
+    const { status, code } = await user.newRegisterCode("email");
+    expect(status).toBe(Register.ReturnStatus.Success);
     expect(code).toBeDefined();
 
     const success = await user.activateRegisterCode(code + "", "email");
