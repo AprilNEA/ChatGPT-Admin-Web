@@ -1,19 +1,19 @@
-import { redis } from "../redis/client";
-import { Model } from "./typing";
-import md5 from "spark-md5";
+import { redis } from '../redis/client';
+import { Model } from './typing';
+import md5 from 'spark-md5';
 
 export class AccessControlDAL {
   constructor(
     /* 邮箱或 IP */
     private emailOrIP: string,
-    private isIP = !emailOrIP.includes("@"),
+    private isIP = !emailOrIP.includes('@')
   ) {}
 
   /**
    * 新建一个会话令牌
    */
   async newSessionToken(): Promise<
-    Model.SessionToken & { token: string } | null
+    (Model.SessionToken & { token: string }) | null
   > {
     if (this.isIP) return null;
 
@@ -40,7 +40,7 @@ export class AccessControlDAL {
     if (this.isIP) return null;
 
     const sessionToken = await redis.hgetall<Model.SessionToken>(
-      `sessionToken:${token.trim()}`,
+      `sessionToken:${token.trim()}`
     );
 
     if (!sessionToken) return null;
@@ -60,11 +60,7 @@ export class AccessControlDAL {
     const key = `limit:${this.emailOrIP}`;
 
     // 移除所有过期的时间戳
-    await redis.zremrangebyscore(
-      key,
-      0,
-      Date.now() - 3 * 60 * 60 * 1000,
-    );
+    await redis.zremrangebyscore(key, 0, Date.now() - 3 * 60 * 60 * 1000);
 
     return await redis.zrange<number[]>(key, 0, -1);
   }
