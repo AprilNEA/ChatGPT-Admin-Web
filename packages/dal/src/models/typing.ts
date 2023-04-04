@@ -13,7 +13,7 @@ export namespace Model {
   export type User = {
     name: string;
     passwordHash: string;
-    phone: string | null;
+    phone?: string;
     createdAt: number;
     lastLoginAt: number;
     isBlocked: boolean;

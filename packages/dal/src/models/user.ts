@@ -49,7 +49,6 @@ export class UserDAL {
     await userDAL.update({
       name,
       passwordHash: md5.hash(password.trim()),
-      phone: null,
       createdAt: Date.now(),
       lastLoginAt: Date.now(),
       isBlocked: false,
