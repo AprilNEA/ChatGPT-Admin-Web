@@ -1,33 +1,35 @@
-import { prisma } from '../prisma/client';
-import { redis } from '../redis/client';
-import { SessionToken } from '@prisma/client';
+import { redis } from "../redis/client";
+import { Model } from "./typing";
 import md5 from "spark-md5";
 
 export class AccessControlDAL {
   constructor(
-    /* 邮箱 */
+    /* 邮箱或 IP */
     private emailOrIP: string,
-    private isIP = !emailOrIP.includes('@')
+    private isIP = !emailOrIP.includes("@"),
   ) {}
 
   /**
    * 新建一个会话令牌
    */
-  async newSessionToken(): Promise<SessionToken | null> {
+  async newSessionToken(): Promise<
+    Model.SessionToken & { token: string } | null
+  > {
     if (this.isIP) return null;
 
-    const token = await prisma.sessionToken.create({
-      data: {
-        userEmail: this.emailOrIP,
-        token: md5.hash(`${this.emailOrIP}:${new Date()}`),
-        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // Expire in 1 day
-      },
-    });
+    const token = md5.hash(`${this.emailOrIP}:${new Date()}`);
 
-    await redis.set(`sessionToken:${token.token}`, this.emailOrIP);
-    await redis.expire(`sessionToken:${token.token}`, 24 * 60 * 60 * 1000 - 10); // Expire in 1 day
+    const sessionToken: Model.SessionToken = {
+      createdAt: Date.now(),
+      expiresAt: Date.now() + 24 * 60 * 60 * 1000, // Expire in 1 day
+      isRevoked: false,
+      userEmail: this.emailOrIP,
+    };
 
-    return token;
+    await redis.hmset(`sessionToken:${token}`, sessionToken);
+    await redis.expire(`sessionToken:${token}`, 24 * 60 * 60 * 1000 - 10); // Expire in 1 day
+
+    return { ...sessionToken, token };
   }
 
   /**
@@ -38,26 +40,14 @@ export class AccessControlDAL {
   async validateSessionToken(token: string): Promise<string | null> {
     if (this.isIP) return null;
 
-    const cachedEmail = (await redis.get(
-      `sessionToken:${token.trim()}`
-    )) as string;
-
-    if (cachedEmail) return cachedEmail;
-
-    const sessionToken = await prisma.sessionToken.findUnique({
-      where: {
-        token: token.trim(),
-      },
-    });
+    const sessionToken = await redis.hgetall<Model.SessionToken>(
+      `sessionToken:${token.trim()}`,
+    );
 
     if (!sessionToken) return null;
     if (sessionToken.isRevoked) return null;
-    if (sessionToken.expiresAt.getTime() < new Date().getTime()) {
-      await prisma.sessionToken.delete({
-        where: {
-          token: token.trim(),
-        },
-      });
+    if (sessionToken.expiresAt < Date.now()) {
+      await redis.del(`sessionToken:${token.trim()}`);
       return null;
     }
 
@@ -72,16 +62,16 @@ export class AccessControlDAL {
    * @return 返回时间戳数组, 按升序排列
    */
   async getRequestsTimeStamp(): Promise<number[]> {
-    const key = `limit:${this.emailOrIP}`
+    const key = `limit:${this.emailOrIP}`;
 
     // 移除所有过期的时间戳
     await redis.zremrangebyscore(
       key,
       0,
-      Date.now() - 3 * 60 * 60 * 1000
+      Date.now() - 3 * 60 * 60 * 1000,
     );
 
-    return await redis.zrange<number[]>(key, 0, -1)
+    return await redis.zrange<number[]>(key, 0, -1);
   }
 
   /**
@@ -89,13 +79,13 @@ export class AccessControlDAL {
    * @return 返回该时间戳
    */
   async newRequest(): Promise<number> {
-    const key = `limit:${this.emailOrIP}`
+    const key = `limit:${this.emailOrIP}`;
     const timestamp = Date.now();
     // add at the end of requestsTimestamp
     await redis.zadd(key, {
       member: timestamp,
-      score: timestamp
-    })
+      score: timestamp,
+    });
     return timestamp;
   }
 }

@@ -1,6 +1,5 @@
 import { describe, expect, test } from "@jest/globals";
-import { prisma } from "../../src/prisma/client";
-import { AccessControlDAL, SessionToken, UserDAL } from "../../src";
+import { AccessControlDAL, Model, UserDAL } from "../../src";
 
 const TEST_EMAIL = "test@lmo.best";
 const TEST_TOKEN = "ABCD";
@@ -34,14 +33,5 @@ describe("create and validate session token", () => {
       .validateSessionToken("wrong token");
 
     expect(isValid).toBeFalsy();
-  });
-
-  afterAll(async () => {
-    await prisma.sessionToken.deleteMany({
-      where: {
-        userEmail: TEST_EMAIL,
-        token: { not: TEST_TOKEN },
-      },
-    });
   });
 });

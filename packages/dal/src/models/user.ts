@@ -1,110 +1,71 @@
-import { prisma } from '../prisma/client';
-import { redis } from '../redis/client';
-import md5 from 'spark-md5';
-import { generateRandomSixDigitNumber, isObjNonEmpty } from './utils';
-import { Prisma, User } from '@prisma/client';
-import { AccessControlDAL } from './access_control';
-import { Register } from './typing';
+import { redis } from "../redis/client";
+import md5 from "spark-md5";
+import { generateRandomSixDigitNumber } from "./utils";
+import { AccessControlDAL } from "./access_control";
+import { Model, Register } from "./typing";
 
 export class UserDAL {
   email: string;
 
   constructor(email: string) {
-    this.email = email.trim();
+    this.email = email.trim().toLowerCase();
   }
 
   get accessControl(): AccessControlDAL {
     return new AccessControlDAL(this.email);
   }
 
-  private async getCache(): Promise<Partial<User>> {
-    return (await redis.hgetall(`user:${this.email}`)) ?? ({} as Partial<User>);
+  get userKey(): string {
+    return `user:${this.email}`;
   }
 
-  private async setCache(cache: Partial<User>): Promise<boolean> {
-    return (await redis.hmset(`user:${this.email}`, cache)) === 'OK';
+  async get(): Promise<Model.User | null> {
+    const user = await redis.hgetall<Model.User>(this.userKey);
+    return user;
   }
 
-  static async fromCache(cache: Partial<User> & { email: string }) {
-    const dal = new UserDAL(cache.email);
-    await dal.setCache(cache);
-    return dal;
+  async update(data: Partial<Model.User>): Promise<boolean> {
+    const userKey = this.userKey;
+    return await redis.hmset(userKey, data) === "OK";
+  }
+
+  async exists(): Promise<boolean> {
+    const user = await this.get();
+    return user !== null;
+  }
+
+  async delete(): Promise<boolean> {
+    return await redis.del(this.userKey) === 1;
   }
 
   static async fromRegistration(
     email: string,
     password: string,
-    name: string | undefined = undefined
+    name: string | undefined = "Anonymous",
   ): Promise<UserDAL | null> {
-    try {
-      const cache = await prisma.user.create({
-        data: {
-          email,
-          passwordHash: md5.hash(password.trim()),
-          name,
-        },
-      });
+    const userDAL = new UserDAL(email);
 
-      return await UserDAL.fromCache(cache);
-    } catch (error) {
-      if (
-        error instanceof Prisma.PrismaClientKnownRequestError &&
-        error.code === 'P2002'
-      ) {
-        // Unique constraint violation (user already exists)
-      } else {
-        console.error('Unexpected error:', error);
-      }
-      return null;
-    }
-  }
+    if (await userDAL.exists()) return null;
 
-  async exists(): Promise<boolean> {
-    const hasCache = isObjNonEmpty(await this.getCache());
-    const hasUser =
-      (await prisma.user.count({
-        where: {
-          email: this.email,
-        },
-      })) > 0;
+    await userDAL.update({
+      name,
+      passwordHash: md5.hash(password.trim()),
+      phone: null,
+      createdAt: Date.now(),
+      lastLoginAt: Date.now(),
+      isBlocked: false,
+    });
 
-    return hasCache || hasUser;
+    return userDAL;
   }
 
   async login(password: string): Promise<boolean> {
-    let passwordHash = (await this.getCache()).passwordHash;
-
-    if (!passwordHash) {
-      const user = await prisma.user.findUnique({
-        where: {
-          email: this.email,
-        },
-        select: {
-          passwordHash: true,
-        },
-      });
-      if (user) {
-        await this.setCache(user);
-        passwordHash = user.passwordHash;
-      }
-    }
-
-    const isSuccess = passwordHash === md5.hash(password.trim());
+    const user = await this.get();
+    const isSuccess = user?.passwordHash === md5.hash(password.trim());
 
     if (isSuccess) {
       // Set last login
-      const user = await prisma.user.update({
-        select: {
-          lastLoginAt: true,
-        },
-        where: {
-          email: this.email,
-        },
-        data: {
-          lastLoginAt: new Date(),
-        },
-      });
-      this.setCache(user);
+      await this.update({ lastLoginAt: Date.now() });
     }
     return isSuccess;
   }
@@ -118,49 +79,43 @@ export class UserDAL {
    *   code: register code
    *   ttl:  ttl of the (exist) code
    * }
-   *
    */
   async newRegisterCode(
     codeType: Register.CodeType,
-    phone?: string
+    phone?: string,
   ): Promise<{
     status: Register.ReturnStatus;
     code?: number;
     ttl?: number;
   }> {
-    if (codeType === 'phone') {
-      if (!phone) throw new Error('Phone number is required');
-      else {
-        // todo (peron) 检查该手机号是否已经注册
-        const isRegistered = await prisma.user.count({
-          where: {
-            phone,
-          },
-        });
+    if (codeType === "phone") {
+      if (!phone) throw new Error("Phone number is required");
 
-        if (isRegistered)
-          return { status: Register.ReturnStatus.AlreadyRegister };
-      }
+      // The following code is not possible in Redis
+
+      // if (someUser.hasSamePhone) {
+      //   return { status: Register.ReturnStatus.AlreadyRegister };
+      // }
     }
 
     const key = `register:code:${codeType}:${phone ?? this.email}`;
     const code = await redis.get<number>(key);
 
-    // 如果存在 Code 且距离上一次请求未超过 60 秒, 那么返回剩余有效时间
     if (code) {
       const ttl = await redis.ttl(key);
-      if (ttl >= 240) return { status: Register.ReturnStatus.TooFast, ttl }; // 如果在一分钟之内, 则不再发送
+      if (ttl >= 240) return { status: Register.ReturnStatus.TooFast, ttl };
     }
 
     const randomNumber = generateRandomSixDigitNumber();
-    if ((await redis.set(key, randomNumber)) === 'OK') {
-      await redis.expire(key, 60 * 5); // 过期时间: 5 分钟
+    if ((await redis.set(key, randomNumber)) === "OK") {
+      await redis.expire(key, 60 * 5); // Expiration time: 5 minutes
       return {
         status: Register.ReturnStatus.Success,
         code: randomNumber,
         ttl: 300,
       };
     }
+
     return { status: Register.ReturnStatus.UnknownError };
   }
 
@@ -173,10 +128,11 @@ export class UserDAL {
   async activateRegisterCode(
     code: string | number,
     codeType: Register.CodeType,
-    phone?: string
+    phone?: string,
   ): Promise<boolean> {
-    if (codeType === 'phone' && !phone)
-      throw new Error('Phone number is required');
+    if (codeType === "phone" && !phone) {
+      throw new Error("Phone number is required");
+    }
     const key = `register:code:${codeType}:${phone ?? this.email}`;
     const remoteCode = await redis.get(key);
 
@@ -184,22 +140,9 @@ export class UserDAL {
 
     if (isSuccess) {
       const delKey = redis.del(key);
-      const storePhone = prisma.user.update({
-        where: {
-          email: this.email,
-        },
-        data: {
-          phone,
-        },
-      });
+      const storePhone = this.update({ phone });
 
-      try {
-        await Promise.all([delKey, storePhone]);
-      } catch (error) {
-        if (error instanceof Prisma.PrismaClientKnownRequestError) {
-          return false;
-        }
-      }
+      await Promise.all([delKey, storePhone]);
     }
 
     return isSuccess;
