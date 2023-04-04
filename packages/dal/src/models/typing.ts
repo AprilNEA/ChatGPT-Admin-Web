@@ -13,10 +13,12 @@ export namespace Model {
   export type User = {
     name: string;
     passwordHash: string;
-    phone?: string;
     createdAt: number;
     lastLoginAt: number;
     isBlocked: boolean;
+    resetChances: number;
+    invitedByCode?: string;
+    phone?: string;
   };
 
   export type SessionToken = {

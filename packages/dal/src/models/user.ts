@@ -24,9 +24,12 @@ export class UserDAL {
     return user;
   }
 
+  async create(data: Model.User): Promise<boolean> {
+    return (await redis.hmset(this.userKey, data)) === 'OK';
+  }
+
   async update(data: Partial<Model.User>): Promise<boolean> {
-    const userKey = this.userKey;
-    return (await redis.hmset(userKey, data)) === 'OK';
+    return (await redis.hmset(this.userKey, data)) === 'OK';
   }
 
   async exists(): Promise<boolean> {
@@ -40,18 +43,20 @@ export class UserDAL {
   static async fromRegistration(
     email: string,
     password: string,
-    name: string | undefined = 'Anonymous'
+    extraData: Partial<Model.User>
   ): Promise<UserDAL | null> {
     const userDAL = new UserDAL(email);
 
     if (await userDAL.exists()) return null;
 
-    await userDAL.update({
-      name,
+    await userDAL.create({
+      name: 'Anonymous',
       passwordHash: md5.hash(password.trim()),
       createdAt: Date.now(),
       lastLoginAt: Date.now(),
       isBlocked: false,
+      resetChances: 0,
+      ...extraData,
     });
 
     return userDAL;
