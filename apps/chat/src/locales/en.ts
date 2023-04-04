@@ -34,6 +34,31 @@ const en: LocaleType = {
       `Type something and press ${submitKey} to send`,
     Send: "Send",
   },
+  Profile: {
+    Title: "User Information",
+    Invite: {
+      Title: "Invite Others",
+      SubTitle:
+        "Successfully inviting others can earn reset chances and recharge discounts",
+      Code: "Invitation Code",
+      InviteLink: "Invite Link",
+      CopyInviteLink: "Copy Invite Link",
+      InviteeNumber: "Current Number of Invitees",
+    },
+    Upgrade: "Upgrade to Paid User",
+    Reset: {
+      Title: "Reset Current Limit",
+      SubTitle: "Can clear the message limit within a fixed time",
+      Click: (t: number) => `Clear once Remaining: ${t}`,
+    },
+    RateLimit: {
+      Title: "Fixed Time Message Limit (Three Hours)",
+      Subtitle:
+        "Total number of requested messages Click to view specific request time",
+      Interval: "Request Interval",
+      IntervalDesp: "Request once every few seconds",
+    },
+  },
   Export: {
     Title: "All Messages",
     Copy: "Copy All",

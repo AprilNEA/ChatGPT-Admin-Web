@@ -6,9 +6,10 @@ const cn = {
   WIP: "该功能仍在开发中……",
   Error: {
     Unauthorized: "现在是未登录状态，请刷新浏览器缓存并登录。",
-    TooManyRequests: "您的账户在三小时内的使用次数已达到最大请求数，请稍后再试。",
+    TooManyRequests:
+      "您的账户在三小时内的使用次数已达到最大请求数，请稍后再试。",
     TooFastRequests: "请求地太快啦，稍等一下（请求间隔5秒）。",
-    ContentBlock: "请检查文本中的敏感词，如有误杀请联系客服。"
+    ContentBlock: "请检查文本中的敏感词，如有误杀请联系客服。",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} 条对话`,
@@ -26,6 +27,29 @@ const cn = {
     Typing: "正在输入…",
     Input: (submitKey: string) => `输入消息，${submitKey} 发送`,
     Send: "发送",
+  },
+  Profile: {
+    Title: "用户信息",
+    Invite: {
+      Title: "邀请他人",
+      SubTitle: "成功邀请他人可获得重置次数和充值折扣",
+      Code: "邀请码",
+      InviteLink: "邀请链接",
+      CopyInviteLink: "复制邀请链接",
+      InviteeNumber: "当前邀请人数",
+    },
+    Upgrade: "升级为付费用户",
+    Reset: {
+      Title: "重置当前限制",
+      SubTitle: "可将固定时间内的消息条数限制清空",
+      Click: (t: number) => `清空一次 剩余: ${t}`,
+    },
+    RateLimit: {
+      Title: "固定时间内消息条数限制(三小时)",
+      Subtitle: "总共请求的消息条数 点击查看具体请求时间",
+      Interval: "请求间隔",
+      IntervalDesp: "每隔几秒可请求一次",
+    },
   },
   Export: {
     Title: "导出聊天记录为 Markdown",

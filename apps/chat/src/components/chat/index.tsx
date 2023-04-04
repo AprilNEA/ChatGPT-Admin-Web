@@ -20,6 +20,8 @@ import LoadingIcon from "@/assets/icons/three-dots.svg";
 import SendWhiteIcon from "@/assets/icons/send-white.svg";
 import CopyIcon from "@/assets/icons/copy.svg";
 import DownloadIcon from "@/assets/icons/download.svg";
+import UserIcon from "@/assets/icons/user.svg";
+import ShoppingIcon from "@/assets/icons/shopping.svg";
 
 import { Avatar } from "@/components/avatar";
 import { IconButton } from "@/components/button";
@@ -119,6 +121,7 @@ const Markdown = dynamic(
 
 export function Chat(props: {
   showSideBar?: () => void;
+  showProfile?: () => void;
   sideBarShowing?: boolean;
 }) {
   type RenderMessage = Message & { preview?: boolean };
@@ -251,6 +254,14 @@ export function Chat(props: {
               bordered
               title={Locale.Chat.Actions.ChatList}
               onClick={props?.showSideBar}
+            />
+          </div>
+          <div className={styles["window-action-button"]}>
+            <IconButton
+              icon={<UserIcon />}
+              bordered
+              title={Locale.Profile.Title}
+              onClick={props?.showProfile}
             />
           </div>
           <div className={styles["window-action-button"]}>
