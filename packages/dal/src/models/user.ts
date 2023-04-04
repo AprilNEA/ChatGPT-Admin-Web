@@ -63,6 +63,7 @@ export class UserDAL {
       resetChances: 0,
       invitationCodes: [],
       subscriptions: [],
+      planNow: 'Free',
       ...extraData,
     });
 
@@ -111,7 +112,7 @@ export class UserDAL {
   > {
     if (codeType === 'phone') {
       if (!phone) throw new Error('Phone number is required');
-
+      // Fixme @peron
       // The following code is not possible in Redis
 
       // if (someUser.hasSamePhone) {

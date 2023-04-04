@@ -1,3 +1,6 @@
+export type Role = 'user' | 'mod' | 'admin';
+export type Plan = 'Free' | 'Pro' | 'Premium';
+
 export namespace Register {
   export type CodeType = 'email' | 'phone';
 
@@ -22,6 +25,8 @@ export namespace Model {
     invitationCodes: string[];
     phone?: string;
     subscriptions: Subscription[];
+    planNow: Plan;
+    role?: Role;
   };
 
   // key: user:${email} .subscriptions
