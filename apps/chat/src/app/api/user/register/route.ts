@@ -51,10 +51,11 @@ export async function POST(req: NextRequest): Promise<Response> {
       const new_user = await UserDAL.fromRegistration(email, password);
       if (!new_user) throw Error("new user is null");
 
-      const sessionToken = await new_user.accessControl.newSessionToken();
+      const token= await new_user.accessControl.newSessionToken();
       return NextResponse.json({
         status: ResponseStatus.Success,
-        sessionToken,
+        token,
+        email
       });
     } else if (code_type === "phone") {
       if (!(await user.exists()) || !phone) {

@@ -1,17 +1,18 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import type { SessionToken } from "@/typing";
+import { Model } from "dal";
+import { fetch } from "@edge-runtime/ponyfill";
 
 const LOCAL_KEY = "user-store";
 
 export interface UserStore {
-  sessionToken: SessionToken | null;
+  sessionToken: string | null;
   email: string;
   versionId: string;
   clearData: () => void;
   updateVersionId: (versionId: string) => void;
   updateEmail: (email: string) => void;
-  updateSessionToken: (sessionToken: SessionToken) => void;
+  updateSessionToken: (sessionToken: string) => void;
   validateSessionToken: () => boolean;
 }
 
@@ -63,8 +64,8 @@ export const useUserStore = create<UserStore>()(
         set((state) => ({ email }));
       },
 
-      updateSessionToken(sessionToken: SessionToken) {
-        set((state) => ({ sessionToken: sessionToken }));
+      updateSessionToken(sessionToken: string) {
+        set((state) => ({ sessionToken }));
       },
 
       /**
@@ -73,7 +74,7 @@ export const useUserStore = create<UserStore>()(
        */
       validateSessionToken() {
         const sessionToken = get().sessionToken;
-        return !!(sessionToken && new Date(sessionToken.expiresAt).getTime() > new Date().getTime());
+        return !!sessionToken;
       },
     }),
     {

@@ -14,7 +14,10 @@ export function Login(props: { setIsLogin: () => void }) {
 
   // 防止表单重复 提交
   const [submitting, setSubmitting] = useState(false);
-  const updateSessionToken = useUserStore((state) => state.updateSessionToken);
+  const [updateSessionToken, updateEmail] = useUserStore((state) => [
+    state.updateSessionToken,
+    state.updateEmail,
+  ]);
 
   useEffect(() => {
     showToast("新用户直接登录即可注册", 1000);
@@ -43,6 +46,7 @@ export function Login(props: { setIsLogin: () => void }) {
     switch (res.status) {
       case ResponseStatus.Success: {
         updateSessionToken(res.sessionToken);
+        updateEmail(email);
         showToast("成功登录!", 3000);
         props.setIsLogin();
         break;
@@ -70,7 +74,7 @@ export function Login(props: { setIsLogin: () => void }) {
       return;
     }
 
-    const res = await (
+    const res = (await (
       await fetch("/api/user/register", {
         cache: "no-store",
         method: "POST",
@@ -82,7 +86,7 @@ export function Login(props: { setIsLogin: () => void }) {
           code_type: "email",
         }),
       })
-    ).json();
+    ).json()) as RegisterResponse;
 
     handleRegisterResponse(res);
   };
@@ -91,8 +95,9 @@ export function Login(props: { setIsLogin: () => void }) {
     switch (res.status) {
       case ResponseStatus.Success: {
         updateSessionToken(res.sessionToken);
-        showToast("注册成功!", 3000);
+        updateEmail(email);
         props.setIsLogin();
+        showToast("注册成功!", 3000);
         break;
       }
       case ResponseStatus.alreadyExisted: {
@@ -111,14 +116,14 @@ export function Login(props: { setIsLogin: () => void }) {
     setSubmitting(false);
   };
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSubmitting(true);
 
     if (isRegister) {
-      handleRegister();
+      await handleRegister();
     } else {
-      handleLogin();
+      await handleLogin();
     }
     setSubmitting(false);
   };
@@ -142,6 +147,7 @@ export function Login(props: { setIsLogin: () => void }) {
         switch (res.code_data.status) {
           case 0:
             showToast("验证码成功发送!");
+            setIsSending(true);
             break;
           case 1:
             showToast("该邮箱已经注册，请尝试更换邮箱!");

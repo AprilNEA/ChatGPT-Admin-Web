@@ -38,12 +38,13 @@ const makeRequestParam = (
  */
 function getHeaders() {
   const userStore = useUserStore.getState();
-  const sessionToken = userStore.sessionToken;
+  const token = userStore.sessionToken;
+  const email = userStore.email;
   let headers: Record<string, string> = {};
 
-  if (sessionToken && sessionToken.token) {
-    headers["token"] = sessionToken.token;
-    headers["email"] = sessionToken.userEmail;
+  if (token && email) {
+    headers["token"] = token;
+    headers["email"] = email;
   }
 
   return headers;
