@@ -200,11 +200,16 @@ export class UserDAL {
    * 4. Find the email of inviter
    * 5. Return the email of inviter
    * @param code
-   * @returns the email of inviter, null if the code is invalid
+   * @returns the info of invitation code
    */
-  async acceptInvitationCode(code: string): Promise<string | null> {
+  async acceptInvitationCode(
+    code: string
+  ): Promise<Model.InvitationCode | null> {
     const inviterCodeKey = `invitationCode:${code}`;
-    const inviterCode = await redis.json.get(inviterCodeKey, '.');
+    const inviterCode: Model.InvitationCode = await redis.json.get(
+      inviterCodeKey,
+      '.'
+    );
     if (!inviterCode) return null;
 
     const inviterEmail = inviterCode.inviterEmail;
@@ -218,7 +223,7 @@ export class UserDAL {
 
     await Promise.all([setCode, appendEmail]);
 
-    return inviterEmail;
+    return inviterCode;
   }
 
   async getInviterCode(): Promise<string | null> {
