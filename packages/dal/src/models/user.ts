@@ -200,7 +200,7 @@ export class UserDAL {
    * 4. Find the email of inviter
    * 5. Return the email of inviter
    * @param code
-   * @returns the email of inviter
+   * @returns the email of inviter, null if the code is invalid
    */
   async acceptInvitationCode(code: string): Promise<string | null> {
     const inviterCodeKey = `invitationCode:${code}`;
@@ -223,5 +223,9 @@ export class UserDAL {
 
   async getInviterCode(): Promise<string | null> {
     return await this.get('.inviterCode');
+  }
+
+  async getInvitationCodes(): Promise<string[]> {
+    return this.get('.invitationCodes');
   }
 }
