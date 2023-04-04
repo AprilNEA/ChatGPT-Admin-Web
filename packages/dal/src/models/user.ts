@@ -212,8 +212,6 @@ export class UserDAL {
     );
     if (!inviterCode) return null;
 
-    const inviterEmail = inviterCode.inviterEmail;
-
     const setCode = this.update('.inviterCode', code);
     const appendEmail = redis.json.arrappend(
       inviterCodeKey,
