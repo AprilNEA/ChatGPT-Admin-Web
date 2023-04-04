@@ -172,7 +172,8 @@ export class UserDAL {
   }
 
   /**
-   * Generate a new invitation code, create related key in Redis, and append the code to the user's invitationCodes
+   * Generate a new invitation code, create related key in Redis, and append the code to the user's invitationCodes.
+   * Please make sure the user exists before calling this method!
    * @param type the type of the invitation code
    * @returns the invitation code
    */
@@ -200,6 +201,7 @@ export class UserDAL {
    * 3. Append the email of invitee to the list in the code's inviteeEmails
    * 4. Find the email of inviter
    * 5. Return the email of inviter
+   * Please make sure the user exists before calling this method!
    * @param code
    * @returns the info of invitation code
    */
@@ -230,11 +232,11 @@ export class UserDAL {
   }
 
   async getInvitationCodes(): Promise<string[]> {
-    return this.get('.invitationCodes');
+    return (await this.get('.invitationCodes')) ?? [];
   }
 
   async getResetChances(): Promise<number> {
-    return this.get('.resetChances');
+    return (await this.get('.resetChances')) ?? -1;
   }
 
   async changeResetChancesBy(value: number): Promise<boolean> {
@@ -243,11 +245,50 @@ export class UserDAL {
     ).every(code => code !== null);
   }
 
+  /**
+   * Add a new subscription.
+   * Please make sure the user exists before calling this method!
+   * @param subscription
+   * @returns true if succeeded
+   */
   newSubscription(subscription: Model.Subscription): Promise<boolean> {
     return this.append('.subscriptions', subscription);
   }
 
   getSubscriptions(): Promise<Model.Subscription[]> {
     return this.get('.subscriptions');
+  }
+
+  /**
+   * Get the current subscription.
+   * Please make sure the user exists before calling this method!
+   * @returns the current subscription or null if no subscription (Free)
+   */
+  async getCurrentSubscription(): Promise<Model.Subscription | null> {
+    const subscriptions = await this.getSubscriptions();
+    const currentTime = Date.now();
+
+    let greatestSubscription: Model.Subscription | null = null;
+
+    for (const subscription of subscriptions) {
+      if (!greatestSubscription) {
+        greatestSubscription = subscription;
+        continue;
+      }
+
+      if (subscription.level < greatestSubscription.level) {
+        continue;
+      }
+
+      if (
+        subscription.startsAt <= currentTime &&
+        currentTime <= subscription.endsAt
+      ) {
+        greatestSubscription = subscription;
+        continue;
+      }
+    }
+
+    return greatestSubscription;
   }
 }
