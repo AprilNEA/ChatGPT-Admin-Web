@@ -29,6 +29,7 @@ export namespace Model {
     startsAt: number;
     endsAt: number;
     level: SubscriptionLevel;
+    tradeOrderId: string;
   };
 
   export enum SubscriptionLevel {
@@ -51,6 +52,18 @@ export namespace Model {
     inviteeEmails: string[];
   };
 
-  // key: auditLog:${yy}-${MM}-${dd}
-  export type AuditLog = {};
+  // key: auditLog:${type}
+  export type AuditLog = {
+    timestamp: number;
+    ip: string;
+    userEmail: string;
+  };
+
+  // key: auditLog:payment:${tradeOrderId}
+  export type PaymentAudioLog = AuditLog & {
+    cents: number; // use integer to avoid inaccuracy of IEEE754
+    appid: string;
+    transactionId: string;
+    openOrderId: string;
+  };
 }
