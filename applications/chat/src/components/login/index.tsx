@@ -126,17 +126,15 @@ export function Login(props: { setIsLogin: () => void }) {
       return;
     }
     const res = await (
-      await fetch("/api/user/register", {
+      await fetch("/api/user/register?email=" + encodeURIComponent(email), {
         cache: "no-store",
-        method: "GET",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
       })
     ).json();
 
     switch (res.status) {
       case ResponseStatus.Success: {
-        switch (res.code_data) {
+        switch (res.code_data.status) {
           case 0:
             showToast("验证码成功发送!");
             break;

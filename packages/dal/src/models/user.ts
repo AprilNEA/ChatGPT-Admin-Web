@@ -82,11 +82,20 @@ export class UserDAL {
   async newRegisterCode(
     codeType: Register.CodeType,
     phone?: string,
-  ): Promise<{
-    status: Register.ReturnStatus;
-    code?: number;
-    ttl?: number;
-  }> {
+  ): Promise<
+    {
+      status: Register.ReturnStatus.Success;
+      code: number;
+      ttl: number;
+    } | {
+      status: Register.ReturnStatus.TooFast;
+      ttl: number;
+    } | {
+      status:
+        | Register.ReturnStatus.AlreadyRegister
+        | Register.ReturnStatus.UnknownError;
+    }
+  > {
     if (codeType === "phone") {
       if (!phone) throw new Error("Phone number is required");
 
@@ -103,7 +112,7 @@ export class UserDAL {
     // code is found
     if (code) {
       const ttl = await redis.ttl(key);
-      if (ttl >= 240) return { status: Register.ReturnStatus.TooFast, ttl };
+      if (ttl >= 60 * 4) return { status: Register.ReturnStatus.TooFast, ttl };
     }
 
     // code is not found, generate a new one
