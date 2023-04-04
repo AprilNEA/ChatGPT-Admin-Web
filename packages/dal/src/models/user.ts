@@ -31,6 +31,12 @@ export class UserDAL {
     return (await redis.json.set(this.userKey, path, data!)) === 'OK';
   }
 
+  private async append(path: string, value: any): Promise<boolean> {
+    return (await redis.json.arrappend(this.userKey, path, value)).every(
+      code => code !== null
+    );
+  }
+
   async exists(): Promise<boolean> {
     return (await redis.exists(this.userKey)) === 1;
   }
@@ -56,6 +62,7 @@ export class UserDAL {
       isBlocked: false,
       resetChances: 0,
       invitationCodes: [],
+      subscriptions: [],
       ...extraData,
     });
 
@@ -164,12 +171,6 @@ export class UserDAL {
     return isSuccess;
   }
 
-  private async appendInvitationCode(code: string): Promise<boolean> {
-    return (
-      await redis.json.arrappend(this.userKey, '.invitationCodes', code)
-    ).every(code => code !== null);
-  }
-
   /**
    * Generate a new invitation code, create related key in Redis, and append the code to the user's invitationCodes
    * @param type the type of the invitation code
@@ -186,7 +187,7 @@ export class UserDAL {
     };
 
     const setCode = redis.json.set(key, '.', invitationCode);
-    const appendCode = this.appendInvitationCode(code);
+    const appendCode = this.append('.invitationCodes', code);
     await Promise.all([setCode, appendCode]);
 
     return code;
@@ -240,5 +241,13 @@ export class UserDAL {
     return (
       await redis.json.numincrby(this.userKey, '.resetChances', value)
     ).every(code => code !== null);
+  }
+
+  newSubscription(subscription: Model.Subscription): Promise<boolean> {
+    return this.append('.subscriptions', subscription);
+  }
+
+  getSubscriptions(): Promise<Model.Subscription[]> {
+    return this.get('.subscriptions');
   }
 }

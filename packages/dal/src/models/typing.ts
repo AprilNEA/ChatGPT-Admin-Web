@@ -21,6 +21,14 @@ export namespace Model {
     inviterCode?: string;
     invitationCodes: string[];
     phone?: string;
+    subscriptions: Subscription[];
+  };
+
+  // key: user:${email} .subscriptions
+  export type Subscription = {
+    startsAt: number;
+    endsAt: number;
+    level: 'Pro' | 'Pro Plus';
   };
 
   // key: sessionToken:${token}
@@ -36,4 +44,7 @@ export namespace Model {
     inviterEmail: string;
     inviteeEmails: string[];
   };
+
+  // key: auditLog:${yy}-${MM}-${dd}
+  export type AuditLog = {};
 }
