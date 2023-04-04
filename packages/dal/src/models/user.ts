@@ -202,7 +202,7 @@ export class UserDAL {
    * @param code
    * @returns the email of inviter
    */
-  async acceptInviterCode(code: string): Promise<string | null> {
+  async acceptInvitationCode(code: string): Promise<string | null> {
     const inviterCodeKey = `invitationCode:${code}`;
     const inviterCode = await redis.json.get(inviterCodeKey, '.');
     if (!inviterCode) return null;
