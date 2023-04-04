@@ -19,15 +19,15 @@ export class UserDAL {
     return `user:${this.email}`;
   }
 
-  async get(path = '.'): Promise<any | null> {
+  private async get(path = '.'): Promise<any | null> {
     return await redis.json.get(this.userKey, path);
   }
 
-  async set(data: Model.User): Promise<boolean> {
+  private async set(data: Model.User): Promise<boolean> {
     return (await redis.json.set(this.userKey, '.', data)) === 'OK';
   }
 
-  async update(path: string, data: any): Promise<boolean> {
+  private async update(path: string, data: any): Promise<boolean> {
     return (await redis.json.set(this.userKey, path, data!)) === 'OK';
   }
 
@@ -172,6 +172,7 @@ export class UserDAL {
 
   /**
    * Generate a new invitation code, create related key in Redis, and append the code to the user's invitationCodes
+   * @param type the type of the invitation code
    * @returns the invitation code
    */
   async newInvitationCode(type: string): Promise<string> {
@@ -201,7 +202,7 @@ export class UserDAL {
    * @param code
    * @returns the email of inviter
    */
-  async setInviterCode(code: string): Promise<string | null> {
+  async acceptInviterCode(code: string): Promise<string | null> {
     const inviterCodeKey = `invitationCode:${code}`;
     const inviterCode = await redis.json.get(inviterCodeKey, '.');
     if (!inviterCode) return null;
