@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "dal": "workspace:*",
     "@edge-runtime/ponyfill": "^2.1.2",
     "@edge-runtime/types": "^2.0.8",
     "@svgr/webpack": "^6.5.1",
@@ -21,7 +22,6 @@
     "@vercel/analytics": "^0.1.11",
     "array.prototype.at": "^1.1.1",
     "cross-env": "^7.0.3",
-    "dal": "^0.1.0",
     "edge-runtime": "^2.1.2",
     "emoji-picker-react": "^4.4.7",
     "eslint": "8.35.0",
