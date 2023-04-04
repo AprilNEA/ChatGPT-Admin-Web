@@ -12,15 +12,14 @@ export class AccessControlDAL {
   /**
    * 新建一个会话令牌
    */
-  async newSessionToken(): Promise<
-    (Model.SessionToken & { token: string }) | null
-  > {
+  async newSessionToken(): Promise<string | null> {
     if (this.isIP) return null;
 
     const token = md5.hash(`${this.emailOrIP}:${new Date()}`);
 
     const sessionToken: Model.SessionToken = {
       createdAt: Date.now(),
+
       isRevoked: false,
       userEmail: this.emailOrIP,
     };
@@ -28,7 +27,7 @@ export class AccessControlDAL {
     await redis.hmset(`sessionToken:${token}`, sessionToken);
     await redis.expire(`sessionToken:${token}`, 24 * 60 * 60 * 1000 - 10); // Expire in 1 day
 
-    return { ...sessionToken, token };
+    return token;
   }
 
   /**
