@@ -19,18 +19,15 @@ export class UserDAL {
     return `user:${this.email}`;
   }
 
-  async get(): Promise<Model.User | null> {
-    return await redis.json.get(this.userKey, '.');
+  async get(path = '.'): Promise<any | null> {
+    return await redis.json.get(this.userKey, path);
   }
 
   async set(data: Model.User): Promise<boolean> {
     return (await redis.json.set(this.userKey, '.', data)) === 'OK';
   }
 
-  async update(
-    path: string,
-    data: Model.User[keyof Model.User]
-  ): Promise<boolean> {
+  async update(path: string, data: any): Promise<boolean> {
     return (await redis.json.set(this.userKey, path, data!)) === 'OK';
   }
 
