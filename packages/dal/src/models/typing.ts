@@ -1,5 +1,5 @@
 export namespace Register {
-  export type CodeType = "email" | "phone";
+  export type CodeType = 'email' | 'phone';
 
   export enum ReturnStatus {
     Success,
@@ -13,7 +13,7 @@ export namespace Model {
   export type User = {
     name: string;
     passwordHash: string;
-    phone: string | null;
+    phone?: string;
     createdAt: number;
     lastLoginAt: number;
     isBlocked: boolean;

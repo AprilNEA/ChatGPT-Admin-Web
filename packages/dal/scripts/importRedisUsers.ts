@@ -1,5 +1,4 @@
 import { redis } from "../src/redis/client";
-import { prisma } from "../src/prisma/client";
 
 interface RedisUser {
   email: string;

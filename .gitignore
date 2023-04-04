@@ -1,6 +1,9 @@
 # IDE
 .vscode/
-/.idea/
+.idea/
+
+**/.vscode/
+**/.idea/
 
 # Turbopack
 .turbo

@@ -1,0 +1,16 @@
+{
+  "parser": "typescript-eslint-parser",
+  "extends": ["eslint:recommended", "plugin:prettier/recommended"],
+  "plugins": ["prettier"],
+  "rules": {
+    "prettier/prettier": "error"
+  },
+  "env": {
+    "node": true,
+    "es6": true
+  },
+  "parserOptions": {
+    "sourceType": "module",
+    "project": "./tsconfig.json"
+  }
+}

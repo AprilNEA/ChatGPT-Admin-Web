@@ -1,8 +1,8 @@
-import { redis } from "../redis/client";
-import md5 from "spark-md5";
-import { generateRandomSixDigitNumber } from "./utils";
-import { AccessControlDAL } from "./access_control";
-import { Model, Register } from "./typing";
+import { redis } from '../redis/client';
+import md5 from 'spark-md5';
+import { generateRandomSixDigitNumber } from './utils';
+import { AccessControlDAL } from './access_control';
+import { Model, Register } from './typing';
 
 export class UserDAL {
   email: string;
@@ -26,21 +26,21 @@ export class UserDAL {
 
   async update(data: Partial<Model.User>): Promise<boolean> {
     const userKey = this.userKey;
-    return await redis.hmset(userKey, data) === "OK";
+    return (await redis.hmset(userKey, data)) === 'OK';
   }
 
   async exists(): Promise<boolean> {
-    return await redis.exists(this.userKey) === 1;
+    return (await redis.exists(this.userKey)) === 1;
   }
 
   async delete(): Promise<boolean> {
-    return await redis.del(this.userKey) === 1;
+    return (await redis.del(this.userKey)) === 1;
   }
 
   static async fromRegistration(
     email: string,
     password: string,
-    name: string | undefined = "Anonymous",
+    name: string | undefined = 'Anonymous'
   ): Promise<UserDAL | null> {
     const userDAL = new UserDAL(email);
 
@@ -49,7 +49,6 @@ export class UserDAL {
     await userDAL.update({
       name,
       passwordHash: md5.hash(password.trim()),
-      phone: null,
       createdAt: Date.now(),
       lastLoginAt: Date.now(),
       isBlocked: false,
@@ -81,14 +80,25 @@ export class UserDAL {
    */
   async newRegisterCode(
     codeType: Register.CodeType,
-    phone?: string,
-  ): Promise<{
-    status: Register.ReturnStatus;
-    code?: number;
-    ttl?: number;
-  }> {
-    if (codeType === "phone") {
-      if (!phone) throw new Error("Phone number is required");
+    phone?: string
+  ): Promise<
+    | {
+        status: Register.ReturnStatus.Success;
+        code: number;
+        ttl: number;
+      }
+    | {
+        status: Register.ReturnStatus.TooFast;
+        ttl: number;
+      }
+    | {
+        status:
+          | Register.ReturnStatus.AlreadyRegister
+          | Register.ReturnStatus.UnknownError;
+      }
+  > {
+    if (codeType === 'phone') {
+      if (!phone) throw new Error('Phone number is required');
 
       // The following code is not possible in Redis
 
@@ -103,12 +113,12 @@ export class UserDAL {
     // code is found
     if (code) {
       const ttl = await redis.ttl(key);
-      if (ttl >= 240) return { status: Register.ReturnStatus.TooFast, ttl };
+      if (ttl >= 60 * 4) return { status: Register.ReturnStatus.TooFast, ttl };
     }
 
     // code is not found, generate a new one
     const randomNumber = generateRandomSixDigitNumber();
-    if ((await redis.set(key, randomNumber)) === "OK") {
+    if ((await redis.set(key, randomNumber)) === 'OK') {
       await redis.expire(key, 60 * 5); // Expiration time: 5 minutes
       return {
         status: Register.ReturnStatus.Success,
@@ -129,10 +139,10 @@ export class UserDAL {
   async activateRegisterCode(
     code: string | number,
     codeType: Register.CodeType,
-    phone?: string,
+    phone?: string
   ): Promise<boolean> {
-    if (codeType === "phone" && !phone) {
-      throw new Error("Phone number is required");
+    if (codeType === 'phone' && !phone) {
+      throw new Error('Phone number is required');
     }
     const key = `register:code:${codeType}:${phone ?? this.email}`;
     const remoteCode = await redis.get(key);
@@ -141,7 +151,7 @@ export class UserDAL {
 
     if (isSuccess) {
       const delKey = redis.del(key);
-      const storePhone = this.update({ phone });
+      const storePhone = phone && this.update({ phone });
 
       await Promise.all([delKey, storePhone]);
     }
