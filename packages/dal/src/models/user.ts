@@ -228,4 +228,14 @@ export class UserDAL {
   async getInvitationCodes(): Promise<string[]> {
     return this.get('.invitationCodes');
   }
+
+  async getResetChances(): Promise<number> {
+    return this.get('.resetChances');
+  }
+
+  async changeResetChances(value: number): Promise<boolean> {
+    return (
+      await redis.json.numincrby(this.userKey, '.resetChances', value)
+    ).every(code => code !== null);
+  }
 }
