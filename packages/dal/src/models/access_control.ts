@@ -25,7 +25,7 @@ export class AccessControlDAL {
     };
 
     await redis.hmset(`sessionToken:${token}`, sessionToken);
-    await redis.expire(`sessionToken:${token}`, 24 * 60 * 60 - 10); // Expire in 1 day
+    await redis.expire(`sessionToken:${token}`, 24 * 60 * 60); // Expire in 1 day
 
     return token;
   }
