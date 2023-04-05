@@ -19,12 +19,12 @@ export class UserDAL {
     return `user:${this.email}`;
   }
 
-  private async get(path = '.'): Promise<any | null> {
+  private async get(path = '$'): Promise<any | null> {
     return await redis.json.get(this.userKey, path);
   }
 
   private set(data: Model.User): Promise<boolean> {
-    return this.update('.', data);
+    return this.update('$', data);
   }
 
   private async update(path: string, data: any): Promise<boolean> {
@@ -77,13 +77,15 @@ export class UserDAL {
 
     if (isSuccess) {
       // Set last login
-      await this.update('.lastLoginAt', Date.now());
+      await this.update('$.lastLoginAt', Date.now());
     }
     return isSuccess;
   }
 
   async getPlan(): Promise<Role | Plan> {
-    return (await this.get('.role')) || (await this.get('.planNow')) || 'Free';
+    return (
+      (await this.get('$.role')) || (await this.get('$.planNow')) || 'Free'
+    );
   }
 
   /**
@@ -169,7 +171,7 @@ export class UserDAL {
 
     if (isSuccess) {
       const delKey = redis.del(key);
-      const storePhone = phone && this.update('.phone', phone);
+      const storePhone = phone && this.update('$.phone', phone);
 
       await Promise.all([delKey, storePhone]);
     }
@@ -193,8 +195,8 @@ export class UserDAL {
       type,
     };
 
-    const setCode = redis.json.set(key, '.', invitationCode);
-    const appendCode = this.append('.invitationCodes', code);
+    const setCode = redis.json.set(key, '$.', invitationCode);
+    const appendCode = this.append('$.invitationCodes', code);
     await Promise.all([setCode, appendCode]);
 
     return code;
@@ -217,14 +219,14 @@ export class UserDAL {
     const inviterCodeKey = `invitationCode:${code}`;
     const inviterCode: Model.InvitationCode = await redis.json.get(
       inviterCodeKey,
-      '.'
+      '$.'
     );
     if (!inviterCode) return null;
 
-    const setCode = this.update('.inviterCode', code);
+    const setCode = this.update('$.inviterCode', code);
     const appendEmail = redis.json.arrappend(
       inviterCodeKey,
-      '.inviteeEmails',
+      '$.inviteeEmails',
       this.email
     );
 
@@ -234,20 +236,20 @@ export class UserDAL {
   }
 
   async getInviterCode(): Promise<string | null> {
-    return await this.get('.inviterCode');
+    return await this.get('$.inviterCode');
   }
 
   async getInvitationCodes(): Promise<string[]> {
-    return (await this.get('.invitationCodes')) ?? [];
+    return (await this.get('$.invitationCodes')) ?? [];
   }
 
   async getResetChances(): Promise<number> {
-    return (await this.get('.resetChances')) ?? -1;
+    return (await this.get('$.resetChances')) ?? -1;
   }
 
   async changeResetChancesBy(value: number): Promise<boolean> {
     return (
-      await redis.json.numincrby(this.userKey, '.resetChances', value)
+      await redis.json.numincrby(this.userKey, '$.resetChances', value)
     ).every(code => code !== null);
   }
 
@@ -258,11 +260,11 @@ export class UserDAL {
    * @returns true if succeeded
    */
   newSubscription(subscription: Model.Subscription): Promise<boolean> {
-    return this.append('.subscriptions', subscription);
+    return this.append('$.subscriptions', subscription);
   }
 
   getSubscriptions(): Promise<Model.Subscription[]> {
-    return this.get('.subscriptions');
+    return this.get('$.subscriptions');
   }
 
   /**
