@@ -65,7 +65,7 @@ export namespace Model {
   };
 
   // key: auditLog:payment:${tradeOrderId}
-  export type PaymentAudioLog = AuditLog & {
+  export type PaymentAuditLog = AuditLog & {
     cents: number; // use integer to avoid inaccuracy of IEEE754
     appid: string;
     transactionId: string;

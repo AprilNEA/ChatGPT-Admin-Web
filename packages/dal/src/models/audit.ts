@@ -12,9 +12,9 @@ export class AuditDAL {
 
   async addPaymentLog(
     tradeOrderId: string,
-    log: Omit<Model.PaymentAudioLog, keyof Model.AuditLog>
+    log: Omit<Model.PaymentAuditLog, keyof Model.AuditLog>
   ): Promise<boolean> {
-    const paymentLog: Model.PaymentAudioLog = {
+    const paymentLog: Model.PaymentAuditLog = {
       ip: this.ip,
       userEmail: this.userEmail,
       timestamp: Date.now(),
