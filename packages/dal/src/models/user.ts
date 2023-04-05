@@ -23,8 +23,8 @@ export class UserDAL {
     return await redis.json.get(this.userKey, path);
   }
 
-  private async set(data: Model.User): Promise<boolean> {
-    return (await redis.json.set(this.userKey, '.', data)) === 'OK';
+  private set(data: Model.User): Promise<boolean> {
+    return this.update('.', data);
   }
 
   private async update(path: string, data: any): Promise<boolean> {
@@ -38,11 +38,11 @@ export class UserDAL {
   }
 
   async exists(): Promise<boolean> {
-    return (await redis.exists(this.userKey)) === 1;
+    return (await redis.exists(this.userKey)) > 0;
   }
 
   async delete(): Promise<boolean> {
-    return (await redis.del(this.userKey)) === 1;
+    return (await redis.del(this.userKey)) > 0;
   }
 
   static async fromRegistration(
