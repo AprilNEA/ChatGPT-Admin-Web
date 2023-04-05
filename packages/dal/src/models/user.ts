@@ -72,8 +72,8 @@ export class UserDAL {
   }
 
   async login(password: string): Promise<boolean> {
-    const user = await this.get();
-    const isSuccess = user?.passwordHash === md5.hash(password.trim());
+    const passwordHash = await this.get('$.passwordHash');
+    const isSuccess = passwordHash === md5.hash(password.trim());
 
     if (isSuccess) {
       // Set last login
