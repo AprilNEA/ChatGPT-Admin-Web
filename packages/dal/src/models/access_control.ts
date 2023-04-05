@@ -25,7 +25,7 @@ export class AccessControlDAL {
     };
 
     await redis.hmset(`sessionToken:${token}`, sessionToken);
-    await redis.expire(`sessionToken:${token}`, 24 * 60 * 60 * 1000 - 10); // Expire in 1 day
+    await redis.expire(`sessionToken:${token}`, 24 * 60 * 60 - 10); // Expire in 1 day
 
     return token;
   }
@@ -58,8 +58,8 @@ export class AccessControlDAL {
   async getRequestsTimeStamp(): Promise<number[]> {
     const key = `limit:${this.emailOrIP}`;
 
-    // 移除所有过期的时间戳
-    await redis.zremrangebyscore(key, 0, Date.now() - 3 * 60 * 60 * 1000);
+    // 移除所有过期的时间戳 ie. 3 hours ago
+    await redis.zremrangebyscore(key, 0, Date.now() - 3 * 60 * 60);
 
     return await redis.zrange<number[]>(key, 0, -1);
   }
