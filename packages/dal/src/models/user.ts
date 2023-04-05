@@ -195,7 +195,7 @@ export class UserDAL {
       type,
     };
 
-    const setCode = redis.json.set(key, '$.', invitationCode);
+    const setCode = redis.json.set(key, '$', invitationCode);
     const appendCode = this.append('$.invitationCodes', code);
     await Promise.all([setCode, appendCode]);
 
@@ -219,7 +219,7 @@ export class UserDAL {
     const inviterCodeKey = `invitationCode:${code}`;
     const inviterCode: Model.InvitationCode = await redis.json.get(
       inviterCodeKey,
-      '$.'
+      '$'
     );
     if (!inviterCode) return null;
 
