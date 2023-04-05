@@ -64,6 +64,7 @@ export class UserDAL {
       invitationCodes: [],
       subscriptions: [],
       planNow: 'Free',
+      role: 'user',
       ...extraData,
     });
 

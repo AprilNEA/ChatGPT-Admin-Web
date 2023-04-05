@@ -26,7 +26,7 @@ export namespace Model {
     phone?: string;
     subscriptions: Subscription[];
     planNow: Plan;
-    role?: Role;
+    role: Role;
   };
 
   // key: user:${email} .subscriptions
