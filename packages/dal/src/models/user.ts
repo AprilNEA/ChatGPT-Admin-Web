@@ -48,7 +48,7 @@ export class UserDAL {
   static async fromRegistration(
     email: string,
     password: string,
-    extraData: Partial<Model.User>
+    extraData: Partial<Model.User> = {}
   ): Promise<UserDAL | null> {
     const userDAL = new UserDAL(email);
 
