@@ -158,3 +158,56 @@
     }
   }
 }
+
+.radio-group {
+  display: f***REMOVED***;
+  f***REMOVED***-direction: column;
+  gap: 10px;
+}
+
+.radio-option {
+  display: f***REMOVED***;
+  align-items: center;
+  cursor: pointer;
+  font-size: 16px;
+  color: #333;
+
+  &:hover {
+    color: #007bff;
+  }
+
+  input[type='radio'] {
+    position: relative;
+    width: 18px;
+    height: 18px;
+    appearance: none;
+    background-color: #fff;
+    border: 1px solid #007bff;
+    border-radius: 50%;
+    margin-right: 10px;
+    outline: none;
+
+    &:after {
+      content: '';
+      position: absolute;
+      top: 4px;
+      left: 4px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: #007bff;
+      opacity: 0;
+      transform: scale(0);
+      transition: all 0.3s ease;
+    }
+
+    &:checked {
+      border-color: #007bff;
+
+      &:after {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+  }
+}

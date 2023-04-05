@@ -2,8 +2,32 @@
   "$schema": "https://turbo.build/schema.json",
   "pipeline": {
     "build": {
-      "dependsOn": ["^build"],
-      "outputs": ["dist/**", ".next/**", "!.next/cache/**"]
+      "dependsOn": [
+        "^build"
+      ],
+      "outputs": [
+        "dist/**",
+        ".next/**",
+        "!.next/cache/**"
+      ],
+      "env": [
+        "OPENAI_API_KEY",
+        "***REMOVED***",
+        "EMAIL_API_KEY",
+        "EMAIL_DOMAIN",
+        "TENCENT_SECRETID",
+        "TENCENT_SECRETKEY",
+        "SMS_ACCESS_KEY_ID",
+        "REDIS_URL",
+        "REDIS_TOKEN",
+        "PAY_APPID",
+        "PAY_APPSECRET"
+      ]
+    },
+    "test": {
+      "dependsOn": [
+        "^test"
+      ]
     },
     "dev": {
       "cache": false,

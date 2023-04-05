@@ -30,15 +30,18 @@ const cn = {
   },
   Profile: {
     Title: "用户信息",
+    Plan: {
+      Title: "计划",
+    },
     Invite: {
       Title: "邀请他人",
       SubTitle: "成功邀请他人可获得重置次数和充值折扣",
       Code: "邀请码",
       InviteLink: "邀请链接",
-      CopyInviteLink: "复制邀请链接",
+      CopyInviteLink: "复制邀请码",
       InviteeNumber: "当前邀请人数",
     },
-    Upgrade: "升级为付费用户",
+    Upgrade: "升级",
     Reset: {
       Title: "重置当前限制",
       SubTitle: "可将固定时间内的消息条数限制清空",

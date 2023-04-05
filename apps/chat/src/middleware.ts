@@ -17,13 +17,31 @@ export async function middleware(req: NextRequest, res: NextResponse) {
   if (email !== (await user.accessControl.validateSessionToken(token)))
     return NextResponse.json({}, { status: 401 });
 
+  let timesLimit = 25;
+  const planOrRole = await user.getPlan();
+  console.log(planOrRole);
+  switch (planOrRole) {
+    case "admin":
+    case "mod":
+    case "premium": // todo 对 Premium 作出限制
+      await user.accessControl.newRequest();
+      return NextResponse.next();
+    case "pro":
+      timesLimit = 50;
+      break;
+    case "free":
+    default:
+      break;
+  }
+
   // 速率限制 返回的是一个枚举值 会有 @utils/requests 进一步处理
   const requestNos = await user.accessControl.getRequestsTimeStamp();
   const requestNosLength = requestNos.length;
   if (requestNosLength > 0 && requestNos[requestNosLength - 1] + 5 > Date.now())
     return NextResponse.json({ code: LimitReason.TooFast }, { status: 429 });
-  if (requestNosLength > 25)
+  if (requestNosLength > timesLimit)
     return NextResponse.json({ code: LimitReason.TooMany }, { status: 429 });
 
+  await user.accessControl.newRequest();
   return NextResponse.next();
 }

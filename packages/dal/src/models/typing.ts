@@ -1,5 +1,5 @@
 export type Role = 'user' | 'mod' | 'admin';
-export type Plan = 'Free' | 'Pro' | 'Premium';
+export type Plan = 'free' | 'pro' | 'premium';
 
 export namespace Register {
   export type CodeType = 'email' | 'phone';
@@ -25,7 +25,6 @@ export namespace Model {
     invitationCodes: string[];
     phone?: string;
     subscriptions: Subscription[];
-    planNow: Plan;
     role: Role;
   };
 
@@ -33,15 +32,9 @@ export namespace Model {
   export type Subscription = {
     startsAt: number;
     endsAt: number;
-    level: SubscriptionLevel;
+    plan: Plan;
     tradeOrderId: string;
   };
-
-  export enum SubscriptionLevel {
-    // use 10 and 20 to leave room for feature
-    PRO = 10,
-    PRO_PLUS = 20,
-  }
 
   // key: sessionToken:${token}
   export type SessionToken = {
@@ -71,4 +64,21 @@ export namespace Model {
     transactionId: string;
     openOrderId: string;
   };
+
+  // key: order:${internalOrderId}
+  export type OrderStatus = 'pending' | 'paid' | 'failed' | 'refunded';
+
+  // key: order:${internalOrderId}
+  export type Order = {
+    createdAt: number;
+    totalCents: number; // 总金额
+    plan: Plan;  // 订阅的套餐
+    count: number; // 购买数量
+    status: OrderStatus;
+    email: string;
+  };
+
+  export type AnnouncementDate = `${number}-${number}-${number}`
+  // key: announcement:{AnnouncementDate}
+  export type Announcement = string
 }

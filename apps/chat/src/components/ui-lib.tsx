@@ -2,6 +2,7 @@ import styles from "@/styles/module/ui-lib.module.scss";
 import LoadingIcon from "@/assets/icons/three-dots.svg";
 import CloseIcon from "@/assets/icons/close.svg";
 import { createRoot } from "react-dom/client";
+import { useState } from "react";
 
 export function Popover(props: {
   children: JSX.Element;
@@ -62,6 +63,7 @@ interface ModalProps {
   actions?: JSX.Element[];
   onClose?: () => void;
 }
+
 export function Modal(props: ModalProps) {
   return (
     <div className={styles["modal-container"]}>

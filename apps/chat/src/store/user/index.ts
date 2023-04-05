@@ -1,17 +1,21 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { Model } from "dal";
-import { fetch } from "@edge-runtime/ponyfill";
 
 const LOCAL_KEY = "user-store";
 
 export interface UserStore {
   sessionToken: string | null;
   email: string;
+  plan: string;
+  requestsNo: number[];
+  inviteCode: string;
   versionId: string;
   clearData: () => void;
+  updateRequestsNo: () => void;
   updateVersionId: (versionId: string) => void;
   updateEmail: (email: string) => void;
+  updatePlan: () => void;
   updateSessionToken: (sessionToken: string) => void;
   validateSessionToken: () => boolean;
 }
@@ -46,7 +50,20 @@ export const useUserStore = create<UserStore>()(
     (set, get) => ({
       sessionToken: null,
       email: "",
+      plan: "free",
       versionId: "",
+      requestsNo: [],
+      inviteCode: "",
+
+      updateRequestsNo() {
+        fetch("/api/user/get-limit", {
+          headers: { email: get().email },
+        })
+          .then((res) => res.json())
+          .then((res) => {
+            set((state) => ({ requestsNo: res.requestsNo }));
+          });
+      },
 
       clearData() {
         set((state) => ({
@@ -58,6 +75,16 @@ export const useUserStore = create<UserStore>()(
 
       updateVersionId(versionId: string) {
         set((state) => ({ versionId }));
+      },
+
+      updatePlan() {
+        fetch("/api/user/info", {
+          headers: { email: get().email },
+        })
+          .then((res) => res.json())
+          .then((res) => {
+            set((state) => ({ plan: res.role, inviteCode: res.inviteCode }));
+          });
       },
 
       updateEmail(email: string) {

@@ -59,7 +59,7 @@ export class AccessControlDAL {
     const key = `limit:${this.emailOrIP}`;
 
     // 移除所有过期的时间戳 ie. 3 hours ago
-    await redis.zremrangebyscore(key, 0, Date.now() - 3 * 60 * 60);
+    await redis.zremrangebyscore(key, 0, Date.now() - 3 * 60 * 60 * 1000);
 
     return await redis.zrange<number[]>(key, 0, -1);
   }

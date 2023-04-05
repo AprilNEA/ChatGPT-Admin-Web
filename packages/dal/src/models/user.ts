@@ -19,8 +19,9 @@ export class UserDAL {
     return `user:${this.email}`;
   }
 
-  private async get(path = '$'): Promise<any | null> {
-    return await redis.json.get(this.userKey, path);
+  private async get(...paths: string[]): Promise<(any | null)[]> {
+    if (!paths.length) paths.push('$');
+    return await redis.json.get(this.userKey, ...paths);
   }
 
   private set(data: Model.User): Promise<boolean> {
@@ -63,7 +64,6 @@ export class UserDAL {
       resetChances: 0,
       invitationCodes: [],
       subscriptions: [],
-      planNow: 'Free',
       role: 'user',
       ...extraData,
     });
@@ -72,7 +72,7 @@ export class UserDAL {
   }
 
   async login(password: string): Promise<boolean> {
-    const passwordHash = await this.get('$.passwordHash');
+    const [passwordHash] = await this.get('$.passwordHash');
     const isSuccess = passwordHash === md5.hash(password.trim());
 
     if (isSuccess) {
@@ -83,9 +83,12 @@ export class UserDAL {
   }
 
   async getPlan(): Promise<Role | Plan> {
-    return (
-      (await this.get('$.role')) || (await this.get('$.planNow')) || 'Free'
-    );
+    const [role] = await this.get('$.role');
+    if (role === 'user') {
+      const subscription = await this.getLastSubscription()
+      return  subscription?.plan ?? 'free'
+    }
+    return  role
   }
 
   /**
@@ -103,19 +106,19 @@ export class UserDAL {
     phone?: string
   ): Promise<
     | {
-        status: Register.ReturnStatus.Success;
-        code: number;
-        ttl: number;
-      }
+    status: Register.ReturnStatus.Success;
+    code: number;
+    ttl: number;
+  }
     | {
-        status: Register.ReturnStatus.TooFast;
-        ttl: number;
-      }
+    status: Register.ReturnStatus.TooFast;
+    ttl: number;
+  }
     | {
-        status:
-          | Register.ReturnStatus.AlreadyRegister
-          | Register.ReturnStatus.UnknownError;
-      }
+    status:
+      | Register.ReturnStatus.AlreadyRegister
+      | Register.ReturnStatus.UnknownError;
+  }
   > {
     if (codeType === 'phone') {
       if (!phone) throw new Error('Phone number is required');
@@ -236,15 +239,18 @@ export class UserDAL {
   }
 
   async getInviterCode(): Promise<string | null> {
-    return await this.get('$.inviterCode');
+    return (await this.get('$.inviterCode'))[0] ?? null;
   }
 
+  /**
+   * 获取自己的邀请码列表
+   */
   async getInvitationCodes(): Promise<string[]> {
-    return (await this.get('$.invitationCodes')) ?? [];
+    return (await this.get('$.invitationCodes'))[0] ?? [];
   }
 
   async getResetChances(): Promise<number> {
-    return (await this.get('$.resetChances')) ?? -1;
+    return (await this.get('$.resetChances'))[0] ?? -1;
   }
 
   async changeResetChancesBy(value: number): Promise<boolean> {
@@ -263,40 +269,12 @@ export class UserDAL {
     return this.append('$.subscriptions', subscription);
   }
 
-  getSubscriptions(): Promise<Model.Subscription[]> {
-    return this.get('$.subscriptions');
-  }
-
   /**
-   * Get the current subscription.
+   * Get the last subscription.
    * Please make sure the user exists before calling this method!
    * @returns the current subscription or null if no subscription (Free)
    */
-  async getCurrentSubscription(): Promise<Model.Subscription | null> {
-    const subscriptions = await this.getSubscriptions();
-    const currentTime = Date.now();
-
-    let greatestSubscription: Model.Subscription | null = null;
-
-    for (const subscription of subscriptions) {
-      if (!greatestSubscription) {
-        greatestSubscription = subscription;
-        continue;
-      }
-
-      if (subscription.level < greatestSubscription.level) {
-        continue;
-      }
-
-      if (
-        subscription.startsAt <= currentTime &&
-        currentTime <= subscription.endsAt
-      ) {
-        greatestSubscription = subscription;
-        continue;
-      }
-    }
-
-    return greatestSubscription;
+  async getLastSubscription(): Promise<Model.Subscription|null> {
+    return (await this.get('$.subscriptions[-1]'))[0] ?? null;
   }
 }

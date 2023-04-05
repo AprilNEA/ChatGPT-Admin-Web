@@ -36,6 +36,9 @@ const en: LocaleType = {
   },
   Profile: {
     Title: "User Information",
+    Plan: {
+      Title: "Plan",
+    },
     Invite: {
       Title: "Invite Others",
       SubTitle:

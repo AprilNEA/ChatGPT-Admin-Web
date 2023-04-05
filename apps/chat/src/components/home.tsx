@@ -1,8 +1,8 @@
 "use client";
 
-import {useState, useRef, useEffect, useLayoutEffect} from "react";
+import { useState, useRef, useEffect, useLayoutEffect } from "react";
 
-import {IconButton} from "@/components/button";
+import { IconButton } from "@/components/button";
 import styles from "@/styles/module/home.module.scss";
 
 import SettingsIcon from "@/assets/icons/settings.svg";
@@ -12,35 +12,37 @@ import AddIcon from "@/assets/icons/add.svg";
 import LoadingIcon from "@/assets/icons/three-dots.svg";
 import AnnouncementIcon from "@/assets/icons/announcement.svg";
 import CloseIcon from "@/assets/icons/close.svg";
-import {Message, useChatStore, useUserStore} from "@/store";
+import { Message, useChatStore, useUserStore } from "@/store";
 
-import {isMobileScreen} from "@/utils/utils";
+import { isMobileScreen } from "@/utils/utils";
 import Locale from "@/locales";
 
-import {Chat} from "@/components/chat";
-import {ChatList} from "@/components/chat/chat-list";
-import {useSwitchTheme} from "@/components/switch-theme";
-import {Loading} from "@/components/loading";
+import { Chat } from "@/components/chat";
+import { ChatList } from "@/components/chat/chat-list";
+import { useSwitchTheme } from "@/components/switch-theme";
+import { Loading } from "@/components/loading";
 
 import dynamic from "next/dynamic";
-import {Announcement, showAnnouncement} from "@/hooks/use-notice";
+import { Announcement, showAnnouncement } from "@/hooks/use-notice";
+import { showModal } from "@/components/ui-lib";
+import ShoppingIcon from "@/assets/icons/shopping.svg";
 
 const Settings = dynamic(
   async () => (await import("@/components/settings")).Settings,
   {
-    loading: () => <Loading noLogo/>,
+    loading: () => <Loading noLogo />,
   }
 );
 
 const Profile = dynamic(
   async () => (await import("@/components/profile")).Profile,
   {
-    loading: () => <Loading noLogo/>,
+    loading: () => <Loading noLogo />,
   }
 );
 
 const Login = dynamic(async () => (await import("@/components/login")).Login, {
-  loading: () => <Loading noLogo/>,
+  loading: () => <Loading noLogo />,
 });
 
 /**
@@ -93,12 +95,17 @@ export function Home() {
 
   // 账户面板
   const [openProfile, setOpenProfile] = useState(false);
+  const [plan, setPlan] = useState("free");
+
+  function handlerUpgrade() {
+    console.log(plan);
+  }
 
   // 暗色模式切换
   useSwitchTheme();
 
   if (loading) {
-    return <Loading/>;
+    return <Loading />;
   }
 
   if (!isLogin) {
@@ -110,7 +117,7 @@ export function Home() {
             : styles.container
         }`}
       >
-        <Login setIsLogin={() => setIsLogin(true)}/>
+        <Login setIsLogin={() => setIsLogin(true)} />
       </div>
     );
   }
@@ -133,7 +140,7 @@ export function Home() {
             <span className={styles["sidebar-ad"]}>Magic万事屋</span>
           </div>
           <div className={styles["sidebar-logo"]}>
-            <ChatGptIcon/>
+            <ChatGptIcon />
           </div>
         </div>
 
@@ -144,14 +151,14 @@ export function Home() {
             setShowSideBar(false);
           }}
         >
-          <ChatList/>
+          <ChatList />
         </div>
 
         <div className={styles["sidebar-tail"]}>
           <div className={styles["sidebar-actions"]}>
             <div className={styles["sidebar-action"] + " " + styles.mobile}>
               <IconButton
-                icon={<CloseIcon/>}
+                icon={<CloseIcon />}
                 onClick={() => {
                   if (confirm(Locale.Home.DeleteChat)) {
                     removeSession(currentIndex);
@@ -161,7 +168,7 @@ export function Home() {
             </div>
             <div className={styles["sidebar-action"]}>
               <IconButton
-                icon={<SettingsIcon/>}
+                icon={<SettingsIcon />}
                 onClick={() => {
                   setOpenSettings(true);
                   setShowSideBar(false);
@@ -171,14 +178,14 @@ export function Home() {
             {/*TODO add about us*/}
             <div className={styles["sidebar-action"]}>
               <IconButton
-                icon={<AnnouncementIcon/>}
+                icon={<AnnouncementIcon />}
                 onClick={showAnnouncement}
               />
             </div>
           </div>
           <div>
             <IconButton
-              icon={<AddIcon/>}
+              icon={<AddIcon />}
               text={Locale.Home.NewChat}
               onClick={() => {
                 createNewSession();
@@ -205,7 +212,11 @@ export function Home() {
             }}
           />
         ) : (
-          <Chat key="chat" showSideBar={() => setShowSideBar(true)} showProfile={() => setOpenProfile(true)}/>
+          <Chat
+            key="chat"
+            showSideBar={() => setShowSideBar(true)}
+            showProfile={() => setOpenProfile(true)}
+          />
         )}
       </div>
     </div>

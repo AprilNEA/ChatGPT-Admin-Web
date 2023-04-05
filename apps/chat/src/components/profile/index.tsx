@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef, useMemo } from "react";
-
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import EmojiPicker, { Theme as EmojiTheme } from "emoji-picker-react";
 
 import styles from "@/styles/module/profile.module.scss";
@@ -9,7 +9,13 @@ import CloseIcon from "@/assets/icons/close.svg";
 import ClearIcon from "@/assets/icons/clear.svg";
 import { copyToClipboard } from "@/utils/utils";
 
-import { List, ListItem, Popover } from "@/components/ui-lib";
+import {
+  List,
+  ListItem,
+  Popover,
+  showModal,
+  showToast,
+} from "@/components/ui-lib";
 
 import { IconButton } from "../button";
 import {
@@ -22,6 +28,8 @@ import { Model, SubmitKey, Theme } from "@/types/setting";
 import { Avatar } from "@/components/avatar";
 
 import Locale, { changeLang, getLang } from "@/locales";
+
+import ShoppingIcon from "@/assets/icons/shopping.svg";
 
 function ProfileItem(props: {
   title: string;
@@ -51,7 +59,71 @@ export function Profile(props: { closeSettings: () => void }) {
       state.clearAllData,
     ]
   );
-  const [email] = useUserStore((state) => [state.email]);
+  const [
+    email,
+    plan,
+    requestsNo,
+    updatePlan,
+    updateRequestsNo,
+    sessionToken,
+    inviteCode,
+  ] = useUserStore((state) => [
+    state.email,
+    state.plan,
+    state.requestsNo,
+    state.updatePlan,
+    state.updateRequestsNo,
+    state.sessionToken,
+    state.inviteCode,
+  ]);
+  const [selectPlan, setSelectPlan] = useState(plan);
+  const [count, setCount] = useState(0);
+  const router = useRouter();
+
+  const fetchBusinesses = useCallback(() => {
+    updateLimit();
+    updatePlan();
+    updateRequestsNo();
+  }, []);
+
+  useEffect(() => {
+    fetchBusinesses();
+  }, [fetchBusinesses]);
+
+  function updateLimit() {
+    fetch("/api/user/get-limit", {
+      headers: { email },
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        setCount(res.requestNos.length);
+      });
+  }
+
+  async function handleResetLimit() {
+    fetch("/api/user/reset", {
+      cache: "no-store",
+      method: "GET",
+      headers: { email, token: sessionToken ?? "" },
+    }).then((res) => {
+      if (res.ok) {
+        showToast("成功重置");
+        updateRequestsNo();
+      }
+    });
+  }
+
+  async function handleUpgrade() {
+    const req = await (
+      await fetch(`/api/user/pay?plan=${selectPlan}`, {
+        cache: "no-store",
+        method: "GET",
+        headers: { email },
+      })
+    ).json();
+    const url = req.url;
+    router.push(url);
+  }
 
   return (
     <>
@@ -120,6 +192,40 @@ export function Profile(props: { closeSettings: () => void }) {
           <ProfileItem title={Locale.Settings.Account}>
             <div>{email}</div>
           </ProfileItem>
+
+          <ProfileItem
+            title={Locale.Profile.Plan.Title}
+            subTitle="切换计划来升级"
+          >
+            <>
+              <select
+                value={selectPlan}
+                onChange={(e) => {
+                  setSelectPlan(e.target.value as any);
+                }}
+              >
+                <option value="free" key="free">
+                  Free
+                </option>
+
+                <option value="pro" key="pro">
+                  Pro
+                </option>
+
+                <option value="premium" key="premium">
+                  Premium
+                </option>
+              </select>
+              {plan !== selectPlan && (
+                <button
+                  className={styles["copy-button"]}
+                  onClick={handleUpgrade}
+                >
+                  {Locale.Profile.Upgrade}
+                </button>
+              )}
+            </>
+          </ProfileItem>
         </List>
 
         <List>
@@ -130,7 +236,7 @@ export function Profile(props: { closeSettings: () => void }) {
             <button
               className={styles["copy-button"]}
               value={config.submitKey}
-              onClick={() => copyToClipboard("1")}
+              onClick={() => copyToClipboard(inviteCode)}
             >
               {Locale.Profile.Invite.CopyInviteLink}
             </button>
@@ -143,7 +249,7 @@ export function Profile(props: { closeSettings: () => void }) {
             <button
               className={styles["copy-button"]}
               value={config.submitKey}
-              onClick={() => copyToClipboard("1")}
+              onClick={() => handleResetLimit()}
             >
               {Locale.Profile.Reset.Click(1)}
             </button>
@@ -158,9 +264,9 @@ export function Profile(props: { closeSettings: () => void }) {
             <input
               type="range"
               title={config.historyMessageCount.toString()}
-              value={3}
+              value={count}
               min="0"
-              max="30"
+              max={plan === "free" ? 10 : 50}
               step="1"
             ></input>
           </ProfileItem>
