@@ -1,6 +1,7 @@
 import { redis } from '../redis/client';
 import { Model } from './typing';
 import md5 from 'spark-md5';
+import { UserDAL } from './user';
 
 export class AccessControlDAL {
   constructor(
@@ -57,9 +58,12 @@ export class AccessControlDAL {
    */
   async getRequestsTimeStamp(): Promise<number[]> {
     const key = `limit:${this.emailOrIP}`;
-
+    const user = new UserDAL(this.emailOrIP);
+    const plan = await user.getPlan();
+    if (plan === 'free')
+      await redis.zremrangebyscore(key, 0, Date.now() - 60 * 60 * 1000);
     // 移除所有过期的时间戳 ie. 3 hours ago
-    await redis.zremrangebyscore(key, 0, Date.now() - 3 * 60 * 60 * 1000);
+    else await redis.zremrangebyscore(key, 0, Date.now() - 3 * 60 * 60 * 1000);
 
     return await redis.zrange<number[]>(key, 0, -1);
   }
