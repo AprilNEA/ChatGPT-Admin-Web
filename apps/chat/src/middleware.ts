@@ -37,11 +37,12 @@ export async function middleware(req: NextRequest, res: NextResponse) {
 
   // 速率限制 返回的是一个枚举值 会有 @utils/requests 进一步处理
   const requestNos = await user.accessControl.getRequestsTimeStamp();
-  const requestNosLength = requestNos.length;
+  let requestNosLength = requestNos.length;
   if (requestNosLength > 0 && requestNos[requestNosLength - 1] + 5 > Date.now())
     return NextResponse.json({ code: LimitReason.TooFast }, { status: 429 });
   if (planOrRole.trim().toLowerCase() == "free")
     requestNos.filter((t) => Date.now() - t < 3600 * 1000);
+  requestNosLength = requestNos.length;
   if (requestNosLength > timesLimit)
     return NextResponse.json({ code: LimitReason.TooMany }, { status: 429 });
 
