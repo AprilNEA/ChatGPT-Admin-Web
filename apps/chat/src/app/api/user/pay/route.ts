@@ -11,9 +11,9 @@ export async function GET(req: NextRequest) {
   if (!email || !plan)
     return NextResponse.json({ status: ResponseStatus.Failed });
 
-  const count = Number(searchParams.get("count")) ?? 1;
+  const count = Number(searchParams.get("count")) || 1;
   let price;
-  switch (plan.toLowerCase()) {
+  switch (plan.trim().toLowerCase()) {
     case "pro":
       price = 15 * count;
       break;
@@ -32,5 +32,5 @@ export async function GET(req: NextRequest) {
     email,
   });
   if (!orderId) throw Error("new order failed");
-  return NextResponse.json(await startPay(orderId, 0.01, email));
+  return NextResponse.json(await startPay(orderId, price, email));
 }
