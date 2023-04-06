@@ -17,7 +17,7 @@ export async function middleware(req: NextRequest, res: NextResponse) {
   if (email !== (await user.accessControl.validateSessionToken(token)))
     return NextResponse.json({}, { status: 401 });
 
-  let timesLimit = 25;
+  let timesLimit = 10;
   const planOrRole = await user.getPlan();
   console.log(planOrRole);
   switch (planOrRole) {
@@ -39,6 +39,8 @@ export async function middleware(req: NextRequest, res: NextResponse) {
   const requestNosLength = requestNos.length;
   if (requestNosLength > 0 && requestNos[requestNosLength - 1] + 5 > Date.now())
     return NextResponse.json({ code: LimitReason.TooFast }, { status: 429 });
+  if (planOrRole.trim().toLowerCase() == "free")
+    requestNos.filter((t) => Date.now() - t < 3600 * 1000);
   if (requestNosLength > timesLimit)
     return NextResponse.json({ code: LimitReason.TooMany }, { status: 429 });
 
