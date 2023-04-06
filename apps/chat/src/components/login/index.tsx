@@ -36,7 +36,7 @@ export function Login(props: { setIsLogin: () => void }) {
         cache: "no-store",
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email: email.trim(), password }),
       })
     ).json();
 
@@ -80,7 +80,7 @@ export function Login(props: { setIsLogin: () => void }) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          email,
+          email: email.trim(),
           password,
           code: verificationCode,
           code_type: "email",
