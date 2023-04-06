@@ -33,7 +33,7 @@ export async function GET(req: NextRequest): Promise<Response> {
 
 export async function POST(req: NextRequest): Promise<Response> {
   try {
-    const { email, password, code, code_type, phone } = await req.json();
+    const { email, password, code, code_type, phone, invitation_code } = await req.json();
     const user = new UserDAL(email);
 
     if (code_type === "email") {
@@ -50,11 +50,11 @@ export async function POST(req: NextRequest): Promise<Response> {
 
       const new_user = await UserDAL.fromRegistration(email, password);
       if (!new_user) throw Error("new user is null");
-
+      if (invitation_code) await user.acceptInvitationCode(invitation_code);
       const token= await new_user.accessControl.newSessionToken();
       return NextResponse.json({
         status: ResponseStatus.Success,
-        token,
+        sessionToken: token,
         email
       });
     } else if (code_type === "phone") {
