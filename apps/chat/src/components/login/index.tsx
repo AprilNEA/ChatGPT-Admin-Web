@@ -6,11 +6,12 @@ import { showToast } from "@/components/ui-lib";
 import { RegisterResponse, ResponseStatus } from "@/app/api/typing.d";
 
 export function Login(props: { setIsLogin: () => void }) {
+  const [showPage, setShowPage] = useState("index");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isRegister, setIsRegister] = useState(false);
   const [isSending, setIsSending] = useState(false);
   const [verificationCode, setVerificationCode] = useState("");
+  const [invitationCode, setInvitationCode] = useState("");
 
   // 防止表单重复 提交
   const [submitting, setSubmitting] = useState(false);
@@ -64,7 +65,6 @@ export function Login(props: { setIsLogin: () => void }) {
         break;
       }
     }
-    setSubmitting(false);
   };
 
   const handleRegister = async () => {
@@ -84,6 +84,7 @@ export function Login(props: { setIsLogin: () => void }) {
           password,
           code: verificationCode,
           code_type: "email",
+          invitation_code: invitationCode,
         }),
       })
     ).json()) as RegisterResponse;
@@ -113,17 +114,20 @@ export function Login(props: { setIsLogin: () => void }) {
         break;
       }
     }
-    setSubmitting(false);
   };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSubmitting(true);
-
-    if (isRegister) {
-      await handleRegister();
-    } else {
-      await handleLogin();
+    switch (showPage) {
+      case "login":
+        await handleLogin();
+        break;
+      case "register":
+        await handleRegister();
+        break;
+      default:
+        break;
     }
     setSubmitting(false);
   };
@@ -177,10 +181,35 @@ export function Login(props: { setIsLogin: () => void }) {
   return (
     <>
       <div className={styles["login-form-container"]}>
-        <form className={styles["login-form"]} onSubmit={handleSubmit}>
-          <h2 className={styles["login-form-title"]}>
-            {isRegister ? "Register" : "Login"}
-          </h2>
+        <div
+          className={`${showPage !== "index" && styles["login-form-visible"]}`}
+        >
+          <div className={styles["content"]}>
+            <h2 className={styles["text"]}>ChatGPT</h2>
+            <div className={styles["buttons"]}>
+              <button
+                className={styles["button"]}
+                onClick={() => setShowPage("login")}
+              >
+                登录
+              </button>
+              <button
+                className={styles["button"]}
+                onClick={() => setShowPage("register")}
+              >
+                注册
+              </button>
+            </div>
+          </div>
+        </div>
+        <form
+          className={
+            styles["login-form"] +
+            ` ${showPage !== "login" && styles["login-form-visible"]}`
+          }
+          onSubmit={handleSubmit}
+        >
+          <h2 className={styles["login-form-title"]}>Login</h2>
           <div className={styles["login-form-input-group"]}>
             <label htmlFor="email">Email</label>
             <input
@@ -189,7 +218,6 @@ export function Login(props: { setIsLogin: () => void }) {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              disabled={isRegister}
             />
           </div>
           <div className={styles["login-form-input-group"]}>
@@ -200,45 +228,79 @@ export function Login(props: { setIsLogin: () => void }) {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              disabled={isRegister}
             />
           </div>
-          {isRegister && (
-            <div className={styles["login-form-input-group"]}>
-              <label htmlFor="email">Verification Code</label>
-              <div className={styles["verification-code-container"]}>
-                <input
-                  type="text"
-                  id="verification-code"
-                  maxLength={6}
-                  pattern="\d{6}"
-                  onChange={(e) => setVerificationCode(e.target.value)}
-                />
-                <button
-                  className={styles["send-verification-button"]}
-                  onClick={() => handleSendVerification("email")}
-                  disabled={submitting}
-                >
-                  {isSending ? "Already Send to Email" : "Get Code"}
-                </button>
-              </div>
-            </div>
-          )}
           <div className={styles["button-container"]}>
-            {!isRegister && (
-              <button
-                className={styles["login-form-submit"]}
-                type="submit"
-                disabled={submitting}
-              >
-                Login
-              </button>
-            )}
             <button
               className={styles["login-form-submit"]}
               type="submit"
-              onClick={() => setIsRegister(true)}
+              disabled={submitting}
             >
+              Login
+            </button>
+          </div>
+        </form>
+
+        <form
+          className={
+            styles["login-form"] +
+            ` ${showPage !== "register" && styles["login-form-visible"]}`
+          }
+          onSubmit={handleSubmit}
+        >
+          <h2 className={styles["login-form-title"]}>Register</h2>
+          <div className={styles["login-form-input-group"]}>
+            <label htmlFor="email">Email</label>
+            <input
+              type="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+          <div className={styles["login-form-input-group"]}>
+            <label htmlFor="password">Password</label>
+            <input
+              type="password"
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+          <div className={styles["login-form-input-group"]}>
+            <label htmlFor="email">Verification Code</label>
+            <div className={styles["verification-code-container"]}>
+              <input
+                type="text"
+                id="verification-code"
+                maxLength={6}
+                pattern="\d{6}"
+                onChange={(e) => setVerificationCode(e.target.value)}
+              />
+              <button
+                className={styles["send-verification-button"]}
+                onClick={() => handleSendVerification("email")}
+                disabled={submitting}
+              >
+                {isSending ? "Already Send to Email" : "Get Code"}
+              </button>
+            </div>
+          </div>
+          <div className={styles["login-form-input-group"]}>
+            <label htmlFor="email">Invitation Code</label>
+            <div className={styles["verification-code-container"]}>
+              <input
+                type="text"
+                id="invitation-code"
+                placeholder="可选"
+                onChange={(e) => setVerificationCode(e.target.value)}
+              />
+            </div>
+          </div>
+          <div className={styles["button-container"]}>
+            <button className={styles["login-form-submit"]} type="submit">
               Register
             </button>
           </div>
