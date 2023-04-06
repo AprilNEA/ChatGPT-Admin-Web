@@ -23,9 +23,10 @@ export async function middleware(req: NextRequest, res: NextResponse) {
   switch (planOrRole) {
     case "admin":
     case "mod":
-    case "premium": // todo 对 Premium 作出限制
-      await user.accessControl.newRequest();
       return NextResponse.next();
+    case "premium": // todo 对 Premium 作出限制
+      timesLimit = 200
+      break
     case "pro":
       timesLimit = 50;
       break;
