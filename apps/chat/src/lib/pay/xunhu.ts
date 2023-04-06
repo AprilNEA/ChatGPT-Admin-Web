@@ -73,8 +73,8 @@ export async function startPay(orderId: string, price: number, email:string) {
     total_fee: price,
     title: "仁爱路111号",
     time: Math.floor(Date.now() / 1000),
-    notify_url: "http://124.223.23.163:42111/api/user/pay/callback",
-    // return_url: "",
+    notify_url: "https://lmo.best/api/user/pay/callback",
+    return_url: "https://lmo.best",
     // callback_url: string;
     // plugins: string;
     // attach: email, // 我们将 Email 附加在其中
