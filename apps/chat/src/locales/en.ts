@@ -56,6 +56,7 @@ const en: LocaleType = {
     },
     RateLimit: {
       Title: "Fixed Time Message Limit (Three Hours)",
+      TitleFree: "Fixed Time Message Limit (Free User)",
       Subtitle:
         "Total number of requested messages Click to view specific request time",
       Interval: "Request Interval",

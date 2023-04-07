@@ -258,7 +258,11 @@ export function Profile(props: { closeSettings: () => void }) {
 
         <List>
           <ProfileItem
-            title={Locale.Profile.RateLimit.Title}
+            title={
+              plan == "free"
+                ? Locale.Profile.RateLimit.TitleFree
+                : Locale.Profile.RateLimit.Title
+            }
             subTitle={Locale.Profile.RateLimit.Subtitle}
           >
             <input

@@ -49,6 +49,7 @@ const cn = {
     },
     RateLimit: {
       Title: "固定时间内消息条数限制(三小时)",
+      TitleFree: "固定时间内消息条数限制",
       Subtitle: "总共请求的消息条数 点击查看具体请求时间",
       Interval: "请求间隔",
       IntervalDesp: "每隔几秒可请求一次",
