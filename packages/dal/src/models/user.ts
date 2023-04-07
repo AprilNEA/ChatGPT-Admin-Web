@@ -186,19 +186,26 @@ export class UserDAL {
    * Generate a new invitation code, create related key in Redis, and append the code to the user's invitationCodes.
    * Please make sure the user exists before calling this method!
    * @param type the type of the invitation code
+   * @param code
+   * @param limit
    * @returns the invitation code
    */
-  async newInvitationCode(type: string): Promise<string> {
-    const code = md5.hash(this.email + Date.now());
+  async newInvitationCode(
+    type: string,
+    code?: string,
+    limit?: number
+  ): Promise<string> {
+    if (!code) code = md5.hash(this.email + Date.now());
     const key = `invitationCode:${code}`;
 
     const invitationCode: Model.InvitationCode = {
       inviterEmail: this.email,
       inviteeEmails: [],
       type,
+      limit: limit ?? 0,
     };
 
-    const setCode = redis.json.set(key, '$', invitationCode);
+    const setCode = redis.json.set(key, '$', JSON.stringify(invitationCode));
     const appendCode = this.append('$.invitationCodes', code);
     await Promise.all([setCode, appendCode]);
 
@@ -225,14 +232,19 @@ export class UserDAL {
       '$'
     );
     if (!inviterCode) return null;
+    if (
+      inviterCode.inviteeEmails &&
+      inviterCode.inviteeEmails.length >= inviterCode.limit
+    )
+      return null;
 
-    const setCode = this.update('$.inviterCode', code);
+    const setCode = this.update('$.inviterCode', JSON.stringify(code));
     const appendEmail = redis.json.arrappend(
       inviterCodeKey,
       '$.inviteeEmails',
-      this.email
+      JSON.stringify(this.email)
     );
-
+    
     await Promise.all([setCode, appendEmail]);
 
     return inviterCode;

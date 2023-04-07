@@ -3,6 +3,7 @@ export type Plan = 'free' | 'pro' | 'premium';
 
 export namespace Register {
   export type CodeType = 'email' | 'phone';
+  export type InvitationCodeType = 'club' | 'team';
 
   export enum ReturnStatus {
     Success,
@@ -46,6 +47,7 @@ export namespace Model {
   // key: invitationCode:${code}
   export type InvitationCode = {
     type: string;
+    limit: number;
     inviterEmail: string;
     inviteeEmails: string[];
   };
