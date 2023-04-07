@@ -21,7 +21,10 @@ export class UserDAL {
 
   private async get(...paths: string[]): Promise<(any | null)[]> {
     if (!paths.length) paths.push('$');
-    return await redis.json.get(this.userKey, ...paths);
+    return (
+      (await redis.json.get(this.userKey, ...paths)) ??
+      Array(paths.length).fill(null)
+    );
   }
 
   private set(data: Model.User): Promise<boolean> {
@@ -72,7 +75,7 @@ export class UserDAL {
   }
 
   async login(password: string): Promise<boolean> {
-    const [passwordHash] = (await this.get('$.passwordHash')) ?? [null];
+    const [passwordHash] = await this.get('$.passwordHash');
     const isSuccess = passwordHash === md5.hash(password.trim());
 
     if (isSuccess) {
@@ -82,7 +85,7 @@ export class UserDAL {
     return isSuccess;
   }
 
-  async getPlan(): Promise<Role | Plan> {
+  async getPlan(): Promise<Role | Plan | null> {
     const [role] = await this.get('$.role');
     if (role === 'user') {
       const subscription = await this.getLastSubscription();
