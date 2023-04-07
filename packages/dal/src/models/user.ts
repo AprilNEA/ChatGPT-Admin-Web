@@ -72,7 +72,7 @@ export class UserDAL {
   }
 
   async login(password: string): Promise<boolean> {
-    const [passwordHash] = await this.get('$.passwordHash');
+    const [passwordHash] = (await this.get('$.passwordHash')) ?? [null];
     const isSuccess = passwordHash === md5.hash(password.trim());
 
     if (isSuccess) {
@@ -85,10 +85,10 @@ export class UserDAL {
   async getPlan(): Promise<Role | Plan> {
     const [role] = await this.get('$.role');
     if (role === 'user') {
-      const subscription = await this.getLastSubscription()
-      return  subscription?.plan ?? 'free'
+      const subscription = await this.getLastSubscription();
+      return subscription?.plan ?? 'free';
     }
-    return  role
+    return role;
   }
 
   /**
@@ -106,19 +106,19 @@ export class UserDAL {
     phone?: string
   ): Promise<
     | {
-    status: Register.ReturnStatus.Success;
-    code: number;
-    ttl: number;
-  }
+        status: Register.ReturnStatus.Success;
+        code: number;
+        ttl: number;
+      }
     | {
-    status: Register.ReturnStatus.TooFast;
-    ttl: number;
-  }
+        status: Register.ReturnStatus.TooFast;
+        ttl: number;
+      }
     | {
-    status:
-      | Register.ReturnStatus.AlreadyRegister
-      | Register.ReturnStatus.UnknownError;
-  }
+        status:
+          | Register.ReturnStatus.AlreadyRegister
+          | Register.ReturnStatus.UnknownError;
+      }
   > {
     if (codeType === 'phone') {
       if (!phone) throw new Error('Phone number is required');
@@ -206,7 +206,7 @@ export class UserDAL {
     };
 
     const setCode = redis.json.set(key, '$', JSON.stringify(invitationCode));
-    const appendCode = this.append('$.invitationCodes', code);
+    const appendCode = this.append('$.invitationCodes', JSON.stringify(code));
     await Promise.all([setCode, appendCode]);
 
     return code;
@@ -227,16 +227,20 @@ export class UserDAL {
     code: string
   ): Promise<Model.InvitationCode | null> {
     const inviterCodeKey = `invitationCode:${code}`;
-    const inviterCode: Model.InvitationCode = await redis.json.get(
+    const [inviterCode]: [Model.InvitationCode | null] = (await redis.json.get(
       inviterCodeKey,
       '$'
-    );
+    )) ?? [null];
+
     if (!inviterCode) return null;
     if (
       inviterCode.inviteeEmails &&
+      inviterCode.limit &&
       inviterCode.inviteeEmails.length >= inviterCode.limit
     )
       return null;
+
+    inviterCode.inviteeEmails.push(this.email);
 
     const setCode = this.update('$.inviterCode', JSON.stringify(code));
     const appendEmail = redis.json.arrappend(
@@ -244,7 +248,7 @@ export class UserDAL {
       '$.inviteeEmails',
       JSON.stringify(this.email)
     );
-    
+
     await Promise.all([setCode, appendEmail]);
 
     return inviterCode;
@@ -286,7 +290,7 @@ export class UserDAL {
    * Please make sure the user exists before calling this method!
    * @returns the current subscription or null if no subscription (Free)
    */
-  async getLastSubscription(): Promise<Model.Subscription|null> {
+  async getLastSubscription(): Promise<Model.Subscription | null> {
     return (await this.get('$.subscriptions[-1]'))[0] ?? null;
   }
 }
