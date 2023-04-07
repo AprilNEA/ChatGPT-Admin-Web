@@ -3,7 +3,7 @@ import { UserDAL } from "dal";
 import { LimitReason } from "@/typing.d";
 
 export const config = {
-  matcher: ["/api/chat", "/api/chat-stream", "/api/gpt3", "/api/gpt4"],
+  matcher: ["/api/chat-stream", "/api/gpt3", "/api/gpt4"],
 };
 
 export async function middleware(req: NextRequest, res: NextResponse) {
@@ -40,6 +40,7 @@ export async function middleware(req: NextRequest, res: NextResponse) {
   let requestNosLength = requestNos.length;
   if (requestNosLength > 0 && requestNos[requestNosLength - 1] + 5 > Date.now())
     return NextResponse.json({ code: LimitReason.TooFast }, { status: 429 });
+
   if (planOrRole.trim().toLowerCase() == "free")
     requestNos.filter((t) => Date.now() - t < 3600 * 1000);
   requestNosLength = requestNos.length;
