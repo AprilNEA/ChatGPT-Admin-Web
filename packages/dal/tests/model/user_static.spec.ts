@@ -1,14 +1,22 @@
 import { describe, expect, test } from '@jest/globals';
-import { UserDAL } from '../../src';
+import { UserDAL, AccessControlDAL } from '../../src';
 
 describe('list emails and get plans', () => {
-  test('list the number of non-free users', async () => {
+  test('list the timestamps of non-free users', async () => {
     const emails = await UserDAL.listAllEmails();
     const plans = await UserDAL.getPlansOf(...emails);
-    const nonFreeUsers = plans.filter(plan => plan !== 'free').length;
+    const nonFreeUsers = plans
+      .map((plan, i) => [plan, emails[i]])
+      .filter(([plan]) => plan !== 'free');
 
-    console.log('nonFreeUsers', nonFreeUsers, 'out of', plans.length, 'users');
+    console.log('non-free users:', nonFreeUsers);
+    expect(nonFreeUsers.length).toBeGreaterThan(0);
 
-    expect(nonFreeUsers).toBeGreaterThan(0);
+    console.log(
+      'timestamps of non-free users:',
+      await AccessControlDAL.getRequestsTimeStampsOf(
+        ...nonFreeUsers.map(([, email]) => email)
+      )
+    );
   });
 });

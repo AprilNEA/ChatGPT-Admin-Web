@@ -1,8 +1,8 @@
 import { describe, expect, test } from '@jest/globals';
-import { AccessControlDAL, Model, UserDAL } from '../../src';
+import { AccessControlDAL } from '../../src';
 
-const TEST_EMAIL = 'test@lmo.best';
-const TEST_TOKEN = 'ABCD';
+const TEST_EMAIL = 'access-test@lmo.best';
+const TEST_TOKEN = '123456678';
 
 describe('create and validate session token', () => {
   test('should create session token', async () => {
