@@ -9,12 +9,12 @@ export async function POST(req: NextRequest) {
     ).json();
 
     // 在此做关键词过滤
-    // const suggestion = await textSecurity(
-    //   messages[messages.length - 1].content
-    // );
-    // if (suggestion.toLowerCase() !== "pass") {
-    //   return NextResponse.json({}, { status: 402 });
-    // }
+    const suggestion = await textSecurity(
+      messages[messages.length - 1].content
+    );
+    if (suggestion.toLowerCase() !== "pass") {
+      return NextResponse.json({}, { status: 402 });
+    }
 
     const conversations = messages.map(
       // @ts-ignore
