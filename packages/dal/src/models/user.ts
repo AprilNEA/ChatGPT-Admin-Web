@@ -5,7 +5,7 @@ import { AccessControlDAL } from './access_control';
 import { Role, Plan, Model, Register } from './typing';
 
 export class UserDAL {
-  email: string;
+  readonly email: string;
 
   constructor(email: string) {
     this.email = email.trim().toLowerCase();
@@ -295,5 +295,28 @@ export class UserDAL {
    */
   async getLastSubscription(): Promise<Model.Subscription | null> {
     return (await this.get('$.subscriptions[-1]'))[0] ?? null;
+  }
+
+  static async listAllEmails(): Promise<string[]> {
+    let cursor = 0;
+    const emails: string[] = [];
+    do {
+      const [nextCursor, keys] = await redis.scan(cursor, {
+        match: 'user:*',
+        count: 500,
+      });
+      cursor = nextCursor;
+      emails.push(...keys);
+    } while (cursor !== 0);
+
+    return emails.map(email => email.slice(5));
+  }
+
+  static async getPlansOf(...emails: string[]): Promise<Plan[]> {
+    const keys = emails.map(email => `user:${email}`);
+    const plans: [Plan][] =
+      (await redis.json.mget(keys, '$.subscriptions[-1].plan')) ?? [];
+
+    return plans.map(plan => plan[0] ?? 'free');
   }
 }
