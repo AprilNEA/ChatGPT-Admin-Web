@@ -85,7 +85,7 @@ export class AccessControlDAL {
 
   static async getRequestsTimeStampsOf(
     ...emailOrIP: string[]
-  ): Promise<number[]> {
+  ): Promise<number[][]> {
     const pipeline = redis.pipeline();
 
     emailOrIP.forEach(emailOrIP => {
