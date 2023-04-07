@@ -1,4 +1,4 @@
-import { describe, expect, test } from "@jest/globals";
+import { describe, expect, test, beforeAll, afterAll} from "@jest/globals";
 import { Register, UserDAL } from "../../src";
 
 const TEST_EMAIL = "test@lmo.best";
@@ -44,6 +44,7 @@ describe("register and login user", () => {
 
 describe("get and activate email register code", () => {
   test("should get the email register code", async () => {
+    // @ts-ignore
     const { code, status } = await new UserDAL(TEST_EMAIL).newRegisterCode(
       "email",
     );
@@ -53,6 +54,7 @@ describe("get and activate email register code", () => {
 
   test("should activate the email register code", async () => {
     const user = new UserDAL(TEST_EMAIL);
+    // @ts-ignore
     const { status, code } = await user.newRegisterCode("email");
     expect(status).toBe(Register.ReturnStatus.Success);
     expect(code).toBeDefined();
@@ -64,6 +66,7 @@ describe("get and activate email register code", () => {
 
   test("should not activate the email register code if it is already activated", async () => {
     const user = new UserDAL(TEST_EMAIL);
+    // @ts-ignore
     const { code } = await user.newRegisterCode("email");
     expect(code).toBeDefined();
 
