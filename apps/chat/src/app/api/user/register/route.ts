@@ -33,7 +33,8 @@ export async function GET(req: NextRequest): Promise<Response> {
 
 export async function POST(req: NextRequest): Promise<Response> {
   try {
-    const { email, password, code, code_type, phone, invitation_code } = await req.json();
+    const { email, password, code, code_type, phone, invitation_code } =
+      await req.json();
     const user = new UserDAL(email);
 
     if (code_type === "email") {
@@ -50,12 +51,22 @@ export async function POST(req: NextRequest): Promise<Response> {
 
       const new_user = await UserDAL.fromRegistration(email, password);
       if (!new_user) throw Error("new user is null");
-      if (invitation_code) await user.acceptInvitationCode(invitation_code);
-      const token= await new_user.accessControl.newSessionToken();
+      if (invitation_code) {
+        const code = await user.acceptInvitationCode(invitation_code.toLowerCase());
+        // if (code && code.type == "club") {
+          await user.newSubscription({
+            startsAt: Date.now(),
+            endsAt: Date.now() + 3 * 60 * 60 * 24 * 1000,
+            plan: "pro",
+            tradeOrderId: `club-code-${invitation_code.toLowerCase()}`,
+          });
+        // }
+      }
+      const token = await new_user.accessControl.newSessionToken();
       return NextResponse.json({
         status: ResponseStatus.Success,
         sessionToken: token,
-        email
+        email,
       });
     } else if (code_type === "phone") {
       if (!(await user.exists()) || !phone) {
@@ -66,7 +77,7 @@ export async function POST(req: NextRequest): Promise<Response> {
       const success = await user.activateRegisterCode(
         code.trim(),
         "phone",
-        phone,
+        phone
       );
       if (success) return NextResponse.json({ status: ResponseStatus.Success });
       else return NextResponse.json({ status: ResponseStatus.invalidCode });

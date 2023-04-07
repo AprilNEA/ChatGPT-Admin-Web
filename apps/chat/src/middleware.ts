@@ -3,7 +3,7 @@ import { UserDAL } from "dal";
 import { LimitReason } from "@/typing.d";
 
 export const config = {
-  matcher: ["/api/chat", "/api/chat-stream", "/api/gpt3", "/api/gpt4"],
+  matcher: ["/api/chat-stream", "/api/gpt3", "/api/gpt4"],
 };
 
 export async function middleware(req: NextRequest, res: NextResponse) {
@@ -17,15 +17,16 @@ export async function middleware(req: NextRequest, res: NextResponse) {
   if (email !== (await user.accessControl.validateSessionToken(token)))
     return NextResponse.json({}, { status: 401 });
 
-  let timesLimit = 25;
+  let timesLimit = 10;
   const planOrRole = await user.getPlan();
   console.log(planOrRole);
   switch (planOrRole) {
     case "admin":
     case "mod":
-    case "premium": // todo 对 Premium 作出限制
-      await user.accessControl.newRequest();
       return NextResponse.next();
+    case "premium": // todo 对 Premium 作出限制
+      timesLimit = 200
+      break
     case "pro":
       timesLimit = 50;
       break;
@@ -36,9 +37,13 @@ export async function middleware(req: NextRequest, res: NextResponse) {
 
   // 速率限制 返回的是一个枚举值 会有 @utils/requests 进一步处理
   const requestNos = await user.accessControl.getRequestsTimeStamp();
-  const requestNosLength = requestNos.length;
+  let requestNosLength = requestNos.length;
   if (requestNosLength > 0 && requestNos[requestNosLength - 1] + 5 > Date.now())
     return NextResponse.json({ code: LimitReason.TooFast }, { status: 429 });
+
+  if (planOrRole.trim().toLowerCase() == "free")
+    requestNos.filter((t) => Date.now() - t < 3600 * 1000);
+  requestNosLength = requestNos.length;
   if (requestNosLength > timesLimit)
     return NextResponse.json({ code: LimitReason.TooMany }, { status: 429 });
 

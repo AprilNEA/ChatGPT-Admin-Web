@@ -44,7 +44,7 @@ function getHeaders() {
 
   if (token && email) {
     headers["token"] = token;
-    headers["email"] = email;
+    headers["email"] = email.toLowerCase();
   }
 
   return headers;

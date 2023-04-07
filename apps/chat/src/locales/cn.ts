@@ -7,7 +7,7 @@ const cn = {
   Error: {
     Unauthorized: "现在是未登录状态，请刷新浏览器缓存并登录。",
     TooManyRequests:
-      "您的账户在三小时内的使用次数已达到最大请求数，请稍后再试。",
+      "您的账户在三小时内的使用次数已达到最大请求数，请稍后再试。\n 如果您需要更多的使用次数，可在用户信息中查看付费计划。",
     TooFastRequests: "请求地太快啦，稍等一下（请求间隔5秒）。",
     ContentBlock: "请检查文本中的敏感词，如有误杀请联系客服。",
   },
@@ -49,6 +49,7 @@ const cn = {
     },
     RateLimit: {
       Title: "固定时间内消息条数限制(三小时)",
+      TitleFree: "固定时间内消息条数限制",
       Subtitle: "总共请求的消息条数 点击查看具体请求时间",
       Interval: "请求间隔",
       IntervalDesp: "每隔几秒可请求一次",
