@@ -65,7 +65,7 @@ export class AccessControlDAL {
     // 移除所有过期的时间戳 ie. 3 hours ago
     else await redis.zremrangebyscore(key, 0, Date.now() - 3 * 60 * 60 * 1000);
 
-    return await redis.zrange<number[]>(key, 0, -1);
+    return await redis.zrange<number[]>(key, 0, -1, { byScore: true });
   }
 
   /**
