@@ -4,14 +4,19 @@ import styles from "@/styles/module/login.module.scss";
 import ChatGptIcon from "@/assets/icons/chatgpt.svg";
 import { showToast } from "@/components/ui-lib";
 import { RegisterResponse, ResponseStatus } from "@/app/api/typing.d";
+import { useSearchParams } from "next/navigation";
 
 export function Login(props: { setIsLogin: () => void }) {
+  const searchParams = useSearchParams();
+
   const [showPage, setShowPage] = useState("index");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isSending, setIsSending] = useState(false);
   const [verificationCode, setVerificationCode] = useState("");
-  const [invitationCode, setInvitationCode] = useState("");
+  const [invitationCode, setInvitationCode] = useState(
+    searchParams.get("code") ?? ""
+  );
 
   // 防止表单重复 提交
   const [submitting, setSubmitting] = useState(false);
@@ -20,6 +25,7 @@ export function Login(props: { setIsLogin: () => void }) {
     state.updateEmail,
   ]);
 
+  const search = searchParams.get("search");
   useEffect(() => {
     showToast("新用户直接登录即可注册", 1000);
   }, []);
@@ -84,7 +90,7 @@ export function Login(props: { setIsLogin: () => void }) {
           password,
           code: verificationCode,
           code_type: "email",
-          invitation_code: invitationCode,
+          invitation_code: invitationCode.toLowerCase(),
         }),
       })
     ).json()) as RegisterResponse;
@@ -295,7 +301,8 @@ export function Login(props: { setIsLogin: () => void }) {
                 type="text"
                 id="invitation-code"
                 placeholder="可选"
-                onChange={(e) => setVerificationCode(e.target.value)}
+                value={invitationCode}
+                onChange={(e) => setInvitationCode(e.target.value)}
               />
             </div>
           </div>
