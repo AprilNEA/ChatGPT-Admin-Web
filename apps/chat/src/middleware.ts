@@ -41,7 +41,7 @@ export async function middleware(req: NextRequest, res: NextResponse) {
   if (requestNosLength > 0 && requestNos[requestNosLength - 1] + 5 > Date.now())
     return NextResponse.json({ code: LimitReason.TooFast }, { status: 429 });
 
-  if (planOrRole.trim().toLowerCase() == "free")
+  if ((planOrRole ?? 'free').trim().toLowerCase() == "free")
     requestNos.filter((t) => Date.now() - t < 3600 * 1000);
   requestNosLength = requestNos.length;
   if (requestNosLength > timesLimit)
