@@ -1,9 +1,9 @@
 export class CookieParser {
   // Parses cookies into a Map
-  public static parse(cookie: string): Map<string, string> {
+  public static parse(cookieString: string): Map<string, string> {
     const cookies: Map<string, string> = new Map();
 
-    cookie.split(";").forEach((cookie) => {
+    cookieString.split(";").forEach((cookie) => {
       const [key, value] = cookie.split("=").map((part) => part.trim());
       cookies.set(decodeURIComponent(key), decodeURIComponent(value));
     });
@@ -11,18 +11,16 @@ export class CookieParser {
     return cookies;
   }
 
-  // Converts a Map back to cookies
-  public static serialize(
-    cookies: Map<string, string>,
-  ): string {
-    const resultCookie: string[] = [];
+  // Converts a Map back to a cookie string
+  public static serialize(cookies: Map<string, string>): string {
+    const serializedCookies: string[] = [];
 
     cookies.forEach((value, key) => {
-      resultCookie.push(
+      serializedCookies.push(
         `${encodeURIComponent(key)}=${encodeURIComponent(value)}`,
       );
     });
 
-    return resultCookie.join("; ");
+    return serializedCookies.join("; ");
   }
 }
