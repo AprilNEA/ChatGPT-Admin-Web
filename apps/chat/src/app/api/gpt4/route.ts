@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { askGPT } from "@/app/api/gpt4/gpt4";
 import { textSecurity } from "@/lib/content/tencent";
-import { APIKeyDAL } from "dal";
 
 export async function POST(req: NextRequest) {
   try {
@@ -29,10 +28,6 @@ export async function POST(req: NextRequest) {
       },
       { max_tokens, temperature, model },
     );
-
-    if (newCookie) {
-      APIKeyDAL.setLexSession(newCookie.slice(0, newCookie.indexOf(";")));
-    }
 
     if (!gptStream) {
       console.error("[Chat Stream]", "[API ERROR]");
