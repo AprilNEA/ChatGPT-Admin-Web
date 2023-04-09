@@ -1,4 +1,4 @@
-import { CookieParser } from "src/utils/cookie";
+import { CookieParser } from "../utils/cookie";
 import { redis } from "../redis/client";
 
 const INITIAL_***REMOVED*** = CookieParser.parse(process.env.***REMOVED***!);
