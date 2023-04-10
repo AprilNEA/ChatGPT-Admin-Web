@@ -251,6 +251,7 @@ export class UserDAL {
       '$.inviteeEmails',
       JSON.stringify(this.email)
     );
+    await redis.json.numincrby(inviterCodeKey, '$.resetChances', 1);
 
     await Promise.all([setCode, appendEmail]);
 
