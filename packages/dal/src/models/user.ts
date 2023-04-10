@@ -198,7 +198,7 @@ export class UserDAL {
     code?: string,
     limit?: number
   ): Promise<string> {
-    if (!code) code = md5.hash(this.email + Date.now());
+    if (!code) code = md5.hash(this.email + Date.now()).slice(0, 6);
     const key = `invitationCode:${code}`;
 
     const invitationCode: Model.InvitationCode = {
