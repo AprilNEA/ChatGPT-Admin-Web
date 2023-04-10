@@ -268,6 +268,7 @@ export function Profile(props: { closeSettings: () => void }) {
               onClick={() => {
                 handleResetLimit();
                 mutate("/api/user/reset", chances ? chances - 1 : -1, false);
+                mutate("/api/user/get-limit", 0, false);
               }}
             >
               {Locale.Profile.Reset.Click(chances ?? -1)}

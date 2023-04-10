@@ -95,4 +95,11 @@ export class AccessControlDAL {
 
     return await pipeline.exec();
   }
+
+  async resetLimit() {
+    const key = `limit:${this.emailOrIP}`;
+    await redis.zremrangebyrank(key, 0, -1);
+
+    return await redis.zrange<number[]>(key, 0, -1);
+  }
 }

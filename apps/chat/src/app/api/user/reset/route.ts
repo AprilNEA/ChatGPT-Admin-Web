@@ -31,8 +31,8 @@ export async function POST(req: NextRequest): Promise<Response> {
     return NextResponse.json({}, { status: 401 });
 
   const chances = await user.getResetChances();
-  if (chances > 0) {
-    await user.changeResetChancesBy(-1);
+  if (chances > 0 && (await user.changeResetChancesBy(-1))) {
+    await user.accessControl.resetLimit();
     return NextResponse.json({
       status: ResponseStatus.Success,
       chances: chances - 1,
