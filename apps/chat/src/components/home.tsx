@@ -69,6 +69,10 @@ export function Home() {
     ]);
   useEffect(() => {
     Announcement(versionId, updateVersionId);
+    if (!sessionToken) {
+      setIsLogin(false);
+      return;
+    }
     if (validateSessionToken()) {
       setIsLogin(true);
     } else {

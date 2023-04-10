@@ -83,6 +83,8 @@ export async function requestChatStream(
     onController?: (controller: AbortController) => void;
   }
 ) {
+  const userStore = useUserStore.getState();
+
   const req = makeRequestParam(messages, {
     stream: true,
     filterBot: options?.filterBot,
@@ -99,7 +101,7 @@ export async function requestChatStream(
   const reqTimeoutId = setTimeout(() => controller.abort(), TIME_OUT_MS);
 
   try {
-    const res = await fetch("/api/gpt4", {
+    const res = await fetch("/api/chat-stream", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -145,6 +147,7 @@ export async function requestChatStream(
         case 401:
           console.error("Anauthorized");
           responseText = Locale.Error.Unauthorized;
+          userStore.updateSessionToken("");
           return finish();
 
         case 402:

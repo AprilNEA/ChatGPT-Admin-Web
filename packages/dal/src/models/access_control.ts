@@ -46,6 +46,7 @@ export class AccessControlDAL {
     if (!sessionToken) return null;
     if (sessionToken.isRevoked) return null;
 
+    await redis.expire(`sessionToken:${token.trim()}`, 24 * 60 * 60); // Expire in 1 day
     return sessionToken.userEmail;
   }
 

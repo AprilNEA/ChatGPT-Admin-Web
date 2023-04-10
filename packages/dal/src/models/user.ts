@@ -269,7 +269,7 @@ export class UserDAL {
   }
 
   async getResetChances(): Promise<number> {
-    return (await this.get('$.resetChances'))[0] ?? -1;
+    return (await this.get('$.resetChances'))[0] ?? 0;
   }
 
   async changeResetChancesBy(value: number): Promise<boolean> {
