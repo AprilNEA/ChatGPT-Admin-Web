@@ -1,8 +1,8 @@
 import {
   BingGeneratorEvent,
+  EventIteratorHandlers,
   POSTBody,
   RecordedMessage,
-  SendMessageHandlers,
 } from "./types";
 import { TextDecoderStreamPolyfill, TextLineStream } from "./utils";
 
@@ -56,10 +56,10 @@ export async function* streamToEventGenerator(
 /**
  * (Frontend and Backend)
  */
-export async function sendMessage(
+export async function handleEventIterator(
   iterator: AsyncIterableIterator<BingGeneratorEvent>,
   { onQuery, onAnswer, onReset, onDone, onError }: Partial<
-    SendMessageHandlers
+    EventIteratorHandlers
   > = {},
 ) {
   for await (const event of iterator) {
