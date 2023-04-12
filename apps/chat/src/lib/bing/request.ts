@@ -1,5 +1,5 @@
 import { BingGeneratorEvent, POSTBody, SendMessageHandlers } from "./types";
-import { TextLineStream } from "./utils";
+import { TextDecoderStreamPolyfill, TextLineStream } from "./utils";
 
 const API_ENDPOINT = "https://bing.p1xl.me/chat";
 
@@ -19,7 +19,7 @@ async function* streamToEventGenerator(
   stream: ReadableStream<Uint8Array>,
 ): AsyncGenerator<BingGeneratorEvent> {
   const lineStream = stream
-    .pipeThrough(new TextDecoderStream()) // only work in browser
+    .pipeThrough(new TextDecoderStreamPolyfill())
     .pipeThrough(new TextLineStream());
 
   const reader = lineStream.getReader();
