@@ -8,7 +8,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   const stream = await sendMessageAndGetStream({
     userMessage,
     history,
-    cookie: "", // TODO: cookie pool
+    cookie: process.env.BING_COOKIE!, // TODO: cookie pool
   });
 
   return new NextResponse(stream);
