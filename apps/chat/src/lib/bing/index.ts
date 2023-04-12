@@ -10,6 +10,9 @@ export type { BingGeneratorEvent, POSTBody, RecordedMessage };
 
 const API_ENDPOINT = "https://bing.p1xl.me/chat";
 
+/**
+ * (Backend Only)
+ */
 export function sendMessageAndGetStream(
   body: POSTBody,
 ): Promise<ReadableStream<Uint8Array>> {
@@ -22,7 +25,10 @@ export function sendMessageAndGetStream(
   }).then((res) => res.body!);
 }
 
-async function* streamToEventGenerator(
+/**
+ * (Frontend and Backend)
+ */
+export async function* streamToEventGenerator(
   stream: ReadableStream<Uint8Array>,
 ): AsyncGenerator<BingGeneratorEvent> {
   const lineStream = stream
@@ -47,19 +53,16 @@ async function* streamToEventGenerator(
   reader.releaseLock();
 }
 
-export function sendMessageGenerator(
-  body: POSTBody,
-): Promise<AsyncGenerator<BingGeneratorEvent>> {
-  return sendMessageAndGetStream(body).then(streamToEventGenerator);
-}
-
+/**
+ * (Frontend and Backend)
+ */
 export async function sendMessage(
-  body: POSTBody,
+  iterator: AsyncIterableIterator<BingGeneratorEvent>,
   { onQuery, onAnswer, onReset, onDone, onError }: Partial<
     SendMessageHandlers
   > = {},
 ) {
-  for await (const event of await sendMessageGenerator(body)) {
+  for await (const event of iterator) {
     switch (event.type) {
       case "ANSWER":
         onAnswer?.(event.answer);
