@@ -1,9 +1,4 @@
-import {
-  BingGeneratorEvent,
-  POSTBody,
-  RecordedMessage,
-  sendMessageHandlers,
-} from "./types";
+import { BingGeneratorEvent, POSTBody, SendMessageHandlers } from "./types";
 import { TextLineStream } from "./utils";
 
 const API_ENDPOINT = "https://bing.p1xl.me/chat";
@@ -49,24 +44,26 @@ export function sendMessageGenerator(
 
 export async function sendMessage(
   body: POSTBody,
-  { onQuery, onAnswer, onReset, onDone, onError }: sendMessageHandlers,
+  { onQuery, onAnswer, onReset, onDone, onError }: Partial<
+    SendMessageHandlers
+  > = {},
 ) {
   for await (const event of await sendMessageGenerator(body)) {
     switch (event.type) {
       case "ANSWER":
-        onAnswer(event.answer);
+        onAnswer?.(event.answer);
         break;
       case "QUERY":
-        onQuery(event.query);
+        onQuery?.(event.query);
         break;
       case "RESET":
-        onReset(event.text);
+        onReset?.(event.text);
         break;
       case "DONE":
-        onDone(event.text);
+        onDone?.(event.text);
         break;
       case "ERROR":
-        onError(event.error);
+        onError?.(event.error);
         break;
     }
   }

@@ -26,7 +26,7 @@ export interface POSTBody {
   history?: RecordedMessage[];
 }
 
-export interface sendMessageHandlers {
+export interface SendMessageHandlers {
   onQuery: (query: string) => void;
   onAnswer: (answer: string) => void;
   onReset: (text: string) => void;
