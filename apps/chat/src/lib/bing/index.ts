@@ -1,9 +1,16 @@
-import { BingGeneratorEvent, POSTBody, SendMessageHandlers } from "./types";
+import {
+  BingGeneratorEvent,
+  POSTBody,
+  RecordedMessage,
+  SendMessageHandlers,
+} from "./types";
 import { TextDecoderStreamPolyfill, TextLineStream } from "./utils";
+
+export type { BingGeneratorEvent, POSTBody, RecordedMessage };
 
 const API_ENDPOINT = "https://bing.p1xl.me/chat";
 
-function sendMessageAndGetStream(
+export function sendMessageAndGetStream(
   body: POSTBody,
 ): Promise<ReadableStream<Uint8Array>> {
   return fetch(API_ENDPOINT, {
@@ -19,7 +26,11 @@ async function* streamToEventGenerator(
   stream: ReadableStream<Uint8Array>,
 ): AsyncGenerator<BingGeneratorEvent> {
   const lineStream = stream
-    .pipeThrough(new TextDecoderStreamPolyfill())
+    .pipeThrough(
+      window.TextDecoderStream
+        ? new TextDecoderStream()
+        : new TextDecoderStreamPolyfill(),
+    )
     .pipeThrough(new TextLineStream());
 
   const reader = lineStream.getReader();
