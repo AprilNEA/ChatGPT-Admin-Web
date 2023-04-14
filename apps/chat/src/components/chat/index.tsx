@@ -1,4 +1,4 @@
-import { Message, useChatStore } from "@/store";
+import { Message, useChatStore, useUserStore } from "@/store";
 import { ChatSession } from "@/types/chat";
 import { SubmitKey } from "@/types/setting";
 
@@ -28,6 +28,8 @@ import { IconButton } from "@/components/button";
 import { showModal } from "@/components/ui-lib";
 
 import dynamic from "next/dynamic";
+import Banner from "@/components/banner";
+import useSWR from "swr";
 
 function useSubmitHandler() {
   const config = useChatStore((state) => state.config);
@@ -124,6 +126,21 @@ export function Chat(props: {
   showProfile?: () => void;
   sideBarShowing?: boolean;
 }) {
+  const email = useUserStore((state) => state.email);
+
+  const { data: PlanAndInviteCode, isLoading: PlanLoading } = useSWR(
+    "/api/user/info",
+    (url) =>
+      fetch(url, {
+        headers: { email },
+      }).then((res) => res.json())
+  );
+
+  const { role: plan, inviteCode: inviteCode } = PlanAndInviteCode ?? {
+    role: "free",
+    inviteCode: "",
+  };
+
   type RenderMessage = Message & { preview?: boolean };
 
   const [session, sessionIndex] = useChatStore((state) => [
@@ -236,17 +253,20 @@ export function Chat(props: {
   return (
     <div className={styles.chat} key={session.id}>
       <div className={styles["window-header"]}>
-        <div
-          className={styles["window-header-title"]}
-          onClick={props?.showSideBar}
-        >
-          <div className={styles["window-header-main-title"]}>
-            {session.topic}
+        {plan != "free" && (
+          <div
+            className={styles["window-header-title"]}
+            onClick={props?.showSideBar}
+          >
+            <div className={styles["window-header-main-title"]}>
+              {session.topic}
+            </div>
+            <div className={styles["window-header-sub-title"]}>
+              {Locale.Chat.SubTitle(session.messages.length)}
+            </div>
           </div>
-          <div className={styles["window-header-sub-title"]}>
-            {Locale.Chat.SubTitle(session.messages.length)}
-          </div>
-        </div>
+        )}
+        {plan == "free" && <Banner />}
         <div className={styles["window-actions"]}>
           <div className={styles["window-action-button"] + " " + styles.mobile}>
             <IconButton
