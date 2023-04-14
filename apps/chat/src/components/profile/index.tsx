@@ -281,7 +281,7 @@ export function Profile(props: { closeSettings: () => void }) {
             title={
               plan == "free"
                 ? Locale.Profile.RateLimit.TitleFree
-                : Locale.Profile.RateLimit.Title
+                : Locale.Profile.RateLimit.Title(1)
             }
             subTitle={Locale.Profile.RateLimit.Subtitle}
           >
