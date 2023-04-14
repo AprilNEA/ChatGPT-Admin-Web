@@ -28,7 +28,7 @@ import { IconButton } from "@/components/button";
 import { showModal } from "@/components/ui-lib";
 
 import dynamic from "next/dynamic";
-import Banner from "@/components/banner";
+import Banner, { Post } from "@/components/banner";
 import useSWR from "swr";
 
 function useSubmitHandler() {
@@ -157,9 +157,19 @@ export function Chat(props: {
   const onUserSubmit = () => {
     if (userInput.length <= 0) return;
 
-    // if (['fff'].includes(userInput)) {
-    //   setUserInput("您的回答中包含非法内容.")
-    // } else {
+    if (plan == "free") {
+      const keywords = ["中介", "留学", "文书"];
+
+      for (let i = 0; i < keywords.length; i++) {
+        if (userInput.includes(keywords[i])) {
+          showModal({
+            title: `Ad`,
+            children: <Post />,
+          });
+        }
+      }
+    }
+
     setIsLoading(true);
     onUserInput(userInput).then(() => setIsLoading(false));
     setUserInput("");

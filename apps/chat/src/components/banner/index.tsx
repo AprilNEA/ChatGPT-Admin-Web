@@ -3,6 +3,7 @@ import styles from '@/styles/module/banner.module.scss';
 import Image from 'next/image'
 import Link from "next/link";
 import BannerImage from "@/assets/banner.png";
+import PostImage from "@/assets/post.png"
 import {inspect} from "util";
 
 const Banner = () => {
@@ -14,5 +15,11 @@ const Banner = () => {
     </div>
   );
 };
+
+export const Post = () => {
+  return (
+    <Image src={PostImage} alt="banner" width={400} height={400}/>
+  )
+}
 
 export default Banner;
