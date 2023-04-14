@@ -5,6 +5,7 @@ import ChatGptIcon from "@/assets/icons/chatgpt.svg";
 import { showToast } from "@/components/ui-lib";
 import { RegisterResponse, ResponseStatus } from "@/app/api/typing.d";
 import { useSearchParams } from "next/navigation";
+import Locales from "@/locales";
 
 export function Login(props: { setIsLogin: () => void }) {
   const searchParams = useSearchParams();
@@ -26,9 +27,6 @@ export function Login(props: { setIsLogin: () => void }) {
   ]);
 
   const search = searchParams.get("search");
-  useEffect(() => {
-    showToast("新用户直接登录即可注册", 1000);
-  }, []);
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -54,20 +52,20 @@ export function Login(props: { setIsLogin: () => void }) {
       case ResponseStatus.Success: {
         updateSessionToken(res.sessionToken);
         updateEmail(email);
-        showToast("成功登录!", 3000);
+        showToast(Locales.Index.Success(Locales.Index.Login), 3000);
         props.setIsLogin();
         break;
       }
       case ResponseStatus.notExist: {
-        showToast("新用户, 请注册");
+        showToast(Locales.Index.NotYetRegister);
         break;
       }
       case ResponseStatus.wrongPassword: {
-        showToast("密码错误");
+        showToast(Locales.Index.PasswordError);
         break;
       }
       default: {
-        showToast("未知错误");
+        showToast(Locales.UnknownError);
         break;
       }
     }
@@ -75,7 +73,7 @@ export function Login(props: { setIsLogin: () => void }) {
 
   const handleRegister = async () => {
     if (!email || !password || !verificationCode) {
-      showToast("请输入邮箱密码和验证码");
+      showToast(Locales.Index.NoneData);
       setSubmitting(false);
       return;
     }
@@ -104,19 +102,19 @@ export function Login(props: { setIsLogin: () => void }) {
         updateSessionToken(res.sessionToken);
         updateEmail(email);
         props.setIsLogin();
-        showToast("注册成功!", 3000);
+        showToast(Locales.Index.Success(Locales.Index.Register), 3000);
         break;
       }
       case ResponseStatus.alreadyExisted: {
-        showToast("该邮箱已经注册，请尝试更换邮箱!");
+        showToast(Locales.Index.DuplicateRegistration);
         break;
       }
       case ResponseStatus.invalidCode: {
-        showToast("验证码错误");
+        showToast(Locales.Index.CodeError);
         break;
       }
       default: {
-        showToast("未知错误");
+        showToast(Locales.UnknownError);
         break;
       }
     }
@@ -160,24 +158,24 @@ export function Login(props: { setIsLogin: () => void }) {
             setIsSending(true);
             break;
           case 1:
-            showToast("该邮箱已经注册，请尝试更换邮箱!");
+            showToast(Locales.Index.DuplicateRegistration);
             break;
           case 2:
             showToast("请求验证码过快，请稍后再试!");
             break;
           case 4:
           default:
-            showToast("未知错误，请联系管理员!");
+            showToast(Locales.UnknownError);
             break;
         }
         break;
       }
       case ResponseStatus.notExist: {
-        showToast("邮箱不存在，请重新输入");
+        showToast(Locales.Index.EmailNonExistent);
         break;
       }
       default: {
-        showToast("未知错误");
+        showToast(Locales.UnknownError);
         break;
       }
     }
