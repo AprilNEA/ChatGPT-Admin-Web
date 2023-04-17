@@ -157,8 +157,9 @@ export function Chat(props: {
   };
 
   // check if should send message
-  const onInputKeyDown = (e: KeyboardEvent) => {
-    if (shouldSubmit(e)) {
+  const onInputKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.nativeEvent.isComposing) return;
+    if (shouldSubmit(e.nativeEvent)) {
       onUserSubmit();
       e.preventDefault();
     }
@@ -376,7 +377,7 @@ export function Chat(props: {
             rows={3}
             onInput={(e) => setUserInput(e.currentTarget.value)}
             value={userInput}
-            onKeyDown={(e) => onInputKeyDown(e as any)}
+            onKeyDown={(e) => onInputKeyDown(e)}
             onFocus={() => setAutoScroll(true)}
             onBlur={() => setAutoScroll(false)}
             autoFocus={!props?.sideBarShowing}
