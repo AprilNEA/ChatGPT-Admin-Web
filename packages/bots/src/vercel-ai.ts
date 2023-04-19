@@ -1,9 +1,18 @@
 import { AbstractBot } from "./abstract-bot";
 import { AnswerParams, VercelAIModel, VercelAIPayload } from "./types";
-import { chatRecordsToString, GPT_DEFAULT_SYSTEM_MESSAGE } from "./prompt";
+import {
+  chatRecordsToString,
+  GPT3_DEFAULT_SYSTEM_MESSAGE,
+  GPT4_DEFAULT_SYSTEM_MESSAGE,
+} from "./prompt";
 import { streamToLineIterator } from "./utils";
 
 const REQUEST_URL = "https://play.vercel.ai/api/generate";
+
+const SYSTEM_MESSAGES: Record<VercelAIModel, string> = {
+  "openai:gpt-3.5-turbo": GPT3_DEFAULT_SYSTEM_MESSAGE,
+  "openai:gpt-4": GPT4_DEFAULT_SYSTEM_MESSAGE,
+};
 
 interface VercelAIGenerateParams extends AnswerParams {
   model: VercelAIModel;
@@ -17,7 +26,7 @@ async function* generate({
 }: VercelAIGenerateParams) {
   const payload: VercelAIPayload = {
     model,
-    prompt: chatRecordsToString(conversation, GPT_DEFAULT_SYSTEM_MESSAGE),
+    prompt: chatRecordsToString(conversation, SYSTEM_MESSAGES[model]),
     maxTokens,
     frequencyPenalty: 0,
     presencePenalty: 0,
