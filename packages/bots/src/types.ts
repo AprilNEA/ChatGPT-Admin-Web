@@ -1,15 +1,26 @@
-export enum ChatEventType {
-  NEW_TOKEN,
-  ERROR,
-  DONE
+export type ChatRole = "bot" | "user" | "system" | "context";
+
+export type ChatRecord = {
+  role: ChatRole;
+  content: string;
+};
+
+export interface AnswerParams {
+  conversation: ChatRecord[];
+  maxTokens?: number;
+  signal?: AbortSignal;
 }
 
-export type ChatEvent ={
-  type: ChatEventType.DONE
-} | {
-  type: ChatEventType.NEW_TOKEN,
-  token: string
-} | {
-  type: ChatEventType.ERROR
-  error: Error
+export type VercelAIModel = "openai:gpt-3.5-turbo" | "openai:gpt-4";
+
+export interface VercelAIPayload {
+  frequencyPenalty?: number;
+  maxTokens?: number;
+  model: VercelAIModel;
+  presencePenalty?: number;
+  prompt: string;
+  stopSequences?: string[];
+  temperature?: number;
+  topK?: number;
+  topP?: number;
 }
