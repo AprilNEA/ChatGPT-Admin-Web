@@ -58,7 +58,7 @@ abstract class AbstractVercelBot extends AbstractBot {
   protected abstract model: VercelAIModel;
 
   protected override doAnswer = (params: AnswerParams) =>
-    generate({ model: this.model, ...params });
+    generate({ ...params, model: this.model });
 }
 
 export class VercelGPT3Bot extends AbstractVercelBot {
