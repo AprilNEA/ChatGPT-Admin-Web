@@ -2,6 +2,7 @@
 .vscode/
 .idea/
 
+**/.next/
 **/.vscode/
 **/.idea/
 **/.next/
