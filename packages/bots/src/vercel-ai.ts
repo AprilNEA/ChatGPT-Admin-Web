@@ -46,7 +46,7 @@ async function* generate({
   });
 
   if (!response.ok) {
-    throw new Error(`Request failed: ${response.statusText}`);
+    throw new Error(`${response.statusText}: ${await response.text()}`);
   }
 
   for await (const line of streamToLineIterator(response.body!)) {

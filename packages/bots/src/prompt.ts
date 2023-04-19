@@ -25,7 +25,7 @@ export function chatRecordsToString(
         default:
           throw new Error(`Unknown message author: ${msg.content}`);
       }
-    }).join("\n\n");
+    }).join("\n\n") + "\n\n[assistant](#message)";
 }
 
 export const BING_DEFAULT_SYSTEM_MESSAGE =
