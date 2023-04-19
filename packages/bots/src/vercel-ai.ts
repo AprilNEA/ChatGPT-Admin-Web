@@ -5,12 +5,17 @@ import { streamToLineIterator } from "./utils";
 
 const REQUEST_URL = "https://play.vercel.ai/api/generate";
 
-async function* generate(model: VercelAIModel, {
+interface VercelAIGenerateParams extends AnswerParams {
+  model: VercelAIModel;
+}
+
+async function* generate({
+  model,
   conversation,
   maxTokens = 1000,
   signal,
-}: AnswerParams) {
-  const payload: Required<VercelAIPayload> = {
+}: VercelAIGenerateParams) {
+  const payload: VercelAIPayload = {
     model,
     prompt: chatRecordsToString(conversation, GPT_DEFAULT_SYSTEM_MESSAGE),
     maxTokens,
@@ -32,7 +37,7 @@ async function* generate(model: VercelAIModel, {
   });
 
   if (!response.ok) {
-    throw new Error("Request failed");
+    throw new Error(`Request failed: ${response.statusText}`);
   }
 
   for await (const line of streamToLineIterator(response.body!)) {
@@ -40,12 +45,17 @@ async function* generate(model: VercelAIModel, {
   }
 }
 
-export class VercelGPT3Bot extends AbstractBot {
+abstract class AbstractVercelBot extends AbstractBot {
+  protected abstract model: VercelAIModel;
+
   protected override doAnswer = (params: AnswerParams) =>
-    generate("openai:gpt-3.5-turbo", params);
+    generate({ model: this.model, ...params });
 }
 
-export class VercelGPT4Bot extends AbstractBot {
-  protected override doAnswer = (params: AnswerParams) =>
-    generate("openai:gpt-4", params);
+export class VercelGPT3Bot extends AbstractVercelBot {
+  protected override model: VercelAIModel = "openai:gpt-3.5-turbo";
+}
+
+export class VercelGPT4Bot extends AbstractVercelBot {
+  protected override model: VercelAIModel = "openai:gpt-4";
 }

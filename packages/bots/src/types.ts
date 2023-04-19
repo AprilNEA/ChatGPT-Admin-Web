@@ -11,16 +11,26 @@ export interface AnswerParams {
   signal?: AbortSignal;
 }
 
-export type VercelAIModel = "openai:gpt-3.5-turbo" | "openai:gpt-4";
+export type VercelAIModel = `openai:${GPTModel}`;
 
-export interface VercelAIPayload {
-  frequencyPenalty?: number;
-  maxTokens?: number;
+export type VercelAIPayload = {
+  frequencyPenalty: number;
+  maxTokens: number;
   model: VercelAIModel;
-  presencePenalty?: number;
+  presencePenalty: number;
   prompt: string;
-  stopSequences?: string[];
-  temperature?: number;
-  topK?: number;
-  topP?: number;
-}
+  stopSequences: string[];
+  temperature: number;
+  topK: number;
+  topP: number;
+};
+
+export type GPTModel = "gpt-3.5-turbo" | "gpt-4";
+
+export type LexPayload = {
+  text: string;
+  max_tokens: number;
+  gpt_model: GPTModel;
+  temperature: number;
+  authenticity_token: string;
+};
