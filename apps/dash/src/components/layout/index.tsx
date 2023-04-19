@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import React, { useState } from "react";
 import {
   DesktopOutlined,
@@ -7,6 +8,7 @@ import {
   PieChartOutlined,
   TeamOutlined,
   UserOutlined,
+  SettingOutlined,
 } from "@ant-design/icons";
 import type { MenuProps } from "antd";
 import { Breadcrumb, Layout, Menu, theme } from "antd";
@@ -30,18 +32,32 @@ function getItem(
 }
 
 const items: MenuItem[] = [
-  getItem("Option 1", "1", <PieChartOutlined />),
-  getItem("Option 2", "2", <DesktopOutlined />),
-  getItem("User", "sub1", <UserOutlined />, [
-    getItem("Tom", "3"),
-    getItem("Bill", "4"),
-    getItem("A***REMOVED***", "5"),
-  ]),
-  getItem("Team", "sub2", <TeamOutlined />, [
-    getItem("Team 1", "6"),
-    getItem("Team 2", "8"),
-  ]),
-  getItem("Files", "9", <FileOutlined />),
+  getItem(
+    "Dashboard",
+    "dashboard",
+    <Link href="/dashboard">
+      <PieChartOutlined />
+    </Link>
+  ),
+  // getItem("Option 2", "2", <DesktopOutlined />),
+  getItem(
+    "User",
+    "user",
+    <Link href="/user">
+      <UserOutlined />
+    </Link>
+  ),
+  // getItem("Team", "sub2", <TeamOutlined />, [
+  //   getItem("Team 1", "6"),
+  //   getItem("Team 2", "8"),
+  // ]),
+  getItem(
+    "Settings",
+    "settings",
+    <Link href="/settings">
+      <SettingOutlined />
+    </Link>
+  ),
 ];
 
 const BaseLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
