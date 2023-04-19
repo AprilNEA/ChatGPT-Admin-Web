@@ -4,8 +4,8 @@
 
 **/.vscode/
 **/.idea/
-
+**/.next/
 # Turbopack
 .turbo
 
-*node_modules/
+**/node_modules/
