@@ -16,9 +16,27 @@ export async function GET(req: NextRequest): Promise<Response> {
     return NextResponse.json({}, { status: 401 });
 
   const chances = await user.getResetChances();
-  if (chances > 0) {
-    await user.changeResetChancesBy(-1);
-    return NextResponse.json({ status: ResponseStatus.Success });
+  return NextResponse.json({ status: ResponseStatus.Success, chances });
+}
+
+export async function POST(req: NextRequest): Promise<Response> {
+  const email = req.headers.get("email");
+  const token = req.headers.get("token");
+
+  if (!email || !token) return NextResponse.json({}, { status: 404 });
+
+  const user = new UserDAL(email);
+  // 鉴权
+  if (email !== (await user.accessControl.validateSessionToken(token)))
+    return NextResponse.json({}, { status: 401 });
+
+  const chances = await user.getResetChances();
+  if (chances > 0 && (await user.changeResetChancesBy(-1))) {
+    await user.accessControl.resetLimit();
+    return NextResponse.json({
+      status: ResponseStatus.Success,
+      chances: chances - 1,
+    });
   }
-  return NextResponse.json({ status: ResponseStatus.Failed });
+  return NextResponse.json({ status: ResponseStatus.Failed, chances });
 }

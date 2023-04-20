@@ -4,7 +4,24 @@ const en: LocaleType = {
   Index: {
     Title: "ChatGPT (GPT-4)",
     SubTitle: "Follow WeChat OA:",
+    Submit: "提交",
+    Login: "登录",
+    Register: "注册",
+    Success: (action: string) => `${action}成功`,
+    Failed: (action: string) => `${action}失败`,
+    Username: "用户名",
+    Password: "密码",
+    Email: "邮箱",
+    GetEmailCode: "获取邮箱验证码",
+    GetPhoneCode: "获取手机验证码",
+    NoneData: "请确保邮箱、密码和验证码输入完整",
+    EmailNonExistent: "邮箱不存在，请重新输入",
+    NotYetRegister: "新用户，请先注册",
+    DuplicateRegistration: "该邮箱已被注册",
+    CodeError: "验证码错误",
+    PasswordError: "密码错误",
   },
+    UnknownError: "未知错误，请联系管理员",
   WIP: "WIP...",
   Error: {
     Unauthorized:
@@ -55,7 +72,7 @@ const en: LocaleType = {
       Click: (t: number) => `Clear once Remaining: ${t}`,
     },
     RateLimit: {
-      Title: "Fixed Time Message Limit (Three Hours)",
+      Title: (t: number) => `Fixed Time Message Limit (${t}Hours)`,
       TitleFree: "Fixed Time Message Limit (Free User)",
       Subtitle:
         "Total number of requested messages Click to view specific request time",

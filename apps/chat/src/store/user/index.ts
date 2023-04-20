@@ -15,7 +15,6 @@ export interface UserStore {
   updateRequestsNo: () => void;
   updateVersionId: (versionId: string) => void;
   updateEmail: (email: string) => void;
-  updatePlan: () => void;
   updateSessionToken: (sessionToken: string) => void;
   validateSessionToken: () => boolean;
 }
@@ -75,16 +74,6 @@ export const useUserStore = create<UserStore>()(
 
       updateVersionId(versionId: string) {
         set((state) => ({ versionId }));
-      },
-
-      updatePlan() {
-        fetch("/api/user/info", {
-          headers: { email: get().email },
-        })
-          .then((res) => res.json())
-          .then((res) => {
-            set((state) => ({ plan: res.role, inviteCode: res.inviteCode }));
-          });
       },
 
       updateEmail(email: string) {

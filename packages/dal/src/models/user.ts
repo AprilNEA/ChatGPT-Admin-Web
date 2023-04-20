@@ -198,7 +198,7 @@ export class UserDAL {
     code?: string,
     limit?: number
   ): Promise<string> {
-    if (!code) code = md5.hash(this.email + Date.now());
+    if (!code) code = md5.hash(this.email + Date.now()).slice(0, 6);
     const key = `invitationCode:${code}`;
 
     const invitationCode: Model.InvitationCode = {
@@ -251,6 +251,7 @@ export class UserDAL {
       '$.inviteeEmails',
       JSON.stringify(this.email)
     );
+    await redis.json.numincrby(inviterCodeKey, '$.resetChances', 1);
 
     await Promise.all([setCode, appendEmail]);
 
@@ -269,7 +270,7 @@ export class UserDAL {
   }
 
   async getResetChances(): Promise<number> {
-    return (await this.get('$.resetChances'))[0] ?? -1;
+    return (await this.get('$.resetChances'))[0] ?? 0;
   }
 
   async changeResetChancesBy(value: number): Promise<boolean> {

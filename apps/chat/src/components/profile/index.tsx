@@ -1,3 +1,4 @@
+import useSWR, { mutate } from "swr";
 import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import EmojiPicker, { Theme as EmojiTheme } from "emoji-picker-react";
@@ -26,7 +27,7 @@ import {
 } from "@/store";
 import { Model, SubmitKey, Theme } from "@/types/setting";
 import { Avatar } from "@/components/avatar";
-
+import { Loading } from "@/components/loading";
 import Locale, { changeLang, getLang } from "@/locales";
 
 import ShoppingIcon from "@/assets/icons/shopping.svg";
@@ -59,56 +60,71 @@ export function Profile(props: { closeSettings: () => void }) {
       state.clearAllData,
     ]
   );
-  const [
-    email,
-    plan,
-    requestsNo,
-    updatePlan,
-    updateRequestsNo,
-    sessionToken,
-    inviteCode,
-  ] = useUserStore((state) => [
-    state.email,
-    state.plan,
-    state.requestsNo,
-    state.updatePlan,
-    state.updateRequestsNo,
-    state.sessionToken,
-    state.inviteCode,
-  ]);
-  const [selectPlan, setSelectPlan] = useState(plan);
-  const [count, setCount] = useState(0);
+  const [email, requestsNo, updateRequestsNo, sessionToken] = useUserStore(
+    (state) => [
+      state.email,
+      state.requestsNo,
+      state.updateRequestsNo,
+      state.sessionToken,
+    ]
+  );
+
   const router = useRouter();
 
-  const fetchBusinesses = useCallback(() => {
-    updateLimit();
-    updatePlan();
-    updateRequestsNo();
-  }, []);
+  const fetchChances = async (url: string): Promise<number> => {
+    const response = await fetch(url, {
+      method: "GET",
+      headers: { email, token: sessionToken ?? "" },
+    });
+    const data: { status: number; chances: number } = await response.json();
+    return data.chances;
+  };
 
-  useEffect(() => {
-    fetchBusinesses();
-  }, [fetchBusinesses]);
+  const { data: chances, isLoading: chancesLoading } = useSWR<number>(
+    "/api/user/reset",
+    fetchChances
+  );
 
-  function updateLimit() {
-    fetch("/api/user/get-limit", {
-      headers: { email },
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        setCount(res.requestNos.length);
-      });
-  }
+  const { data: count, isLoading: countLoading } = useSWR(
+    "/api/user/get-limit",
+    (url) =>
+      fetch(url, {
+        headers: { email },
+      })
+        .then((res) => res.json())
+        .then((res) => res.requestNos.length)
+  );
+
+  const { data: PlanAndInviteCode, isLoading: PlanLoading } = useSWR(
+    "/api/user/info",
+    (url) =>
+      fetch(url, {
+        headers: { email },
+      }).then((res) => res.json())
+  );
+
+  const { role: plan, inviteCode: inviteCode } = PlanAndInviteCode ?? {
+    role: "free",
+    inviteCode: "",
+  };
+  const [selectPlan, setSelectPlan] = useState(plan);
+
+  if (PlanLoading || countLoading || chancesLoading) return <Loading />;
 
   async function handleResetLimit() {
+    if (chances && chances < 1) {
+      showToast("重置次数已用完");
+      return;
+    }
     fetch("/api/user/reset", {
       cache: "no-store",
-      method: "GET",
+      method: "POST",
       headers: { email, token: sessionToken ?? "" },
     }).then((res) => {
       if (res.ok) {
         showToast("成功重置");
-        updateRequestsNo();
+      } else {
+        showToast("重置失败");
       }
     });
   }
@@ -249,9 +265,13 @@ export function Profile(props: { closeSettings: () => void }) {
             <button
               className={styles["copy-button"]}
               value={config.submitKey}
-              onClick={() => handleResetLimit()}
+              onClick={() => {
+                handleResetLimit();
+                mutate("/api/user/reset", chances ? chances - 1 : -1, false);
+                mutate("/api/user/get-limit", 0, false);
+              }}
             >
-              {Locale.Profile.Reset.Click(1)}
+              {Locale.Profile.Reset.Click(chances ?? -1)}
             </button>
           </ProfileItem>
         </List>
@@ -261,7 +281,7 @@ export function Profile(props: { closeSettings: () => void }) {
             title={
               plan == "free"
                 ? Locale.Profile.RateLimit.TitleFree
-                : Locale.Profile.RateLimit.Title
+                : Locale.Profile.RateLimit.Title(1)
             }
             subTitle={Locale.Profile.RateLimit.Subtitle}
           >
