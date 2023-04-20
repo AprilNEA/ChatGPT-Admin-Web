@@ -1,5 +1,5 @@
-import { TextDecoderStreamPolyfill } from "./polyfill";
-import { TextLineStream } from "./text-line-stream";
+import { TextDecoderStreamPolyfill } from "./lib/polyfill";
+import { TextLineStream } from "./lib/text-line-stream";
 
 export async function* streamToLineIterator(
   stream: ReadableStream<Uint8Array>,
