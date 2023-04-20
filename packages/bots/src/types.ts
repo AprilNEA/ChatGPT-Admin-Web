@@ -41,7 +41,7 @@ export interface ChatBot {
 }
 
 export interface BingHistoryItem {
-  author: ChatRole;
+  author: "user" | "system" | "bot" | "context";
   text: string;
 }
 

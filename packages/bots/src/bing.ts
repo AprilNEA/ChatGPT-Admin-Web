@@ -21,7 +21,7 @@ export class BingBot extends AbstractBot {
       userMessage: userMessage.content,
       history: conversation.slice(0, -1)
         .map(({ role, content }) => ({
-          author: role,
+          author: role === "assistant" ? "bot" : role,
           text: content,
         })),
       cookie: this.cookie,
@@ -37,7 +37,7 @@ export class BingBot extends AbstractBot {
     });
 
     if (!response.ok) {
-      throw new Error(`Request failed: ${response.statusText}`);
+      throw new Error(`${response.statusText}: ${await response.text()}`);
     }
 
     for await (const line of streamToLineIterator(response.body!)) {
