@@ -36,6 +36,10 @@ export class BingBot extends AbstractBot {
       signal,
     });
 
+    if (!response.ok) {
+      throw new Error(`Request failed: ${response.statusText}`);
+    }
+
     for await (const line of streamToLineIterator(response.body!)) {
       if (line.startsWith("data:")) {
         const event: BingEvent = JSON.parse(line.slice("data:".length));
