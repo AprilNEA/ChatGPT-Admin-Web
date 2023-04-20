@@ -57,8 +57,9 @@ async function* generate({
 abstract class AbstractVercelBot extends AbstractBot {
   protected abstract model: VercelAIModel;
 
-  protected override doAnswer = (params: AnswerParams) =>
-    generate({ ...params, model: this.model });
+  protected override doAnswer(params: AnswerParams) {
+    return generate({ ...params, model: this.model });
+  }
 }
 
 export class VercelGPT3Bot extends AbstractVercelBot {
