@@ -54,17 +54,12 @@ async function* generate({
   }
 }
 
-abstract class AbstractVercelBot extends AbstractBot {
-  protected abstract model: VercelAIModel;
+export class VercelAIBot extends AbstractBot {
+  constructor(private model: VercelAIModel) {
+    super();
+  }
 
-  protected override doAnswer = (params: AnswerParams) =>
-    generate({ ...params, model: this.model });
-}
-
-export class VercelGPT3Bot extends AbstractVercelBot {
-  protected override model: VercelAIModel = "openai:gpt-3.5-turbo";
-}
-
-export class VercelGPT4Bot extends AbstractVercelBot {
-  protected override model: VercelAIModel = "openai:gpt-4";
+  protected override doAnswer(params: AnswerParams) {
+    return generate({ ...params, model: this.model });
+  }
 }

@@ -1,4 +1,6 @@
 import { AnswerParams } from "./types";
+import { readableStreamFromIterable } from "./lib/readable-stream-from-iterable";
+import { TextEncoderStreamPolyfill } from "./lib/polyfill";
 
 export abstract class AbstractBot {
   protected abstract doAnswer(params: AnswerParams): AsyncIterable<string>;
@@ -13,5 +15,12 @@ export abstract class AbstractBot {
       }
       // ignore user abort exception
     }
+  }
+
+  answerStream(params: AnswerParams): ReadableStream<Uint8Array> {
+    return readableStreamFromIterable(this.answer(params))
+      .pipeThrough(
+        new (window.TextEncoderStream ?? TextEncoderStreamPolyfill)(),
+      );
   }
 }

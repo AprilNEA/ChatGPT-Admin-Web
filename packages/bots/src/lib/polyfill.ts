@@ -34,3 +34,31 @@ export class TextDecoderStreamPolyfill {
     return this.transformStream.writable;
   }
 }
+
+export class TextEncoderStreamPolyfill {
+  private readonly encoder: TextEncoder;
+  private readonly transformStream: TransformStream<string, Uint8Array>;
+
+  constructor() {
+    this.encoder = new TextEncoder();
+    this.transformStream = new TransformStream<string, Uint8Array>({
+      transform: async (chunk, controller) => {
+        try {
+          const encoded = this.encoder.encode(chunk);
+          controller.enqueue(encoded);
+        } catch (error) {
+          controller.error(error);
+        }
+      },
+      // No need to handle flush in TextEncoderStream, as there's no state kept between encoding calls
+    });
+  }
+
+  get readable(): ReadableStream<Uint8Array> {
+    return this.transformStream.readable;
+  }
+
+  get writable(): WritableStream<string> {
+    return this.transformStream.writable;
+  }
+}
