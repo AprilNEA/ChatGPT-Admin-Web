@@ -1,6 +1,6 @@
 import { AnswerParams, ChatBot } from "./types";
 import { readableStreamFromIterable } from "./lib/readable-stream-from-iterable";
-import { TextEncoderStreamPolyfill } from "./lib/polyfill";
+import { TextEncoderStream } from "@edge-runtime/primitives";
 
 export abstract class AbstractBot implements ChatBot {
   protected abstract doAnswer(params: AnswerParams): AsyncIterable<string>;
@@ -19,8 +19,6 @@ export abstract class AbstractBot implements ChatBot {
 
   answerStream(params: AnswerParams): ReadableStream<Uint8Array> {
     return readableStreamFromIterable(this.answer(params))
-      .pipeThrough(
-        new (globalThis.TextEncoderStream ?? TextEncoderStreamPolyfill)(),
-      );
+      .pipeThrough(new TextEncoderStream());
   }
 }
