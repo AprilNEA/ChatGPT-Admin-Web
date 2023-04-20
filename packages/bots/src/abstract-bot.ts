@@ -1,5 +1,6 @@
 import { AnswerParams, ChatBot } from "./types";
 import { readableStreamFromIterable } from "./lib/readable-stream-from-iterable";
+import { TextEncoderStreamPonyfill } from "./lib/ponyfill";
 
 export abstract class AbstractBot implements ChatBot {
   protected abstract doAnswer(params: AnswerParams): AsyncIterable<string>;
@@ -18,6 +19,6 @@ export abstract class AbstractBot implements ChatBot {
 
   answerStream(params: AnswerParams): ReadableStream<Uint8Array> {
     return readableStreamFromIterable(this.answer(params))
-      .pipeThrough(new TextEncoderStream());
+      .pipeThrough(new TextEncoderStreamPonyfill());
   }
 }

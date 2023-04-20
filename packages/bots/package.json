@@ -26,9 +26,5 @@
     "ts-node": "^10.9.1",
     "typescript": "^5.0.3",
     "typescript-eslint-parser": "^22.0.0"
-  },
-  "dependencies": {
-    "@edge-runtime/ponyfill": "^2.1.2",
-    "@edge-runtime/primitives": "^2.1.2"
   }
 }
