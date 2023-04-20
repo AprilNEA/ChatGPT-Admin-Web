@@ -1,4 +1,3 @@
-import { TextDecoderStream } from "@edge-runtime/primitives";
 import { TextLineStream } from "./lib/text-line-stream";
 
 export async function* streamToLineIterator(

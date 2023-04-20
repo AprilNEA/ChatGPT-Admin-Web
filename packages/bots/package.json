@@ -28,6 +28,7 @@
     "typescript-eslint-parser": "^22.0.0"
   },
   "dependencies": {
+    "@edge-runtime/ponyfill": "^2.1.2",
     "@edge-runtime/primitives": "^2.1.2"
   }
 }

@@ -1,6 +1,5 @@
 import { AnswerParams, ChatBot } from "./types";
 import { readableStreamFromIterable } from "./lib/readable-stream-from-iterable";
-import { TextEncoderStream } from "@edge-runtime/primitives";
 
 export abstract class AbstractBot implements ChatBot {
   protected abstract doAnswer(params: AnswerParams): AsyncIterable<string>;
