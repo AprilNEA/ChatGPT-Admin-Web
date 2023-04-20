@@ -34,3 +34,8 @@ export type LexPayload = {
   temperature: number;
   authenticity_token: string;
 };
+
+export interface ChatBot {
+  answer(params: AnswerParams): AsyncIterable<string>;
+  answerStream(params: AnswerParams): ReadableStream<Uint8Array>;
+}

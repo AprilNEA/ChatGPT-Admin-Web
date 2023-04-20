@@ -1,8 +1,8 @@
-import { AnswerParams } from "./types";
+import { AnswerParams, ChatBot } from "./types";
 import { readableStreamFromIterable } from "./lib/readable-stream-from-iterable";
 import { TextEncoderStreamPolyfill } from "./lib/polyfill";
 
-export abstract class AbstractBot {
+export abstract class AbstractBot implements ChatBot {
   protected abstract doAnswer(params: AnswerParams): AsyncIterable<string>;
 
   async *answer(params: AnswerParams): AsyncIterable<string> {
