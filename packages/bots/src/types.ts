@@ -1,4 +1,4 @@
-export type ChatRole = "bot" | "user" | "system" | "context";
+export type ChatRole = "assistant" | "user" | "system" | "context";
 
 export type ChatRecord = {
   role: ChatRole;
@@ -38,4 +38,40 @@ export type LexPayload = {
 export interface ChatBot {
   answer(params: AnswerParams): AsyncIterable<string>;
   answerStream(params: AnswerParams): ReadableStream<Uint8Array>;
+}
+
+export interface BingHistoryItem {
+  author: ChatRole;
+  text: string;
+}
+
+export interface BingPayload {
+  userMessage: string;
+  cookie: string;
+  history?: BingHistoryItem[];
+}
+
+export type BingEvent = {
+  type: BingEventType.DONE;
+  text: string;
+} | {
+  type: BingEventType.ANSWER;
+  answer: string;
+} | {
+  type: BingEventType.ERROR;
+  error: string;
+} | {
+  type: BingEventType.RESET;
+  text: string;
+} | {
+  type: BingEventType.QUERY;
+  query: string;
+};
+
+export enum BingEventType {
+  DONE = "DONE",
+  ANSWER = "ANSWER",
+  ERROR = "ERROR",
+  RESET = "RESET",
+  QUERY = "QUERY",
 }
