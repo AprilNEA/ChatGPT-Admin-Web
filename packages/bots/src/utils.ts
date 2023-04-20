@@ -1,11 +1,11 @@
-import { TextDecoderStreamPolyfill } from "./lib/polyfill";
+import { TextDecoderStream } from "@edge-runtime/primitives";
 import { TextLineStream } from "./lib/text-line-stream";
 
 export async function* streamToLineIterator(
   stream: ReadableStream<Uint8Array>,
 ): AsyncIterable<string> {
   const lineStream = stream
-    .pipeThrough(new (globalThis.TextDecoderStream ?? TextDecoderStreamPolyfill)())
+    .pipeThrough(new TextDecoderStream())
     .pipeThrough(new TextLineStream());
 
   const reader = lineStream.getReader();
