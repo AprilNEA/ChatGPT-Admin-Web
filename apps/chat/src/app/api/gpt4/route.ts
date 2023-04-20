@@ -5,12 +5,12 @@ import { textSecurity } from "@/lib/content/tencent";
 export async function POST(req: NextRequest) {
   try {
     const { messages, max_tokens, temperature, model } = await new Response(
-      req.body
+      req.body,
     ).json();
 
     // 在此做关键词过滤
     const suggestion = await textSecurity(
-      messages[messages.length - 1].content
+      messages[messages.length - 1].content,
     );
     if (suggestion.toLowerCase() !== "pass") {
       return NextResponse.json({}, { status: 402 });
@@ -18,15 +18,15 @@ export async function POST(req: NextRequest) {
 
     const conversations = messages.map(
       // @ts-ignore
-      ({ role, content }) => ({ role, text: content })
+      ({ role, content }) => ({ role, text: content }),
     );
 
-    const gptStream = await askGPT(
+    const [gptStream, newCookie] = await askGPT(
       {
         conversations,
         system_message: "You are ChatGPT based on GPT-4.",
       },
-      { max_tokens, temperature , model}
+      { max_tokens, temperature, model },
     );
 
     if (!gptStream) {
@@ -50,11 +50,11 @@ export async function POST(req: NextRequest) {
 
 // copied from deno/std
 function readableStreamFromIterable(
-  iterable: Iterable<string> | AsyncIterable<string>
+  iterable: Iterable<string> | AsyncIterable<string>,
 ): ReadableStream<Uint8Array> {
   const iterator: Iterator<string> | AsyncIterator<string> =
     (iterable as AsyncIterable<string>)[Symbol.asyncIterator]?.() ??
-    (iterable as Iterable<string>)[Symbol.iterator]?.();
+      (iterable as Iterable<string>)[Symbol.iterator]?.();
 
   const encoder = new TextEncoder();
 

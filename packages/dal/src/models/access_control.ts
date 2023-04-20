@@ -82,4 +82,16 @@ export class AccessControlDAL {
     });
     return timestamp;
   }
+
+  static async getRequestsTimeStampsOf(
+    ...emailOrIP: string[]
+  ): Promise<number[][]> {
+    const pipeline = redis.pipeline();
+
+    emailOrIP.forEach(emailOrIP => {
+      pipeline.zrange<number[]>(`limit:${emailOrIP}`, 0, -1);
+    });
+
+    return await pipeline.exec();
+  }
 }
