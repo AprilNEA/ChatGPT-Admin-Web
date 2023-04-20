@@ -1,4 +1,4 @@
-export type ChatRole = "bot" | "user" | "system" | "context";
+export type ChatRole = "assistant" | "user" | "system" | "context";
 
 export type ChatRecord = {
   role: ChatRole;

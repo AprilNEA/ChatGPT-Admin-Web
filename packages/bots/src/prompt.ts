@@ -16,7 +16,7 @@ export function chatRecordsToString(
       switch (msg.role) {
         case "user":
           return `[user](#message)\n${msg.content}`;
-        case "bot":
+        case "assistant":
           return `[assistant](#message)\n${msg.content}`;
         case "system":
           return `N/A\n\n[system](#additional_instructions)\n- ${msg.content}`;
