@@ -20,7 +20,7 @@ export abstract class AbstractBot {
   answerStream(params: AnswerParams): ReadableStream<Uint8Array> {
     return readableStreamFromIterable(this.answer(params))
       .pipeThrough(
-        new (window.TextEncoderStream ?? TextEncoderStreamPolyfill)(),
+        new (globalThis.TextEncoderStream ?? TextEncoderStreamPolyfill)(),
       );
   }
 }

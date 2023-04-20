@@ -5,7 +5,7 @@ export async function* streamToLineIterator(
   stream: ReadableStream<Uint8Array>,
 ): AsyncIterable<string> {
   const lineStream = stream
-    .pipeThrough(new (window.TextDecoderStream ?? TextDecoderStreamPolyfill)())
+    .pipeThrough(new (globalThis.TextDecoderStream ?? TextDecoderStreamPolyfill)())
     .pipeThrough(new TextLineStream());
 
   const reader = lineStream.getReader();
