@@ -21,7 +21,7 @@ interface VercelAIGenerateParams extends AnswerParams {
 async function* generate({
   model,
   conversation,
-  maxTokens = 1000,
+  maxTokens = 511,
   signal,
 }: VercelAIGenerateParams) {
   const payload: VercelAIPayload = {
