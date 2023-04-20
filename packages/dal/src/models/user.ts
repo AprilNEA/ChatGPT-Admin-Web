@@ -312,6 +312,28 @@ export class UserDAL {
     return emails.map(email => email.slice(5));
   }
 
+  static async listUsers(
+    cursor: number = 0,
+    count: number = 10,
+    prefix: string = 'user:*'
+  ): Promise<Model.User[]> {
+    const [nextCursor, keys] = await redis.scan(cursor, {
+      match: prefix,
+      count,
+    });
+
+    return (await Promise.all(
+      keys.map(async key => {
+        const value = await redis.json.get(key);
+        console.log(value);
+        return {
+          key,
+          value,
+        };
+      })
+    )) as unknown as Model.User[];
+  }
+
   static async getPlansOf(...emails: string[]): Promise<Plan[]> {
     const keys = emails.map(email => `user:${email}`);
     const plans: [Plan][] =

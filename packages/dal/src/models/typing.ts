@@ -16,6 +16,7 @@ export namespace Register {
 export namespace Model {
   // key: user:${email}
   export type User = {
+    email?: string;
     name: string;
     passwordHash: string;
     createdAt: number;
