@@ -101,15 +101,20 @@ export async function requestChatStream(
   const reqTimeoutId = setTimeout(() => controller.abort(), TIME_OUT_MS);
 
   try {
-    const res = await fetch("/api/gpt4", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        ...getHeaders(),
-      },
-      body: JSON.stringify(req),
-      signal: controller.signal,
-    });
+    const res = await fetch(
+      options?.modelConfig?.model === "newbing"
+        ? "/api/bots/newbing"
+        : "/api/bots/openai",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...getHeaders(),
+        },
+        body: JSON.stringify(req),
+        signal: controller.signal,
+      }
+    );
     clearTimeout(reqTimeoutId);
 
     let responseText = "";
