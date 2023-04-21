@@ -1,15 +1,10 @@
-import { useState } from "react";
-
-import EmojiPicker, { Theme as EmojiTheme } from "emoji-picker-react";
-
 import styles from "@/styles/module/settings.module.scss";
 
 import ResetIcon from "@/assets/icons/reload.svg";
 import CloseIcon from "@/assets/icons/close.svg";
 import ClearIcon from "@/assets/icons/clear.svg";
 
-import { Avatar } from "@/components/avatar";
-import { List, ListItem, Popover } from "@/components/ui-lib";
+import { List, ListItem} from "@/components/ui-lib";
 
 import { IconButton } from "../button";
 import {
@@ -40,7 +35,6 @@ function SettingItem(props: {
 }
 
 export function Settings(props: { closeSettings: () => void }) {
-  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
   const [config, updateConfig, resetConfig] = useSettingStore((state) => [
     state.config,
@@ -92,61 +86,6 @@ export function Settings(props: { closeSettings: () => void }) {
         </div>
       </div>
       <div className={styles["settings"]}>
-        <List>
-          <SettingItem title={Locale.Settings.Avatar}>
-            <Popover
-              onClose={() => setShowEmojiPicker(false)}
-              content={
-                <EmojiPicker
-                  lazyLoadEmojis
-                  theme={EmojiTheme.AUTO}
-                  onEmojiClick={(e) => {
-                    updateConfig((config) => (config.avatar = e.unified));
-                    setShowEmojiPicker(false);
-                  }}
-                />
-              }
-              open={showEmojiPicker}
-            >
-              <div
-                className={styles.avatar}
-                onClick={() => setShowEmojiPicker(true)}
-              >
-                <Avatar role="user" />
-              </div>
-            </Popover>
-          </SettingItem>
-
-          {/*<SettingItem*/}
-          {/*  title={Locale.Settings.Update.Version(currentId)}*/}
-          {/*  subTitle={*/}
-          {/*    checkingUpdate*/}
-          {/*      ? Locale.Settings.Update.IsChecking*/}
-          {/*      : hasNewVersion*/}
-          {/*      ? Locale.Settings.Update.FoundUpdate(remoteId ?? "ERROR")*/}
-          {/*      : Locale.Settings.Update.IsLatest*/}
-          {/*  }*/}
-          {/*>*/}
-          {/*  {checkingUpdate ? (*/}
-          {/*    <div />*/}
-          {/*  ) : hasNewVersion ? (*/}
-          {/*    <Link href={UPDATE_URL} target="_blank" className="link">*/}
-          {/*      {Locale.Settings.Update.GoToUpdate}*/}
-          {/*    </Link>*/}
-          {/*  ) : (*/}
-          {/*    <IconButton*/}
-          {/*      icon={<ResetIcon></ResetIcon>}*/}
-          {/*      text={Locale.Settings.Update.CheckUpdate}*/}
-          {/*      onClick={() => checkUpdate(true)}*/}
-          {/*    />*/}
-          {/*  )}*/}
-          {/*</SettingItem>*/}
-
-          <SettingItem title={Locale.Settings.Account}>
-            <div>111</div>
-          </SettingItem>
-        </List>
-
         <List>
           <SettingItem title={Locale.Settings.SendKey}>
             <select
@@ -210,10 +149,9 @@ export function Settings(props: { closeSettings: () => void }) {
               type="checkbox"
               checked={config.tightBorder}
               onChange={(e) => {
-                console.log(e.currentTarget.checked);
-                // updateConfig(
-                //   (config) => (config.tightBorder = e.currentTarget.checked)
-                // );
+                updateConfig(
+                  (config) => (config.tightBorder = e.currentTarget.checked)
+                );
               }
               }
             ></input>
@@ -221,38 +159,6 @@ export function Settings(props: { closeSettings: () => void }) {
         </List>
 
         <List>
-          {/*{enabledAccessControl ? (*/}
-          {/*  <SettingItem*/}
-          {/*    title={Locale.Settings.AccessCode.Title}*/}
-          {/*    subTitle={Locale.Settings.AccessCode.SubTitle}*/}
-          {/*  >*/}
-          {/*    <input*/}
-          {/*      value={accessStore.accessCode}*/}
-          {/*      type="text"*/}
-          {/*      placeholder={Locale.Settings.AccessCode.Placeholder}*/}
-          {/*      onChange={(e) => {*/}
-          {/*        accessStore.updateCode(e.currentTarget.value);*/}
-          {/*      }}*/}
-          {/*    ></input>*/}
-          {/*  </SettingItem>*/}
-          {/*) : (*/}
-          {/*  <></>*/}
-          {/*)}*/}
-
-          {/*<SettingItem*/}
-          {/*  title={Locale.Settings.Token.Title}*/}
-          {/*  subTitle={Locale.Settings.Token.SubTitle}*/}
-          {/*>*/}
-          {/*  <input*/}
-          {/*    value={accessStore.token}*/}
-          {/*    type="text"*/}
-          {/*    placeholder={Locale.Settings.Token.Placeholder}*/}
-          {/*    onChange={(e) => {*/}
-          {/*      accessStore.updateToken(e.currentTarget.value);*/}
-          {/*    }}*/}
-          {/*  ></input>*/}
-          {/*</SettingItem>*/}
-
           <SettingItem
             title={Locale.Settings.HistoryCount.Title}
             subTitle={Locale.Settings.HistoryCount.SubTitle}
