@@ -2,6 +2,7 @@
 import "@/styles/globals.scss";
 import "@/styles/markdown.scss";
 import "@/styles/prism.scss";
+import { Analytics } from "@vercel/analytics/react";
 
 export const metadata = {
   title: "ChatGPT",
@@ -28,7 +29,10 @@ export default function RootLayout({
           rel="stylesheet"
         ></link>
       </head>
-      <body>{children}</body>
+      <body>
+        {children}
+        <Analytics />
+      </body>
     </html>
   );
 }

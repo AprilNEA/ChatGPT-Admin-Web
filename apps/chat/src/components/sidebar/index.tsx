@@ -12,20 +12,21 @@ import AddIcon from "@/assets/icons/add.svg";
 import LoadingIcon from "@/assets/icons/three-dots.svg";
 import AnnouncementIcon from "@/assets/icons/announcement.svg";
 import CloseIcon from "@/assets/icons/close.svg";
-import { Message, useChatStore, useUserStore } from "@/store";
+import {Message, useChatStore, useSettingStore, useUserStore} from "@/store";
 
 import { isMobileScreen } from "@/utils/utils";
 import Locale from "@/locales";
 
 import { Chat } from "@/components/chat";
 import { ChatList } from "@/components/chat/chat-list";
-import { useSwitchTheme } from "@/components/switch-theme";
+import { useSwitchTheme } from "@/hooks/switch-theme";
 import { Loading } from "@/components/loading";
 
 import dynamic from "next/dynamic";
 import { Announcement, showAnnouncement } from "@/hooks/use-notice";
 import { showModal } from "@/components/ui-lib";
 import ShoppingIcon from "@/assets/icons/shopping.svg";
+import { useRouter } from "next/navigation";
 
 const Settings = dynamic(
   async () => (await import("@/components/settings")).Settings,
@@ -58,27 +59,12 @@ const useHasHydrated = () => {
   return hasHydrated;
 };
 
-export function Home() {
-  const [isLogin, setIsLogin] = useState(false);
-  const [sessionToken, validateSessionToken, versionId, updateVersionId] =
-    useUserStore((state) => [
-      state.sessionToken,
-      state.validateSessionToken,
-      state.versionId,
-      state.updateVersionId,
-    ]);
-  useEffect(() => {
-    Announcement(versionId, updateVersionId);
-    if (!sessionToken) {
-      setIsLogin(false);
-      return;
-    }
-    if (validateSessionToken()) {
-      setIsLogin(true);
-    } else {
-      setIsLogin(false);
-    }
-  }, [sessionToken]);
+export function Sidebar({ children }: { children: React.ReactNode }) {
+  // 侧边栏是否展开
+  const [showSideBar, setShowSideBar] = useChatStore((state) => [
+    state.showSideBar,
+    state.setShowSideBar,
+  ]);
 
   // 对话
   const [createNewSession, currentIndex, removeSession] = useChatStore(
@@ -91,39 +77,16 @@ export function Home() {
 
   // 是否加载中
   const loading = !useHasHydrated();
-  const [showSideBar, setShowSideBar] = useState(true);
 
-  // 设置面板
-  const [openSettings, setOpenSettings] = useState(false);
-  const config = useChatStore((state) => state.config);
-
-  // 账户面板
-  const [openProfile, setOpenProfile] = useState(false);
-  const [plan, setPlan] = useState("free");
-
-  function handlerUpgrade() {
-    console.log(plan);
-  }
+  // 设置
+  const config = useSettingStore((state) => state.config);
 
   // 暗色模式切换
   useSwitchTheme();
+  const router = useRouter();
 
   if (loading) {
     return <Loading />;
-  }
-
-  if (!isLogin) {
-    return (
-      <div
-        className={`${
-          config.tightBorder && !isMobileScreen()
-            ? styles["tight-container"]
-            : styles.container
-        }`}
-      >
-        <Login setIsLogin={() => setIsLogin(true)} />
-      </div>
-    );
   }
 
   return (
@@ -151,7 +114,6 @@ export function Home() {
         <div
           className={styles["sidebar-body"]}
           onClick={() => {
-            setOpenSettings(false);
             setShowSideBar(false);
           }}
         >
@@ -174,7 +136,7 @@ export function Home() {
               <IconButton
                 icon={<SettingsIcon />}
                 onClick={() => {
-                  setOpenSettings(true);
+                  router.push("/setting");
                   setShowSideBar(false);
                 }}
               />
@@ -200,29 +162,7 @@ export function Home() {
         </div>
       </div>
 
-      <div className={styles["window-content"]}>
-        {openProfile ? (
-          <Profile
-            closeSettings={() => {
-              setOpenProfile(false);
-              setShowSideBar(true);
-            }}
-          />
-        ) : openSettings ? (
-          <Settings
-            closeSettings={() => {
-              setOpenSettings(false);
-              setShowSideBar(true);
-            }}
-          />
-        ) : (
-          <Chat
-            key="chat"
-            showSideBar={() => setShowSideBar(true)}
-            showProfile={() => setOpenProfile(true)}
-          />
-        )}
-      </div>
+      <div className={styles["window-content"]}>{children}</div>
     </div>
   );
 }

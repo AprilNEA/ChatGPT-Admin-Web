@@ -21,7 +21,7 @@ const columns = [
     title: "姓名",
     dataIndex: "name",
     key: "name",
-    render: (text, { isBlocked }) => (
+    render: (text: string, { isBlocked }: { isBlocked: boolean }) => (
       <a>
         {text + " "}
         {isBlocked ? <Tag color="red">已封禁</Tag> : null}
@@ -32,7 +32,7 @@ const columns = [
     title: "订阅",
     dataIndex: "subscriptions",
     key: "subscriptions",
-    render: (_, { subscriptions }) =>
+    render: (_: any, { subscriptions }: { subscriptions: any }) =>
       subscriptions ? (
         <Tag color="green">已订阅</Tag>
       ) : (
@@ -43,7 +43,7 @@ const columns = [
     title: "邀请码",
     dataIndex: "invitationCodes",
     key: "invitationCodes",
-    render: (text) => text.join(","),
+    render: (text: string[]) => text.join(","),
   },
   {
     title: "剩余可重置次数",
@@ -54,13 +54,13 @@ const columns = [
     title: "注册时间",
     dataIndex: "createdAt",
     key: "createdAt",
-    render: (text) => new Date(text).toLocaleString(),
+    render: (text: number) => new Date(text).toLocaleString(),
   },
   {
     title: "上次登录时间",
     dataIndex: "lastLoginAt",
     key: "lastLoginAt",
-    render: (text) => new Date(text).toLocaleString(),
+    render: (text: number) => new Date(text).toLocaleString(),
   },
 ];
 

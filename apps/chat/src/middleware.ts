@@ -19,7 +19,7 @@ export async function middleware(req: NextRequest, res: NextResponse) {
 
   let timesLimit = 10;
   const planOrRole = await user.getPlan();
-  console.log(planOrRole);
+
   switch (planOrRole) {
     case "admin":
     case "mod":
