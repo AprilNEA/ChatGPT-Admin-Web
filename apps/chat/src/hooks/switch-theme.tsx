@@ -1,8 +1,8 @@
-import {useChatStore} from "@/store";
-import {useEffect} from "react";
+import { useEffect } from "react";
+import { useSettingStore } from "@/store";
 
 export function useSwitchTheme() {
-  const config = useChatStore((state) => state.config);
+  const config = useSettingStore((state) => state.config);
 
   useEffect(() => {
     document.body.classList.remove("light");
