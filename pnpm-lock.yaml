@@ -43,6 +43,9 @@ importers:
       array.prototype.at:
         specifier: ^1.1.1
         version: 1.1.1
+      bots:
+        specifier: workspace:*
+        version: link:../../packages/bots
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
@@ -109,46 +112,12 @@ importers:
       typescript:
         specifier: 4.9.5
         version: 4.9.5
+      zod:
+        specifier: ^3.21.4
+        version: 3.21.4
       zustand:
         specifier: ^4.3.6
         version: 4.3.6(react@18.2.0)
-
-  packages/bots:
-    dependencies:
-      spark-md5:
-        specifier: ^3.0.2
-        version: 3.0.2
-    devDependencies:
-      '@types/node':
-        specifier: ^18.15.11
-        version: 18.15.11
-      eslint:
-        specifier: ^8.37.0
-        version: 8.37.0
-      eslint-config-prettier:
-        specifier: ^8.8.0
-        version: 8.8.0(eslint@8.37.0)
-      eslint-plugin-prettier:
-        specifier: ^4.2.1
-        version: 4.2.1(eslint-config-prettier@8.8.0)(eslint@8.37.0)(prettier@2.8.7)
-      jest:
-        specifier: ^29.5.0
-        version: 29.5.0(@types/node@18.15.11)(ts-node@10.9.1)
-      prettier:
-        specifier: ^2.8.7
-        version: 2.8.7
-      ts-jest:
-        specifier: ^29.1.0
-        version: 29.1.0(@babel/core@7.21.4)(jest@29.5.0)(typescript@5.0.3)
-      ts-node:
-        specifier: ^10.9.1
-        version: 10.9.1(@types/node@18.15.11)(typescript@5.0.3)
-      typescript:
-        specifier: ^5.0.3
-        version: 5.0.3
-      typescript-eslint-parser:
-        specifier: ^22.0.0
-        version: 22.0.0(eslint@8.37.0)(typescript@5.0.3)
 
   apps/dash:
     dependencies:
@@ -176,6 +145,9 @@ importers:
       typescript:
         specifier: 4.9.5
         version: 4.9.5
+      zod:
+        specifier: ^3.21.4
+        version: 3.21.4
     devDependencies:
       '@types/node':
         specifier: ^18.14.6
@@ -187,30 +159,18 @@ importers:
         specifier: ^18.0.11
         version: 18.0.11
 
-  packages/dal:
+  packages/bots:
     dependencies:
-      '@upstash/redis':
-        specifier: ^1.20.2
-        version: 1.20.2
-      spark-md5:
-        specifier: ^3.0.2
-        version: 3.0.2
+      '@edge-runtime/ponyfill':
+        specifier: ^2.1.2
+        version: 2.1.2
+      '@edge-runtime/primitives':
+        specifier: ^2.1.2
+        version: 2.1.2
     devDependencies:
-      '@jest/globals':
-        specifier: ^29.5.0
-        version: 29.5.0
-      '@types/jest':
-        specifier: ^29.5.0
-        version: 29.5.0
       '@types/node':
         specifier: ^18.15.11
         version: 18.15.11
-      '@types/spark-md5':
-        specifier: ^3.0.2
-        version: 3.0.2
-      dotenv:
-        specifier: ^16.0.3
-        version: 16.0.3
       eslint:
         specifier: ^8.37.0
         version: 8.37.0
@@ -239,16 +199,27 @@ importers:
         specifier: ^22.0.0
         version: 22.0.0(eslint@8.37.0)(typescript@5.0.3)
 
-  packages/tsconfig: {}
-
-  packages/xunhu:
+  packages/dal:
+    dependencies:
+      '@upstash/redis':
+        specifier: ^1.20.2
+        version: 1.20.2
+      spark-md5:
+        specifier: ^3.0.2
+        version: 3.0.2
     devDependencies:
+      '@jest/globals':
+        specifier: ^29.5.0
+        version: 29.5.0
       '@types/jest':
         specifier: ^29.5.0
         version: 29.5.0
       '@types/node':
         specifier: ^18.15.11
         version: 18.15.11
+      '@types/spark-md5':
+        specifier: ^3.0.2
+        version: 3.0.2
       dotenv:
         specifier: ^16.0.3
         version: 16.0.3
@@ -8097,6 +8068,10 @@ packages:
   /yocto-queue@0.1.0:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
+
+  /zod@3.21.4:
+    resolution: {integrity: sha512-m46AKbrzKVzOzs/DZgVnG5H55N1sv1M8qZU3A8RIKbs3mrACDNeIOeilDymVb2HdmP8uwshOCF4uJ8uM9rCqJw==}
+    dev: false
 
   /zustand@4.3.6(react@18.2.0):
     resolution: {integrity: sha512-6J5zDxjxLE+yukC2XZWf/IyWVKnXT9b9HUv09VJ/bwGCpKNcaTqp7Ws28Xr8jnbvnZcdRaidztAPsXFBIqufiw==}
