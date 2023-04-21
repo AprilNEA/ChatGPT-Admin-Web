@@ -93,7 +93,7 @@ function getDate(timestamp: number) {
   return `${year}-${month}-${day}`;
 }
 
-export async function textSecurity(text: string) {
+export async function tencentTextSecurity(text: string) {
   // 注意 params 需要按照 key 名称字母排序
   const endpoint = "tms.tencentcloudapi.com";
   const service = "tms";
