@@ -1,4 +1,4 @@
-import type { ChatRequest, ChatReponse } from "@/app/api/chat/typing";
+import type { ChatRequest, ChatReponse } from "@/app/api/bots/typing";
 import { filterConfig, Message, ModelConfig, useUserStore } from "@/store";
 import Locale from "@/locales";
 import { LimitReason } from "@/typing.d";

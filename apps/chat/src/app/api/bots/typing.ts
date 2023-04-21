@@ -1,5 +1,19 @@
 import { z } from "zod";
 
+import type {
+  ChatCompletionResponseMessage,
+  CreateChatCompletionResponse,
+} from "openai";
+import { Model } from "@/store/setting/typing";
+
+export type ChatRequest = {
+  model?: Model;
+  conversation: ChatCompletionResponseMessage[];
+  stream?: boolean;
+};
+
+export type ChatReponse = CreateChatCompletionResponse;
+
 const chatRole = z.enum(["assistant", "system", "user"]);
 const gptModel = z.enum(["gpt-3.5-turbo", "gpt-4", "newbing"]);
 const chatRecord = z.object({

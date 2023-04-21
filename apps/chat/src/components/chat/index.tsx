@@ -184,7 +184,7 @@ export function Chat() {
     ControllerPool.stop(sessionIndex, messageIndex);
   };
 
-  // check if should send message
+  // check if you should send message
   const onInputKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.nativeEvent.isComposing) return;
     if (shouldSubmit(e.nativeEvent)) {
