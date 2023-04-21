@@ -1,5 +1,4 @@
 import { Message } from "@/store";
-import { ChatConfig } from "@/types/setting";
 
 export interface ChatStat {
   tokenCount: number;

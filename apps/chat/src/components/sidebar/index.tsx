@@ -1,50 +1,30 @@
 "use client";
 
-import { useState, useRef, useEffect, useLayoutEffect } from "react";
+import { useState, useEffect} from "react";
 
 import { IconButton } from "@/components/button";
 import styles from "@/styles/module/home.module.scss";
 
 import SettingsIcon from "@/assets/icons/settings.svg";
 import ChatGptIcon from "@/assets/icons/chatgpt.svg";
-import BotIcon from "@/assets/icons/bot.svg";
+
 import AddIcon from "@/assets/icons/add.svg";
-import LoadingIcon from "@/assets/icons/three-dots.svg";
+
 import AnnouncementIcon from "@/assets/icons/announcement.svg";
 import CloseIcon from "@/assets/icons/close.svg";
-import {Message, useChatStore, useSettingStore, useUserStore} from "@/store";
+import {useChatStore, useSettingStore} from "@/store";
 
 import { isMobileScreen } from "@/utils/utils";
 import Locale from "@/locales";
 
-import { Chat } from "@/components/chat";
 import { ChatList } from "@/components/chat/chat-list";
 import { useSwitchTheme } from "@/hooks/switch-theme";
 import { Loading } from "@/components/loading";
 
 import dynamic from "next/dynamic";
-import { Announcement, showAnnouncement } from "@/hooks/use-notice";
-import { showModal } from "@/components/ui-lib";
-import ShoppingIcon from "@/assets/icons/shopping.svg";
+import { showAnnouncement } from "@/hooks/use-notice";
+
 import { useRouter } from "next/navigation";
-
-const Settings = dynamic(
-  async () => (await import("@/components/settings")).Settings,
-  {
-    loading: () => <Loading noLogo />,
-  }
-);
-
-const Profile = dynamic(
-  async () => (await import("@/components/profile")).Profile,
-  {
-    loading: () => <Loading noLogo />,
-  }
-);
-
-const Login = dynamic(async () => (await import("@/components/login")).Login, {
-  loading: () => <Loading noLogo />,
-});
 
 /**
  * 修复水合错误

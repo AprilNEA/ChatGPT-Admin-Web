@@ -1,31 +1,26 @@
 import useSWR, { mutate } from "swr";
-import { useState, useEffect, useRef, useMemo, useCallback } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import EmojiPicker, { Theme as EmojiTheme } from "emoji-picker-react";
 
 import styles from "@/styles/module/profile.module.scss";
 
-import ResetIcon from "@/assets/icons/reload.svg";
 import CloseIcon from "@/assets/icons/close.svg";
-import ClearIcon from "@/assets/icons/clear.svg";
 import { copyToClipboard } from "@/utils/utils";
 
 import {
   List,
   ListItem,
   Popover,
-  showModal,
   showToast,
 } from "@/components/ui-lib";
 
 import { IconButton } from "../button";
-import { useChatStore, useSettingStore, useUserStore } from "@/store";
-import { Model, SubmitKey, Theme } from "@/store/setting/typing";
+import { useSettingStore, useUserStore } from "@/store";
+
 import { Avatar } from "@/components/avatar";
 import { Loading } from "@/components/loading";
-import Locale, { changeLang, getLang } from "@/locales";
-
-import ShoppingIcon from "@/assets/icons/shopping.svg";
+import Locale from "@/locales";
 
 function ProfileItem(props: {
   title: string;

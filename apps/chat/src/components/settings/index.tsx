@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState } from "react";
 
 import EmojiPicker, { Theme as EmojiTheme } from "emoji-picker-react";
 
@@ -13,7 +13,6 @@ import { List, ListItem, Popover } from "@/components/ui-lib";
 
 import { IconButton } from "../button";
 import {
-  useUserStore,
   useChatStore,
   useSettingStore,
   ALL_MODELS,

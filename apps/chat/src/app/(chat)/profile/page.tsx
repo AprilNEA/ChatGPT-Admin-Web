@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import dynamic from "next/dynamic";
 import { Loading } from "@/components/loading";
 import { useRouter } from "next/navigation";

@@ -3,8 +3,7 @@ import { persist } from "zustand/middleware";
 
 import { type ChatCompletionResponseMessage } from "openai";
 import { ChatConfig, Model } from "@/store/setting/typing";
-import { SettingStore } from "@/store/setting/typing";
-import type { ChatStat, ChatSession, ChatStore } from "./typing";
+import type { ChatSession, ChatStore } from "./typing";
 
 import {
   ControllerPool,
@@ -14,7 +13,6 @@ import {
 import { trimTopic } from "@/utils/utils";
 
 import Locale from "@/locales";
-import { Settings } from "@/components/settings";
 import { useSettingStore } from "@/store/setting";
 
 export type Message = ChatCompletionResponseMessage & {

@@ -1,7 +1,6 @@
-import { FormEvent, useEffect, useMemo, useState } from "react";
-import { ALL_MODELS, useAccessStore, useUserStore } from "@/store";
+import { FormEvent, useState } from "react";
+import { useUserStore } from "@/store";
 import styles from "@/styles/module/login.module.scss";
-import ChatGptIcon from "@/assets/icons/chatgpt.svg";
 import { showToast } from "@/components/ui-lib";
 import { RegisterResponse, ResponseStatus } from "@/app/api/typing.d";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -27,8 +26,6 @@ export function Login() {
     state.updateSessionToken,
     state.updateEmail,
   ]);
-
-  const search = searchParams.get("search");
 
   const handleLogin = async () => {
     if (!email || !password) {

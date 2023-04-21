@@ -23,7 +23,6 @@ import SendWhiteIcon from "@/assets/icons/send-white.svg";
 import CopyIcon from "@/assets/icons/copy.svg";
 import DownloadIcon from "@/assets/icons/download.svg";
 import UserIcon from "@/assets/icons/user.svg";
-import ShoppingIcon from "@/assets/icons/shopping.svg";
 
 import { Avatar } from "@/components/avatar";
 import { IconButton } from "@/components/button";

@@ -6,7 +6,7 @@ export const config = {
   matcher: ["/api/chat-stream", "/api/gpt3", "/api/gpt4"],
 };
 
-export async function middleware(req: NextRequest, res: NextResponse) {
+export async function middleware(req: NextRequest) {
   const email = req.headers.get("email");
   const token = req.headers.get("token");
 
