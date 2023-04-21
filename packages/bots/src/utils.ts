@@ -1,8 +1,8 @@
 import { TextDecoderStreamPonyfill } from "./lib/ponyfill";
-import { TextLineStream } from "./lib/text-line-stream";
+import { TextLineStream } from './lib/text-line-stream';
 
 export async function* streamToLineIterator(
-  stream: ReadableStream<Uint8Array>,
+  stream: ReadableStream<Uint8Array>
 ): AsyncIterable<string> {
   const lineStream = stream
     .pipeThrough(new TextDecoderStreamPonyfill())
