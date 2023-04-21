@@ -2,8 +2,9 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 import { type ChatCompletionResponseMessage } from "openai";
-import { SubmitKey, Theme, ChatConfig, Model } from "@/types/setting";
-import type { ChatStat, ChatSession, ChatStore } from "@/types/chat";
+import { ChatConfig, Model } from "@/store/setting/typing";
+import { SettingStore } from "@/store/setting/typing";
+import type { ChatStat, ChatSession, ChatStore } from "./typing";
 
 import {
   ControllerPool,
@@ -13,6 +14,8 @@ import {
 import { trimTopic } from "@/utils/utils";
 
 import Locale from "@/locales";
+import { Settings } from "@/components/settings";
+import { useSettingStore } from "@/store/setting";
 
 export type Message = ChatCompletionResponseMessage & {
   date: string;
@@ -22,19 +25,21 @@ export type Message = ChatCompletionResponseMessage & {
 
 export type ModelConfig = ChatConfig["modelConfig"];
 
-const ENABLE_GPT4 = true;
-
 if (!Array.prototype.at) {
-  require('array.prototype.at/auto');
+  require("array.prototype.at/auto");
 }
 
 export const ALL_MODELS = [
   {
     name: "gpt-4",
-    available: ENABLE_GPT4,
+    available: true,
   },
   {
     name: "gpt-3.5-turbo",
+    available: true,
+  },
+  {
+    name: "newbing",
     available: true,
   },
 ];
@@ -75,26 +80,9 @@ export function filterConfig(config: ModelConfig): Partial<ModelConfig> {
   return config;
 }
 
-/***
- * 默认设置
+/**
+ * 默认对话Topic, 创建空对话的配置
  */
-const DEFAULT_CONFIG: ChatConfig = {
-  historyMessageCount: 8,
-  compressMessageLengthThreshold: 1000,
-  sendBotMessages: true as boolean,
-  submitKey: SubmitKey.Enter as SubmitKey,
-  avatar: "1f603",
-  theme: Theme.Auto as Theme,
-  tightBorder: false,
-
-  modelConfig: {
-    model: "gpt-3.5-turbo",
-    temperature: 0.7,
-    max_tokens: 2000,
-    presence_penalty: 0,
-  },
-};
-
 const DEFAULT_TOPIC = Locale.Store.DefaultTopic;
 
 function createEmptySession(): ChatSession {
@@ -123,13 +111,17 @@ function createEmptySession(): ChatSession {
 
 const LOCAL_KEY = "chat-store";
 
+const settingStore = useSettingStore.getState();
+
 export const useChatStore = create<ChatStore>()(
   persist(
     (set, get) => ({
       sessions: [createEmptySession()],
       currentSessionIndex: 0,
-      config: {
-        ...DEFAULT_CONFIG,
+
+      showSideBar: true,
+      setShowSideBar(v: boolean) {
+        set(() => ({ showSideBar: v }));
       },
 
       resetSessions() {
@@ -137,20 +129,6 @@ export const useChatStore = create<ChatStore>()(
           sessions: [createEmptySession()],
           currentSessionIndex: 0,
         }));
-      },
-
-      resetConfig() {
-        set(() => ({ config: { ...DEFAULT_CONFIG } }));
-      },
-
-      getConfig() {
-        return get().config;
-      },
-
-      updateConfig(updater) {
-        const config = get().config;
-        updater(config);
-        set(() => ({ config }));
       },
 
       selectSession(index: number) {
@@ -225,7 +203,7 @@ export const useChatStore = create<ChatStore>()(
           role: "assistant",
           date: new Date().toLocaleString(),
           streaming: true,
-          model: get().config.modelConfig.model,
+          model: settingStore.config.modelConfig.model,
         };
 
         // get recent messages
@@ -273,8 +251,8 @@ export const useChatStore = create<ChatStore>()(
               controller
             );
           },
-          filterBot: !get().config.sendBotMessages,
-          modelConfig: get().config.modelConfig,
+          filterBot: !settingStore.config.sendBotMessages,
+          modelConfig: settingStore.config.modelConfig,
         });
       },
 
@@ -290,7 +268,7 @@ export const useChatStore = create<ChatStore>()(
 
       getMessagesWithMemory() {
         const session = get().currentSession();
-        const config = get().config;
+        const config = settingStore.config;
         const n = session.messages.length;
         const recentMessages = session.messages.slice(
           n - config.historyMessageCount
@@ -340,7 +318,7 @@ export const useChatStore = create<ChatStore>()(
           );
         }
 
-        const config = get().config;
+        const config = settingStore.config;
         let toBeSummarizedMsgs = session.messages.slice(
           session.lastSummarizeIndex
         );

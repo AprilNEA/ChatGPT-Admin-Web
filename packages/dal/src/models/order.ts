@@ -1,6 +1,5 @@
 import { redis } from '../redis/client';
 import { Model } from './typing';
-import * as crypto from 'crypto';
 import OrderStatus = Model.OrderStatus;
 
 export class OrderDAL {

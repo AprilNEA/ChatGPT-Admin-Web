@@ -4,10 +4,12 @@ import styles from "@/styles/module/login.module.scss";
 import ChatGptIcon from "@/assets/icons/chatgpt.svg";
 import { showToast } from "@/components/ui-lib";
 import { RegisterResponse, ResponseStatus } from "@/app/api/typing.d";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Locales from "@/locales";
 
-export function Login(props: { setIsLogin: () => void }) {
+export function Login() {
+  const router = useRouter();
+
   const searchParams = useSearchParams();
 
   const [showPage, setShowPage] = useState("index");
@@ -53,7 +55,7 @@ export function Login(props: { setIsLogin: () => void }) {
         updateSessionToken(res.sessionToken);
         updateEmail(email);
         showToast(Locales.Index.Success(Locales.Index.Login), 3000);
-        props.setIsLogin();
+        router.replace("/");
         break;
       }
       case ResponseStatus.notExist: {
@@ -101,7 +103,7 @@ export function Login(props: { setIsLogin: () => void }) {
       case ResponseStatus.Success: {
         updateSessionToken(res.sessionToken);
         updateEmail(email);
-        props.setIsLogin();
+        router.replace("/")
         showToast(Locales.Index.Success(Locales.Index.Register), 3000);
         break;
       }

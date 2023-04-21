@@ -17,8 +17,13 @@ export interface ChatSession {
   lastSummarizeIndex: number;
 }
 
+/**
+ * Store - For chat history
+ */
 export interface ChatStore {
-  config: ChatConfig;
+  showSideBar: boolean;
+  setShowSideBar: (open: boolean) => void;
+
   sessions: ChatSession[];
   currentSessionIndex: number;
   removeSession: (index: number) => void;
@@ -38,8 +43,5 @@ export interface ChatStore {
   getMessagesWithMemory: () => Message[];
   getMemoryPrompt: () => Message;
 
-  getConfig: () => ChatConfig;
-  resetConfig: () => void;
-  updateConfig: (updater: (config: ChatConfig) => void) => void;
   clearAllData: () => void;
 }

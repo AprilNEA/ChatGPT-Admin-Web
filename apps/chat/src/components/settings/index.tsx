@@ -8,17 +8,17 @@ import ResetIcon from "@/assets/icons/reload.svg";
 import CloseIcon from "@/assets/icons/close.svg";
 import ClearIcon from "@/assets/icons/clear.svg";
 
+import { Avatar } from "@/components/avatar";
 import { List, ListItem, Popover } from "@/components/ui-lib";
 
 import { IconButton } from "../button";
 import {
-  useChatStore,
-  ALL_MODELS,
-  useAccessStore,
   useUserStore,
+  useChatStore,
+  useSettingStore,
+  ALL_MODELS,
 } from "@/store";
-import {Model, SubmitKey, Theme} from "@/types/setting";
-import { Avatar } from "@/components/avatar";
+import { Model, SubmitKey, Theme } from "@/store/setting/typing";
 
 import Locale, { changeLang, getLang } from "@/locales";
 
@@ -42,20 +42,17 @@ function SettingItem(props: {
 
 export function Settings(props: { closeSettings: () => void }) {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-  const [config, updateConfig, resetConfig, clearAllData] = useChatStore(
-    (state) => [
-      state.config,
-      state.updateConfig,
-      state.resetConfig,
-      state.clearAllData,
-    ]
-  );
-  const [email] = useUserStore((state) => [state.email]);
-  const accessStore = useAccessStore();
-  const enabledAccessControl = useMemo(
-    () => accessStore.enabledAccessControl(),
-    []
-  );
+
+  const [config, updateConfig, resetConfig] = useSettingStore((state) => [
+    state.config,
+    state.updateConfig,
+    state.resetConfig,
+  ]);
+  const clearChatData = useChatStore((state) => state.clearAllData);
+
+  function clearAllData() {
+    clearChatData();
+  }
 
   return (
     <>
@@ -147,7 +144,7 @@ export function Settings(props: { closeSettings: () => void }) {
           {/*</SettingItem>*/}
 
           <SettingItem title={Locale.Settings.Account}>
-            <div>{email}</div>
+            <div>111</div>
           </SettingItem>
         </List>
 
@@ -213,33 +210,35 @@ export function Settings(props: { closeSettings: () => void }) {
             <input
               type="checkbox"
               checked={config.tightBorder}
-              onChange={(e) =>
-                updateConfig(
-                  (config) => (config.tightBorder = e.currentTarget.checked)
-                )
+              onChange={(e) => {
+                console.log(e.currentTarget.checked);
+                // updateConfig(
+                //   (config) => (config.tightBorder = e.currentTarget.checked)
+                // );
+              }
               }
             ></input>
           </SettingItem>
         </List>
 
         <List>
-          {enabledAccessControl ? (
-            <SettingItem
-              title={Locale.Settings.AccessCode.Title}
-              subTitle={Locale.Settings.AccessCode.SubTitle}
-            >
-              <input
-                value={accessStore.accessCode}
-                type="text"
-                placeholder={Locale.Settings.AccessCode.Placeholder}
-                onChange={(e) => {
-                  accessStore.updateCode(e.currentTarget.value);
-                }}
-              ></input>
-            </SettingItem>
-          ) : (
-            <></>
-          )}
+          {/*{enabledAccessControl ? (*/}
+          {/*  <SettingItem*/}
+          {/*    title={Locale.Settings.AccessCode.Title}*/}
+          {/*    subTitle={Locale.Settings.AccessCode.SubTitle}*/}
+          {/*  >*/}
+          {/*    <input*/}
+          {/*      value={accessStore.accessCode}*/}
+          {/*      type="text"*/}
+          {/*      placeholder={Locale.Settings.AccessCode.Placeholder}*/}
+          {/*      onChange={(e) => {*/}
+          {/*        accessStore.updateCode(e.currentTarget.value);*/}
+          {/*      }}*/}
+          {/*    ></input>*/}
+          {/*  </SettingItem>*/}
+          {/*) : (*/}
+          {/*  <></>*/}
+          {/*)}*/}
 
           {/*<SettingItem*/}
           {/*  title={Locale.Settings.Token.Title}*/}
@@ -301,7 +300,8 @@ export function Settings(props: { closeSettings: () => void }) {
               value={config.modelConfig.model}
               onChange={(e) => {
                 updateConfig(
-                  (config) => (config.modelConfig.model = e.currentTarget.value as Model)
+                  (config) =>
+                    (config.modelConfig.model = e.currentTarget.value as Model)
                 );
               }}
             >

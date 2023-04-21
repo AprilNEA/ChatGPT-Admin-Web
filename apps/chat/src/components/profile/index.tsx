@@ -19,13 +19,8 @@ import {
 } from "@/components/ui-lib";
 
 import { IconButton } from "../button";
-import {
-  useChatStore,
-  ALL_MODELS,
-  useAccessStore,
-  useUserStore,
-} from "@/store";
-import { Model, SubmitKey, Theme } from "@/types/setting";
+import { useChatStore, useSettingStore, useUserStore } from "@/store";
+import { Model, SubmitKey, Theme } from "@/store/setting/typing";
 import { Avatar } from "@/components/avatar";
 import { Loading } from "@/components/loading";
 import Locale, { changeLang, getLang } from "@/locales";
@@ -52,14 +47,11 @@ function ProfileItem(props: {
 
 export function Profile(props: { closeSettings: () => void }) {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-  const [config, updateConfig, resetConfig, clearAllData] = useChatStore(
-    (state) => [
-      state.config,
-      state.updateConfig,
-      state.resetConfig,
-      state.clearAllData,
-    ]
-  );
+  const [config, updateConfig, resetConfig] = useSettingStore((state) => [
+    state.config,
+    state.updateConfig,
+    state.resetConfig,
+  ]);
   const [email, requestsNo, updateRequestsNo, sessionToken] = useUserStore(
     (state) => [
       state.email,
@@ -153,22 +145,6 @@ export function Profile(props: { closeSettings: () => void }) {
           </div>
         </div>
         <div className={styles["window-actions"]}>
-          <div className={styles["window-action-button"]}>
-            <IconButton
-              icon={<ClearIcon />}
-              onClick={clearAllData}
-              bordered
-              title={Locale.Settings.Actions.ClearAll}
-            />
-          </div>
-          <div className={styles["window-action-button"]}>
-            <IconButton
-              icon={<ResetIcon />}
-              onClick={resetConfig}
-              bordered
-              title={Locale.Settings.Actions.ResetAll}
-            />
-          </div>
           <div className={styles["window-action-button"]}>
             <IconButton
               icon={<CloseIcon />}

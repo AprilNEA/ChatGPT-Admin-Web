@@ -1,6 +1,8 @@
-import { Message, useChatStore, useUserStore } from "@/store";
-import { ChatSession } from "@/types/chat";
-import { SubmitKey } from "@/types/setting";
+import Link from "next/link";
+
+import {Message, useChatStore, useSettingStore, useUserStore} from "@/store";
+import { ChatSession } from "@/store/chat/typing";
+import { SubmitKey } from "@/store/setting/typing";
 
 import { useLayoutEffect, useRef, useState } from "react";
 import { ControllerPool } from "@/utils/requests";
@@ -32,7 +34,7 @@ import Banner, { Post } from "@/components/banner";
 import useSWR from "swr";
 
 function useSubmitHandler() {
-  const config = useChatStore((state) => state.config);
+  const config = useSettingStore((state) => state.config);
   const submitKey = config.submitKey;
 
   const shouldSubmit = (e: KeyboardEvent) => {
@@ -121,11 +123,7 @@ const Markdown = dynamic(
   }
 );
 
-export function Chat(props: {
-  showSideBar?: () => void;
-  showProfile?: () => void;
-  sideBarShowing?: boolean;
-}) {
+export function Chat() {
   const email = useUserStore((state) => state.email);
 
   const { data: PlanAndInviteCode, isLoading: PlanLoading } = useSWR(
@@ -143,10 +141,14 @@ export function Chat(props: {
 
   type RenderMessage = Message & { preview?: boolean };
 
-  const [session, sessionIndex] = useChatStore((state) => [
-    state.currentSession(),
-    state.currentSessionIndex,
-  ]);
+  const [sidebarOpen, setSideBarOpen, session, sessionIndex] = useChatStore(
+    (state) => [
+      state.showSideBar,
+      state.setShowSideBar,
+      state.currentSession(),
+      state.currentSessionIndex,
+    ]
+  );
   const [userInput, setUserInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { submitKey, shouldSubmit } = useSubmitHandler();
@@ -267,7 +269,7 @@ export function Chat(props: {
         {plan != "free" && (
           <div
             className={styles["window-header-title"]}
-            onClick={props?.showSideBar}
+            onClick={() => setSideBarOpen(true)}
           >
             <div className={styles["window-header-main-title"]}>
               {session.topic}
@@ -284,16 +286,17 @@ export function Chat(props: {
               icon={<MenuIcon />}
               bordered
               title={Locale.Chat.Actions.ChatList}
-              onClick={props?.showSideBar}
+              onClick={() => setSideBarOpen(true)}
             />
           </div>
           <div className={styles["window-action-button"]}>
-            <IconButton
-              icon={<UserIcon />}
-              bordered
-              title={Locale.Profile.Title}
-              onClick={props?.showProfile}
-            />
+            <Link href="/profile">
+              <IconButton
+                icon={<UserIcon />}
+                bordered
+                title={Locale.Profile.Title}
+              />
+            </Link>
           </div>
           <div className={styles["window-action-button"]}>
             <IconButton
@@ -410,7 +413,7 @@ export function Chat(props: {
             onKeyDown={(e) => onInputKeyDown(e)}
             onFocus={() => setAutoScroll(true)}
             onBlur={() => setAutoScroll(false)}
-            autoFocus={!props?.sideBarShowing}
+            autoFocus={sidebarOpen}
           />
           <IconButton
             icon={<SendWhiteIcon />}
