@@ -31,7 +31,9 @@ export class UserDAL extends AbstractDataAccessLayer<User> {
   async listValues(cursor = 0): Promise<[number, User[]]> {
     const [newCursor, keys] = await this.listKeys(cursor);
     const values: [User][] = await this.redis.json.mget(keys, "$");
-    const users = values.map((value) => value[0]);
-    return [newCursor, users];
+    const parsingUsers = values.map((value) =>
+      this.schema.parseAsync(value[0])
+    );
+    return [newCursor, await Promise.all(parsingUsers)];
   }
 }

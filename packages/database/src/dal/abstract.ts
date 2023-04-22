@@ -12,7 +12,7 @@ export abstract class AbstractDataAccessLayer<T> implements DataAccessLayer<T> {
 
   async create(id: string, data: T): Promise<boolean> {
     if (await this.exists(id)) return false;
-    await this.doCreate(id, data);
+    await this.doCreate(id, await this.schema.parseAsync(data));
     return true;
   }
 
@@ -20,7 +20,7 @@ export abstract class AbstractDataAccessLayer<T> implements DataAccessLayer<T> {
 
   async read(id: string): Promise<T | null> {
     if (!await this.exists(id)) return null;
-    return this.schema.parse(await this.doRead(id));
+    return this.schema.parseAsync(await this.doRead(id));
   }
 
   protected abstract doUpdate(id: string, data: Partial<T>): Promise<void>;
