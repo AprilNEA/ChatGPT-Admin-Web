@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import { CallbackBody } from "@/lib/pay/xunhu";
-import { OrderDAL, UserDAL } from "dal";
+import { OrderDAL, UserDAL } from "database";
 
 function urlEncodedStringToJson(encodedString: string): Record<string, string> {
   const urlParams = new URLSearchParams(encodedString);
@@ -12,8 +12,9 @@ export async function POST(res: NextRequest) {
   const body = urlEncodedStringToJson(await res.text());
   // const OrderStatus = await OrderDAL.checkStatus(body.trade_order_id);
   const order = await OrderDAL.getOrder(body.trade_order_id);
-  if (order?.status === "pending")
+  if (order?.status === "pending") {
     await OrderDAL.updateStatus(body.trade_order_id, "paid");
+  }
   const user = new UserDAL(order!.email);
   await user.newSubscription({
     startsAt: Date.now(),

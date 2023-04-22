@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { Register, UserDAL } from "dal";
+import { Register, UserDAL } from "database";
 import { sendEmail } from "@/lib/email";
 import { sendPhone } from "@/lib/phone";
 import { ResponseStatus } from "@/app/api/typing.d";
@@ -12,8 +12,9 @@ export async function GET(req: NextRequest): Promise<Response> {
 
   const user = new UserDAL(email);
   // 鉴权
-  if (email !== (await user.accessControl.validateSessionToken(token)))
+  if (email !== (await user.accessControl.validateSessionToken(token))) {
     return NextResponse.json({}, { status: 401 });
+  }
 
   const chances = await user.getResetChances();
   return NextResponse.json({ status: ResponseStatus.Success, chances });
@@ -27,8 +28,9 @@ export async function POST(req: NextRequest): Promise<Response> {
 
   const user = new UserDAL(email);
   // 鉴权
-  if (email !== (await user.accessControl.validateSessionToken(token)))
+  if (email !== (await user.accessControl.validateSessionToken(token))) {
     return NextResponse.json({}, { status: 401 });
+  }
 
   const chances = await user.getResetChances();
   if (chances > 0 && (await user.changeResetChancesBy(-1))) {

@@ -49,9 +49,9 @@ importers:
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
-      dal:
+      database:
         specifier: workspace:*
-        version: link:../../packages/dal
+        version: link:../../packages/database
       edge-runtime:
         specifier: ^2.1.2
         version: 2.1.2
@@ -127,9 +127,9 @@ importers:
       antd:
         specifier: ^5.4.2
         version: 5.4.2(react-dom@18.2.0)(react@18.2.0)
-      dal:
+      database:
         specifier: workspace:*
-        version: link:../../packages/dal
+        version: link:../../packages/database
       next:
         specifier: ^13.2.3
         version: 13.2.3(@babel/core@7.21.4)(react-dom@18.2.0)(react@18.2.0)(sass@1.59.2)
@@ -145,9 +145,6 @@ importers:
       typescript:
         specifier: 4.9.5
         version: 4.9.5
-      zod:
-        specifier: ^3.21.4
-        version: 3.21.4
     devDependencies:
       '@types/node':
         specifier: ^18.14.6
@@ -160,13 +157,6 @@ importers:
         version: 18.0.11
 
   packages/bots:
-    dependencies:
-      '@edge-runtime/ponyfill':
-        specifier: ^2.1.2
-        version: 2.1.2
-      '@edge-runtime/primitives':
-        specifier: ^2.1.2
-        version: 2.1.2
     devDependencies:
       '@types/node':
         specifier: ^18.15.11
@@ -199,7 +189,7 @@ importers:
         specifier: ^22.0.0
         version: 22.0.0(eslint@8.37.0)(typescript@5.0.3)
 
-  packages/dal:
+  packages/database:
     dependencies:
       '@upstash/redis':
         specifier: ^1.20.2

@@ -1,15 +1,16 @@
 import { startPay } from "@/lib/pay/xunhu";
 import { NextRequest, NextResponse } from "next/server";
 import { ResponseStatus } from "@/app/api/typing.d";
-import { OrderDAL } from "dal";
-import type { Plan } from "dal";
+import { OrderDAL } from "database";
+import type { Plan } from "database";
 
 export async function GET(req: NextRequest) {
   const email = req.headers.get("email");
   const { searchParams } = new URL(req.url);
   const plan = searchParams.get("plan") as Plan;
-  if (!email || !plan)
+  if (!email || !plan) {
     return NextResponse.json({ status: ResponseStatus.Failed });
+  }
 
   const count = Number(searchParams.get("count")) || 1;
   let price;

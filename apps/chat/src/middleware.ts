@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { UserDAL } from "dal";
+import { UserDAL } from "database";
 import { LimitReason } from "@/typing.d";
 
 export const config = {
-  matcher: ["/api/bots/*"],
+  matcher: ["/api/bots/:model*"],
 };
 
 export async function middleware(req: NextRequest) {

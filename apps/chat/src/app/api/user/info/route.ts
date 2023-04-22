@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { UserDAL } from "dal";
+import { UserDAL } from "database";
 import { ResponseStatus } from "@/app/api/typing.d";
 
 export async function GET(req: NextRequest) {
@@ -7,8 +7,9 @@ export async function GET(req: NextRequest) {
   if (!email) return NextResponse.json({ status: ResponseStatus.Failed });
   const user = new UserDAL(email);
   let invitationCodes = await user.getInvitationCodes();
-  if (invitationCodes.length == 0)
+  if (invitationCodes.length == 0) {
     invitationCodes = [await user.newInvitationCode("normal")];
+  }
   return NextResponse.json({
     status: ResponseStatus.Success,
     role: await user.getPlan(),

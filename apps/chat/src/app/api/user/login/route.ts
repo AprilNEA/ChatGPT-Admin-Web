@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { UserDAL, Register } from "dal";
+import { Register, UserDAL } from "database";
 import { ResponseStatus } from "@/app/api/typing.d";
 
 export async function POST(req: NextRequest) {
@@ -8,13 +8,15 @@ export async function POST(req: NextRequest) {
     const user = new UserDAL(email);
 
     // 如果用户不存在, 则返回错误
-    if (!(await user.exists()))
+    if (!(await user.exists())) {
       return NextResponse.json({ status: ResponseStatus.notExist });
+    }
 
-    if(!(await user.login(password)))
+    if (!(await user.login(password))) {
       return NextResponse.json({ status: ResponseStatus.wrongPassword });
+    }
 
-    const sessionToken = await user.accessControl.newSessionToken()
+    const sessionToken = await user.accessControl.newSessionToken();
     if (sessionToken) {
       return NextResponse.json({
         status: ResponseStatus.Success,
@@ -25,7 +27,6 @@ export async function POST(req: NextRequest) {
         status: ResponseStatus.Failed,
       });
     }
-
   } catch (error) {
     console.error("[SERVER ERROR]", error);
     return new Response("[INTERNAL ERROR]", { status: 500 });

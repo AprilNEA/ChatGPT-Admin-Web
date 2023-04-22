@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { UserDAL } from "dal";
+import { UserDAL } from "database";
 
 export async function GET(req: NextRequest) {
   // const email = req.headers.get("email");

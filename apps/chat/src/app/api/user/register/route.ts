@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { Register, UserDAL } from "dal";
+import { Register, UserDAL } from "database";
 import { sendEmail } from "@/lib/email";
 import { sendPhone } from "@/lib/phone";
 import { ResponseStatus } from "@/app/api/typing.d";
@@ -52,14 +52,16 @@ export async function POST(req: NextRequest): Promise<Response> {
       const new_user = await UserDAL.fromRegistration(email, password);
       if (!new_user) throw Error("new user is null");
       if (invitation_code) {
-        const code = await user.acceptInvitationCode(invitation_code.toLowerCase());
+        const code = await user.acceptInvitationCode(
+          invitation_code.toLowerCase(),
+        );
         // if (code && code.type == "club") {
-          await user.newSubscription({
-            startsAt: Date.now(),
-            endsAt: Date.now() + 3 * 60 * 60 * 24 * 1000,
-            plan: "pro",
-            tradeOrderId: `club-code-${invitation_code.toLowerCase()}`,
-          });
+        await user.newSubscription({
+          startsAt: Date.now(),
+          endsAt: Date.now() + 3 * 60 * 60 * 24 * 1000,
+          plan: "pro",
+          tradeOrderId: `club-code-${invitation_code.toLowerCase()}`,
+        });
         // }
       }
       const token = await new_user.accessControl.newSessionToken();
@@ -77,7 +79,7 @@ export async function POST(req: NextRequest): Promise<Response> {
       const success = await user.activateRegisterCode(
         code.trim(),
         "phone",
-        phone
+        phone,
       );
       if (success) return NextResponse.json({ status: ResponseStatus.Success });
       else return NextResponse.json({ status: ResponseStatus.invalidCode });

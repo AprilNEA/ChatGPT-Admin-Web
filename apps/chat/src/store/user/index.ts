@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { Model } from "dal";
+import { Model } from "database";
 
 const LOCAL_KEY = "user-store";
 
@@ -96,6 +96,6 @@ export const useUserStore = create<UserStore>()(
     {
       name: LOCAL_KEY,
       version: 1,
-    }
-  )
+    },
+  ),
 );
