@@ -1,0 +1,1 @@
+export { redis } from "./client";
