@@ -5,23 +5,27 @@ export class UserDAL extends AbstractDataAccessLayer<User> {
   readonly schema = user;
   readonly namespace = "user:";
 
-  async doCreate(email: string, data: User): Promise<void> {
+  protected async doCreate(email: string, data: User): Promise<void> {
     await this.redis.json.set(email, "$", data);
   }
 
-  async doRead(email: string): Promise<User> {
+  protected async doRead(email: string): Promise<User> {
     return (await this.redis.json.get(email, "$"))[0];
   }
 
-  async doUpdate(email: string, data: Partial<User>): Promise<void> {
+  protected async doUpdate(email: string, data: Partial<User>): Promise<void> {
     await Object.entries(data).reduce(
       (pipe, [key, value]) => pipe.json.set(email, `$.${key}`, value),
       this.redis.pipeline(),
     ).exec();
   }
 
-  async exists(email: string): Promise<boolean> {
-    return this.existsByKey(email);
+  async delete(id: string): Promise<boolean> {
+    return await this.redis.del(this.getKey(id)) > 0;
+  }
+
+  async exists(id: string): Promise<boolean> {
+    return (await this.redis.exists(this.getKey(id))) > 0;
   }
 
   async listValues(cursor = 0): Promise<[number, User[]]> {

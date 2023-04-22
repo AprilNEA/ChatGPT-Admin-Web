@@ -8,7 +8,7 @@ export abstract class AbstractDataAccessLayer<T> implements DataAccessLayer<T> {
   abstract readonly schema: ZodSchema<T, ZodTypeDef, T>;
   abstract readonly namespace: `${string}:`;
 
-  abstract doCreate(id: string, data: T): Promise<void>;
+  protected abstract doCreate(id: string, data: T): Promise<void>;
 
   async create(id: string, data: T): Promise<boolean> {
     if (await this.exists(id)) return false;
@@ -16,14 +16,14 @@ export abstract class AbstractDataAccessLayer<T> implements DataAccessLayer<T> {
     return true;
   }
 
-  abstract doRead(id: string): Promise<T>;
+  protected abstract doRead(id: string): Promise<T>;
 
   async read(id: string): Promise<T | null> {
     if (!await this.exists(id)) return null;
     return this.schema.parse(await this.doRead(id));
   }
 
-  abstract doUpdate(id: string, data: Partial<T>): Promise<void>;
+  protected abstract doUpdate(id: string, data: Partial<T>): Promise<void>;
 
   async update(id: string, data: Partial<T>): Promise<boolean> {
     if (!await this.exists(id)) return false;
@@ -31,15 +31,9 @@ export abstract class AbstractDataAccessLayer<T> implements DataAccessLayer<T> {
     return true;
   }
 
-  async delete(id: string): Promise<boolean> {
-    return await this.redis.del(`${this.namespace}${id}`) > 0;
-  }
+  abstract delete(id: string): Promise<boolean>;
 
   abstract exists(id: string): Promise<boolean>;
-
-  protected async existsByKey(id: string): Promise<boolean> {
-    return await this.redis.exists(`${this.namespace}${id}`) > 0;
-  }
 
   async listKeys(cursor = 0): Promise<[number, string[]]> {
     const [newCursor, keys] = await this.redis.scan(cursor, {
@@ -50,4 +44,8 @@ export abstract class AbstractDataAccessLayer<T> implements DataAccessLayer<T> {
   }
 
   abstract listValues(cursor?: number): Promise<[number, T[]]>;
+
+  protected getKey(id: string): string {
+    return `${this.namespace}${id}`;
+  }
 }
