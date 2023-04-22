@@ -18,7 +18,7 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "paths": {
-      "@lmobest/dal": ["./packages/dal/src"],
+      "@lmobest/database": ["./packages/database/src"],
     },
     "pretty": true,
     "resolveJsonModule": true,
