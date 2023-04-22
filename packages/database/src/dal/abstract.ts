@@ -1,46 +1,48 @@
-import { ZodSchema } from "zod";
-import { DataAccessLayer, DataEntry } from "./interfaces";
-import { redis } from "../redis";
+import { ZodSchema, ZodTypeDef } from "zod";
+import { DataAccessLayer } from "./interfaces";
+import { defaultRedis } from "../redis";
 
-export abstract class AbstractDataEntry<T> implements DataEntry<T> {
-  abstract readonly schema: ZodSchema<T>;
+export abstract class AbstractDataAccessLayer<T> implements DataAccessLayer<T> {
+  constructor(protected readonly redis = defaultRedis) {}
 
-  constructor(public readonly key: string) {}
-
-  protected abstract doGetValue(): Promise<T | null>;
-  protected abstract doSetValue(value: T): Promise<void>;
-
-  async getValue(): Promise<T | null> {
-    const value = await this.doGetValue();
-    if (value === null) return null;
-    return this.schema.parse(value);
-  }
-
-  async setValue(value: T): Promise<void> {
-    await this.doSetValue(this.schema.parse(value));
-  }
-}
-
-export abstract class AbstractDataAccessLayer<
-  M extends DataEntry<T>,
-  T = M extends DataEntry<infer U> ? U : never,
-> implements DataAccessLayer<M, T> {
+  abstract readonly schema: ZodSchema<T, ZodTypeDef, T>;
   abstract readonly namespace: `${string}:`;
 
-  abstract create(id: string, data: T): Promise<DataEntry<T>>;
-  abstract update(
-    id: string,
-    data: Partial<DataEntry<T>>,
-  ): Promise<DataEntry<T> | null>;
-  abstract getById(id: string): Promise<DataEntry<T> | null>;
-  abstract delete(id: string): Promise<boolean>;
+  abstract doCreate(id: string, data: T): Promise<void>;
 
-  async exists(id: string): Promise<boolean> {
-    return Boolean(await redis.exists(`${this.namespace}${id}`));
+  async create(id: string, data: T): Promise<boolean> {
+    if (await this.exists(id)) return false;
+    await this.doCreate(id, data);
+    return true;
+  }
+
+  abstract doRead(id: string): Promise<T>;
+
+  async read(id: string): Promise<T | null> {
+    if (!await this.exists(id)) return null;
+    return this.schema.parse(await this.doRead(id));
+  }
+
+  abstract doUpdate(id: string, data: Partial<T>): Promise<void>;
+
+  async update(id: string, data: Partial<T>): Promise<boolean> {
+    if (!await this.exists(id)) return false;
+    await this.doUpdate(id, data);
+    return true;
+  }
+
+  async delete(id: string): Promise<boolean> {
+    return await this.redis.del(`${this.namespace}${id}`) > 0;
+  }
+
+  abstract exists(id: string): Promise<boolean>;
+
+  protected async existsByKey(id: string): Promise<boolean> {
+    return await this.redis.exists(`${this.namespace}${id}`) > 0;
   }
 
   async listKeys(cursor = 0): Promise<[number, string[]]> {
-    const [newCursor, keys] = await redis.scan(cursor, {
+    const [newCursor, keys] = await this.redis.scan(cursor, {
       match: `${this.namespace}*`,
     });
 

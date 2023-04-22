@@ -1,4 +1,4 @@
-import { redis } from "../redis/client";
+import { defaultRedis } from "../redis/client";
 
 // An abstract token pool using redis list
 export abstract class AbstractTokenPool {
@@ -9,7 +9,7 @@ export abstract class AbstractTokenPool {
 
   // Acquire token method
   async acquire(): Promise<string | null> {
-    const token = await redis.lpop<string>(this.redisKey);
+    const token = await defaultRedis.lpop<string>(this.redisKey);
 
     if (token) {
       // Set an auto-release mechanism for the token after ttl duration
@@ -34,7 +34,7 @@ export abstract class AbstractTokenPool {
     }
 
     // Add the token back to the Redis list
-    const released = !!(await redis.rpush(this.redisKey, token));
+    const released = !!(await defaultRedis.rpush(this.redisKey, token));
 
     if (released) {
       // Clear the auto-release timeout and remove the token from the autoReleaseMap

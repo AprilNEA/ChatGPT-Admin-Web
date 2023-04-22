@@ -1,4 +1,4 @@
-import { redis } from "../redis/client";
+import { defaultRedis } from "../redis/client";
 import { Order, OrderStatus } from "../types";
 
 export class OrderDAL {
@@ -21,7 +21,7 @@ export class OrderDAL {
   static async newOrder(newOrder: Order): Promise<string | null> {
     const id = this.getNextId();
     const isSuccess =
-      (await redis.json.set(this.getKey(id), "$", newOrder)) === "OK";
+      (await defaultRedis.json.set(this.getKey(id), "$", newOrder)) === "OK";
     if (isSuccess) return id;
     else return null;
   }
@@ -30,7 +30,8 @@ export class OrderDAL {
    * 返回整个订单
    */
   static async getOrder(orderId: string): Promise<Order | null> {
-    return (await redis.json.get(this.getKey(orderId), "$"))?.[0] ?? null;
+    return (await defaultRedis.json.get(this.getKey(orderId), "$"))?.[0] ??
+      null;
   }
 
   /**
@@ -38,7 +39,8 @@ export class OrderDAL {
    */
   static async checkStatus(orderId: string): Promise<OrderStatus | null> {
     return (
-      (await redis.json.get(this.getKey(orderId), "$.status"))?.[0] ?? null
+      (await defaultRedis.json.get(this.getKey(orderId), "$.status"))?.[0] ??
+        null
     );
   }
 
@@ -52,7 +54,7 @@ export class OrderDAL {
     newStatus: OrderStatus,
   ): Promise<boolean> {
     return (
-      (await redis.json.set(
+      (await defaultRedis.json.set(
         this.getKey(orderId),
         "$.status",
         JSON.stringify(newStatus),

@@ -1,1 +1,1 @@
-export { redis } from "./client";
+export * from "./client";

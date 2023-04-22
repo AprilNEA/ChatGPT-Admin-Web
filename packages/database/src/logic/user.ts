@@ -1,4 +1,4 @@
-import { redis } from "../redis/client";
+import { defaultRedis } from "../redis/client";
 import md5 from "spark-md5";
 import { generateRandomSixDigitNumber } from "./utils";
 import { AccessControlDAL } from "./access_control";
@@ -30,7 +30,7 @@ export class UserDAL {
   private async get(...paths: string[]): Promise<(any | null)[]> {
     if (!paths.length) paths.push("$");
     return (
-      (await redis.json.get(this.userKey, ...paths)) ??
+      (await defaultRedis.json.get(this.userKey, ...paths)) ??
         Array(paths.length).fill(null)
     );
   }
@@ -40,21 +40,21 @@ export class UserDAL {
   }
 
   private async update(path: string, data: any): Promise<boolean> {
-    return (await redis.json.set(this.userKey, path, data!)) === "OK";
+    return (await defaultRedis.json.set(this.userKey, path, data!)) === "OK";
   }
 
   private async append(path: string, value: any): Promise<boolean> {
-    return (await redis.json.arrappend(this.userKey, path, value)).every(
+    return (await defaultRedis.json.arrappend(this.userKey, path, value)).every(
       (code) => code !== null,
     );
   }
 
   async exists(): Promise<boolean> {
-    return (await redis.exists(this.userKey)) > 0;
+    return (await defaultRedis.exists(this.userKey)) > 0;
   }
 
   async delete(): Promise<boolean> {
-    return (await redis.del(this.userKey)) > 0;
+    return (await defaultRedis.del(this.userKey)) > 0;
   }
 
   static async fromRegistration(
@@ -142,18 +142,18 @@ export class UserDAL {
     }
 
     const key = `register:code:${codeType}:${phone ?? this.email}`;
-    const code = await redis.get<number>(key);
+    const code = await defaultRedis.get<number>(key);
 
     // code is found
     if (code) {
-      const ttl = await redis.ttl(key);
+      const ttl = await defaultRedis.ttl(key);
       if (ttl >= 60 * 4) return { status: RegisterReturnStatus.TooFast, ttl };
     }
 
     // code is not found, generate a new one
     const randomNumber = generateRandomSixDigitNumber();
-    if ((await redis.set(key, randomNumber)) === "OK") {
-      await redis.expire(key, 60 * 5); // Expiration time: 5 minutes
+    if ((await defaultRedis.set(key, randomNumber)) === "OK") {
+      await defaultRedis.expire(key, 60 * 5); // Expiration time: 5 minutes
       return {
         status: RegisterReturnStatus.Success,
         code: randomNumber,
@@ -179,12 +179,12 @@ export class UserDAL {
       throw new Error("Phone number is required");
     }
     const key = `register:code:${codeType}:${phone ?? this.email}`;
-    const remoteCode = await redis.get(key);
+    const remoteCode = await defaultRedis.get(key);
 
     const isSuccess = remoteCode == code;
 
     if (isSuccess) {
-      const delKey = redis.del(key);
+      const delKey = defaultRedis.del(key);
       const storePhone = phone && this.update("$.phone", phone);
 
       await Promise.all([delKey, storePhone]);
@@ -216,7 +216,11 @@ export class UserDAL {
       limit: limit ?? 0,
     };
 
-    const setCode = redis.json.set(key, "$", JSON.stringify(invitationCode));
+    const setCode = defaultRedis.json.set(
+      key,
+      "$",
+      JSON.stringify(invitationCode),
+    );
     const appendCode = this.append("$.invitationCodes", JSON.stringify(code));
     await Promise.all([setCode, appendCode]);
 
@@ -238,7 +242,7 @@ export class UserDAL {
     code: string,
   ): Promise<InvitationCode | null> {
     const inviterCodeKey = `invitationCode:${code}`;
-    const [inviterCode]: [InvitationCode | null] = (await redis.json.get(
+    const [inviterCode]: [InvitationCode | null] = (await defaultRedis.json.get(
       inviterCodeKey,
       "$",
     )) ?? [null];
@@ -255,12 +259,12 @@ export class UserDAL {
     inviterCode.inviteeEmails.push(this.email);
 
     const setCode = this.update("$.inviterCode", JSON.stringify(code));
-    const appendEmail = redis.json.arrappend(
+    const appendEmail = defaultRedis.json.arrappend(
       inviterCodeKey,
       "$.inviteeEmails",
       JSON.stringify(this.email),
     );
-    await redis.json.numincrby(inviterCodeKey, "$.resetChances", 1);
+    await defaultRedis.json.numincrby(inviterCodeKey, "$.resetChances", 1);
 
     await Promise.all([setCode, appendEmail]);
 
@@ -284,7 +288,7 @@ export class UserDAL {
 
   async changeResetChancesBy(value: number): Promise<boolean> {
     return (
-      await redis.json.numincrby(this.userKey, "$.resetChances", value)
+      await defaultRedis.json.numincrby(this.userKey, "$.resetChances", value)
     ).every((code) => code !== null);
   }
 
@@ -311,7 +315,7 @@ export class UserDAL {
     let cursor = 0;
     const emails: string[] = [];
     do {
-      const [nextCursor, keys] = await redis.scan(cursor, {
+      const [nextCursor, keys] = await defaultRedis.scan(cursor, {
         match: "user:*",
         count: 500,
       });
@@ -325,7 +329,7 @@ export class UserDAL {
   static async getPlansOf(...emails: string[]): Promise<Plan[]> {
     const keys = emails.map((email) => `user:${email}`);
     const plans: [Plan][] =
-      (await redis.json.mget(keys, "$.subscriptions[-1].plan")) ?? [];
+      (await defaultRedis.json.mget(keys, "$.subscriptions[-1].plan")) ?? [];
 
     return plans.map((plan) => plan[0] ?? "free");
   }

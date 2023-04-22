@@ -1,4 +1,4 @@
-import { redis } from "../redis/client";
+import { defaultRedis } from "../redis/client";
 import { SessionToken } from "../types";
 import md5 from "spark-md5";
 import { UserDAL } from "./user";
@@ -25,8 +25,8 @@ export class AccessControlDAL {
       userEmail: this.emailOrIP,
     };
 
-    await redis.hmset(`sessionToken:${token}`, sessionToken);
-    await redis.expire(`sessionToken:${token}`, 24 * 60 * 60); // Expire in 1 day
+    await defaultRedis.hmset(`sessionToken:${token}`, sessionToken);
+    await defaultRedis.expire(`sessionToken:${token}`, 24 * 60 * 60); // Expire in 1 day
 
     return token;
   }
@@ -39,14 +39,14 @@ export class AccessControlDAL {
   async validateSessionToken(token: string): Promise<string | null> {
     if (this.isIP) return null;
 
-    const sessionToken = await redis.hgetall<SessionToken>(
+    const sessionToken = await defaultRedis.hgetall<SessionToken>(
       `sessionToken:${token.trim()}`,
     );
 
     if (!sessionToken) return null;
     if (sessionToken.isRevoked) return null;
 
-    await redis.expire(`sessionToken:${token.trim()}`, 24 * 60 * 60); // Expire in 1 day
+    await defaultRedis.expire(`sessionToken:${token.trim()}`, 24 * 60 * 60); // Expire in 1 day
     return sessionToken.userEmail;
   }
 
@@ -62,11 +62,15 @@ export class AccessControlDAL {
     const user = new UserDAL(this.emailOrIP);
     const plan = await user.getPlan();
     if (plan === "free") {
-      await redis.zremrangebyscore(key, 0, Date.now() - 60 * 60 * 1000);
+      await defaultRedis.zremrangebyscore(key, 0, Date.now() - 60 * 60 * 1000);
     } // 移除所有过期的时间戳 ie. 3 hours ago
-    else await redis.zremrangebyscore(key, 0, Date.now() - 3 * 60 * 60 * 1000);
+    else {await defaultRedis.zremrangebyscore(
+        key,
+        0,
+        Date.now() - 3 * 60 * 60 * 1000,
+      );}
 
-    return await redis.zrange<number[]>(key, 0, -1);
+    return await defaultRedis.zrange<number[]>(key, 0, -1);
   }
 
   /**
@@ -77,7 +81,7 @@ export class AccessControlDAL {
     const key = `limit:${this.emailOrIP}`;
     const timestamp = Date.now();
     // add at the end of requestsTimestamp
-    await redis.zadd(key, {
+    await defaultRedis.zadd(key, {
       member: timestamp,
       score: timestamp,
     });
@@ -87,7 +91,7 @@ export class AccessControlDAL {
   static async getRequestsTimeStampsOf(
     ...emailOrIP: string[]
   ): Promise<number[][]> {
-    const pipeline = redis.pipeline();
+    const pipeline = defaultRedis.pipeline();
 
     emailOrIP.forEach((emailOrIP) => {
       pipeline.zrange<number[]>(`limit:${emailOrIP}`, 0, -1);
@@ -98,8 +102,8 @@ export class AccessControlDAL {
 
   async resetLimit() {
     const key = `limit:${this.emailOrIP}`;
-    await redis.zremrangebyrank(key, 0, -1);
+    await defaultRedis.zremrangebyrank(key, 0, -1);
 
-    return await redis.zrange<number[]>(key, 0, -1);
+    return await defaultRedis.zrange<number[]>(key, 0, -1);
   }
 }

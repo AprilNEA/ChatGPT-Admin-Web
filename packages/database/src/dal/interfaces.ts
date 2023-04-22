@@ -1,25 +1,15 @@
 import { ZodSchema } from "zod";
 
-export interface DataEntry<T> {
+export interface DataAccessLayer<T> {
   readonly schema: ZodSchema<T>;
-
-  readonly key: string;
-  getValue(): Promise<T | null>;
-  setValue(value: T): Promise<void>;
-}
-
-export interface DataAccessLayer<
-  M extends DataEntry<T>,
-  T = M extends DataEntry<infer U> ? U : never,
-> {
   readonly namespace: `${string}:`;
 
-  create(id: string, data: T): Promise<DataEntry<T>>;
+  create(id: string, data: T): Promise<boolean>;
+  read(id: string): Promise<T | null>;
   update(
     id: string,
-    data: Partial<DataEntry<T>>,
-  ): Promise<DataEntry<T> | null>;
-  getById(id: string): Promise<DataEntry<T> | null>;
+    data: Partial<T>,
+  ): Promise<boolean>;
   delete(id: string): Promise<boolean>;
 
   exists(id: string): Promise<boolean>;
