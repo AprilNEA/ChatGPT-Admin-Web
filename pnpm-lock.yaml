@@ -197,6 +197,9 @@ importers:
       spark-md5:
         specifier: ^3.0.2
         version: 3.0.2
+      zod:
+        specifier: ^3.21.4
+        version: 3.21.4
     devDependencies:
       '@jest/globals':
         specifier: ^29.5.0

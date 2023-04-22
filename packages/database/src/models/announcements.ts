@@ -1,15 +1,15 @@
-import {Model} from "./typing";
-import {redis} from "src/redis/client";
+import { Announcement, AnnouncementDate } from "../types";
+import { redis } from "src/redis/client";
 
 export class AnnouncementsDAL {
-  constructor(private key: Model.AnnouncementDate) {}
+  constructor(private key: AnnouncementDate) {}
 
-  static async listKeys(pattern='*'): Promise<Model.AnnouncementDate[]> {
-    const keys = await redis.keys('announcement:'+ pattern)
-    return keys.map(k => k.split(':')[1]) as Model.AnnouncementDate[]
+  static async listKeys(pattern = "*"): Promise<AnnouncementDate[]> {
+    const keys = await redis.keys("announcement:" + pattern);
+    return keys.map((k) => k.split(":")[1]) as AnnouncementDate[];
   }
 
-  getContent(): Promise<Model.Announcement | null> {
-    return redis.get<Model.Announcement>(`announcement:${this.key}`)
+  getContent(): Promise<Announcement | null> {
+    return redis.get<Announcement>(`announcement:${this.key}`);
   }
 }

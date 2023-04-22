@@ -1,13 +1,12 @@
-import { redis } from '../redis/client';
-import { Model } from './typing';
-import OrderStatus = Model.OrderStatus;
+import { redis } from "../redis/client";
+import { Order, OrderStatus } from "../types";
 
 export class OrderDAL {
   private static getNextId(): string {
     const timestamp: string = new Date().getTime().toString();
     const randomDigits: string = (Math.random() * 1e6)
       .toFixed(0)
-      .padStart(6, '0');
+      .padStart(6, "0");
     return `${timestamp}${randomDigits}`;
   }
 
@@ -19,10 +18,10 @@ export class OrderDAL {
    * 创建一个新的订单
    * @return 成功返回订单号, 失败返回 -1
    */
-  static async newOrder(newOrder: Model.Order): Promise<string | null> {
+  static async newOrder(newOrder: Order): Promise<string | null> {
     const id = this.getNextId();
     const isSuccess =
-      (await redis.json.set(this.getKey(id), '$', newOrder)) === 'OK';
+      (await redis.json.set(this.getKey(id), "$", newOrder)) === "OK";
     if (isSuccess) return id;
     else return null;
   }
@@ -30,8 +29,8 @@ export class OrderDAL {
   /**
    * 返回整个订单
    */
-  static async getOrder(orderId: string): Promise<Model.Order | null> {
-    return (await redis.json.get(this.getKey(orderId), '$'))?.[0] ?? null;
+  static async getOrder(orderId: string): Promise<Order | null> {
+    return (await redis.json.get(this.getKey(orderId), "$"))?.[0] ?? null;
   }
 
   /**
@@ -39,7 +38,7 @@ export class OrderDAL {
    */
   static async checkStatus(orderId: string): Promise<OrderStatus | null> {
     return (
-      (await redis.json.get(this.getKey(orderId), '$.status'))?.[0] ?? null
+      (await redis.json.get(this.getKey(orderId), "$.status"))?.[0] ?? null
     );
   }
 
@@ -50,14 +49,14 @@ export class OrderDAL {
    */
   static async updateStatus(
     orderId: string,
-    newStatus: OrderStatus
+    newStatus: OrderStatus,
   ): Promise<boolean> {
     return (
       (await redis.json.set(
         this.getKey(orderId),
-        '$.status',
-        JSON.stringify(newStatus)
-      )) === 'OK'
+        "$.status",
+        JSON.stringify(newStatus),
+      )) === "OK"
     );
   }
 }

@@ -1,8 +1,16 @@
-import { redis } from '../redis/client';
-import md5 from 'spark-md5';
-import { generateRandomSixDigitNumber } from './utils';
-import { AccessControlDAL } from './access_control';
-import { Role, Plan, Model, Register } from './typing';
+import { redis } from "../redis/client";
+import md5 from "spark-md5";
+import { generateRandomSixDigitNumber } from "./utils";
+import { AccessControlDAL } from "./access_control";
+import {
+  InvitationCode,
+  Plan,
+  RegisterCodeType,
+  RegisterReturnStatus,
+  Role,
+  Subscription,
+  User,
+} from "../types";
 
 export class UserDAL {
   readonly email: string;
@@ -20,24 +28,24 @@ export class UserDAL {
   }
 
   private async get(...paths: string[]): Promise<(any | null)[]> {
-    if (!paths.length) paths.push('$');
+    if (!paths.length) paths.push("$");
     return (
       (await redis.json.get(this.userKey, ...paths)) ??
-      Array(paths.length).fill(null)
+        Array(paths.length).fill(null)
     );
   }
 
-  private set(data: Model.User): Promise<boolean> {
-    return this.update('$', data);
+  private set(data: User): Promise<boolean> {
+    return this.update("$", data);
   }
 
   private async update(path: string, data: any): Promise<boolean> {
-    return (await redis.json.set(this.userKey, path, data!)) === 'OK';
+    return (await redis.json.set(this.userKey, path, data!)) === "OK";
   }
 
   private async append(path: string, value: any): Promise<boolean> {
     return (await redis.json.arrappend(this.userKey, path, value)).every(
-      code => code !== null
+      (code) => code !== null,
     );
   }
 
@@ -52,14 +60,14 @@ export class UserDAL {
   static async fromRegistration(
     email: string,
     password: string,
-    extraData: Partial<Model.User> = {}
+    extraData: Partial<User> = {},
   ): Promise<UserDAL | null> {
     const userDAL = new UserDAL(email);
 
     if (await userDAL.exists()) return null;
 
     await userDAL.set({
-      name: 'Anonymous',
+      name: "Anonymous",
       passwordHash: md5.hash(password.trim()),
       createdAt: Date.now(),
       lastLoginAt: Date.now(),
@@ -67,7 +75,7 @@ export class UserDAL {
       resetChances: 0,
       invitationCodes: [],
       subscriptions: [],
-      role: 'user',
+      role: "user",
       ...extraData,
     });
 
@@ -75,21 +83,21 @@ export class UserDAL {
   }
 
   async login(password: string): Promise<boolean> {
-    const [passwordHash] = await this.get('$.passwordHash');
+    const [passwordHash] = await this.get("$.passwordHash");
     const isSuccess = passwordHash === md5.hash(password.trim());
 
     if (isSuccess) {
       // Set last login
-      await this.update('$.lastLoginAt', Date.now());
+      await this.update("$.lastLoginAt", Date.now());
     }
     return isSuccess;
   }
 
   async getPlan(): Promise<Role | Plan | null> {
-    const [role] = await this.get('$.role');
-    if (role === 'user') {
+    const [role] = await this.get("$.role");
+    if (role === "user") {
       const subscription = await this.getLastSubscription();
-      return subscription?.plan ?? 'free';
+      return subscription?.plan ?? "free";
     }
     return role;
   }
@@ -105,26 +113,26 @@ export class UserDAL {
    * }
    */
   async newRegisterCode(
-    codeType: Register.CodeType,
-    phone?: string
+    codeType: RegisterCodeType,
+    phone?: string,
   ): Promise<
     | {
-        status: Register.ReturnStatus.Success;
-        code: number;
-        ttl: number;
-      }
+      status: RegisterReturnStatus.Success;
+      code: number;
+      ttl: number;
+    }
     | {
-        status: Register.ReturnStatus.TooFast;
-        ttl: number;
-      }
+      status: RegisterReturnStatus.TooFast;
+      ttl: number;
+    }
     | {
-        status:
-          | Register.ReturnStatus.AlreadyRegister
-          | Register.ReturnStatus.UnknownError;
-      }
+      status:
+        | RegisterReturnStatus.AlreadyRegister
+        | RegisterReturnStatus.UnknownError;
+    }
   > {
-    if (codeType === 'phone') {
-      if (!phone) throw new Error('Phone number is required');
+    if (codeType === "phone") {
+      if (!phone) throw new Error("Phone number is required");
       // Fixme @peron
       // The following code is not possible in Redis
 
@@ -139,21 +147,21 @@ export class UserDAL {
     // code is found
     if (code) {
       const ttl = await redis.ttl(key);
-      if (ttl >= 60 * 4) return { status: Register.ReturnStatus.TooFast, ttl };
+      if (ttl >= 60 * 4) return { status: RegisterReturnStatus.TooFast, ttl };
     }
 
     // code is not found, generate a new one
     const randomNumber = generateRandomSixDigitNumber();
-    if ((await redis.set(key, randomNumber)) === 'OK') {
+    if ((await redis.set(key, randomNumber)) === "OK") {
       await redis.expire(key, 60 * 5); // Expiration time: 5 minutes
       return {
-        status: Register.ReturnStatus.Success,
+        status: RegisterReturnStatus.Success,
         code: randomNumber,
         ttl: 300,
       };
     }
 
-    return { status: Register.ReturnStatus.UnknownError };
+    return { status: RegisterReturnStatus.UnknownError };
   }
 
   /**
@@ -164,11 +172,11 @@ export class UserDAL {
    */
   async activateRegisterCode(
     code: string | number,
-    codeType: Register.CodeType,
-    phone?: string
+    codeType: RegisterCodeType,
+    phone?: string,
   ): Promise<boolean> {
-    if (codeType === 'phone' && !phone) {
-      throw new Error('Phone number is required');
+    if (codeType === "phone" && !phone) {
+      throw new Error("Phone number is required");
     }
     const key = `register:code:${codeType}:${phone ?? this.email}`;
     const remoteCode = await redis.get(key);
@@ -177,7 +185,7 @@ export class UserDAL {
 
     if (isSuccess) {
       const delKey = redis.del(key);
-      const storePhone = phone && this.update('$.phone', phone);
+      const storePhone = phone && this.update("$.phone", phone);
 
       await Promise.all([delKey, storePhone]);
     }
@@ -196,20 +204,20 @@ export class UserDAL {
   async newInvitationCode(
     type: string,
     code?: string,
-    limit?: number
+    limit?: number,
   ): Promise<string> {
     if (!code) code = md5.hash(this.email + Date.now()).slice(0, 6);
     const key = `invitationCode:${code}`;
 
-    const invitationCode: Model.InvitationCode = {
+    const invitationCode: InvitationCode = {
       inviterEmail: this.email,
       inviteeEmails: [],
       type,
       limit: limit ?? 0,
     };
 
-    const setCode = redis.json.set(key, '$', JSON.stringify(invitationCode));
-    const appendCode = this.append('$.invitationCodes', JSON.stringify(code));
+    const setCode = redis.json.set(key, "$", JSON.stringify(invitationCode));
+    const appendCode = this.append("$.invitationCodes", JSON.stringify(code));
     await Promise.all([setCode, appendCode]);
 
     return code;
@@ -227,12 +235,12 @@ export class UserDAL {
    * @returns the info of invitation code
    */
   async acceptInvitationCode(
-    code: string
-  ): Promise<Model.InvitationCode | null> {
+    code: string,
+  ): Promise<InvitationCode | null> {
     const inviterCodeKey = `invitationCode:${code}`;
-    const [inviterCode]: [Model.InvitationCode | null] = (await redis.json.get(
+    const [inviterCode]: [InvitationCode | null] = (await redis.json.get(
       inviterCodeKey,
-      '$'
+      "$",
     )) ?? [null];
 
     if (!inviterCode) return null;
@@ -240,18 +248,19 @@ export class UserDAL {
       inviterCode.inviteeEmails &&
       inviterCode.limit &&
       inviterCode.inviteeEmails.length >= inviterCode.limit
-    )
+    ) {
       return null;
+    }
 
     inviterCode.inviteeEmails.push(this.email);
 
-    const setCode = this.update('$.inviterCode', JSON.stringify(code));
+    const setCode = this.update("$.inviterCode", JSON.stringify(code));
     const appendEmail = redis.json.arrappend(
       inviterCodeKey,
-      '$.inviteeEmails',
-      JSON.stringify(this.email)
+      "$.inviteeEmails",
+      JSON.stringify(this.email),
     );
-    await redis.json.numincrby(inviterCodeKey, '$.resetChances', 1);
+    await redis.json.numincrby(inviterCodeKey, "$.resetChances", 1);
 
     await Promise.all([setCode, appendEmail]);
 
@@ -259,24 +268,24 @@ export class UserDAL {
   }
 
   async getInviterCode(): Promise<string | null> {
-    return (await this.get('$.inviterCode'))[0] ?? null;
+    return (await this.get("$.inviterCode"))[0] ?? null;
   }
 
   /**
    * 获取自己的邀请码列表
    */
   async getInvitationCodes(): Promise<string[]> {
-    return (await this.get('$.invitationCodes'))[0] ?? [];
+    return (await this.get("$.invitationCodes"))[0] ?? [];
   }
 
   async getResetChances(): Promise<number> {
-    return (await this.get('$.resetChances'))[0] ?? 0;
+    return (await this.get("$.resetChances"))[0] ?? 0;
   }
 
   async changeResetChancesBy(value: number): Promise<boolean> {
     return (
-      await redis.json.numincrby(this.userKey, '$.resetChances', value)
-    ).every(code => code !== null);
+      await redis.json.numincrby(this.userKey, "$.resetChances", value)
+    ).every((code) => code !== null);
   }
 
   /**
@@ -285,8 +294,8 @@ export class UserDAL {
    * @param subscription
    * @returns true if succeeded
    */
-  newSubscription(subscription: Model.Subscription): Promise<boolean> {
-    return this.append('$.subscriptions', subscription);
+  newSubscription(subscription: Subscription): Promise<boolean> {
+    return this.append("$.subscriptions", subscription);
   }
 
   /**
@@ -294,8 +303,8 @@ export class UserDAL {
    * Please make sure the user exists before calling this method!
    * @returns the current subscription or null if no subscription (Free)
    */
-  async getLastSubscription(): Promise<Model.Subscription | null> {
-    return (await this.get('$.subscriptions[-1]'))[0] ?? null;
+  async getLastSubscription(): Promise<Subscription | null> {
+    return (await this.get("$.subscriptions[-1]"))[0] ?? null;
   }
 
   static async listAllEmails(): Promise<string[]> {
@@ -303,43 +312,21 @@ export class UserDAL {
     const emails: string[] = [];
     do {
       const [nextCursor, keys] = await redis.scan(cursor, {
-        match: 'user:*',
+        match: "user:*",
         count: 500,
       });
       cursor = nextCursor;
       emails.push(...keys);
     } while (cursor !== 0);
 
-    return emails.map(email => email.slice(5));
-  }
-
-  static async listUsers(
-    cursor: number = 0,
-    count: number = 10,
-    prefix: string = 'user:*'
-  ): Promise<Model.User[]> {
-    const [nextCursor, keys] = await redis.scan(cursor, {
-      match: prefix,
-      count,
-    });
-
-    return (await Promise.all(
-      keys.map(async key => {
-        const value = await redis.json.get(key);
-        console.log(value);
-        return {
-          key,
-          value,
-        };
-      })
-    )) as unknown as Model.User[];
+    return emails.map((email) => email.slice(5));
   }
 
   static async getPlansOf(...emails: string[]): Promise<Plan[]> {
-    const keys = emails.map(email => `user:${email}`);
+    const keys = emails.map((email) => `user:${email}`);
     const plans: [Plan][] =
-      (await redis.json.mget(keys, '$.subscriptions[-1].plan')) ?? [];
+      (await redis.json.mget(keys, "$.subscriptions[-1].plan")) ?? [];
 
-    return plans.map(plan => plan[0] ?? 'free');
+    return plans.map((plan) => plan[0] ?? "free");
   }
 }

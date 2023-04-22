@@ -1,13 +1,13 @@
-import { redis } from '../redis/client';
-import { Model } from './typing';
-import md5 from 'spark-md5';
-import { UserDAL } from './user';
+import { redis } from "../redis/client";
+import { SessionToken } from "../types";
+import md5 from "spark-md5";
+import { UserDAL } from "./user";
 
 export class AccessControlDAL {
   constructor(
     /* 邮箱或 IP */
     private emailOrIP: string,
-    private isIP = !emailOrIP.includes('@')
+    private isIP = !emailOrIP.includes("@"),
   ) {}
 
   /**
@@ -18,7 +18,7 @@ export class AccessControlDAL {
 
     const token = md5.hash(`${this.emailOrIP}:${new Date()}`);
 
-    const sessionToken: Model.SessionToken = {
+    const sessionToken: SessionToken = {
       createdAt: Date.now(),
 
       isRevoked: false,
@@ -39,8 +39,8 @@ export class AccessControlDAL {
   async validateSessionToken(token: string): Promise<string | null> {
     if (this.isIP) return null;
 
-    const sessionToken = await redis.hgetall<Model.SessionToken>(
-      `sessionToken:${token.trim()}`
+    const sessionToken = await redis.hgetall<SessionToken>(
+      `sessionToken:${token.trim()}`,
     );
 
     if (!sessionToken) return null;
@@ -61,9 +61,9 @@ export class AccessControlDAL {
     const key = `limit:${this.emailOrIP}`;
     const user = new UserDAL(this.emailOrIP);
     const plan = await user.getPlan();
-    if (plan === 'free')
+    if (plan === "free") {
       await redis.zremrangebyscore(key, 0, Date.now() - 60 * 60 * 1000);
-    // 移除所有过期的时间戳 ie. 3 hours ago
+    } // 移除所有过期的时间戳 ie. 3 hours ago
     else await redis.zremrangebyscore(key, 0, Date.now() - 3 * 60 * 60 * 1000);
 
     return await redis.zrange<number[]>(key, 0, -1);
@@ -89,7 +89,7 @@ export class AccessControlDAL {
   ): Promise<number[][]> {
     const pipeline = redis.pipeline();
 
-    emailOrIP.forEach(emailOrIP => {
+    emailOrIP.forEach((emailOrIP) => {
       pipeline.zrange<number[]>(`limit:${emailOrIP}`, 0, -1);
     });
 
