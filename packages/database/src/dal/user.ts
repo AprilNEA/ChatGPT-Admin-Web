@@ -1,29 +1,47 @@
 import { AbstractDataAccessLayer } from "./abstract";
-import { User, user } from "../types";
+import { Subscription, User, user } from "../types";
 
 export class UserDAL extends AbstractDataAccessLayer<User> {
   readonly schema = user;
   readonly namespace = "user:";
 
   protected async doCreate(email: string, data: User): Promise<void> {
-    await this.redis.json.set(email, "$", data);
+    await this.redis.json.set(this.getKey(email), "$", data);
   }
 
   async read(email: string): Promise<User | null> {
-    return (await this.redis.json.get(email, "$"))?.[0] ?? null;
+    return (await this.redis.json.get(this.getKey(email), "$"))?.[0] ?? null;
   }
 
-  async readPassword(email: string): Promise<string | null> {
-    return (await this.redis.json.get(email, "$.passwordHash"))?.[0] ?? null;
+  readPassword(email: string): Promise<User["passwordHash"] | null> {
+    return this.readPropertyFromRedis(email, "passwordHash");
   }
 
-  async readRole(email: string): Promise<string | null> {
-    return (await this.redis.json.get(email, "$.role"))?.[0] ?? null;
+  readRole(email: string): Promise<User["role"] | null> {
+    return this.readPropertyFromRedis(email, "role");
+  }
+
+  readSubscriptions(
+    email: string,
+  ): Promise<User["subscriptions"] | null> {
+    return this.readPropertyFromRedis(email, "subscriptions");
+  }
+
+  async readLastSubscription(
+    email: string,
+  ): Promise<Subscription | null> {
+    return (await this.redis.json
+      .get(
+        this.getKey(email),
+        "$.subscriptions[-1]",
+      ))
+      ?.[0] ?? null;
   }
 
   protected async doUpdate(email: string, data: Partial<User>): Promise<void> {
     await Object.entries(data).reduce(
-      (pipe, [key, value]) => pipe.json.set(email, `$.${key}`, value),
+      (pipe, [key, value]) =>
+        pipe.json.set(this.getKey(email), `$.${key}`, value),
       this.redis.pipeline(),
     ).exec();
   }
