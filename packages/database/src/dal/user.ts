@@ -9,8 +9,12 @@ export class UserDAL extends AbstractDataAccessLayer<User> {
     await this.redis.json.set(email, "$", data);
   }
 
-  protected async doRead(email: string): Promise<User> {
-    return (await this.redis.json.get(email, "$"))[0];
+  async read(email: string): Promise<User | null> {
+    return (await this.redis.json.get(email, "$"))?.[0] ?? null;
+  }
+
+  async readPassword(email: string): Promise<string | null> {
+    return (await this.redis.json.get(email, "$.password"))[0] ?? null;
   }
 
   protected async doUpdate(email: string, data: Partial<User>): Promise<void> {
@@ -20,12 +24,12 @@ export class UserDAL extends AbstractDataAccessLayer<User> {
     ).exec();
   }
 
-  async delete(id: string): Promise<boolean> {
-    return await this.redis.del(this.getKey(id)) > 0;
+  async delete(email: string): Promise<boolean> {
+    return await this.redis.del(this.getKey(email)) > 0;
   }
 
-  async exists(id: string): Promise<boolean> {
-    return (await this.redis.exists(this.getKey(id))) > 0;
+  async exists(email: string): Promise<boolean> {
+    return (await this.redis.exists(this.getKey(email))) > 0;
   }
 
   async listValues(cursor = 0): Promise<[number, User[]]> {

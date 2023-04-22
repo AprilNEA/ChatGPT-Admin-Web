@@ -16,12 +16,7 @@ export abstract class AbstractDataAccessLayer<T> implements DataAccessLayer<T> {
     return true;
   }
 
-  protected abstract doRead(id: string): Promise<T>;
-
-  async read(id: string): Promise<T | null> {
-    if (!await this.exists(id)) return null;
-    return this.schema.parseAsync(await this.doRead(id));
-  }
+  abstract read(id: string): Promise<T | null>;
 
   protected abstract doUpdate(id: string, data: Partial<T>): Promise<void>;
 
