@@ -13,6 +13,4 @@ export interface DataAccessLayer<T> {
   delete(id: string): Promise<boolean>;
 
   exists(id: string): Promise<boolean>;
-  listKeys(cursor?: number): Promise<[number, string[]]>;
-  listValues(cursor?: number): Promise<[number, T[]]>;
 }

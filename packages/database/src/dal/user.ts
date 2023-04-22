@@ -14,7 +14,11 @@ export class UserDAL extends AbstractDataAccessLayer<User> {
   }
 
   async readPassword(email: string): Promise<string | null> {
-    return (await this.redis.json.get(email, "$.password"))[0] ?? null;
+    return (await this.redis.json.get(email, "$.passwordHash"))?.[0] ?? null;
+  }
+
+  async readRole(email: string): Promise<string | null> {
+    return (await this.redis.json.get(email, "$.role"))?.[0] ?? null;
   }
 
   protected async doUpdate(email: string, data: Partial<User>): Promise<void> {

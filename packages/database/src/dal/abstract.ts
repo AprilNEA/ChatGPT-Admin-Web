@@ -1,11 +1,20 @@
-import { ZodSchema, ZodTypeDef } from "zod";
+import { ZodSchema } from "zod";
 import { DataAccessLayer } from "./interfaces";
 import { defaultRedis } from "../redis";
 
+/**
+ * Abstract class for data access layer
+ *
+ * This class provides the following:
+ * 1. simplify the creation logic by ensuring existence and validation
+ * 2. simplify the update logic by ensuring existence
+ * 3. provide a default implementation for listKeys
+ * 4. provide a helper fn for getKey
+ */
 export abstract class AbstractDataAccessLayer<T> implements DataAccessLayer<T> {
   constructor(protected readonly redis = defaultRedis) {}
 
-  abstract readonly schema: ZodSchema<T, ZodTypeDef, T>;
+  abstract readonly schema: ZodSchema<T>;
   abstract readonly namespace: `${string}:`;
 
   protected abstract doCreate(id: string, data: T): Promise<void>;
@@ -30,15 +39,14 @@ export abstract class AbstractDataAccessLayer<T> implements DataAccessLayer<T> {
 
   abstract exists(id: string): Promise<boolean>;
 
-  async listKeys(cursor = 0): Promise<[number, string[]]> {
+  async listKeys(cursor = 0, count = 500): Promise<[number, string[]]> {
     const [newCursor, keys] = await this.redis.scan(cursor, {
       match: `${this.namespace}*`,
+      count,
     });
 
     return [Number(newCursor), keys];
   }
-
-  abstract listValues(cursor?: number): Promise<[number, T[]]>;
 
   protected getKey(id: string): string {
     return `${this.namespace}${id}`;

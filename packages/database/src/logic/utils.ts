@@ -7,3 +7,4 @@ export function generateRandomSixDigitNumber() {
 export function isObjNonEmpty(obj: any): boolean {
   return !!Object.keys(obj).length;
 }
+
