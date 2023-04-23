@@ -29,6 +29,9 @@ export abstract class AbstractDataAccessLayer<T> implements DataAccessLayer<T> {
 
   protected abstract doCreate(id: string, data: T): Promise<void>;
 
+  /**
+   * this methods simplifies the creation logic by ensuring existence and validation
+   */
   async create(id: string, data: T): Promise<boolean> {
     if (await this.exists(id)) return false;
     await this.doCreate(id, await this.schema.parseAsync(data));
@@ -39,6 +42,9 @@ export abstract class AbstractDataAccessLayer<T> implements DataAccessLayer<T> {
 
   protected abstract doUpdate(id: string, data: Partial<T>): Promise<void>;
 
+  /**
+   * this methods simplifies the update logic by ensuring existence
+   */
   async update(id: string, data: Partial<T>): Promise<boolean> {
     if (!await this.exists(id)) return false;
     await this.doUpdate(id, data);

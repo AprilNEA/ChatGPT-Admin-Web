@@ -1,10 +1,13 @@
-import { User } from "../types";
+import { Plan, User } from "../types";
 import { UserDAL } from "../dal";
 import md5 from "spark-md5";
 
 export class UserLogic {
   constructor(private readonly dal = new UserDAL()) {}
 
+  /**
+   * @returns true if the user was created, false if the user already exists
+   */
   register(
     email: string,
     password: string,
@@ -24,16 +27,33 @@ export class UserLogic {
     });
   }
 
+  /**
+   * @returns true if the password is correct, false if the password is incorrect or the user does not exist
+   */
   async login(email: string, password: string): Promise<boolean> {
     const passwordHash = await this.dal.readPassword(email);
     return passwordHash === md5.hash(password.trim());
   }
 
+  /**
+   * @returns true if the user was updated, false if the user does not exist
+   */
   update(email: string, data: Partial<User>): Promise<boolean> {
     return this.dal.update(email, data);
   }
 
+  /**
+   * @returns the role of the user, or null if the user does not exist
+   */
   getRoleOf(email: string): Promise<string | null> {
     return this.dal.readRole(email);
+  }
+
+  /**
+   * @returns the plan of the user, or "free" if the user does not exist
+   */
+  async getPlanOf(email: string): Promise<Plan> {
+    const subscription = await this.dal.readLastSubscription(email);
+    return subscription?.plan ?? "free";
   }
 }
