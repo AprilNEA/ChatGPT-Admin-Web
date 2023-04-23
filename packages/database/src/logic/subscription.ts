@@ -8,8 +8,7 @@ export class SubscriptionLogic {
    * @returns the plan of the user, or "free" if the user does not exist
    */
   async getPlanOf(email: string): Promise<Plan> {
-    const subscription = await this.dal.readLastSubscription(email);
-    return subscription?.plan ?? "free";
+    return await this.dal.readPlan(email) ?? "free";
   }
 
   /**

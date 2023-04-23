@@ -1,5 +1,5 @@
 import { AbstractDataAccessLayer } from "./abstract";
-import { Subscription, subscription, User, user } from "../types";
+import { Plan, Subscription, subscription, User, user } from "../types";
 
 export class UserDAL extends AbstractDataAccessLayer<User> {
   readonly schema = user;
@@ -27,13 +27,13 @@ export class UserDAL extends AbstractDataAccessLayer<User> {
     return this.readPropertyFromRedis(email, "subscriptions");
   }
 
-  async readLastSubscription(
+  async readPlan(
     email: string,
-  ): Promise<Subscription | null> {
+  ): Promise<Plan | null> {
     return (await this.redis.json
       .get(
         this.getKey(email),
-        "$.subscriptions[-1]",
+        "$.subscriptions[-1].plan",
       ))
       ?.[0] ?? null;
   }
@@ -54,12 +54,12 @@ export class UserDAL extends AbstractDataAccessLayer<User> {
     );
   }
 
-  async appendSubscription(email: string, sub: Subscription): Promise<void> {
-    await this.redis.json.arrappend(
+  async appendSubscription(email: string, sub: Subscription): Promise<boolean> {
+    return (await this.redis.json.arrappend(
       this.getKey(email),
       "$.subscriptions",
       await subscription.parseAsync(sub),
-    );
+    )).every(Boolean);
   }
 
   async appendInvitationCode(email: string, code: string): Promise<void> {
