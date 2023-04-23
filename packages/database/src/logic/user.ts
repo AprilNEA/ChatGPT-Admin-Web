@@ -45,7 +45,21 @@ export class UserLogic {
   /**
    * @returns the role of the user, or null if the user does not exist
    */
-  getRoleOf(email: string): Promise<string | null> {
+  getRoleOf(email: string) {
     return this.dal.readRole(email);
+  }
+
+  /**
+   * @returns the invitation codes of the user, or null if the user does not exist
+   */
+  getInvitationCodesOf(email: string) {
+    return this.dal.readInvitationCodes(email);
+  }
+
+  /**
+   * @returns the reset chances of the user, or null if the user does not exist
+   */
+  getResetChancesOf(email: string) {
+    return this.dal.readResetChances(email);
   }
 }

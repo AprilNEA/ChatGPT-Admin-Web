@@ -2,7 +2,7 @@ import { InvitationCodeDAL, UserDAL } from "../dal";
 import { CreateNewInvitationCodeParams, InvitationCode } from "../types";
 import md5 from "spark-md5";
 
-export class InvitationLogic {
+export class InvitationCodeLogic {
   constructor(
     private readonly userDAL = new UserDAL(),
     private readonly invitationCodeDAL = new InvitationCodeDAL(),
@@ -41,7 +41,8 @@ export class InvitationLogic {
    * 1. Check if the inviter code is valid
    * 2. Set the inviter code to the user
    * 3. Append the email of invitee to the list in the code's inviteeEmails
-   * 4. Return the info of invitation code
+   * 4. Increase inviter's reset chance by 1
+   * 5. Return the info of invitation code
    * Please make sure the user exists before calling this method!
    * @param code
    * @returns the info of invitation code
@@ -68,7 +69,16 @@ export class InvitationLogic {
       inviteeEmail,
     );
 
-    await Promise.all([setInviterCode, appendInviteeEmail]);
+    const increaseResetChance = this.userDAL.incrResetChances(
+      invitationCode.inviterEmail,
+      1,
+    );
+
+    await Promise.all([
+      setInviterCode,
+      appendInviteeEmail,
+      increaseResetChance,
+    ]);
 
     return invitationCode;
   }

@@ -38,10 +38,26 @@ export class UserDAL extends AbstractDataAccessLayer<User> {
       ?.[0] ?? null;
   }
 
+  readInvitationCodes(email: string): Promise<User["invitationCodes"] | null> {
+    return this.readPropertyFromRedis(email, "invitationCodes");
+  }
+
+  readResetChances(email: string): Promise<User["resetChances"] | null> {
+    return this.readPropertyFromRedis(email, "resetChances");
+  }
+
+  async incrResetChances(email: string, value: number): Promise<void> {
+    await this.redis.json.numincrby(
+      this.getKey(email),
+      "$.resetChances",
+      value,
+    );
+  }
+
   async appendSubscription(email: string, sub: Subscription): Promise<void> {
     await this.redis.json.arrappend(
       this.getKey(email),
-      ".subscriptions",
+      "$.subscriptions",
       await subscription.parseAsync(sub),
     );
   }
@@ -49,7 +65,7 @@ export class UserDAL extends AbstractDataAccessLayer<User> {
   async appendInvitationCode(email: string, code: string): Promise<void> {
     await this.redis.json.arrappend(
       this.getKey(email),
-      ".invitationCodes",
+      "$.invitationCodes",
       JSON.stringify(code),
     );
   }
