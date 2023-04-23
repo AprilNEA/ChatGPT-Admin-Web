@@ -19,7 +19,6 @@ export class AccessControlLogic {
 
     const sessionToken: SessionToken = {
       createdAt: Date.now(),
-
       isRevoked: false,
       userEmail: emailOrIP,
     };
