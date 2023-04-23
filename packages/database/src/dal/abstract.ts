@@ -42,6 +42,17 @@ export abstract class AbstractDataAccessLayer<T> implements DataAccessLayer<T> {
 
   protected abstract doUpdate(id: string, data: Partial<T>): Promise<void>;
 
+  protected async doJSONUpdate(
+    id: string,
+    data: Partial<T>,
+  ): Promise<void> {
+    await Object.entries(data).reduce(
+      (pipe, [key, value]) =>
+        pipe.json.set(this.getKey(id), `$.${key}`, JSON.stringify(value)),
+      this.redis.pipeline(),
+    ).exec();
+  }
+
   /**
    * this methods simplifies the update logic by ensuring existence
    */
@@ -51,9 +62,13 @@ export abstract class AbstractDataAccessLayer<T> implements DataAccessLayer<T> {
     return true;
   }
 
-  abstract delete(id: string): Promise<boolean>;
+  async delete(id: string): Promise<boolean> {
+    return await this.redis.del(this.getKey(id)) > 0;
+  }
 
-  abstract exists(id: string): Promise<boolean>;
+  async exists(id: string): Promise<boolean> {
+    return (await this.redis.exists(this.getKey(id))) > 0;
+  }
 
   async listKeys(cursor = 0, count = 500): Promise<[number, string[]]> {
     const [newCursor, keys] = await this.redis.scan(cursor, {

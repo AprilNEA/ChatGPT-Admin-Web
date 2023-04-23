@@ -11,3 +11,10 @@ export const invitationCode = z.object({
   inviteeEmails: z.string().array(),
 });
 export type InvitationCode = z.infer<typeof invitationCode>;
+
+export type CreateNewInvitationCodeParams = {
+  email: string;
+  type: InvitationCodeType;
+  code?: string;
+  limit?: number;
+};
