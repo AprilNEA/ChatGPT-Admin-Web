@@ -22,4 +22,12 @@ export class InvitationCodeDAL extends AbstractDataAccessLayer<InvitationCode> {
   async read(id: string): Promise<InvitationCode | null> {
     return (await this.redis.json.get(this.getKey(id), "$"))?.[0] ?? null;
   }
+
+  async appendInviteeEmail(code: string, inviteeEmail: string) {
+    await this.redis.json.arrappend(
+      this.getKey(code),
+      ".inviteeEmails",
+      JSON.stringify(inviteeEmail),
+    );
+  }
 }

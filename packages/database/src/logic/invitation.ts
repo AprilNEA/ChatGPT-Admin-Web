@@ -1,5 +1,5 @@
 import { InvitationCodeDAL, UserDAL } from "../dal";
-import { CreateNewInvitationCodeParams, InvitationCodeType } from "../types";
+import { CreateNewInvitationCodeParams, InvitationCode } from "../types";
 import md5 from "spark-md5";
 
 export class InvitationLogic {
@@ -8,7 +8,15 @@ export class InvitationLogic {
     private readonly invitationCodeDAL = new InvitationCodeDAL(),
   ) {}
 
-  newCode({ code, email, type, limit = 0 }: CreateNewInvitationCodeParams) {
+  /**
+   * Generate a new invitation code, create related key in Redis, and append the code to the user's invitationCodes.
+   * Please make sure the user exists before calling this method!
+   * TODO: avoid data pollution when failed
+   * @returns the invitation code or null when any of it not exist
+   */
+  async newCode(
+    { code, email, type, limit = 0 }: CreateNewInvitationCodeParams,
+  ): Promise<string | null> {
     if (!code) code = md5.hash(email + Date.now()).slice(0, 6);
 
     const createCode = this.invitationCodeDAL.create(
@@ -20,5 +28,48 @@ export class InvitationLogic {
         inviteeEmails: [],
       },
     );
+    const appendCode = this.userDAL.appendInvitationCode(email, code);
+
+    const success = (await Promise.all([createCode, appendCode]))
+      .every(Boolean);
+
+    return success ? code : null;
+  }
+
+  /**
+   * The following method does the following:
+   * 1. Check if the inviter code is valid
+   * 2. Set the inviter code to the user
+   * 3. Append the email of invitee to the list in the code's inviteeEmails
+   * 4. Return the info of invitation code
+   * Please make sure the user exists before calling this method!
+   * @param code
+   * @returns the info of invitation code
+   */
+  async acceptCode(
+    inviteeEmail: string,
+    code: string,
+  ): Promise<InvitationCode | null> {
+    const invitationCode = await this.invitationCodeDAL.read(code);
+
+    if (!invitationCode) return null;
+
+    if (invitationCode.inviteeEmails.length >= invitationCode.limit) {
+      return null;
+    }
+
+    const setInviterCode = this.userDAL.update(inviteeEmail, {
+      inviterCode: code,
+    });
+
+    invitationCode.inviteeEmails.push(inviteeEmail);
+    const appendInviteeEmail = this.invitationCodeDAL.appendInviteeEmail(
+      code,
+      inviteeEmail,
+    );
+
+    await Promise.all([setInviterCode, appendInviteeEmail]);
+
+    return invitationCode;
   }
 }

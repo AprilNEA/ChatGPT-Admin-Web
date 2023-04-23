@@ -38,14 +38,20 @@ export class UserDAL extends AbstractDataAccessLayer<User> {
       ?.[0] ?? null;
   }
 
-  async appendSubscription(email: string, sub: Subscription): Promise<boolean> {
-    if (!(await this.exists(email))) return false;
+  async appendSubscription(email: string, sub: Subscription): Promise<void> {
     await this.redis.json.arrappend(
       this.getKey(email),
       ".subscriptions",
       await subscription.parseAsync(sub),
     );
-    return true;
+  }
+
+  async appendInvitationCode(email: string, code: string): Promise<void> {
+    await this.redis.json.arrappend(
+      this.getKey(email),
+      ".invitationCodes",
+      JSON.stringify(code),
+    );
   }
 
   protected doUpdate(email: string, data: Partial<User>) {
