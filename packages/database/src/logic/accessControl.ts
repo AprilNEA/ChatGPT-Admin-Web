@@ -10,17 +10,14 @@ export class AccessControlLogic {
   ) {}
 
   async newSessionToken(
-    emailOrIP: string,
-    isIP = !emailOrIP.includes("@"),
+    email: string,
   ): Promise<string | null> {
-    if (isIP) return null;
-
-    const token = md5.hash(`${emailOrIP}:${new Date()}`);
+    const token = md5.hash(`${email}:${new Date()}`);
 
     const sessionToken: SessionToken = {
       createdAt: Date.now(),
       isRevoked: false,
-      userEmail: emailOrIP,
+      userEmail: email,
     };
 
     await this.sessionTokenDAL.create(token, sessionToken);
@@ -30,11 +27,7 @@ export class AccessControlLogic {
 
   async validateSessionToken(
     token: string,
-    emailOrIP: string,
-    isIP = !emailOrIP.includes("@"),
   ): Promise<string | null> {
-    if (isIP) return null;
-
     const sessionToken = await this.sessionTokenDAL.read(token.trim());
 
     if (!sessionToken) return null;
