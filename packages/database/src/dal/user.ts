@@ -1,5 +1,5 @@
 import { AbstractDataAccessLayer } from "./abstract";
-import { Subscription, User, user } from "../types";
+import { Subscription, subscription, User, user } from "../types";
 
 export class UserDAL extends AbstractDataAccessLayer<User> {
   readonly schema = user;
@@ -36,6 +36,16 @@ export class UserDAL extends AbstractDataAccessLayer<User> {
         "$.subscriptions[-1]",
       ))
       ?.[0] ?? null;
+  }
+
+  async appendSubscription(email: string, sub: Subscription): Promise<boolean> {
+    if (!(await this.exists(email))) return false;
+    await this.redis.json.arrappend(
+      this.getKey(email),
+      ".subscriptions",
+      await subscription.parseAsync(sub),
+    );
+    return true;
   }
 
   protected async doUpdate(email: string, data: Partial<User>): Promise<void> {

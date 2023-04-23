@@ -1,4 +1,4 @@
-import { Plan, User } from "../types";
+import { User } from "../types";
 import { UserDAL } from "../dal";
 import md5 from "spark-md5";
 
@@ -47,13 +47,5 @@ export class UserLogic {
    */
   getRoleOf(email: string): Promise<string | null> {
     return this.dal.readRole(email);
-  }
-
-  /**
-   * @returns the plan of the user, or "free" if the user does not exist
-   */
-  async getPlanOf(email: string): Promise<Plan> {
-    const subscription = await this.dal.readLastSubscription(email);
-    return subscription?.plan ?? "free";
   }
 }
