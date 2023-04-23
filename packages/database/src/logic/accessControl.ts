@@ -24,6 +24,7 @@ export class AccessControlLogic {
     };
 
     await this.sessionTokenDAL.create(token, sessionToken);
+    await this.sessionTokenDAL.setExpiration(token, 24 * 60 * 60);
     return token;
   }
 
@@ -39,7 +40,7 @@ export class AccessControlLogic {
     if (!sessionToken) return null;
     if (sessionToken.isRevoked) return null;
 
-    await this.sessionTokenDAL.update(token.trim(), { createdAt: Date.now() });
+    await this.sessionTokenDAL.setExpiration(token, 24 * 60 * 60);
     return sessionToken.userEmail;
   }
 

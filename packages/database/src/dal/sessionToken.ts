@@ -17,4 +17,8 @@ export class SessionTokenDAL extends AbstractDataAccessLayer<SessionToken> {
   protected async doUpdate(token: string, data: Partial<SessionToken>) {
     await this.redis.hmset(this.getKey(token), data);
   }
+
+  async setExpiration(token: string, seconds: number) {
+    await this.redis.expire(this.getKey(token), seconds);
+  }
 }
