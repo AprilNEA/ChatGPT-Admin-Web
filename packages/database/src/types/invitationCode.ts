@@ -9,6 +9,7 @@ export const invitationCode = z.object({
   limit: z.number(),
   inviterEmail: z.string(),
   inviteeEmails: z.string().array(),
+  validOrders: z.string().array().optional(),
 });
 export type InvitationCode = z.infer<typeof invitationCode>;
 

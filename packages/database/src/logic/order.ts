@@ -1,28 +1,45 @@
-import { OrderDAL } from "../dal";
+import { InvitationCodeDAL, OrderDAL, UserDAL } from "../dal";
 import { Order, OrderStatus } from "../types";
 
 export class OrderLogic {
-  constructor(private readonly dal = new OrderDAL()) {}
+  constructor(
+    private readonly invitationCodeDAL = new InvitationCodeDAL(),
+    private readonly orderDAL = new OrderDAL(),
+  ) {}
 
-  async newOrder(newOrder: Order): Promise<string | null> {
-    const id = this.dal.getNextId();
-    const isSuccess = await this.dal.create(id, newOrder);
-    if (isSuccess) return id;
-    else return null;
+  /**
+   * create a new order and append to invitationCode if the invitationCode is present
+   * NOTE: whether the invitationCode should be added or not is not checked here.
+   * You should check it using `UserDAL.read(inviteeEmail)` and find the `createdAt`
+   */
+  async newOrder(
+    newOrder: Order,
+    invitationCode?: string,
+  ): Promise<string | null> {
+    const id = this.orderDAL.getNextId();
+    const isSuccess = await this.orderDAL.create(id, newOrder);
+
+    if (isSuccess) {
+      if (invitationCode) {
+        // append order id to invitationCode if the invitationCode is present
+        await this.invitationCodeDAL.appendValidOrder(invitationCode, id);
+      }
+      return id;
+    } else return null;
   }
 
   async getOrder(orderId: string): Promise<Order | null> {
-    return await this.dal.read(orderId);
+    return await this.orderDAL.read(orderId);
   }
 
   async checkStatus(orderId: string): Promise<OrderStatus | null> {
-    return await this.dal.readStatus(orderId);
+    return await this.orderDAL.readStatus(orderId);
   }
 
   async updateStatus(
     orderId: string,
     newStatus: OrderStatus,
   ): Promise<boolean> {
-    return await this.dal.update(orderId, { status: newStatus });
+    return await this.orderDAL.update(orderId, { status: newStatus });
   }
 }
