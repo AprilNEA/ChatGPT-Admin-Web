@@ -17,7 +17,7 @@ export class InvitationCodeLogic {
   async newCode(
     { code, email, type, limit = 0 }: CreateNewInvitationCodeParams,
   ): Promise<string | null> {
-    if (!code) code = md5.hash(email + Date.now()).slice(0, 6);
+    code ??= md5.hash(email + Date.now()).slice(0, 6);
 
     const createCode = this.invitationCodeDAL.create(
       code,
@@ -55,7 +55,10 @@ export class InvitationCodeLogic {
 
     if (!invitationCode) return null;
 
-    if (invitationCode.inviteeEmails.length >= invitationCode.limit) {
+    if (
+      invitationCode.limit &&
+      invitationCode.inviteeEmails.length >= invitationCode.limit
+    ) {
       return null;
     }
 
