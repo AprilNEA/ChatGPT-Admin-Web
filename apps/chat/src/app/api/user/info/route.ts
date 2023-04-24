@@ -1,18 +1,29 @@
 import { NextRequest, NextResponse } from "next/server";
-import { UserDAL } from "database";
+import { UserLogic, InvitationCodeLogic } from "database";
 import { ResponseStatus } from "@/app/api/typing.d";
 
 export async function GET(req: NextRequest) {
-  const email = req.headers.get("email");
-  if (!email) return NextResponse.json({ status: ResponseStatus.Failed });
-  const user = new UserDAL(email);
-  let invitationCodes = await user.getInvitationCodes();
-  if (invitationCodes.length == 0) {
-    invitationCodes = [await user.newInvitationCode("normal")];
+  const email = req.headers.get("email")!;
+
+  const user = new UserLogic();
+  let invitationCodes = (await user.getInvitationCodesOf(email)) ?? [];
+  if (invitationCodes.length === 0) {
+    const invitationCode = new InvitationCodeLogic();
+    const newCode = await invitationCode.newCode({
+      email,
+      type: "normal",
+    });
+    if (newCode) invitationCodes = [newCode];
+    else
+      NextResponse.json({
+        status: ResponseStatus.Failed,
+      });
   }
+
   return NextResponse.json({
     status: ResponseStatus.Success,
-    role: await user.getPlan(),
-    inviteCode: invitationCodes[0],
+    role: user.getRoleOf(email),
+    plan: user.getPlanOf(email),
+    inviteCode: invitationCodes,
   });
 }

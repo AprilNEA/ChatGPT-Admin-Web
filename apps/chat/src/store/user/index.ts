@@ -1,6 +1,5 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { Model } from "database";
 
 const LOCAL_KEY = "user-store";
 

@@ -194,6 +194,9 @@ importers:
       '@upstash/redis':
         specifier: ^1.20.2
         version: 1.20.2
+      jose:
+        specifier: ^4.14.1
+        version: 4.14.1
       spark-md5:
         specifier: ^3.0.2
         version: 3.0.2
@@ -5297,6 +5300,10 @@ packages:
       - supports-color
       - ts-node
     dev: true
+
+  /jose@4.14.1:
+    resolution: {integrity: sha512-SgjXLpP7jhQkUNKL6RpowoR/IF4QKE+WjLDMpNnh2vmhiFs67NftrNpvFtgbwpvRdtueFliahYYWz9E+XZZQlg==}
+    dev: false
 
   /js-sdsl@4.4.0:
     resolution: {integrity: sha512-FfVSdx6pJ41Oa+CF7RDaFmTnCaFhua+SNYQX74riGOpl96x+2jQCqEfQ2bnXu/5DPCqlRuiqyvTJM0Qjz26IVg==}

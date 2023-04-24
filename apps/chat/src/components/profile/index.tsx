@@ -8,12 +8,7 @@ import styles from "@/styles/module/profile.module.scss";
 import CloseIcon from "@/assets/icons/close.svg";
 import { copyToClipboard } from "@/utils/utils";
 
-import {
-  List,
-  ListItem,
-  Popover,
-  showToast,
-} from "@/components/ui-lib";
+import { List, ListItem, Popover, showToast } from "@/components/ui-lib";
 
 import { IconButton } from "../button";
 import { useSettingStore, useUserStore } from "@/store";
@@ -76,7 +71,7 @@ export function Profile(props: { closeSettings: () => void }) {
     "/api/user/get-limit",
     (url) =>
       fetch(url, {
-        headers: { email },
+        headers: { Authorization: sessionToken ?? "" },
       })
         .then((res) => res.json())
         .then((res) => res.requestNos.length)
@@ -86,7 +81,7 @@ export function Profile(props: { closeSettings: () => void }) {
     "/api/user/info",
     (url) =>
       fetch(url, {
-        headers: { email },
+        headers: { Authorization: sessionToken ?? "1" },
       }).then((res) => res.json())
   );
 

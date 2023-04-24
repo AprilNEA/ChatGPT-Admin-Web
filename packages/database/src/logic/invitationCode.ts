@@ -44,6 +44,7 @@ export class InvitationCodeLogic {
    * 4. Increase inviter's reset chance by 1
    * 5. Return the info of invitation code
    * Please make sure the user exists before calling this method!
+   * @param inviteeEmail
    * @param code
    * @returns the info of invitation code
    */
@@ -55,10 +56,7 @@ export class InvitationCodeLogic {
 
     if (!invitationCode) return null;
 
-    if (
-      invitationCode.limit &&
-      invitationCode.inviteeEmails.length >= invitationCode.limit
-    ) {
+    if (invitationCode.inviteeEmails.length >= invitationCode.limit) {
       return null;
     }
 

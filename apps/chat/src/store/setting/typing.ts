@@ -34,6 +34,8 @@ export interface ChatConfig {
 
 export interface SettingStore {
   config: ChatConfig;
+  tightBorder: boolean;
+  changeTightBorder: (v: boolean) => void;
   getConfig: () => ChatConfig;
   resetConfig: () => void;
   updateConfig: (updater: (config: ChatConfig) => void) => void;

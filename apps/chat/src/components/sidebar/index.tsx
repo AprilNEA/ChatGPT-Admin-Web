@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect} from "react";
+import { useState, useEffect } from "react";
 
 import { IconButton } from "@/components/button";
 import styles from "@/styles/module/home.module.scss";
@@ -12,7 +12,7 @@ import AddIcon from "@/assets/icons/add.svg";
 
 import AnnouncementIcon from "@/assets/icons/announcement.svg";
 import CloseIcon from "@/assets/icons/close.svg";
-import {useChatStore, useSettingStore} from "@/store";
+import { useChatStore, useSettingStore } from "@/store";
 
 import { isMobileScreen } from "@/utils/utils";
 import Locale from "@/locales";
@@ -60,6 +60,7 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
 
   // 设置
   const config = useSettingStore((state) => state.config);
+  const tightBorder = useSettingStore((state) => state.tightBorder);
 
   // 暗色模式切换
   useSwitchTheme();
@@ -72,7 +73,7 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
   return (
     <div
       className={`${
-        config.tightBorder && !isMobileScreen()
+        tightBorder && !isMobileScreen()
           ? styles["tight-container"]
           : styles.container
       }`}
