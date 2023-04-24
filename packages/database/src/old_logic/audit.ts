@@ -1,4 +1,4 @@
-import { redis } from "src/redis/client";
+import { defaultRedis } from "../redis/client";
 import { AuditLog, PaymentAuditLog } from "../types";
 
 export class AuditDAL {
@@ -22,7 +22,10 @@ export class AuditDAL {
     };
 
     return (
-      (await redis.hmset(`auditLog:payment:${tradeOrderId}`, paymentLog)) ===
+      (await defaultRedis.hmset(
+        `auditLog:payment:${tradeOrderId}`,
+        paymentLog,
+      )) ===
         "OK"
     );
   }
