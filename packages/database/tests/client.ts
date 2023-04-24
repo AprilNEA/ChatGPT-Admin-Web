@@ -1,11 +1,11 @@
 import { Redis } from "@upstash/redis";
-import { UserDAL } from "../src";
+import { InvitationCodeDAL, UserDAL } from "../src";
 
-export const testRedis = new Redis(
-  {
-    url: "http://124.223.23.163:10086",
-    token: "lmobest_test",
-  },
-);
+export const testRedis = new Redis({
+  url: "***REMOVED***",
+  token:
+    "***REMOVED***",
+});
 
 export const testUserDAL = new UserDAL(testRedis);
+export const testInvitationCodeDAL = new InvitationCodeDAL(testRedis);

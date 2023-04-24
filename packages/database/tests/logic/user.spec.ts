@@ -1,6 +1,6 @@
-import { describe, expect, test } from "@jest/globals";
+import { afterAll, describe, expect, test } from "@jest/globals";
 import { testUserDAL } from "../client";
-import { UserLogic } from "../../src";
+import { UserDAL, UserLogic } from "../../src";
 
 describe("UserLogic", () => {
   const userLogic = new UserLogic(testUserDAL);
@@ -83,3 +83,5 @@ describe("UserLogic", () => {
     expect(result).toBeNull();
   });
 });
+
+// CLEAN UP: del user:test@example.com

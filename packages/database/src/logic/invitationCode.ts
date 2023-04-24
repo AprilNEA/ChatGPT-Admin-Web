@@ -30,10 +30,9 @@ export class InvitationCodeLogic {
     );
     const appendCode = this.userDAL.appendInvitationCode(email, code);
 
-    const success = (await Promise.all([createCode, appendCode]))
-      .every(Boolean);
+    await Promise.all([createCode, appendCode]);
 
-    return success ? code : null;
+    return code;
   }
 
   /**
@@ -56,7 +55,10 @@ export class InvitationCodeLogic {
 
     if (!invitationCode) return null;
 
-    if (invitationCode.inviteeEmails.length >= invitationCode.limit) {
+    if (
+      invitationCode.limit &&
+      invitationCode.inviteeEmails.length >= invitationCode.limit
+    ) {
       return null;
     }
 

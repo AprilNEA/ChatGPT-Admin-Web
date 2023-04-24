@@ -26,8 +26,10 @@ export class InvitationCodeDAL extends AbstractDataAccessLayer<InvitationCode> {
   async appendInviteeEmail(code: string, inviteeEmail: string) {
     await this.redis.json.arrappend(
       this.getKey(code),
-      ".inviteeEmails",
+      "$.inviteeEmails",
       JSON.stringify(inviteeEmail),
     );
   }
 }
+
+// CLEAN UP: del invitationCode:*
