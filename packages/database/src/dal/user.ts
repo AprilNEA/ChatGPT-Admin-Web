@@ -83,10 +83,10 @@ export class UserDAL extends AbstractDataAccessLayer<User> {
     return [newCursor, await Promise.all(parsingUsers)];
   }
 
-  async readProperty<K extends (keyof User) & string>(
+  async readProperty<K extends (keyof User)>(
     id: string,
     property: K,
-  ): Promise<User[K] | null> {
+  ): Promise<Exclude<User[K], undefined> | null> {
     return (await this.redis.json.get(this.getKey(id), `$.${property}`))
       ?.[0] ?? null;
   }

@@ -5,27 +5,36 @@ export class OrderLogic {
   constructor(
     private readonly invitationCodeDAL = new InvitationCodeDAL(),
     private readonly orderDAL = new OrderDAL(),
+    private readonly userDAL = new UserDAL(),
   ) {}
 
   /**
-   * create a new order and append to invitationCode if the invitationCode is present
-   * NOTE: whether the invitationCode should be added or not is not checked here.
-   * You should check it using `UserDAL.readProperty(inviteeEmail, "createdAt")`
+   * create a new order and append to invitationCode if the user is newly created (in 7 days)
    */
-  async newOrder(
-    newOrder: Order,
-    invitationCode?: string,
-  ): Promise<string | null> {
+  async newOrder(newOrder: Order): Promise<string | null> {
     const id = this.orderDAL.getNextId();
     const isSuccess = await this.orderDAL.create(id, newOrder);
 
-    if (isSuccess) {
-      if (invitationCode) {
-        // append order id to invitationCode if the invitationCode is present
-        await this.invitationCodeDAL.appendValidOrder(invitationCode, id);
-      }
-      return id;
-    } else return null;
+    if (!isSuccess) return null;
+
+    const inviterCode = await this.userDAL.readProperty(
+      newOrder.email,
+      "inviterCode",
+    );
+
+    if (!inviterCode) return id;
+
+    const createdAt = await this.userDAL.readProperty(
+      newOrder.email,
+      "createdAt",
+    );
+
+    if (!createdAt) return id;
+    if (Date.now() - createdAt > 7 * 24 * 60 * 60 * 1000) return id;
+
+    await this.invitationCodeDAL.appendValidOrder(inviterCode, id);
+
+    return id;
   }
 
   async getOrder(orderId: string): Promise<Order | null> {
