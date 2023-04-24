@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import { CallbackBody } from "@/lib/pay/xunhu";
-import { OrderDAL, UserDAL } from "database";
+import { OrderLogic, UserLogic, SubscriptionLogic } from "database";
 
 function urlEncodedStringToJson(encodedString: string): Record<string, string> {
   const urlParams = new URLSearchParams(encodedString);
@@ -11,16 +11,21 @@ function urlEncodedStringToJson(encodedString: string): Record<string, string> {
 export async function POST(res: NextRequest) {
   const body = urlEncodedStringToJson(await res.text());
   // const OrderStatus = await OrderDAL.checkStatus(body.trade_order_id);
-  const order = await OrderDAL.getOrder(body.trade_order_id);
+  const userLogic = new UserLogic();
+  const orderLogic = new OrderLogic();
+
+  const order = await orderLogic.getOrder(body.trade_order_id);
   if (order?.status === "pending") {
-    await OrderDAL.updateStatus(body.trade_order_id, "paid");
+    await orderLogic.updateStatus(body.trade_order_id, "paid");
   }
-  const user = new UserDAL(order!.email);
-  await user.newSubscription({
+  const user = order!.email;
+
+  const subscriptionLogic = new SubscriptionLogic();
+  await subscriptionLogic.append(order!.email, {
     startsAt: Date.now(),
     endsAt: Date.now() + 1000 * 60 * 60 * 24 * 30,
     plan: order!.plan,
     tradeOrderId: body.trade_order_id,
   });
-  return new Response("success");
+  return new Response("success"); // 规定返回值 不可修改
 }

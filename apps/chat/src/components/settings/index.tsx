@@ -4,14 +4,10 @@ import ResetIcon from "@/assets/icons/reload.svg";
 import CloseIcon from "@/assets/icons/close.svg";
 import ClearIcon from "@/assets/icons/clear.svg";
 
-import { List, ListItem} from "@/components/ui-lib";
+import { List, ListItem } from "@/components/ui-lib";
 
 import { IconButton } from "../button";
-import {
-  useChatStore,
-  useSettingStore,
-  ALL_MODELS,
-} from "@/store";
+import { useChatStore, useSettingStore, ALL_MODELS } from "@/store";
 import { Model, SubmitKey, Theme } from "@/store/setting/typing";
 
 import Locale, { changeLang, getLang } from "@/locales";
@@ -35,13 +31,17 @@ function SettingItem(props: {
 }
 
 export function Settings(props: { closeSettings: () => void }) {
-
   const [config, updateConfig, resetConfig] = useSettingStore((state) => [
     state.config,
     state.updateConfig,
     state.resetConfig,
   ]);
   const clearChatData = useChatStore((state) => state.clearAllData);
+
+  const [tightBorder, changeTightBorder] = useSettingStore((state) => [
+    state.tightBorder,
+    state.changeTightBorder,
+  ]);
 
   function clearAllData() {
     clearChatData();
@@ -147,13 +147,13 @@ export function Settings(props: { closeSettings: () => void }) {
           <SettingItem title={Locale.Settings.TightBorder}>
             <input
               type="checkbox"
-              checked={config.tightBorder}
+              checked={tightBorder}
               onChange={(e) => {
-                updateConfig(
-                  (config) => (config.tightBorder = e.currentTarget.checked)
-                );
-              }
-              }
+                changeTightBorder(e.currentTarget.checked);
+                // updateConfig(
+                //   (config) => (config.tightBorder = e.currentTarget.checked)
+                // );
+              }}
             ></input>
           </SettingItem>
         </List>

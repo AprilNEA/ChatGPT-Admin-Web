@@ -1,22 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
-import { Register, UserDAL } from "database";
+import { UserLogic, AccessControlLogic } from "database";
 import { ResponseStatus } from "@/app/api/typing.d";
 
 export async function POST(req: NextRequest) {
   try {
     const { email, password } = await req.json();
-    const user = new UserDAL(email);
+    const userLogic = new UserLogic();
+    const accessControlLogic = new AccessControlLogic();
 
-    // 如果用户不存在, 则返回错误
-    if (!(await user.exists())) {
-      return NextResponse.json({ status: ResponseStatus.notExist });
-    }
 
-    if (!(await user.login(password))) {
+    if (!(await userLogic.login(email, password))) {
       return NextResponse.json({ status: ResponseStatus.wrongPassword });
     }
 
-    const sessionToken = await user.accessControl.newSessionToken();
+    const sessionToken = await accessControlLogic.newSessionToken(email);
     if (sessionToken) {
       return NextResponse.json({
         status: ResponseStatus.Success,
