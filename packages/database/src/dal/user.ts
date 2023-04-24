@@ -14,17 +14,17 @@ export class UserDAL extends AbstractDataAccessLayer<User> {
   }
 
   readPassword(email: string): Promise<User["passwordHash"] | null> {
-    return this.readPropertyFromRedis(email, "passwordHash");
+    return this.readProperty(email, "passwordHash");
   }
 
   readRole(email: string): Promise<User["role"] | null> {
-    return this.readPropertyFromRedis(email, "role");
+    return this.readProperty(email, "role");
   }
 
   readSubscriptions(
     email: string,
   ): Promise<User["subscriptions"] | null> {
-    return this.readPropertyFromRedis(email, "subscriptions");
+    return this.readProperty(email, "subscriptions");
   }
 
   async readPlan(
@@ -39,11 +39,11 @@ export class UserDAL extends AbstractDataAccessLayer<User> {
   }
 
   readInvitationCodes(email: string): Promise<User["invitationCodes"] | null> {
-    return this.readPropertyFromRedis(email, "invitationCodes");
+    return this.readProperty(email, "invitationCodes");
   }
 
   readResetChances(email: string): Promise<User["resetChances"] | null> {
-    return this.readPropertyFromRedis(email, "resetChances");
+    return this.readProperty(email, "resetChances");
   }
 
   async incrResetChances(email: string, value: number): Promise<void> {
@@ -81,5 +81,13 @@ export class UserDAL extends AbstractDataAccessLayer<User> {
       this.schema.parseAsync(value[0])
     );
     return [newCursor, await Promise.all(parsingUsers)];
+  }
+
+  async readProperty<K extends (keyof User) & string>(
+    id: string,
+    property: K,
+  ): Promise<User[K] | null> {
+    return (await this.redis.json.get(this.getKey(id), `$.${property}`))
+      ?.[0] ?? null;
   }
 }

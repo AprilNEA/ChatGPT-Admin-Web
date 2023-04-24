@@ -10,7 +10,7 @@ export class OrderLogic {
   /**
    * create a new order and append to invitationCode if the invitationCode is present
    * NOTE: whether the invitationCode should be added or not is not checked here.
-   * You should check it using `UserDAL.read(inviteeEmail)` and find the `createdAt`
+   * You should check it using `UserDAL.readProperty(inviteeEmail, "createdAt")`
    */
   async newOrder(
     newOrder: Order,
