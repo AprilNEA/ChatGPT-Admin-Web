@@ -1,6 +1,6 @@
 import { describe, expect, test, beforeAll, afterAll } from '@jest/globals';
 import { UserDAL } from '../../src';
-import { redis } from '../../src/redis/client';
+import { defaultRedis } from '../../src/redis/client';
 
 const TEST_EMAIL_1 = 'user-test-1@lmo.best';
 const TEST_EMAIL_2 = 'user-test-2@lmo.best';

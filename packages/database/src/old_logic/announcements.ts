@@ -1,5 +1,5 @@
 import { Announcement, AnnouncementDate } from "../types";
-import { defaultRedis } from "src/redis/client";
+import { defaultRedis } from "../redis/client";
 
 export class AnnouncementsDAL {
   constructor(private key: AnnouncementDate) {}

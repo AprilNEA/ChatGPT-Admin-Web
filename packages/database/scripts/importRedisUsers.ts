@@ -1,4 +1,4 @@
-import { redis } from "../src/redis/client";
+import { defaultRedis } from "../src/redis/client";
 
 interface RedisUser {
   email: string;

@@ -1,4 +1,4 @@
-import { UserDAL } from "src/dal";
+import { UserDAL } from "../dal";
 import { Plan, Subscription } from "../types";
 
 export class SubscriptionLogic {

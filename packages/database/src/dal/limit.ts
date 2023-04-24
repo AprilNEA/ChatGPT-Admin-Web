@@ -1,4 +1,4 @@
-import { defaultRedis } from "src/redis";
+import { defaultRedis } from "../redis";
 
 export class RequestLimitDAL {
   private readonly namespace = "limit:";
