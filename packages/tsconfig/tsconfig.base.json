@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "Default",
+  "compilerOptions": {
+    // Type Checking
+    "strict": true,
+    // exactOptionalPropertyTypes: false,
+    "noFallthroughCasesInSwitch": false,
+    "noImplicitAny": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    // noPropertyAccessFromIndexSignature: false,
+    // noUncheckedIndexedAccess: false,
+    // noUnusedLocals: false,
+    // noUnusedParameters: false,
+    "useUnknownInCatchVariables": true,
+    // Modules
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    // Emit
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "stripInternal": true,
+    // skip type emit for @internal types
+
+    // JavaScript Support
+    "allowJs": false,
+    "checkJs": false,
+    // Interop Constraints
+    "forceConsistentCasingInFileNames": true,
+    // Language and Environment
+    "jsx": "react-jsx",
+    "lib": [
+      "ES2022",
+      "DOM",
+      "DOM.Iterable"
+    ],
+    "target": "ES2022",
+    "useDefineForClassFields": true,
+    // Projects
+    "composite": true,
+    "incremental": true,
+    // Completeness
+    "skipLibCheck": true
+    // skip all type checks for .d.ts files
+  },
+  "exclude": [
+    "node_modules"
+  ]
+}
