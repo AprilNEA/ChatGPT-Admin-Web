@@ -81,7 +81,7 @@ export class UserDAL extends AbstractDataAccessLayer<User> {
     return this.readJSONProperty(id, property);
   }
 
-  listValuesOfEmails(...emails: string[]) {
-    return this.listJSONValuesOfKeys(emails);
+  listValuesOfKeys(...keys: string[]) {
+    return this.listJSONValuesOfKeys(keys);
   }
 }
