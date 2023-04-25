@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useEffect} from "react";
-import { useRouter } from "next/navigation";
-import { usePathname } from "next/navigation";
-import { useUserStore } from "@/store";
+import React, {useEffect} from "react";
+import {useRouter} from "next/navigation";
+import {usePathname} from "next/navigation";
+import {useUserStore} from "@/store";
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
+export function AuthProvider({children}: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
 
@@ -16,13 +16,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     ]);
 
   useEffect(() => {
-    // Announcement(versionId, updateVersionId);
     if (!sessionToken || !validateSessionToken()) {
-      if (pathname !== "/login") {
-        router.push("/login");
+      if (pathname !== "/enter") {
+        router.push("/enter");
       }
     }
-  }, [sessionToken]);
+    if (["/login", "/register", "/enter"].includes(pathname)) {
+      router.replace("/")
+    }
+  }, [pathname, sessionToken]);
 
   return <>{children}</>;
+}
+
+export function Notice(){
+  // Announcement(versionId, updateVersionId);
 }
