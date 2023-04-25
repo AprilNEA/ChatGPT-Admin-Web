@@ -1,5 +1,5 @@
 import { AbstractDataAccessLayer } from "./abstract";
-import { Plan, Subscription, subscription, User, user } from "../types";
+import { Subscription, subscription, User, user } from "../types";
 
 export class UserDAL extends AbstractDataAccessLayer<User> {
   readonly schema = user;
@@ -29,7 +29,7 @@ export class UserDAL extends AbstractDataAccessLayer<User> {
 
   async readPlan(
     email: string,
-  ): Promise<Plan | null> {
+  ): Promise<string | null> {
     return (await this.redis.json
       .get(
         this.getKey(email),
@@ -72,15 +72,6 @@ export class UserDAL extends AbstractDataAccessLayer<User> {
 
   protected doUpdate(email: string, data: Partial<User>) {
     return this.doJSONUpdate(email, data);
-  }
-
-  async listValues(cursor = 0): Promise<[number, User[]]> {
-    const [newCursor, keys] = await this.listKeys(cursor);
-    const values: [User][] = await this.redis.json.mget(keys, "$");
-    const parsingUsers = values.map((value) =>
-      this.schema.parseAsync(value[0])
-    );
-    return [newCursor, await Promise.all(parsingUsers)];
   }
 
   async readProperty<K extends (keyof User)>(

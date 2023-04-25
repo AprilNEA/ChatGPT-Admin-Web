@@ -79,6 +79,11 @@ export abstract class AbstractDataAccessLayer<T> implements DataAccessLayer<T> {
     return [Number(newCursor), keys];
   }
 
+  protected async listJSONValuesOfKeys(keys: string[]): Promise<T[]> {
+    const values: [T][] = await this.redis.json.mget(keys, "$");
+    return values.map(([user]) => user);
+  }
+
   protected getKey(id: string): string {
     return `${this.namespace}${id}`;
   }

@@ -1,20 +1,31 @@
+import { PlanDAL } from "src/dal/plan";
 import { UserDAL } from "../dal";
 import { Plan, Subscription } from "../types";
 
 export class SubscriptionLogic {
-  constructor(private readonly dal = new UserDAL()) {}
+  constructor(
+    private readonly userDAL = new UserDAL(),
+    private readonly planDAL = new PlanDAL(),
+  ) {}
 
   /**
    * @returns the plan of the user, or "free" if the user does not exist
    */
-  async getPlanOf(email: string): Promise<Plan> {
-    return await this.dal.readPlan(email) ?? "free";
+  async getPlanOf(email: string): Promise<string> {
+    return await this.userDAL.readPlan(email) ?? "free";
   }
 
   /**
    * @returns true if subscription was appended, false if the user does not exist
    */
-  async append(email: string, sub: Subscription): Promise<boolean> {
-    return this.dal.appendSubscription(email, sub);
+  append(email: string, sub: Subscription): Promise<boolean> {
+    return this.userDAL.appendSubscription(email, sub);
+  }
+
+  /**
+   * @returns plans
+   */
+  listPlans(): Promise<Record<string, Plan>> {
+    return this.planDAL.listPlans();
   }
 }
