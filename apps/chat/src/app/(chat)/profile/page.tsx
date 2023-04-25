@@ -1,22 +1,24 @@
 "use client";
 
-import { useState } from "react";
-import useSWR, { mutate } from "swr";
-import { useRouter } from "next/navigation";
+import {useState} from "react";
+import useSWR, {mutate} from "swr";
+import {useRouter} from "next/navigation";
 
-import { useSettingStore, useUserStore } from "@/store";
+import {useSettingStore, useUserStore} from "@/store";
 
-import { Avatar } from "@/components/avatar";
-import { Loading } from "@/components/loading";
-import { List, ListItem, Popover, showToast } from "@/components/ui-lib";
-import styles from "@/styles/module/profile.module.scss";
+import {Avatar} from "@/components/avatar";
+import {Loading} from "@/components/loading";
+import {List, ListItem, Popover, showToast} from "@/components/ui-lib";
+import styles from "./profile.module.scss";
 
 import Locale from "@/locales";
-import { IconButton } from "@/components/button";
+import {IconButton} from "@/components/button";
 import CloseIcon from "@/assets/icons/close.svg";
-import EmojiPicker, { Theme as EmojiTheme } from "emoji-picker-react";
+import EmojiPicker, {Theme as EmojiTheme} from "emoji-picker-react";
 
-import { copyToClipboard } from "@/utils/utils";
+import fetcher from "@/utils/fetcher";
+import {copyToClipboard} from "@/utils/utils";
+import {InfoResponse} from "@/app/api/typing";
 
 function ProfileItem(props: {
   title: string;
@@ -25,10 +27,10 @@ function ProfileItem(props: {
 }) {
   return (
     <ListItem>
-      <div className={styles["settings-title"]}>
+      <div className={styles["title"]}>
         <div>{props.title}</div>
         {props.subTitle && (
-          <div className={styles["settings-sub-title"]}>{props.subTitle}</div>
+          <div className={styles["sub-title"]}>{props.subTitle}</div>
         )}
       </div>
       {props.children}
@@ -38,70 +40,46 @@ function ProfileItem(props: {
 
 export default function Profile() {
   const router = useRouter();
-
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [config, updateConfig, resetConfig] = useSettingStore((state) => [
     state.config,
     state.updateConfig,
     state.resetConfig,
   ]);
-  const [email, requestsNo, updateRequestsNo, sessionToken] = useUserStore(
-    (state) => [
-      state.email,
-      state.requestsNo,
-      state.updateRequestsNo,
-      state.sessionToken,
-    ]
-  );
-  const fetchChances = async (url: string): Promise<number> => {
-    const response = await fetch(url, {
-      method: "GET",
-      headers: { email, token: sessionToken ?? "" },
-    });
-    const data: { status: number; chances: number } = await response.json();
-    return data.chances;
-  };
 
-  const { data: chances, isLoading: chancesLoading } = useSWR<number>(
-    "/api/user/reset",
-    fetchChances
-  );
 
-  const { data: count, isLoading: countLoading } = useSWR(
-    "/api/user/get-limit",
-    (url) =>
-      fetch(url, {
-        headers: { Authorization: sessionToken ?? "" },
-      })
-        .then((res) => res.json())
-        .then((res) => res.requestNos.length)
-  );
-
-  const { data: PlanAndInviteCode, isLoading: PlanLoading } = useSWR(
+  const {data: info, isLoading: infoLoading} = useSWR<InfoResponse>(
     "/api/user/info",
     (url) =>
-      fetch(url, {
-        headers: { Authorization: sessionToken ?? "1" },
-      }).then((res) => res.json())
+      fetcher(url).then((res) => res.json())
   );
 
-  const { role: plan, inviteCode: inviteCode } = PlanAndInviteCode ?? {
-    role: "free",
-    inviteCode: "",
-  };
-  const [selectPlan, setSelectPlan] = useState(plan);
+  if (infoLoading) return <Loading/>;
 
-  if (PlanLoading || countLoading || chancesLoading) return <Loading />;
+  const {
+    email: email,
+    role: role,
+    plan: plan,
+    inviteCode: inviteCode,
+    requestNos: requestNos,
+    resetChances: resetChances
+  } = info ?? {
+    email: "",
+    role: "user",
+    plan: "free",
+    inviteCode: "",
+    requestNos: [],
+    resetChances: 0
+  }
 
   async function handleResetLimit() {
-    if (chances && chances < 1) {
+    if (resetChances && resetChances < 1) {
       showToast("重置次数已用完");
       return;
     }
-    fetch("/api/user/reset", {
+    fetcher("/api/user/reset", {
       cache: "no-store",
       method: "POST",
-      headers: { email, token: sessionToken ?? "" },
     }).then((res) => {
       if (res.ok) {
         showToast("成功重置");
@@ -111,24 +89,12 @@ export default function Profile() {
     });
   }
 
-  async function handleUpgrade() {
-    const req = await (
-      await fetch(`/api/user/pay?plan=${selectPlan}`, {
-        cache: "no-store",
-        method: "GET",
-        headers: { email },
-      })
-    ).json();
-    const url = req.url;
-    router.push(url);
-  }
-
   return (
     <>
       <div className={styles["window-header"]}>
         <div className={styles["window-header-title"]}>
           <div className={styles["window-header-main-title"]}>
-            {Locale.Settings.Title}
+            Profile
           </div>
           <div className={styles["window-header-sub-title"]}>
             {Locale.Settings.SubTitle}
@@ -137,7 +103,7 @@ export default function Profile() {
         <div className={styles["window-actions"]}>
           <div className={styles["window-action-button"]}>
             <IconButton
-              icon={<CloseIcon />}
+              icon={<CloseIcon/>}
               onClick={() => router.back()}
               bordered
               title={Locale.Settings.Actions.Close}
@@ -166,7 +132,7 @@ export default function Profile() {
                 className={styles.avatar}
                 onClick={() => setShowEmojiPicker(true)}
               >
-                <Avatar role="user" />
+                <Avatar role="user"/>
               </div>
             </Popover>
           </ProfileItem>
@@ -180,32 +146,12 @@ export default function Profile() {
             subTitle="切换计划来升级"
           >
             <>
-              <select
-                value={selectPlan}
-                onChange={(e) => {
-                  setSelectPlan(e.target.value as any);
-                }}
+              <button
+                className={styles["copy-button"]}
+                onClick={() => router.push("/pricing")}
               >
-                <option value="free" key="free">
-                  Free
-                </option>
-
-                <option value="pro" key="pro">
-                  Pro
-                </option>
-
-                <option value="premium" key="premium">
-                  Premium
-                </option>
-              </select>
-              {plan !== selectPlan && (
-                <button
-                  className={styles["copy-button"]}
-                  onClick={handleUpgrade}
-                >
-                  {Locale.Profile.Upgrade}
-                </button>
-              )}
+                {Locale.Profile.Upgrade}
+              </button>
             </>
           </ProfileItem>
         </List>
@@ -218,7 +164,7 @@ export default function Profile() {
             <button
               className={styles["copy-button"]}
               value={config.submitKey}
-              onClick={() => copyToClipboard(inviteCode)}
+              onClick={() => copyToClipboard(`${window.location.origin}/register?code=${inviteCode}`)}
             >
               {Locale.Profile.Invite.CopyInviteLink}
             </button>
@@ -231,13 +177,9 @@ export default function Profile() {
             <button
               className={styles["copy-button"]}
               value={config.submitKey}
-              onClick={() => {
-                handleResetLimit();
-                mutate("/api/user/reset", chances ? chances - 1 : -1, false);
-                mutate("/api/user/get-limit", 0, false);
-              }}
+              onClick={() => handleResetLimit()}
             >
-              {Locale.Profile.Reset.Click(chances ?? -1)}
+              {Locale.Profile.Reset.Click(resetChances ?? -1)}
             </button>
           </ProfileItem>
         </List>
@@ -254,7 +196,7 @@ export default function Profile() {
             <input
               type="range"
               title={config.historyMessageCount.toString()}
-              value={count}
+              value={requestNos.length}
               min="0"
               max={plan === "free" ? 10 : 50}
               step="1"
