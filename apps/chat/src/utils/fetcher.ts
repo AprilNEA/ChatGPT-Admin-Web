@@ -1,12 +1,12 @@
 import { useUserStore } from "@/store";
 
-export default function fetcher(url: string, init: RequestInit) {
+export default function fetcher(url: string, init?: RequestInit) {
   const sessionToken = useUserStore.getState().sessionToken ?? "";
 
   return fetch(url, {
     headers: {
       Authorization: sessionToken,
-      ...init.headers,
+      ...init?.headers,
     },
     ...init,
   });
