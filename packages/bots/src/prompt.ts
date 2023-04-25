@@ -4,7 +4,7 @@ export function chatRecordsToString(
   records: ChatRecord[],
   defaultSystemMessage?: string,
 ): string {
-  if (defaultSystemMessage && records.length && records[0].role !== "system") {
+  if (defaultSystemMessage && records[0]?.role !== "system") {
     records.unshift({
       role: "system",
       content: defaultSystemMessage,
@@ -15,17 +15,17 @@ export function chatRecordsToString(
     .map((msg) => {
       switch (msg.role) {
         case "user":
-          return `[user](#message)\n${msg.content}`;
+          return `[#user]\n${msg.content}`;
         case "assistant":
-          return `[assistant](#message)\n${msg.content}`;
+          return `[#you]\n${msg.content}`;
         case "system":
-          return `N/A\n\n[system](#additional_instructions)\n- ${msg.content}`;
+          return `[#system]\n${msg.content}`;
         case "context":
-          return `[user](#context)\n${msg.content}`;
+          return `[#user]\n${msg.content}`;
         default:
           throw new Error(`Unknown message author: ${msg.content}`);
       }
-    }).join("\n\n") + "\n\n[assistant](#message)";
+    }).join("\n\n") + "\n\n[#you](#message)";
 }
 
 export const BING_DEFAULT_SYSTEM_MESSAGE =
