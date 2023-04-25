@@ -1,93 +1,61 @@
-import { NextRequest, NextResponse } from "next/server";
-import { Register, UserDAL } from "database";
-import { sendEmail } from "@/lib/email";
-import { sendPhone } from "@/lib/phone";
-import { ResponseStatus } from "@/app/api/typing.d";
+import {NextRequest, NextResponse} from "next/server";
+import {UserDAL, UserLogic, RegisterCodeLogic, InvitationCodeLogic, AccessControlLogic} from "database";
+import {sendEmail} from "@/lib/email";
+import {ReturnStatus, ResponseStatus} from "@/app/api/typing.d";
 
-export async function GET(req: NextRequest): Promise<Response> {
-  const { searchParams } = new URL(req.url);
-  const email = searchParams.get("email");
-  const phone = searchParams.get("phone");
-  if (!email) return NextResponse.json({ status: ResponseStatus.notExist });
-  const user = new UserDAL(email);
-  if (!phone) {
-    const codeData = await user.newRegisterCode("email");
-    if (codeData.status === Register.ReturnStatus.Success) {
-      await sendEmail([email], "", codeData.code + "");
-    }
-    return NextResponse.json({
-      status: ResponseStatus.Success,
-      code_data: codeData,
-    });
-  } else {
-    const codeData = await user.newRegisterCode("phone", phone);
-    if (codeData.status === Register.ReturnStatus.Success) {
-      await sendPhone(phone, codeData.code + "");
-    }
-    return NextResponse.json({
-      status: ResponseStatus.Success,
-      code_data: codeData,
-    });
-  }
-}
 
+/**
+ * 注册用户
+ * @param req
+ * @constructor
+ */
 export async function POST(req: NextRequest): Promise<Response> {
   try {
-    const { email, password, code, code_type, phone, invitation_code } =
+    const {email, password, code, code_type, phone, invitation_code} =
       await req.json();
-    const user = new UserDAL(email);
 
-    if (code_type === "email") {
-      if (await user.exists()) {
-        // 用户已经存在
-        return NextResponse.json({ status: ResponseStatus.alreadyExisted });
-      }
 
-      // 激活验证码
-      const success = await user.activateRegisterCode(code.trim(), "email");
-      if (!success) {
-        return NextResponse.json({ status: ResponseStatus.invalidCode });
-      }
-
-      const new_user = await UserDAL.fromRegistration(email, password);
-      if (!new_user) throw Error("new user is null");
-      if (invitation_code) {
-        const code = await user.acceptInvitationCode(
-          invitation_code.toLowerCase(),
-        );
-        // if (code && code.type == "club") {
-        await user.newSubscription({
-          startsAt: Date.now(),
-          endsAt: Date.now() + 3 * 60 * 60 * 24 * 1000,
-          plan: "pro",
-          tradeOrderId: `club-code-${invitation_code.toLowerCase()}`,
-        });
-        // }
-      }
-      const token = await new_user.accessControl.newSessionToken();
-      return NextResponse.json({
-        status: ResponseStatus.Success,
-        sessionToken: token,
-        email,
-      });
-    } else if (code_type === "phone") {
-      if (!(await user.exists()) || !phone) {
-        // 用户不存在或者手机号不存在
-        return NextResponse.json({ status: ResponseStatus.notExist });
-      }
-
-      const success = await user.activateRegisterCode(
-        code.trim(),
-        "phone",
-        phone,
-      );
-      if (success) return NextResponse.json({ status: ResponseStatus.Success });
-      else return NextResponse.json({ status: ResponseStatus.invalidCode });
+    const userDal = new UserDAL();
+    if (await userDal.exists(email)) {
+      // 用户已经存在
+      return NextResponse.json({status: ResponseStatus.alreadyExisted});
     }
 
-    return NextResponse.json({}, { status: 404 });
+    // 激活验证码
+    const registerCodeLogic = new RegisterCodeLogic()
+    const success = await registerCodeLogic.activateCode(email, code.trim());
+
+    if (!success)
+      return NextResponse.json({status: ResponseStatus.invalidCode});
+
+    const user = new UserLogic();
+    await user.register(email, password);
+
+    // 如果使用邀请码注册, 则判断激活码类型并给予相应权益
+    if (invitation_code) {
+      const invitationCode = new InvitationCodeLogic()
+
+      const code = await invitationCode.acceptCode(
+        email,
+        invitation_code.toLowerCase(),
+      );
+      // await user.newSubscription({
+      //   startsAt: Date.now(),
+      //   endsAt: Date.now() + 3 * 60 * 60 * 24 * 1000,
+      //   plan: "pro",
+      //   tradeOrderId: `club-code-${invitation_code.toLowerCase()}`,
+      // });
+    }
+
+    // 注册后 直接生成一个 JWT Token 返回
+    const accessControl = new AccessControlLogic()
+    const token = await accessControl.newSessionToken(email)
+    return NextResponse.json({
+      status: ResponseStatus.Success,
+      sessionToken: token,
+    });
   } catch (error) {
     console.error("[REGISTER]", error);
-    return new Response("[INTERNAL ERROR]", { status: 500 });
+    return new Response("[INTERNAL ERROR]", {status: 500});
   }
 }
