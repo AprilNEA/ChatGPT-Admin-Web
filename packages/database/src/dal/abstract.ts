@@ -81,10 +81,26 @@ export abstract class AbstractDataAccessLayer<T> implements DataAccessLayer<T> {
 
   protected async listJSONValuesOfKeys(keys: string[]): Promise<T[]> {
     const values: [T][] = await this.redis.json.mget(keys, "$");
-    return values.map(([user]) => user);
+    return values.map(([v]) => v);
   }
 
   protected getKey(id: string): string {
     return `${this.namespace}${id}`;
+  }
+
+  protected async readJSONProperty<K extends (keyof T) & string>(
+    id: string,
+    property: K,
+  ): Promise<Exclude<T[K], undefined> | null> {
+    return (await this.redis.json.get(this.getKey(id), `$.${property}`))
+      ?.[0] ?? null;
+  }
+
+  protected async listJSONPropertiesOfKeys<K extends (keyof T) & string>(
+    keys: string[],
+    property: K,
+  ): Promise<(T[K])[]> {
+    const values: [T[K]][] = await this.redis.json.mget(keys, `$.${property}`);
+    return values.map(([v]) => v);
   }
 }

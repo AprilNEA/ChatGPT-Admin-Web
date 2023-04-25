@@ -22,4 +22,11 @@ export class PlanDAL extends AbstractDataAccessLayer<Plan> {
     const values = await this.listJSONValuesOfKeys(keys);
     return Object.fromEntries(keys.map((k, i) => [k, values[i]]));
   }
+
+  readProperty<K extends (keyof Plan)>(
+    id: string,
+    property: K,
+  ) {
+    return this.readJSONProperty(id, property);
+  }
 }

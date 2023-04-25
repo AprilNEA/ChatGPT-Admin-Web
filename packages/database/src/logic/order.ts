@@ -51,4 +51,18 @@ export class OrderLogic {
   ): Promise<boolean> {
     return await this.orderDAL.update(orderId, { status: newStatus });
   }
+
+  async listAllPaidEmails(): Promise<string[]> {
+    let cursor = 0;
+    const keys: string[] = [];
+
+    do {
+      const [nextCursor, nextKeys] = await this.orderDAL.listKeys(cursor);
+      cursor = nextCursor;
+      keys.push(...nextKeys);
+    } while (cursor !== 0);
+
+    const emails = await this.orderDAL.listEmailsOfKeys(keys);
+    return [...new Set(emails)];
+  }
 }

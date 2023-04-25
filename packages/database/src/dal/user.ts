@@ -74,11 +74,14 @@ export class UserDAL extends AbstractDataAccessLayer<User> {
     return this.doJSONUpdate(email, data);
   }
 
-  async readProperty<K extends (keyof User)>(
+  readProperty<K extends (keyof User)>(
     id: string,
     property: K,
-  ): Promise<Exclude<User[K], undefined> | null> {
-    return (await this.redis.json.get(this.getKey(id), `$.${property}`))
-      ?.[0] ?? null;
+  ) {
+    return this.readJSONProperty(id, property);
+  }
+
+  listValuesOfKeys(...keys: string[]) {
+    return this.listJSONValuesOfKeys(keys);
   }
 }
