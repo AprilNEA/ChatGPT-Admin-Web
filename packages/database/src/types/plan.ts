@@ -1,8 +1,23 @@
 import { z } from "zod";
 
+export const unit = z.enum(["ms", "s", "m", "h", "d"]);
+export type Unit = z.infer<typeof unit>;
+
+export const duration = z.union([
+  z.string().refine((value) => /^\d+\s(ms|s|m|h|d)$/.test(value), {
+    message: "Invalid Duration format. Should be `${number} ${Unit}`.",
+  }),
+  z.string().refine((value) => /^\d+(ms|s|m|h|d)$/.test(value), {
+    message: "Invalid Duration format. Should be `${number}${Unit}`.",
+  }),
+]);
+export type Duration =
+  | z.infer<typeof duration> & `${number} ${Unit}`
+  | `${number}${Unit}`;
+
 export const modelLimit = z.object({
-  windowMs: z.number().nonnegative(),
-  maxCount: z.number(), // -1 for unlimited
+  window: duration,
+  limit: z.number().nonnegative(),
 });
 export type ModelLimit = z.infer<typeof modelLimit>;
 

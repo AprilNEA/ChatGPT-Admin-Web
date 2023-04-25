@@ -87,4 +87,12 @@ export abstract class AbstractDataAccessLayer<T> implements DataAccessLayer<T> {
   protected getKey(id: string): string {
     return `${this.namespace}${id}`;
   }
+
+  protected async readJSONProperty<K extends (keyof T) & string>(
+    id: string,
+    property: K,
+  ): Promise<Exclude<T[K], undefined> | null> {
+    return (await this.redis.json.get(this.getKey(id), `$.${property}`))
+      ?.[0] ?? null;
+  }
 }

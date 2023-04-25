@@ -200,6 +200,9 @@ importers:
 
   packages/database:
     dependencies:
+      '@upstash/ratelimit':
+        specifier: ^0.4.2
+        version: 0.4.2(@upstash/redis@1.20.2)
       '@upstash/redis':
         specifier: ^1.20.2
         version: 1.20.2
@@ -2739,6 +2742,26 @@ packages:
     dependencies:
       '@typescript-eslint/types': 5.57.1
       eslint-visitor-keys: 3.4.0
+    dev: false
+
+  /@upstash/core-analytics@0.0.6:
+    resolution: {integrity: sha512-cpPSR0XJAJs4Ddz9nq3tINlPS5aLfWVCqhhtHnXt4p7qr5+/Znlt1Es736poB/9rnl1hAHrOsOvVj46NEXcVqA==}
+    engines: {node: '>=16.0.0'}
+    dependencies:
+      '@upstash/redis': 1.20.2
+    transitivePeerDependencies:
+      - encoding
+    dev: false
+
+  /@upstash/ratelimit@0.4.2(@upstash/redis@1.20.2):
+    resolution: {integrity: sha512-nuuPK2IoPJywAK/8cosNiyM3vlcL6tFPaAwrLes0j2J5b1Hs/W7XDO72/AuC+K+dt89TP50WK9bvDFUwLRuhvw==}
+    peerDependencies:
+      '@upstash/redis': ^1.20.1
+    dependencies:
+      '@upstash/core-analytics': 0.0.6
+      '@upstash/redis': 1.20.2
+    transitivePeerDependencies:
+      - encoding
     dev: false
 
   /@upstash/redis@1.20.2:
