@@ -117,7 +117,7 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
               <IconButton
                 icon={<SettingsIcon />}
                 onClick={() => {
-                  router.push("/setting");
+                  router.push("/settings");
                   setShowSideBar(false);
                 }}
               />

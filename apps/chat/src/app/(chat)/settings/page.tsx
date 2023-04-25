@@ -1,3 +1,5 @@
+"use client";
+
 import styles from "@/styles/module/settings.module.scss";
 
 import ResetIcon from "@/assets/icons/reload.svg";
@@ -6,11 +8,12 @@ import ClearIcon from "@/assets/icons/clear.svg";
 
 import { List, ListItem } from "@/components/ui-lib";
 
-import { IconButton } from "../button";
+import { IconButton } from "@/components/button";
 import { useChatStore, useSettingStore, ALL_MODELS } from "@/store";
 import { Model, SubmitKey, Theme } from "@/store/setting/typing";
 
 import Locale, { changeLang, getLang } from "@/locales";
+import { useRouter } from "next/navigation";
 
 function SettingItem(props: {
   title: string;
@@ -30,7 +33,9 @@ function SettingItem(props: {
   );
 }
 
-export function Settings(props: { closeSettings: () => void }) {
+export default function Settings() {
+  const router = useRouter();
+
   const [config, updateConfig, resetConfig] = useSettingStore((state) => [
     state.config,
     state.updateConfig,
@@ -78,7 +83,7 @@ export function Settings(props: { closeSettings: () => void }) {
           <div className={styles["window-action-button"]}>
             <IconButton
               icon={<CloseIcon />}
-              onClick={props.closeSettings}
+              onClick={() => router.back()}
               bordered
               title={Locale.Settings.Actions.Close}
             />

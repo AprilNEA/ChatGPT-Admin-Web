@@ -1,14 +1,17 @@
 "use client";
 
-import { Table, Tag, Button, Checkbox, Form, Input } from "antd";
+import { ChangeEvent, useState } from "react";
+import { Table, Tag, Button, Form, Input } from "antd";
+
+const { Search } = Input;
 
 const dataSource = [
   {
     name: "Anonymous",
     passwordHash: "ffffff",
-    subscriptions: [],
+    subscriptions: ["aaa"],
     createdAt: 1681114238624,
-    invitationCodes: [],
+    invitationCodes: ["aaa"],
     isBlocked: false,
     lastLoginAt: 1681114238624,
     resetChances: 0,
@@ -65,6 +68,17 @@ const columns = [
 ];
 
 const UserTable = () => {
+  const [searchEmail, setSearchEmail] = useState("");
+
+  function handleChange(e: ChangeEvent<HTMLInputElement>) {
+    setSearchEmail(e.target.value);
+    console.log(e.target.value)
+  }
+
+  function handlerSubmit(e: SubmitEvent) {
+    console.log(searchEmail)
+  }
+
   return (
     <>
       <Form
@@ -73,7 +87,7 @@ const UserTable = () => {
         wrapperCol={{ span: 16 }}
         style={{ maxWidth: 600 }}
         initialValues={{ remember: true }}
-        // onFinish={onFinish}
+        onFinish={handlerSubmit}
         // onFinishFailed={onFinishFailed}
         autoComplete="off"
       >
@@ -82,11 +96,11 @@ const UserTable = () => {
           name="Email"
           rules={[{ required: false, message: "Please input your username!" }]}
         >
-          <Input />
+          <Input value={searchEmail} onChange={handleChange} />
         </Form.Item>
 
         <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-          <Button type="primary" htmlType="submit">
+          <Button type="primary" htmlType="submit" >
             Search
           </Button>
         </Form.Item>

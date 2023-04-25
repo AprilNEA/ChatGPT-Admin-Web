@@ -36,7 +36,7 @@ export const useSettingStore = create<SettingStore>()(
         ...DEFAULT_CONFIG,
       },
 
-      tightBorder: false,
+      tightBorder: true,
 
       changeTightBorder(v: boolean) {
         set(() => ({ tightBorder: v }));
