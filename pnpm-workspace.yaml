@@ -1,5 +1,5 @@
 packages:
   - 'apps/*'
-  - 'packages/database'
-  - 'packages/bots'
+  - 'packages/*'
+  - 'packages/*'
   - '!**/test/**'
