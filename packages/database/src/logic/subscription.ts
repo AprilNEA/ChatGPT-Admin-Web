@@ -24,7 +24,7 @@ export class SubscriptionLogic {
   /**
    * @returns plans
    */
-  listPlans(): Promise<Record<string, Plan>> {
+  listPlans(): Promise<Record<string, Plan | null>> {
     return this.planDAL.listPlans();
   }
 }
