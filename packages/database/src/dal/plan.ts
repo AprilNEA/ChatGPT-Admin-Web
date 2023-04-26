@@ -17,10 +17,10 @@ export class PlanDAL extends AbstractDataAccessLayer<Plan> {
     return this.doJSONUpdate(name, data);
   }
 
-  async listPlans(): Promise<Record<string, Plan | null>> {
+  async listPlans(): Promise<Record<string, Plan>> {
     const keys = await this.redis.keys(`${this.namespace}*`);
     const values = await this.listJSONValuesOfKeys(keys);
-    return Object.fromEntries(keys.map((k, i) => [k, values[i]]));
+    return Object.fromEntries(keys.map((k, i) => [k, values[i]!]));
   }
 
   readProperty<K extends (keyof Plan)>(
