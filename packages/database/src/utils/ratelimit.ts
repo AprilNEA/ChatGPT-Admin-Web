@@ -15,7 +15,7 @@ export class ModelRateLimiter extends Ratelimit {
     const userDAL = new UserDAL(redis);
     const planDAL = new PlanDAL(redis);
 
-    const planName = await userDAL.readPlan(email) ?? "free";
+    const planName = email ? await userDAL.readPlan(email) ?? "free" : "free";
     const planLimit = await planDAL.readProperty(planName, "limits");
     const modelLimit = planLimit?.[model];
 
@@ -31,7 +31,7 @@ export class ModelRateLimiter extends Ratelimit {
 }
 
 export type CreateModelRateLimiterParams = {
-  email: string;
+  email?: string;
   model: string;
   redis?: Redis;
 };
