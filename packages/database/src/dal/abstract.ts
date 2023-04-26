@@ -122,6 +122,6 @@ export abstract class AbstractDataAccessLayer<T> implements DataAccessLayer<T> {
   countKeys(): Promise<number> {
     const script =
       "local cursor = '0'; local count = 0; repeat local result = redis.call('SCAN', cursor, 'MATCH', KEYS[1], 'COUNT', 65535); cursor = result[1]; count = count + #result[2]; until cursor == '0'; return count";
-    return this.redis.eval(script, [], [`${this.namespace}*`]);
+    return this.redis.eval(script, [`${this.namespace}*`], []);
   }
 }
