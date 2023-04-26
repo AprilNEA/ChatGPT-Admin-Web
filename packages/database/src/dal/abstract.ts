@@ -79,9 +79,11 @@ export abstract class AbstractDataAccessLayer<T> implements DataAccessLayer<T> {
     return [Number(newCursor), keys];
   }
 
-  protected async listJSONValuesOfKeys(keys: string[]): Promise<T[]> {
+  protected async listJSONValuesOfKeys(
+    keys: string[],
+  ): Promise<Array<T | null>> {
     const values: [T][] = await this.redis.json.mget(keys, "$");
-    return values.map(([v]) => v);
+    return values.map((v) => v?.[0] ?? null);
   }
 
   protected getKey(id: string): string {
@@ -102,5 +104,11 @@ export abstract class AbstractDataAccessLayer<T> implements DataAccessLayer<T> {
   ): Promise<(T[K])[]> {
     const values: [T[K]][] = await this.redis.json.mget(keys, `$.${property}`);
     return values.map(([v]) => v);
+  }
+
+  countKeys(): Promise<number> {
+    const script =
+      "local cursor = '0'; local count = 0; repeat local result = redis.call('SCAN', cursor, 'MATCH', KEYS[1], 'COUNT', 65535); cursor = result[1]; count = count + #result[2]; until cursor == '0'; return count";
+    return this.redis.eval(script, [], [`${this.namespace}*`]);
   }
 }
