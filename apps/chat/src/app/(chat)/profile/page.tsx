@@ -4,7 +4,7 @@ import {useState} from "react";
 import useSWR, {mutate} from "swr";
 import {useRouter} from "next/navigation";
 
-import {useSettingStore, useUserStore} from "@/store";
+import {useSettingStore} from "@/store";
 
 import {Avatar} from "@/components/avatar";
 import {Loading} from "@/components/loading";
