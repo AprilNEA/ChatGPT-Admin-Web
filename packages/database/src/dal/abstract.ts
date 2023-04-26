@@ -79,6 +79,19 @@ export abstract class AbstractDataAccessLayer<T> implements DataAccessLayer<T> {
     return [Number(newCursor), keys];
   }
 
+  async scanKeys(
+    idPattern: string,
+    cursor = 0,
+    count = 500,
+  ): Promise<[number, string[]]> {
+    const [newCursor, keys] = await this.redis.scan(cursor, {
+      match: `${this.namespace}*${idPattern}*`,
+      count,
+    });
+
+    return [Number(newCursor), keys];
+  }
+
   protected async listJSONValuesOfKeys(
     keys: string[],
   ): Promise<Array<T | null>> {
