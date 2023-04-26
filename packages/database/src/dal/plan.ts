@@ -17,7 +17,7 @@ export class PlanDAL extends AbstractDataAccessLayer<Plan> {
     return this.doJSONUpdate(name, data);
   }
 
-  async listPlans(): Promise<Record<string, Plan>> {
+  async listPlans(): Promise<Record<string, Plan | null>> {
     const keys = await this.redis.keys(`${this.namespace}*`);
     const values = await this.listJSONValuesOfKeys(keys);
     return Object.fromEntries(keys.map((k, i) => [k, values[i]]));
