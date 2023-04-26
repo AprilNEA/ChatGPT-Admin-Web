@@ -1,6 +1,6 @@
-import { User } from '../types';
-import { UserDAL } from '../dal';
-import md5 from 'spark-md5';
+import { User } from "../types";
+import { UserDAL } from "../dal";
+import md5 from "spark-md5";
 
 export class UserLogic {
   constructor(private readonly dal = new UserDAL()) {}
@@ -11,10 +11,10 @@ export class UserLogic {
   register(
     email: string,
     password: string,
-    extraData: Partial<User> = {}
+    extraData: Partial<User> = {},
   ): Promise<boolean> {
     return this.dal.create(email, {
-      name: 'Anonymous',
+      name: "Anonymous",
       passwordHash: md5.hash(password.trim()),
       createdAt: Date.now(),
       lastLoginAt: Date.now(),
@@ -22,7 +22,7 @@ export class UserLogic {
       resetChances: 0,
       invitationCodes: [],
       subscriptions: [],
-      role: 'user',
+      role: "user",
       ...extraData,
     });
   }
@@ -32,7 +32,11 @@ export class UserLogic {
    */
   async login(email: string, password: string): Promise<boolean> {
     const passwordHash = await this.dal.readPassword(email);
-    return passwordHash === md5.hash(password.trim());
+    const success = passwordHash === md5.hash(password.trim());
+
+    if (success) await this.dal.update(email, { lastLoginAt: Date.now() });
+
+    return success;
   }
 
   /**
