@@ -41,4 +41,8 @@ export class OrderDAL extends AbstractDataAccessLayer<Order> {
   listEmailsOfKeys(keys: string[]) {
     return this.listJSONPropertiesOfKeys(keys, "email");
   }
+
+  listValuesOfKeys(...keys: string[]) {
+    return this.listJSONValuesOfKeys(keys);
+  }
 }
