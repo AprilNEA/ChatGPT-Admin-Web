@@ -1,31 +1,34 @@
-import { NextRequest } from "next/server";
-import { CallbackBody } from "@/lib/pay/xunhu";
-import { OrderLogic, UserLogic, SubscriptionLogic } from "database";
+import {NextRequest} from "next/server";
+import {handleCallback} from "@/lib/pay/xunhu";
+import {OrderLogic, SubscriptionLogic} from "database";
 
-function urlEncodedStringToJson(encodedString: string): Record<string, string> {
-  const urlParams = new URLSearchParams(encodedString);
-  const json = Object.fromEntries(urlParams.entries());
-  return json;
-}
+/**
+ * This is the callback interface for processing payment platforms.
+ * @constructor
+ * @param req
+ */
+export async function POST(req: NextRequest) {
+  const orderId = await handleCallback(req)
+  if (!orderId) return new Response("failed")
 
-export async function POST(res: NextRequest) {
-  const body = urlEncodedStringToJson(await res.text());
-  // const OrderStatus = await OrderDAL.checkStatus(body.trade_order_id);
-  const userLogic = new UserLogic();
   const orderLogic = new OrderLogic();
 
-  const order = await orderLogic.getOrder(body.trade_order_id);
+  // Modify order status.
+  const order = await orderLogic.getOrder(orderId);
+
   if (order?.status === "pending") {
-    await orderLogic.updateStatus(body.trade_order_id, "paid");
+    await orderLogic.updateStatus(orderId, "paid");
   }
   const user = order!.email;
 
+  // Add subscription for users.
   const subscriptionLogic = new SubscriptionLogic();
   await subscriptionLogic.append(order!.email, {
     startsAt: Date.now(),
     endsAt: Date.now() + 1000 * 60 * 60 * 24 * 30,
     plan: order!.plan,
-    tradeOrderId: body.trade_order_id,
+    tradeOrderId: orderId,
   });
+
   return new Response("success"); // 规定返回值 不可修改
 }
