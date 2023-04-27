@@ -1,13 +1,13 @@
 "use client";
 
-import {useState} from "react";
+import { useState } from "react";
 import dynamic from "next/dynamic";
 
-import {AppRouterInstance} from "next/dist/shared/lib/app-router-context";
-import {useRouter} from "next/navigation";
+import { AppRouterInstance } from "next/dist/shared/lib/app-router-context";
+import { useRouter } from "next/navigation";
 
-import {Loading} from "@/components/loading";
-import {IconButton} from "@/components/button";
+import { Loading } from "@/components/loading";
+import { IconButton } from "@/components/button";
 import CloseIcon from "@/assets/icons/close.svg";
 
 import Locale from "@/locales";
@@ -123,7 +123,7 @@ export default function PricingPage() {
         <div className={styles["window-actions"]}>
           <div className={styles["window-action-button"]}>
             <IconButton
-              icon={<CloseIcon/>}
+              icon={<CloseIcon />}
               onClick={() => router.back()}
               bordered
               title={Locale.Settings.Actions.Close}
@@ -163,7 +163,12 @@ export default function PricingPage() {
 
       <div className={styles["container"]}>
         {prices.map((price, index) => (
-          <PricingItem key={index} router={router} cycle={paymentCycle} price={price}/>
+          <PricingItem
+            key={index}
+            router={router}
+            cycle={paymentCycle}
+            price={price}
+          />
         ))}
       </div>
     </>

@@ -1,6 +1,6 @@
-import {fetch} from "@edge-runtime/ponyfill";
+import { fetch } from "@edge-runtime/ponyfill";
 import md5 from "spark-md5";
-import {type NextRequest} from "next/server";
+import { type NextRequest } from "next/server";
 
 const appId = process.env.PAY_APPID!;
 const appSecret = process.env.PAY_APPSECRET!;
@@ -78,8 +78,16 @@ function sortAndSignParameters(parameters: PaymentArgs | CallbackBody): string {
  * @param attach encrypted field being transmitted.
  * @param title payment title
  */
-export async function startPay({orderId, price, attach, title}: {
-  orderId: string, price: number, attach: string, title?: string,
+export async function startPay({
+  orderId,
+  price,
+  attach,
+  title,
+}: {
+  orderId: string;
+  price: number;
+  attach: string;
+  title?: string;
 }) {
   const fetchBody: PaymentArgs = {
     version: "1.1",
@@ -103,9 +111,9 @@ export async function startPay({orderId, price, attach, title}: {
 
   const resp = (await (
     await fetch("https://api.xunhupay.com/payment/do.html", {
-      cache: 'no-store',
+      cache: "no-store",
       method: "POST",
-      headers: {"Content-Type": "application/json"},
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         ...fetchBody,
         hash,
@@ -126,14 +134,15 @@ function urlEncodedStringToJson(encodedString: string): Record<string, string> {
  * @return return order id in system
  */
 export async function handleCallback(req: NextRequest) {
-  const body = urlEncodedStringToJson(await req.text()) as unknown as CallbackBody;
+  const body = urlEncodedStringToJson(
+    await req.text()
+  ) as unknown as CallbackBody;
   /* == Verify Security field == */
   /*
    Currently only the appId is being validated.
    In the future, attach will also need to be validated to improve security.
    */
-  if (body.appid !== appId)
-    return null
+  if (body.appid !== appId) return null;
 
   /* == Verify Signature == */
   // const trueHash = body.hash!
@@ -146,5 +155,5 @@ export async function handleCallback(req: NextRequest) {
   //   return null
   /* ====================== */
 
-  return body.trade_order_id
+  return body.trade_order_id;
 }

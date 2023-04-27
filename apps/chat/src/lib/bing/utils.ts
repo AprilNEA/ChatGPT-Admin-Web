@@ -26,10 +26,8 @@ export class TextLineStream extends TransformStream<string, string> {
       transform: (chunk, controller) => this.#handle(chunk, controller),
       flush: (controller) => {
         if (this.#buf.length > 0) {
-          if (
-            this.#allowCR &&
-            this.#buf[this.#buf.length - 1] === "\r"
-          ) controller.enqueue(this.#buf.slice(0, -1));
+          if (this.#allowCR && this.#buf[this.#buf.length - 1] === "\r")
+            controller.enqueue(this.#buf.slice(0, -1));
           else controller.enqueue(this.#buf);
         }
       },
@@ -47,8 +45,9 @@ export class TextLineStream extends TransformStream<string, string> {
         const crIndex = chunk.indexOf("\r");
 
         if (
-          crIndex !== -1 && crIndex !== (chunk.length - 1) &&
-          (lfIndex === -1 || (lfIndex - 1) > crIndex)
+          crIndex !== -1 &&
+          crIndex !== chunk.length - 1 &&
+          (lfIndex === -1 || lfIndex - 1 > crIndex)
         ) {
           controller.enqueue(chunk.slice(0, crIndex));
           chunk = chunk.slice(crIndex + 1);

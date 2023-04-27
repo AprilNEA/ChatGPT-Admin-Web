@@ -1,6 +1,11 @@
-import {NextRequest, NextResponse} from "next/server";
-import {UserLogic, InvitationCodeLogic, AccessControlLogic, KeywordRateLimiter} from "database";
-import {ResponseStatus} from "@/app/api/typing.d";
+import { NextRequest, NextResponse } from "next/server";
+import {
+  UserLogic,
+  InvitationCodeLogic,
+  AccessControlLogic,
+  KeywordRateLimiter,
+} from "database";
+import { ResponseStatus } from "@/app/api/typing.d";
 
 const cache = new Map();
 
@@ -12,7 +17,7 @@ export async function GET(req: NextRequest) {
   const role = (await user.getRoleOf(email)) ?? "user";
   const plan = (await user.getPlanOf(email)) ?? "free";
 
-  const resetChances = await user.getResetChancesOf(email) ?? 0;
+  const resetChances = (await user.getResetChancesOf(email)) ?? 0;
 
   let invitationCodes = (await user.getInvitationCodesOf(email)) ?? [];
   if (invitationCodes.length === 0) {

@@ -1,6 +1,6 @@
-import {NextRequest} from "next/server";
-import {handleCallback} from "@/lib/pay/xunhu";
-import {OrderLogic, SubscriptionLogic} from "database";
+import { NextRequest } from "next/server";
+import { handleCallback } from "@/lib/pay/xunhu";
+import { OrderLogic, SubscriptionLogic } from "database";
 
 /**
  * This is the callback interface for processing payment platforms.
@@ -8,8 +8,8 @@ import {OrderLogic, SubscriptionLogic} from "database";
  * @param req
  */
 export async function POST(req: NextRequest) {
-  const orderId = await handleCallback(req)
-  if (!orderId) return new Response("failed")
+  const orderId = await handleCallback(req);
+  if (!orderId) return new Response("failed");
 
   const orderLogic = new OrderLogic();
 

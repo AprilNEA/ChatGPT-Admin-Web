@@ -1,4 +1,4 @@
-import {Role, Plan} from "database";
+import { Role, Plan } from "database";
 
 export enum ResponseStatus {
   Success,
@@ -8,7 +8,7 @@ export enum ResponseStatus {
   notExist,
   alreadyExisted,
   CONTENT_BLOCK,
-  wrongPassword
+  wrongPassword,
 }
 
 export enum ReturnStatus {
@@ -30,11 +30,11 @@ export interface RegisterResponse {
 }
 
 export interface InfoResponse {
-  status: ResponseStatus,
-  email: string,
-  role: Role,
-  plan: Plan,
-  inviteCode: string,
-  requestNos: number[],
-  resetChances: number,
+  status: ResponseStatus;
+  email: string;
+  role: Role;
+  plan: Plan;
+  inviteCode: string;
+  requestNos: number[];
+  resetChances: number;
 }

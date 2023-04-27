@@ -1,15 +1,14 @@
 "use client";
 
-import {FormEvent, useState} from "react";
-import {useUserStore} from "@/store";
+import { FormEvent, useState } from "react";
+import { useUserStore } from "@/store";
 
-import {showToast} from "@/components/ui-lib";
-import {ResponseStatus} from "@/app/api/typing.d";
-import {useRouter} from "next/navigation";
+import { showToast } from "@/components/ui-lib";
+import { ResponseStatus } from "@/app/api/typing.d";
+import { useRouter } from "next/navigation";
 import Locales from "@/locales";
-import {ReturnButton} from "@/components/ui-lib";
+import { ReturnButton } from "@/components/ui-lib";
 import Locale from "@/locales";
-
 
 import styles from "./login.module.scss";
 
@@ -40,8 +39,8 @@ export default function Login() {
       await fetch("/api/user/login", {
         cache: "no-store",
         method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({email: email.trim(), password}),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim(), password }),
       })
     ).json();
 
@@ -68,18 +67,13 @@ export default function Login() {
     }
 
     setSubmitting(false);
-
   };
 
   return (
     <>
       <div className={styles["login-form-container"]}>
-
-        <form
-          className={styles["login-form"]}
-          onSubmit={handleLogin}
-        >
-          <ReturnButton onClick={() => router.push("/enter")}/>
+        <form className={styles["login-form"]} onSubmit={handleLogin}>
+          <ReturnButton onClick={() => router.push("/enter")} />
 
           <h2 className={styles["login-form-title"]}>Login</h2>
           <div className={styles["login-form-input-group"]}>

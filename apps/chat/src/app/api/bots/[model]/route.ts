@@ -1,13 +1,13 @@
-import {***REMOVED***, BingBot} from "bots";
-import {NextRequest, NextResponse} from "next/server";
-import {postPayload} from "@/app/api/bots/typing";
-import {textSecurity} from "@/lib/content";
-import {ModelRateLimiter, UserLogic} from "database";
-import {LimitReason} from "@/typing.d";
+import { ***REMOVED***, BingBot } from "bots";
+import { NextRequest, NextResponse } from "next/server";
+import { postPayload } from "@/app/api/bots/typing";
+import { textSecurity } from "@/lib/content";
+import { ModelRateLimiter, UserLogic } from "database";
+import { LimitReason } from "@/typing.d";
 
 export async function POST(
   req: NextRequest,
-  {params}: { params: { model: string } }
+  { params }: { params: { model: string } }
 ): Promise<NextResponse> {
   const email = req.headers.get("role")!;
 
@@ -16,21 +16,20 @@ export async function POST(
   try {
     payload = await new NextResponse(req.body).json();
   } catch {
-    return NextResponse.json({error: "invalid JSON"}, {status: 400}); // TODO correct code
+    return NextResponse.json({ error: "invalid JSON" }, { status: 400 }); // TODO correct code
   }
 
   const parseResult = postPayload.safeParse(payload);
 
   if (!parseResult.success) return NextResponse.json(parseResult.error);
 
-  const {conversation, maxTokens, model} = parseResult.data;
-
+  const { conversation, maxTokens, model } = parseResult.data;
 
   let bot;
 
   switch (params.model) {
     case "openai":
-      if (model === "new-bing") return NextResponse.json({}, {status: 404});
+      if (model === "new-bing") return NextResponse.json({}, { status: 404 });
       bot = new ***REMOVED***({
         cookie: process.env.***REMOVED***!,
         token: process.env.***REMOVED***!,
@@ -41,7 +40,7 @@ export async function POST(
       bot = new BingBot(process.env.BING_COOKIE!);
       break;
     default:
-      return NextResponse.json({}, {status: 404});
+      return NextResponse.json({}, { status: 404 });
   }
 
   // const rateLimit = await ModelRateLimiter.of({email, model})
@@ -57,7 +56,7 @@ export async function POST(
   //   return NextResponse.json({}, {status: 402});
 
   return new NextResponse(
-    bot.answerStream({conversation, signal: req.signal})
+    bot.answerStream({ conversation, signal: req.signal })
   );
 }
 

@@ -21,7 +21,7 @@ const en: LocaleType = {
     CodeError: "验证码错误",
     PasswordError: "密码错误",
   },
-    UnknownError: "未知错误，请联系管理员",
+  UnknownError: "未知错误，请联系管理员",
   WIP: "WIP...",
   Error: {
     Unauthorized:

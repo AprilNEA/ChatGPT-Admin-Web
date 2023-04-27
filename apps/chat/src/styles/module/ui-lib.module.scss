@@ -176,7 +176,7 @@
     color: #007bff;
   }
 
-  input[type='radio'] {
+  input[type="radio"] {
     position: relative;
     width: 18px;
     height: 18px;
@@ -188,7 +188,7 @@
     outline: none;
 
     &:after {
-      content: '';
+      content: "";
       position: absolute;
       top: 4px;
       left: 4px;
@@ -217,7 +217,6 @@
 }
 
 .return-button {
-
   color: white;
 
   position: absolute;

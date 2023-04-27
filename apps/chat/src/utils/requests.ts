@@ -43,7 +43,7 @@ export async function requestChat(messages: Message[]) {
 
   const res = await fetcher("/api/chat", {
     method: "POST",
-    headers: {"Content-Type": "application/json"},
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(req),
   });
 
@@ -88,7 +88,7 @@ export async function requestChatStream(
         : "/api/bots/openai",
       {
         method: "POST",
-        headers: {"Content-Type": "application/json"},
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(req),
         signal: controller.signal,
       }

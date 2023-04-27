@@ -1,25 +1,30 @@
-import {NextRequest, NextResponse} from "next/server";
-import {AccessControlLogic, KeywordRateLimiter, ModelRateLimiter, UserLogic} from "database";
+import { NextRequest, NextResponse } from "next/server";
+import {
+  AccessControlLogic,
+  KeywordRateLimiter,
+  ModelRateLimiter,
+  UserLogic,
+} from "database";
 
-import {LimitReason} from "@/typing.d";
-import {jwt} from "database";
+import { LimitReason } from "@/typing.d";
+import { jwt } from "database";
 
 const cache = new Map();
 
 const limit = {
   "/api/user/info": {
     limit: 10,
-    window: "1m"
+    window: "1m",
   },
   "/api/user/login": {
     limit: 10,
-    window: "1m"
+    window: "1m",
   },
   "/api/user/register": {
     limit: 10,
-    window: "1m"
-  }
-}
+    window: "1m",
+  },
+};
 
 export const config = {
   matcher: ["/api/user/((?!login$|register$).*)", "/api/bots/:model*"],
@@ -40,8 +45,8 @@ export async function middleware(req: NextRequest) {
     /* The user will bring the JWT Token in the header
     and parse out the payload here before passing it to the next layer. */
     const token = req.headers.get("Authorization");
-    if (!token) return NextResponse.json({}, {status: 403});
-    const {email} = (await jwt.verify(token)) as unknown as {
+    if (!token) return NextResponse.json({}, { status: 403 });
+    const { email } = (await jwt.verify(token)) as unknown as {
       email: string;
     };
 
@@ -54,17 +59,16 @@ export async function middleware(req: NextRequest) {
 
     /* TODO Rate limit info may require here to get*/
 
-
     /* Pass user data */
     return NextResponse.next({
       request: {
         headers: setHeaders(req.headers, {
-          email
+          email,
         }),
       },
     });
   } catch (e) {
     /* Check for validity */
-    return NextResponse.json({}, {status: 401});
+    return NextResponse.json({}, { status: 401 });
   }
 }

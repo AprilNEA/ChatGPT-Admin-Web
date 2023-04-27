@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import {Message, useChatStore, useSettingStore, useUserStore} from "@/store";
+import { Message, useChatStore, useSettingStore, useUserStore } from "@/store";
 import { ChatSession } from "@/store/chat/typing";
 import { SubmitKey } from "@/store/setting/typing";
 

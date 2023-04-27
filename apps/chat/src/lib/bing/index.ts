@@ -14,7 +14,7 @@ const API_ENDPOINT = "https://bing.p1xl.me/chat";
  * (Backend Only)
  */
 export function sendMessageAndGetStream(
-  body: POSTBody,
+  body: POSTBody
 ): Promise<ReadableStream<Uint8Array>> {
   return fetch(API_ENDPOINT, {
     method: "POST",
@@ -29,13 +29,13 @@ export function sendMessageAndGetStream(
  * (Frontend and Backend)
  */
 export async function* streamToEventGenerator(
-  stream: ReadableStream<Uint8Array>,
+  stream: ReadableStream<Uint8Array>
 ): AsyncGenerator<BingGeneratorEvent> {
   const lineStream = stream
     .pipeThrough(
       window.TextDecoderStream
         ? new TextDecoderStream()
-        : new TextDecoderStreamPolyfill(),
+        : new TextDecoderStreamPolyfill()
     )
     .pipeThrough(new TextLineStream());
 
@@ -58,9 +58,13 @@ export async function* streamToEventGenerator(
  */
 export async function handleEventIterator(
   iterator: AsyncIterableIterator<BingGeneratorEvent>,
-  { onQuery, onAnswer, onReset, onDone, onError }: Partial<
-    EventIteratorHandlers
-  > = {},
+  {
+    onQuery,
+    onAnswer,
+    onReset,
+    onDone,
+    onError,
+  }: Partial<EventIteratorHandlers> = {}
 ) {
   for await (const event of iterator) {
     switch (event.type) {
