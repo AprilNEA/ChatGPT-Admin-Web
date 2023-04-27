@@ -15,7 +15,7 @@ export class ModelRateLimiter extends Ratelimit {
     const userDAL = new UserDAL(redis);
     const planDAL = new PlanDAL(redis);
 
-    const planName = email ? await userDAL.readPlan(email) ?? "free" : "free";
+    const planName = await userDAL.readPlan(email) ?? "free";
     const planLimit = await planDAL.readProperty(planName, "limits");
     const modelLimit = planLimit?.[model];
 
@@ -24,41 +24,67 @@ export class ModelRateLimiter extends Ratelimit {
     const { limit, window } = modelLimit;
     return new ModelRateLimiter({
       redis,
-      prefix: `ratelimit:${planName}:${model}`,
-      limiter: Ratelimit.slidingWindow(limit, window as Duration),
+      email,
+      planName,
+      model,
+      limit,
+      window: window as Duration,
     });
   }
+
+  #email: string;
+
+  private constructor(
+    { redis = defaultRedis, planName, model, limit, window, email }:
+      ConstructModelRateLimiterParams,
+  ) {
+    super({
+      redis,
+      prefix: `ratelimit:${planName}:${model}:`,
+      limiter: Ratelimit.slidingWindow(limit, window),
+    });
+
+    this.#email = email;
+  }
+
+  override limit = () => super.limit(this.#email);
 }
 
-export class KeywordRateLimiter extends Ratelimit {
-  /**
-   * construct a new model rate limiter by specified prefix
-   * @returns ratelimit
-   */
-  static async of(
-    {prefix, limit, window, ephemeralCache = undefined, redis = defaultRedis}: CreateKeywordRateLimiterParams,
-  ): Promise<ModelRateLimiter> {
-
-    return new ModelRateLimiter({
-      redis,
-      prefix: `ratelimit:${prefix}`,
-      limiter: Ratelimit.slidingWindow(limit, window as Duration),
-      ephemeralCache,
-    });
-  }
+/**
+ * construct a new model rate limiter by specified prefix
+ * @returns ratelimit
+ */
+export function keywordRateLimiterOf(
+  { prefix, limit, window, ephemeralCache = undefined, redis = defaultRedis }:
+    CreateKeywordRateLimiterParams,
+): Ratelimit {
+  return new Ratelimit({
+    redis,
+    prefix: `ratelimit:${prefix}:`,
+    limiter: Ratelimit.slidingWindow(limit, window),
+    ephemeralCache,
+  });
 }
 
 export type CreateKeywordRateLimiterParams = {
   prefix: string;
   limit: number;
-  window: string;
+  window: Duration;
   ephemeralCache?: Map<string, number> | undefined;
   redis?: Redis;
 };
 
-
 export type CreateModelRateLimiterParams = {
-  email?: string;
+  email: string;
   model: string;
   redis?: Redis;
+};
+
+type ConstructModelRateLimiterParams = {
+  redis?: Redis;
+  email: string;
+  planName: string;
+  model: string;
+  limit: number;
+  window: Duration;
 };
