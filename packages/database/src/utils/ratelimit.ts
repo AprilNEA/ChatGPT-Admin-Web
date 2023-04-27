@@ -61,7 +61,7 @@ export function keywordRateLimiterOf(
   return new Ratelimit({
     redis,
     prefix: `ratelimit:${prefix}:`,
-    limiter: Ratelimit.slidingWindow(limit, window as Duration),
+    limiter: Ratelimit.slidingWindow(limit, window),
     ephemeralCache,
   });
 }
@@ -69,7 +69,7 @@ export function keywordRateLimiterOf(
 export type CreateKeywordRateLimiterParams = {
   prefix: string;
   limit: number;
-  window: string;
+  window: Duration;
   ephemeralCache?: Map<string, number> | undefined;
   redis?: Redis;
 };
