@@ -3,9 +3,8 @@
     "target": "ESNext",
     "module": "CommonJS",
     "moduleResolution": "node",
-    "outDir": "dist",
-    "declaration": true,
-    "declarationMap": true,
+//    "declaration": true,
+//    "declarationMap": true,
     "lib": [
       "dom",
       "dom.iterable",
