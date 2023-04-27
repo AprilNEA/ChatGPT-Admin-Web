@@ -2,6 +2,7 @@ import type { ChatRequest, ChatReponse } from "@/app/api/bots/typing";
 import { filterConfig, Message, ModelConfig, useUserStore } from "@/store";
 import Locale from "@/locales";
 import { LimitReason } from "@/typing.d";
+import fetcher from "@/utils/fetcher";
 
 /* 请求的超时时间 */
 const TIME_OUT_MS = 30000;
@@ -34,35 +35,15 @@ const makeRequestParam = (
 };
 
 /**
- * 通过提取 Headers 拿到认证信息
- */
-function getHeaders() {
-  const userStore = useUserStore.getState();
-  const token = userStore.sessionToken;
-  const email = userStore.email;
-  let headers: Record<string, string> = {};
-
-  if (token && email) {
-    headers["token"] = token;
-    headers["email"] = email.toLowerCase();
-  }
-
-  return headers;
-}
-
-/**
  * 直接返回的请求
  * @param messages
  */
 export async function requestChat(messages: Message[]) {
   const req: ChatRequest = makeRequestParam(messages, { filterBot: true });
 
-  const res = await fetch("/api/chat", {
+  const res = await fetcher("/api/chat", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      ...getHeaders(),
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(req),
   });
 
@@ -101,16 +82,13 @@ export async function requestChatStream(
   const reqTimeoutId = setTimeout(() => controller.abort(), TIME_OUT_MS);
 
   try {
-    const res = await fetch(
+    const res = await fetcher(
       options?.modelConfig?.model === "newbing"
         ? "/api/bots/newbing"
         : "/api/bots/openai",
       {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          ...getHeaders(),
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(req),
         signal: controller.signal,
       }

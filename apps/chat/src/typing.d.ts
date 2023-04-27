@@ -5,10 +5,10 @@ export enum LimitReason {
 }
 
 export type SessionToken = {
-  id: number
-  token: string
-  createdAt: Date | number
-  expiresAt: Date | number
-  isRevoked: boolean
-  userEmail: string
-}
+  id: number;
+  token: string;
+  createdAt: Date | number;
+  expiresAt: Date | number;
+  isRevoked: boolean;
+  userEmail: string;
+};

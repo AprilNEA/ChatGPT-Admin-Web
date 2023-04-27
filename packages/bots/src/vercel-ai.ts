@@ -7,8 +7,6 @@ import {
 } from "./prompt";
 import { streamToLineIterator } from "./utils";
 
-const REQUEST_URL = "https://play.vercel.ai/api/generate";
-
 const SYSTEM_MESSAGES: Record<VercelAIModel, string> = {
   "openai:gpt-3.5-turbo": GPT3_DEFAULT_SYSTEM_MESSAGE,
   "openai:gpt-4": GPT4_DEFAULT_SYSTEM_MESSAGE,
@@ -36,14 +34,34 @@ async function* generate({
     topP: 1,
   };
 
-  const response = await fetch(REQUEST_URL, {
-    method: "POST",
-    body: JSON.stringify(payload),
-    headers: {
-      "Content-Type": "application/json",
+  const headers: Record<string, string> = {
+    Accept: "*/*",
+    "Content-Type": "application/json",
+    "User-Agent": `Mozilla/5.0 ${Math.random()}`,
+    Referer: "https://play.vercel.ai/",
+    Origin: "https://play.vercel.ai",
+  };
+
+  headers["Custom-Encoding"] = await fetch(
+    "https://play.vercel.ai/openai.jpeg",
+    { signal },
+  )
+    .then((res) => res.text())
+    .then(atob)
+    .then(JSON.parse)
+    .then(({ t, c, a }) => ({ t, r: eval(`(${c})`)(a) }))
+    .then(JSON.stringify)
+    .then(btoa);
+
+  const response = await fetch(
+    "https://play.vercel.ai/api/generate",
+    {
+      method: "POST",
+      body: JSON.stringify(payload),
+      headers,
+      signal,
     },
-    signal,
-  });
+  );
 
   if (!response.ok) {
     throw new Error(`${response.statusText}: ${await response.text()}`);

@@ -95,6 +95,6 @@ export const useUserStore = create<UserStore>()(
     {
       name: LOCAL_KEY,
       version: 1,
-    },
-  ),
+    }
+  )
 );

@@ -1,25 +1,72 @@
 "use client";
 
+import useSWR from "swr";
 import { ChangeEvent, useState } from "react";
 import { Table, Tag, Button, Form, Input } from "antd";
+import fetcher from "@/utils/fetcher";
 
+type Area = "user" | "order";
 const { Search } = Input;
 
-const dataSource = [
+const getPlanTag = (plan: string) => {
+  switch (plan) {
+    case "free":
+      return <Tag color="gray">Free</Tag>;
+    case "pro":
+      return <Tag color="green">Pro</Tag>;
+    case "premium":
+      return <Tag color="gold">Premium</Tag>;
+    default:
+      return <Tag color="yellow">Unknown</Tag>;
+  }
+};
+
+const orderColumns = [
   {
-    name: "Anonymous",
-    passwordHash: "ffffff",
-    subscriptions: ["aaa"],
-    createdAt: 1681114238624,
-    invitationCodes: ["aaa"],
-    isBlocked: false,
-    lastLoginAt: 1681114238624,
-    resetChances: 0,
-    role: "user",
+    title: "订单号",
+    dataIndex: "order",
+    key: "order",
+  },
+  {
+    title: "创建时间",
+    dataIndex: "createdAt",
+    key: "createdAt",
+    render: (text: number) => new Date(text).toLocaleString(),
+  },
+  {
+    title: "用户邮箱",
+    dataIndex: "email",
+    key: "email",
+  },
+  {
+    title: "计划",
+    dataIndex: "plan",
+    key: "plan",
+    render: (plan: string) => getPlanTag(plan),
+  },
+  {
+    title: "状态",
+    dataIndex: "status",
+    key: "status",
+    render: (status: string) => {
+      switch (status) {
+        case "pending":
+          return <Tag color="gold">Pending</Tag>;
+        case "paid":
+          return <Tag color="green">Paid</Tag>;
+        default:
+          return <Tag color="red">Failed</Tag>;
+      }
+    },
+  },
+  {
+    title: "订单金额",
+    dataIndex: "totalCents",
+    key: "totalCents",
   },
 ];
 
-const columns = [
+const userColumns = [
   {
     title: "姓名",
     dataIndex: "name",
@@ -67,18 +114,35 @@ const columns = [
   },
 ];
 
-const UserTable = () => {
+export default function Page({ params }: { params: { area: Area } }) {
+  let columns;
+  switch (params.area) {
+    case "user":
+      columns = userColumns;
+      break;
+    case "order":
+      columns = orderColumns;
+      break;
+    default:
+      return <p>404</p>;
+  }
+  const { data, isLoading } = useSWR(
+    `/api/${params.area}/list` as string,
+    (url) => fetcher(url).then((res) => res.json())
+  );
+
   const [searchEmail, setSearchEmail] = useState("");
 
   function handleChange(e: ChangeEvent<HTMLInputElement>) {
     setSearchEmail(e.target.value);
-    console.log(e.target.value)
+    console.log(e.target.value);
   }
 
   function handlerSubmit(e: SubmitEvent) {
-    console.log(searchEmail)
+    console.log(searchEmail);
   }
 
+  if (isLoading) return <p>isLoading</p>;
   return (
     <>
       <Form
@@ -100,17 +164,13 @@ const UserTable = () => {
         </Form.Item>
 
         <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-          <Button type="primary" htmlType="submit" >
+          <Button type="primary" htmlType="submit">
             Search
           </Button>
         </Form.Item>
       </Form>
-
-      <Table dataSource={dataSource} columns={columns} />
+      {/*@ts-ignore*/}
+      <Table dataSource={data?.data?.data} columns={columns} />
     </>
   );
-};
-
-export default function Page() {
-  return <UserTable />;
 }

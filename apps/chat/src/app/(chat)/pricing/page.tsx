@@ -3,7 +3,7 @@
 import { useState } from "react";
 import dynamic from "next/dynamic";
 
-import {AppRouterInstance} from "next/dist/shared/lib/app-router-context";
+import { AppRouterInstance } from "next/dist/shared/lib/app-router-context";
 import { useRouter } from "next/navigation";
 
 import { Loading } from "@/components/loading";
@@ -88,8 +88,8 @@ function PricingItem(props: {
           )}
           ¥ {props.price.price[props.cycle]}
         </div>
-        {props.price.features.map((feature) => (
-          <div>· {feature}</div>
+        {props.price.features.map((feature, index) => (
+          <div key={index}>· {feature}</div>
         ))}
       </div>
       <div className={styles["purchase-wrapper"]}>
@@ -162,8 +162,13 @@ export default function PricingPage() {
       </div>
 
       <div className={styles["container"]}>
-        {prices.map((price) => (
-          <PricingItem router={router} cycle={paymentCycle} price={price} />
+        {prices.map((price, index) => (
+          <PricingItem
+            key={index}
+            router={router}
+            cycle={paymentCycle}
+            price={price}
+          />
         ))}
       </div>
     </>

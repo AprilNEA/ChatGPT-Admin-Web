@@ -142,6 +142,9 @@ importers:
       react-dom:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
+      swr:
+        specifier: ^2.1.3
+        version: 2.1.3(react@18.2.0)
       tabler-icons-react:
         specifier: ^1.56.0
         version: 1.56.0(react@18.2.0)
@@ -151,7 +154,13 @@ importers:
       typescript:
         specifier: 4.9.5
         version: 4.9.5
+      zustand:
+        specifier: ^4.3.6
+        version: 4.3.6(react@18.2.0)
     devDependencies:
+      '@edge-runtime/types':
+        specifier: ^2.0.8
+        version: 2.0.8
       '@types/node':
         specifier: ^18.14.6
         version: 18.15.11
@@ -1609,14 +1618,12 @@ packages:
   /@edge-runtime/primitives@2.1.2:
     resolution: {integrity: sha512-SR04SMDybALlhIYIi0hiuEUwIl0b7Sn+RKwQkX6hydg4+AKMzBNDFhj2nqHDD1+xkHArV9EhmJIb6iGjShwSzg==}
     engines: {node: '>=14'}
-    dev: false
 
   /@edge-runtime/types@2.0.8:
     resolution: {integrity: sha512-b+5nFA3SzMhEvL2uo3MECoiY2MhgWRt2UQ4EFFyHmLPRn5lb4AyJUny0eq5qxwzlLbv9bgVg/MOJtpuTgX1WWQ==}
     engines: {node: '>=14'}
     dependencies:
       '@edge-runtime/primitives': 2.1.2
-    dev: false
 
   /@edge-runtime/vm@2.1.2:
     resolution: {integrity: sha512-j4H5S26NJhYOyjVMN8T/YJuwwslfnEX1P0j6N2Rq1FaubgNowdYunA9nlO7lg8Rgjv6dqJ2zKuM7GD1HFtNSGw==}

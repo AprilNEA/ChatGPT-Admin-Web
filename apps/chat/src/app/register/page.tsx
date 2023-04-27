@@ -1,22 +1,21 @@
-"use client"
+"use client";
 
-
-import {FormEvent, useState} from "react";
-import {useRouter, useSearchParams} from "next/navigation";
-import {showToast} from "@/components/ui-lib";
-import {useUserStore} from "@/store";
-import {ReturnButton} from "@/components/ui-lib";
-import {RegisterResponse, ResponseStatus} from "@/app/api/typing.d";
+import { FormEvent, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { showToast } from "@/components/ui-lib";
+import { useUserStore } from "@/store";
+import { ReturnButton } from "@/components/ui-lib";
+import { RegisterResponse, ResponseStatus } from "@/app/api/typing.d";
 
 import Locales from "@/locales";
 import styles from "@/app/login/login.module.scss";
 
 export default function Register() {
-  const router = useRouter()
+  const router = useRouter();
   const searchParams = useSearchParams();
 
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const [isSending, setIsSending] = useState(false);
   const [verificationCode, setVerificationCode] = useState("");
@@ -44,7 +43,7 @@ export default function Register() {
       await fetch("/api/user/register", {
         cache: "no-store",
         method: "POST",
-        headers: {"Content-Type": "application/json"},
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           email: email.trim(),
           password,
@@ -90,7 +89,7 @@ export default function Register() {
     const res = await (
       await fetch("/api/user/register?email=" + encodeURIComponent(email), {
         cache: "no-store",
-        headers: {"Content-Type": "application/json"},
+        headers: { "Content-Type": "application/json" },
       })
     ).json();
 
@@ -126,14 +125,10 @@ export default function Register() {
     setSubmitting(false);
   };
 
-
   return (
     <div className={styles["login-form-container"]}>
-      <form
-        className={styles["login-form"]}
-        onSubmit={handleRegister}
-      >
-        <ReturnButton onClick={()=> router.push("/enter")}/>
+      <form className={styles["login-form"]} onSubmit={handleRegister}>
+        <ReturnButton onClick={() => router.push("/enter")} />
 
         <h2 className={styles["login-form-title"]}>Register</h2>
         <div className={styles["login-form-input-group"]}>
@@ -174,7 +169,6 @@ export default function Register() {
               {isSending ? "Already Send to Email" : "Get Code"}
             </button>
           </div>
-
         </div>
         <div className={styles["login-form-input-group"]}>
           <label htmlFor="email">Invitation Code</label>
@@ -196,5 +190,5 @@ export default function Register() {
         </div>
       </form>
     </div>
-  )
+  );
 }

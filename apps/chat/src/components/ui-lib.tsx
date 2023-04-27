@@ -1,8 +1,8 @@
 import styles from "@/styles/module/ui-lib.module.scss";
 import LoadingIcon from "@/assets/icons/three-dots.svg";
 import CloseIcon from "@/assets/icons/close.svg";
-import {createRoot} from "react-dom/client";
-import {IconButton} from "@/components/button";
+import { createRoot } from "react-dom/client";
+import { IconButton } from "@/components/button";
 import ReturnIcon from "@/assets/icons/return.svg";
 import Locale from "@/locales";
 
@@ -54,7 +54,7 @@ export function Loading() {
         justifyContent: "center",
       }}
     >
-      <LoadingIcon/>
+      <LoadingIcon />
     </div>
   );
 }
@@ -73,7 +73,7 @@ export function Modal(props: ModalProps) {
         <div className={styles["modal-title"]}>{props.title}</div>
 
         <div className={styles["modal-close-btn"]} onClick={props.onClose}>
-          <CloseIcon/>
+          <CloseIcon />
         </div>
       </div>
 
@@ -142,7 +142,7 @@ export function showToast(content: string, delay = 3000) {
     close();
   }, delay);
 
-  root.render(<Toast content={content}/>);
+  root.render(<Toast content={content} />);
 }
 
 export function ReturnButton(props: { onClick: () => void }) {
@@ -150,7 +150,7 @@ export function ReturnButton(props: { onClick: () => void }) {
     <div className={styles["return-button-wrapper"]}>
       <div className={styles["return-button"]}>
         <IconButton
-          icon={<ReturnIcon/>}
+          icon={<ReturnIcon />}
           onClick={props.onClick}
           bordered
           title={Locale.Settings.Actions.Close}

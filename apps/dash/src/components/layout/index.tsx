@@ -47,6 +47,13 @@ const items: MenuItem[] = [
       <UserOutlined />
     </Link>
   ),
+  getItem(
+    "Order",
+    "order",
+    <Link href="/order">
+      <UserOutlined />
+    </Link>
+  ),
   // getItem("Team", "sub2", <TeamOutlined />, [
   //   getItem("Team 1", "6"),
   //   getItem("Team 2", "8"),

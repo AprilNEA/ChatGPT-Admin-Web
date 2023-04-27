@@ -3,22 +3,27 @@ export type RecordedMessage = {
   text: string;
 };
 
-export type BingGeneratorEvent = {
-  type: "DONE";
-  text: string;
-} | {
-  type: "ANSWER";
-  answer: string;
-} | {
-  type: "ERROR";
-  error: unknown;
-} | {
-  type: "RESET";
-  text: string;
-} | {
-  type: "QUERY";
-  query: string;
-};
+export type BingGeneratorEvent =
+  | {
+      type: "DONE";
+      text: string;
+    }
+  | {
+      type: "ANSWER";
+      answer: string;
+    }
+  | {
+      type: "ERROR";
+      error: unknown;
+    }
+  | {
+      type: "RESET";
+      text: string;
+    }
+  | {
+      type: "QUERY";
+      query: string;
+    };
 
 export interface POSTBody {
   userMessage: string;

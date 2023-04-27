@@ -1,7 +1,6 @@
 import React from "react";
 import BaseLayout from "@/components/layout";
 
-
 export const metadata = {
   title: "LMOBEST Dashboard",
 };

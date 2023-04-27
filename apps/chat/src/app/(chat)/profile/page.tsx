@@ -1,24 +1,24 @@
 "use client";
 
-import {useState} from "react";
-import useSWR, {mutate} from "swr";
-import {useRouter} from "next/navigation";
+import { useState } from "react";
+import useSWR, { mutate } from "swr";
+import { useRouter } from "next/navigation";
 
-import {useSettingStore, useUserStore} from "@/store";
+import { useSettingStore } from "@/store";
 
-import {Avatar} from "@/components/avatar";
-import {Loading} from "@/components/loading";
-import {List, ListItem, Popover, showToast} from "@/components/ui-lib";
+import { Avatar } from "@/components/avatar";
+import { Loading } from "@/components/loading";
+import { List, ListItem, Popover, showToast } from "@/components/ui-lib";
 import styles from "./profile.module.scss";
 
 import Locale from "@/locales";
-import {IconButton} from "@/components/button";
+import { IconButton } from "@/components/button";
 import CloseIcon from "@/assets/icons/close.svg";
-import EmojiPicker, {Theme as EmojiTheme} from "emoji-picker-react";
+import EmojiPicker, { Theme as EmojiTheme } from "emoji-picker-react";
 
 import fetcher from "@/utils/fetcher";
-import {copyToClipboard} from "@/utils/utils";
-import {InfoResponse} from "@/app/api/typing";
+import { copyToClipboard } from "@/utils/utils";
+import { InfoResponse } from "@/app/api/typing";
 
 function ProfileItem(props: {
   title: string;
@@ -47,14 +47,12 @@ export default function Profile() {
     state.resetConfig,
   ]);
 
-
-  const {data: info, isLoading: infoLoading} = useSWR<InfoResponse>(
+  const { data: info, isLoading: infoLoading } = useSWR<InfoResponse>(
     "/api/user/info",
-    (url) =>
-      fetcher(url).then((res) => res.json())
+    (url) => fetcher(url).then((res) => res.json())
   );
 
-  if (infoLoading) return <Loading/>;
+  if (infoLoading) return <Loading />;
 
   const {
     email: email,
@@ -62,15 +60,15 @@ export default function Profile() {
     plan: plan,
     inviteCode: inviteCode,
     requestNos: requestNos,
-    resetChances: resetChances
+    resetChances: resetChances,
   } = info ?? {
     email: "",
     role: "user",
     plan: "free",
     inviteCode: "",
     requestNos: [],
-    resetChances: 0
-  }
+    resetChances: 0,
+  };
 
   async function handleResetLimit() {
     if (resetChances && resetChances < 1) {
@@ -93,9 +91,7 @@ export default function Profile() {
     <>
       <div className={styles["window-header"]}>
         <div className={styles["window-header-title"]}>
-          <div className={styles["window-header-main-title"]}>
-            Profile
-          </div>
+          <div className={styles["window-header-main-title"]}>Profile</div>
           <div className={styles["window-header-sub-title"]}>
             {Locale.Settings.SubTitle}
           </div>
@@ -103,7 +99,7 @@ export default function Profile() {
         <div className={styles["window-actions"]}>
           <div className={styles["window-action-button"]}>
             <IconButton
-              icon={<CloseIcon/>}
+              icon={<CloseIcon />}
               onClick={() => router.back()}
               bordered
               title={Locale.Settings.Actions.Close}
@@ -132,7 +128,7 @@ export default function Profile() {
                 className={styles.avatar}
                 onClick={() => setShowEmojiPicker(true)}
               >
-                <Avatar role="user"/>
+                <Avatar role="user" />
               </div>
             </Popover>
           </ProfileItem>
@@ -164,7 +160,11 @@ export default function Profile() {
             <button
               className={styles["copy-button"]}
               value={config.submitKey}
-              onClick={() => copyToClipboard(`${window.location.origin}/register?code=${inviteCode}`)}
+              onClick={() =>
+                copyToClipboard(
+                  `${window.location.origin}/register?code=${inviteCode}`
+                )
+              }
             >
               {Locale.Profile.Invite.CopyInviteLink}
             </button>
@@ -184,32 +184,32 @@ export default function Profile() {
           </ProfileItem>
         </List>
 
-        <List>
-          <ProfileItem
-            title={
-              plan == "free"
-                ? Locale.Profile.RateLimit.TitleFree
-                : Locale.Profile.RateLimit.Title(1)
-            }
-            subTitle={Locale.Profile.RateLimit.Subtitle}
-          >
-            <input
-              type="range"
-              title={config.historyMessageCount.toString()}
-              value={requestNos.length}
-              min="0"
-              max={plan === "free" ? 10 : 50}
-              step="1"
-            ></input>
-          </ProfileItem>
+        {/*<List>*/}
+        {/*  <ProfileItem*/}
+        {/*    title={*/}
+        {/*      plan == "free"*/}
+        {/*        ? Locale.Profile.RateLimit.TitleFree*/}
+        {/*        : Locale.Profile.RateLimit.Title(1)*/}
+        {/*    }*/}
+        {/*    subTitle={Locale.Profile.RateLimit.Subtitle}*/}
+        {/*  >*/}
+        {/*    <input*/}
+        {/*      type="range"*/}
+        {/*      title={config.historyMessageCount.toString()}*/}
+        {/*      value={requestNos.length}*/}
+        {/*      min="0"*/}
+        {/*      max={plan === "free" ? 10 : 50}*/}
+        {/*      step="1"*/}
+        {/*    ></input>*/}
+        {/*  </ProfileItem>*/}
 
-          <ProfileItem
-            title={Locale.Profile.RateLimit.Interval}
-            subTitle={Locale.Profile.RateLimit.IntervalDesp}
-          >
-            <input type="number" min={500} max={4000} value={5}></input>
-          </ProfileItem>
-        </List>
+        {/*  <ProfileItem*/}
+        {/*    title={Locale.Profile.RateLimit.Interval}*/}
+        {/*    subTitle={Locale.Profile.RateLimit.IntervalDesp}*/}
+        {/*  >*/}
+        {/*    <input type="number" min={500} max={4000} value={5}></input>*/}
+        {/*  </ProfileItem>*/}
+        {/*</List>*/}
       </div>
     </>
   );

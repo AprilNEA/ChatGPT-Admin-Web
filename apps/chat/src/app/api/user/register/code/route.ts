@@ -1,8 +1,7 @@
-import {NextRequest, NextResponse} from "next/server";
-import {UserDAL, UserLogic, RegisterCodeLogic} from "database";
-import {sendEmail} from "@/lib/email";
-import {ReturnStatus, ResponseStatus} from "@/app/api/typing.d";
-
+import { NextRequest, NextResponse } from "next/server";
+import { UserDAL, UserLogic, RegisterCodeLogic } from "database";
+import { sendEmail } from "@/lib/email";
+import { ReturnStatus, ResponseStatus } from "@/app/api/typing.d";
 
 /**
  * Request verification code.
@@ -10,21 +9,20 @@ import {ReturnStatus, ResponseStatus} from "@/app/api/typing.d";
  * @constructor
  */
 export async function GET(req: NextRequest): Promise<Response> {
-
-  const {searchParams} = new URL(req.url);
+  const { searchParams } = new URL(req.url);
 
   const email = searchParams.get("email");
 
-  if (!email) return NextResponse.json({status: ResponseStatus.notExist});
+  if (!email) return NextResponse.json({ status: ResponseStatus.notExist });
 
   const userDal = new UserDAL();
   if (await userDal.exists(email)) {
-    return NextResponse.json({status: ResponseStatus.alreadyExisted});
+    return NextResponse.json({ status: ResponseStatus.alreadyExisted });
   }
 
   // Logic will automatically check the speed.
-  const registerCode = new RegisterCodeLogic()
-  const codeData = await registerCode.newCode(email)
+  const registerCode = new RegisterCodeLogic();
+  const codeData = await registerCode.newCode(email);
 
   return NextResponse.json({
     status: ResponseStatus.Success,

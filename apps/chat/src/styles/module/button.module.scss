@@ -37,7 +37,7 @@
 }
 
 @mixin dark-button {
-  div:not(:global(.no-dark))>.icon-button-icon {
+  div:not(:global(.no-dark)) > .icon-button-icon {
     filter: invert(0.5);
   }
 

@@ -1,43 +1,48 @@
-import {NextRequest, NextResponse} from "next/server";
-import {UserDAL, UserLogic, RegisterCodeLogic, InvitationCodeLogic, AccessControlLogic} from "database";
-import {sendEmail} from "@/lib/email";
-import {ReturnStatus, ResponseStatus} from "@/app/api/typing.d";
-
+import { NextRequest, NextResponse } from "next/server";
+import {
+  UserDAL,
+  UserLogic,
+  RegisterCodeLogic,
+  InvitationCodeLogic,
+  AccessControlLogic,
+} from "database";
+import { sendEmail } from "@/lib/email";
+import { ReturnStatus, ResponseStatus } from "@/app/api/typing.d";
 
 /**
- * 注册用户
+ * Registered user
  * @param req
  * @constructor
  */
 export async function POST(req: NextRequest): Promise<Response> {
   try {
-    const {email, password, code, code_type, phone, invitation_code} =
+    const { email, password, code, code_type, phone, invitation_code } =
       await req.json();
-
 
     const userDal = new UserDAL();
     if (await userDal.exists(email)) {
-      // 用户已经存在
-      return NextResponse.json({status: ResponseStatus.alreadyExisted});
+      // User already exists.
+      return NextResponse.json({ status: ResponseStatus.alreadyExisted });
     }
 
-    // 激活验证码
-    const registerCodeLogic = new RegisterCodeLogic()
+    // Activation verification code
+    const registerCodeLogic = new RegisterCodeLogic();
     const success = await registerCodeLogic.activateCode(email, code.trim());
 
     if (!success)
-      return NextResponse.json({status: ResponseStatus.invalidCode});
+      return NextResponse.json({ status: ResponseStatus.invalidCode });
 
     const user = new UserLogic();
     await user.register(email, password);
 
-    // 如果使用邀请码注册, 则判断激活码类型并给予相应权益
+    // If using an invitation code to register,
+    // then determine the type of activation code and grant corresponding rights.
     if (invitation_code) {
-      const invitationCode = new InvitationCodeLogic()
+      const invitationCode = new InvitationCodeLogic();
 
       const code = await invitationCode.acceptCode(
         email,
-        invitation_code.toLowerCase(),
+        invitation_code.toLowerCase()
       );
       // await user.newSubscription({
       //   startsAt: Date.now(),
@@ -47,15 +52,15 @@ export async function POST(req: NextRequest): Promise<Response> {
       // });
     }
 
-    // 注册后 直接生成一个 JWT Token 返回
-    const accessControl = new AccessControlLogic()
-    const token = await accessControl.newSessionToken(email)
+    // After registration, directly generate a JWT Token and return it.
+    const accessControl = new AccessControlLogic();
+    const token = await accessControl.newJWT(email);
     return NextResponse.json({
       status: ResponseStatus.Success,
       sessionToken: token,
     });
   } catch (error) {
     console.error("[REGISTER]", error);
-    return new Response("[INTERNAL ERROR]", {status: 500});
+    return new Response("[INTERNAL ERROR]", { status: 500 });
   }
 }

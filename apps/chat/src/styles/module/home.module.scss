@@ -120,7 +120,14 @@
   font-size: 14px;
   font-weight: bold;
   -webkit-text-fill-color: transparent;
-  background: linear-gradient(94.75deg,rgb(60, 172, 247) 0%,rgb(131, 101, 253) 43.66%,                rgb(255, 141, 112) 64.23%,rgb(247, 201, 102) 83.76%,rgb(172, 143, 100) 100%);
+  background: linear-gradient(
+    94.75deg,
+    rgb(60, 172, 247) 0%,
+    rgb(131, 101, 253) 43.66%,
+    rgb(255, 141, 112) 64.23%,
+    rgb(247, 201, 102) 83.76%,
+    rgb(172, 143, 100) 100%
+  );
   -webkit-background-clip: text;
 }
 

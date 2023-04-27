@@ -15,7 +15,5 @@ export default function ChatLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return (
-      <Sidebar>{children}</Sidebar>
-  );
+  return <Sidebar>{children}</Sidebar>;
 }

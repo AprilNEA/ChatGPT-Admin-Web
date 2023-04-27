@@ -1,7 +1,7 @@
 import styles from "@/styles/module/home.module.scss";
 import Locale from "@/locales";
 import DeleteIcon from "@/assets/icons/delete.svg";
-import {useChatStore} from "@/store";
+import { useChatStore } from "@/store";
 
 export function ChatItem(props: {
   onClick?: () => void;

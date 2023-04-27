@@ -1,9 +1,10 @@
 import { fetch } from "@edge-runtime/ponyfill";
 import md5 from "spark-md5";
-import {store} from "next/dist/build/output/store";
+import { type NextRequest } from "next/server";
 
 const appId = process.env.PAY_APPID!;
 const appSecret = process.env.PAY_APPSECRET!;
+const wapName = process.env.PAY_WAPNAME ?? "店铺名称";
 
 interface PaymentArgs {
   version: string;
@@ -43,10 +44,15 @@ export interface CallbackBody {
   appid: string;
   time: string;
   nonce_str: string;
-  hash: string;
+  hash?: string;
 }
 
-function sortAndSignParameters(parameters: PaymentArgs): string {
+/**
+ * Sort the key names and link together
+ * @param parameters
+ * @return linked sting
+ */
+function sortAndSignParameters(parameters: PaymentArgs | CallbackBody): string {
   // 过滤空值参数
   const filteredParameters = Object.entries(parameters).filter(
     ([, value]) => value !== null
@@ -65,30 +71,47 @@ function sortAndSignParameters(parameters: PaymentArgs): string {
   return stringA;
 }
 
-export async function startPay(orderId: string, price: number, email:string) {
+/**
+ * Request a order
+ * @param orderId internal order id
+ * @param price the price need to be paid
+ * @param attach encrypted field being transmitted.
+ * @param title payment title
+ */
+export async function startPay({
+  orderId,
+  price,
+  attach,
+  title,
+}: {
+  orderId: string;
+  price: number;
+  attach: string;
+  title?: string;
+}) {
   const fetchBody: PaymentArgs = {
     version: "1.1",
     appid: appId,
     trade_order_id: orderId,
     total_fee: price,
-    title: "仁爱路111号",
+    title: title ?? "ChatGPT-April-Web",
     time: Math.floor(Date.now() / 1000),
     notify_url: "https://new.lmo.best/api/user/pay/callback",
-    return_url: "https://lmo.best",
-    // callback_url: string;
+    return_url: "https://lmo.best", // After the user has successfully made the payment, we will automatically redirect the user's browser to this URL.
+    callback_url: "https://lmo.best", // After the user cancels the payment, we may guide the user to redirect to this URL to make the payment again.
     // plugins: string;
-    // attach: email, // 我们将 Email 附加在其中
-    nonce_str: "123",
+    attach, // Return as is during callback. 📢We use it to confirm that the order has not been tampered with.
+    nonce_str: orderId, // 1. Avoid server page caching 2. Prevent security keys from being guessed
     type: "WAP",
     wap_url: "https://lmo.best",
-    wap_name: "仁爱路",
+    wap_name: wapName,
   };
   const stringA = sortAndSignParameters(fetchBody);
   const hash = md5.hash(stringA + appSecret);
 
   const resp = (await (
     await fetch("https://api.xunhupay.com/payment/do.html", {
-      cache: 'no-store',
+      cache: "no-store",
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -100,6 +123,37 @@ export async function startPay(orderId: string, price: number, email:string) {
   return resp;
 }
 
-export function handleCallback(body:CallbackBody) {
+function urlEncodedStringToJson(encodedString: string): Record<string, string> {
+  const urlParams = new URLSearchParams(encodedString);
+  return Object.fromEntries(urlParams.entries());
+}
 
+/**
+ * Verification callback data
+ * @param req
+ * @return return order id in system
+ */
+export async function handleCallback(req: NextRequest) {
+  const body = urlEncodedStringToJson(
+    await req.text()
+  ) as unknown as CallbackBody;
+  /* == Verify Security field == */
+  /*
+   Currently only the appId is being validated.
+   In the future, attach will also need to be validated to improve security.
+   */
+  if (body.appid !== appId) return null;
+
+  /* == Verify Signature == */
+  // const trueHash = body.hash!
+  // delete body.hash /* remove hash before sign */
+  //
+  // const stringA = sortAndSignParameters(body);
+  // const hash = md5.hash(stringA + appSecret);
+  //
+  // if (hash !== trueHash)
+  //   return null
+  /* ====================== */
+
+  return body.trade_order_id;
 }
