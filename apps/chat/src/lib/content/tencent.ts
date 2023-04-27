@@ -1,8 +1,8 @@
 /**
- * 这个文件我花了三个小时去写, 很难想象吧
- * Web Crypto API 和 Crypto 有很大区别
- * Tencent 官方没有提供 Web Crypto API 版本的 SDK, 只有 Node.js 版本的 SDK
- * 手动实现了一版 TC3-HMAC-SHA256
+ * There is a big difference between Web Crypto API and Crypto.
+ * Tencent official does not provide an SDK for the Web Crypto API version, only for the Node.js version.
+ * TC3-HMAC-SHA256 compatible with Edge Runtime has been manually implemented here.
+ * Author: AprilNEA<github@sku.moe>
  */
 import { crypto } from "@edge-runtime/ponyfill";
 
@@ -24,7 +24,7 @@ interface TmsResponseData {
 }
 
 /**
- * 将utf8字符串转换为base64
+ * Convert UTF-8 string to base64.
  * @param utf8String
  */
 function utf8ToBase64(utf8String: string) {
@@ -33,10 +33,10 @@ function utf8ToBase64(utf8String: string) {
 }
 
 /**
- * sha256 根据二进制 secret 加密
- * @param message 数据
- * @param secret 二进制或十六进制字符串
- * @return 加密后的二进制
+ * sha256 encrypts based on binary secret.
+ * @param message: data
+ * @param secret: binary or hexadecimal string
+ * @return: encrypted binary
  */
 async function sha256(message: string, secret: string | ArrayBuffer) {
   const encoder = new TextEncoder();
@@ -57,9 +57,9 @@ async function sha256(message: string, secret: string | ArrayBuffer) {
 }
 
 /**
- * 获取 SHA256 哈希值
+ * Get SHA256 hash value
  * @param message
- * @return Uint8Array 格式的二进制数据
+ * @return Binary data in Uint8Array format
  */
 async function getHash(message: string) {
   const encoder = new TextEncoder();
@@ -71,7 +71,7 @@ async function getHash(message: string) {
 }
 
 /**
- * 将二进制数据转换为十六进制字符串
+ * Convert binary data to hexadecimal string.
  * @param byteArray
  */
 function toHexString(byteArray: Uint8Array) {
@@ -82,7 +82,7 @@ function toHexString(byteArray: Uint8Array) {
 }
 
 /**
- * 根据时间戳获取日期
+ * Get the date based on a timestamp.
  * @param timestamp
  */
 function getDate(timestamp: number) {
@@ -93,18 +93,23 @@ function getDate(timestamp: number) {
   return `${year}-${month}-${day}`;
 }
 
+/**
+ * Tencent text security
+ * Document:
+ * @param text
+ */
 export async function tencentTextSecurity(text: string) {
-  // 注意 params 需要按照 key 名称字母排序
+  // Please note that the `params` need to be sorted alphabetically by the key name.
   const endpoint = "tms.tencentcloudapi.com";
   const service = "tms";
   const region = "ap-guangzhou";
   const action = "TextModeration";
   const version = "2020-12-29";
   const timestamp = Math.round(new Date().getTime() / 1000);
-  //时间处理, 获取世界时间日期
+  // Time processing, obtain world time and date.
   const date = getDate(timestamp);
 
-  // ************* 步骤 1：拼接规范请求串 *************
+  // ************* Step 1: Concatenate the canonical request string. *************
   let payloadObj = { Content: utf8ToBase64(text), BizType: "default" };
   const payload = JSON.stringify(payloadObj);
   const hashedRequestPayload = toHexString(await getHash(payload));
@@ -113,23 +118,20 @@ export async function tencentTextSecurity(text: string) {
   const signedHeaders = "content-type;host";
   const canonicalRequest = `POST\n/\n\n${canonicalHeaders}\n${signedHeaders}\n${hashedRequestPayload}`;
 
-  // ************* 步骤 2：拼接待签名字符串 *************
+  // ************* Step 2: Concatenate the unsigned string. *************
   const hashedCanonicalRequest = toHexString(await getHash(canonicalRequest));
   const credentialScope = date + "/" + service + "/" + "tc3_request";
   const stringToSign = `TC3-HMAC-SHA256\n${timestamp}\n${credentialScope}\n${hashedCanonicalRequest}`;
 
-  console.log(stringToSign);
-
-  // ************* 步骤 3：计算签名 *************
+  // ************* Step 3: Calculate the signature. *************
   const kDate = await sha256(date, "TC3" + SecretKey);
   const kService = await sha256(service, kDate);
   const kSigning = await sha256("tc3_request", kService);
   const signature = toHexString(
     new Uint8Array(await sha256(stringToSign, kSigning))
   );
-  console.log(signature);
 
-  // ************* 步骤 4：拼接 Authorization *************
+  // ************* Step 4: Splicing Authorization *************
   const authorization = `TC3-HMAC-SHA256 Credential=${SecretId}/${credentialScope}, SignedHeaders=${signedHeaders}, Signature=${signature}`;
 
   const data = (await (
@@ -147,6 +149,6 @@ export async function tencentTextSecurity(text: string) {
       body: payload,
     })
   ).json()) as TmsResponse;
-  console.log(data);
+
   return data.Response.Suggestion;
 }
