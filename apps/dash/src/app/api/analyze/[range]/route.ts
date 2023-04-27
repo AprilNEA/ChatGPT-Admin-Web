@@ -1,28 +1,32 @@
-import {NextRequest, NextResponse} from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-import {UserDAL} from "database";
+import { UserDAL } from "database";
 
 type Range = "yesterday" | "total";
 
-export async function GET(req: NextRequest, {params}: {
-  params: { range: Range }
-}) {
+export async function GET(
+  req: NextRequest,
+  {
+    params,
+  }: {
+    params: { range: Range };
+  }
+) {
   //
-  switch (params.range){
+  switch (params.range) {
     case "yesterday":
-      break
+      break;
     case "total":
-      break
+      break;
     default:
-      break
-
+      break;
   }
   return NextResponse.json({
     status: 0,
     data: {
       user: 0,
       paid: null, // [plan_name]: count
-      order: 0 // including pending
+      order: 0, // including pending
     },
   });
 }

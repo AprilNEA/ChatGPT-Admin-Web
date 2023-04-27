@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import React, {useState} from "react";
+import React, { useState } from "react";
 import {
   DesktopOutlined,
   FileOutlined,
@@ -10,10 +10,10 @@ import {
   UserOutlined,
   SettingOutlined,
 } from "@ant-design/icons";
-import type {MenuProps} from "antd";
-import {Breadcrumb, Layout, Menu, theme} from "antd";
+import type { MenuProps } from "antd";
+import { Breadcrumb, Layout, Menu, theme } from "antd";
 
-const {Header, Content, Footer, Sider} = Layout;
+const { Header, Content, Footer, Sider } = Layout;
 
 type MenuItem = Required<MenuProps>["items"][number];
 
@@ -36,7 +36,7 @@ const items: MenuItem[] = [
     "Dashboard",
     "dashboard",
     <Link href="/dashboard">
-      <PieChartOutlined/>
+      <PieChartOutlined />
     </Link>
   ),
   // getItem("Option 2", "2", <DesktopOutlined />),
@@ -44,14 +44,14 @@ const items: MenuItem[] = [
     "User",
     "user",
     <Link href="/user">
-      <UserOutlined/>
+      <UserOutlined />
     </Link>
   ),
   getItem(
     "Order",
     "order",
     <Link href="/order">
-      <UserOutlined/>
+      <UserOutlined />
     </Link>
   ),
   // getItem("Team", "sub2", <TeamOutlined />, [
@@ -62,19 +62,19 @@ const items: MenuItem[] = [
     "Settings",
     "settings",
     <Link href="/settings">
-      <SettingOutlined/>
+      <SettingOutlined />
     </Link>
   ),
 ];
 
-const BaseLayout: React.FC<{ children: React.ReactNode }> = ({children}) => {
+const BaseLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [collapsed, setCollapsed] = useState(false);
   const {
-    token: {colorBgContainer},
+    token: { colorBgContainer },
   } = theme.useToken();
 
   return (
-    <Layout style={{minHeight: "100vh"}}>
+    <Layout style={{ minHeight: "100vh" }}>
       <Sider
         collapsible
         collapsed={collapsed}
@@ -95,9 +95,9 @@ const BaseLayout: React.FC<{ children: React.ReactNode }> = ({children}) => {
         />
       </Sider>
       <Layout className="site-layout">
-        <Header style={{padding: 0, background: colorBgContainer}}/>
-        <Content style={{margin: "0 16px"}}>
-          <Breadcrumb style={{margin: "16px 0"}}>
+        <Header style={{ padding: 0, background: colorBgContainer }} />
+        <Content style={{ margin: "0 16px" }}>
+          <Breadcrumb style={{ margin: "16px 0" }}>
             <Breadcrumb.Item>User</Breadcrumb.Item>
             <Breadcrumb.Item>Bill</Breadcrumb.Item>
           </Breadcrumb>
@@ -111,7 +111,7 @@ const BaseLayout: React.FC<{ children: React.ReactNode }> = ({children}) => {
             {children}
           </div>
         </Content>
-        <Footer style={{textAlign: "center"}}>lmo best ©2023</Footer>
+        <Footer style={{ textAlign: "center" }}>lmo best ©2023</Footer>
       </Layout>
     </Layout>
   );

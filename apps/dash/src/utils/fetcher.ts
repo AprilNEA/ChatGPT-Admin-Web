@@ -1,4 +1,4 @@
-import { useUserStore} from "@/store";
+import { useUserStore } from "@/store";
 
 export default function fetcher(url: string, init?: RequestInit) {
   const sessionToken = useUserStore.getState().sessionToken ?? "";

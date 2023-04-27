@@ -1,3 +1,1 @@
-export default function Admin() {
-  
-}
+export default function Admin() {}

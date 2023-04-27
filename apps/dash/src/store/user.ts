@@ -1,5 +1,5 @@
-import {create} from "zustand";
-import {persist} from "zustand/middleware";
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 const LOCAL_KEY = "dash-user-store";
 
@@ -15,7 +15,7 @@ export const useUserStore = create<UserStore>()(
       sessionToken: null,
 
       updateSessionToken(sessionToken: string) {
-        set((state) => ({sessionToken}));
+        set((state) => ({ sessionToken }));
       },
 
       /**
@@ -30,6 +30,6 @@ export const useUserStore = create<UserStore>()(
     {
       name: LOCAL_KEY,
       version: 1,
-    },
-  ),
+    }
+  )
 );

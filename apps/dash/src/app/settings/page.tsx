@@ -8,7 +8,6 @@ const { TextArea } = Input;
 export default function Page() {
   return (
     <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
-
       <Col className="gutter-row" span={12}>
         <Card title="公告">
           <TextArea rows={4} />
@@ -31,7 +30,6 @@ export default function Page() {
           </Card>
         </Space>
       </Col>
-
     </Row>
   );
 }
