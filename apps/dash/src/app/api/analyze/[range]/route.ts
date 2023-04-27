@@ -10,7 +10,7 @@ export async function GET(
     params,
   }: {
     params: { range: Range };
-  }
+  },
 ) {
   //
   switch (params.range) {
