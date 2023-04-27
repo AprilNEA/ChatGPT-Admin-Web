@@ -30,6 +30,33 @@ export class ModelRateLimiter extends Ratelimit {
   }
 }
 
+export class KeywordRateLimiter extends Ratelimit {
+  /**
+   * construct a new model rate limiter by specified prefix
+   * @returns ratelimit
+   */
+  static async of(
+    {prefix, limit, window, ephemeralCache = undefined, redis = defaultRedis}: CreateKeywordRateLimiterParams,
+  ): Promise<ModelRateLimiter> {
+
+    return new ModelRateLimiter({
+      redis,
+      prefix: `ratelimit:${prefix}`,
+      limiter: Ratelimit.slidingWindow(limit, window as Duration),
+      ephemeralCache,
+    });
+  }
+}
+
+export type CreateKeywordRateLimiterParams = {
+  prefix: string;
+  limit: number;
+  window: string;
+  ephemeralCache?: Map<string, number> | undefined;
+  redis?: Redis;
+};
+
+
 export type CreateModelRateLimiterParams = {
   email: string;
   model: string;
