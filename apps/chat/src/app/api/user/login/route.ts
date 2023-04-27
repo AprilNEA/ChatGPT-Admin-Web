@@ -8,12 +8,11 @@ export async function POST(req: NextRequest) {
     const userLogic = new UserLogic();
     const accessControlLogic = new AccessControlLogic();
 
-
     if (!(await userLogic.login(email, password))) {
       return NextResponse.json({ status: ResponseStatus.wrongPassword });
     }
 
-    const sessionToken = await accessControlLogic.newSessionToken(email);
+    const sessionToken = await accessControlLogic.newJWT(email);
     if (sessionToken) {
       return NextResponse.json({
         status: ResponseStatus.Success,
