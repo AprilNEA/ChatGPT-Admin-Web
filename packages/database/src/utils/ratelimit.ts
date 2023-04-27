@@ -40,7 +40,7 @@ export class ModelRateLimiter extends Ratelimit {
   ) {
     super({
       redis,
-      prefix: `ratelimit:${planName}:${model}:`,
+      prefix: `ratelimit:${planName}:${model}`,
       limiter: Ratelimit.slidingWindow(limit, window),
     });
 
@@ -60,7 +60,7 @@ export function keywordRateLimiterOf(
 ): Ratelimit {
   return new Ratelimit({
     redis,
-    prefix: `ratelimit:${prefix}:`,
+    prefix: `ratelimit:${prefix}`,
     limiter: Ratelimit.slidingWindow(limit, window),
     ephemeralCache,
   });
