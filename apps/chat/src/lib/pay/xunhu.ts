@@ -1,6 +1,6 @@
 import { fetch } from "@edge-runtime/ponyfill";
 import md5 from "spark-md5";
-import {store} from "next/dist/build/output/store";
+import {type NextRequest} from "next/server";
 
 const appId = process.env.PAY_APPID!;
 const appSecret = process.env.PAY_APPSECRET!;
@@ -43,7 +43,7 @@ export interface CallbackBody {
   appid: string;
   time: string;
   nonce_str: string;
-  hash: string;
+  hash?: string;
 }
 
 function sortAndSignParameters(parameters: PaymentArgs): string {
@@ -100,6 +100,36 @@ export async function startPay(orderId: string, price: number, email:string) {
   return resp;
 }
 
-export function handleCallback(body:CallbackBody) {
+function urlEncodedStringToJson(encodedString: string): Record<string, string> {
+  const urlParams = new URLSearchParams(encodedString);
+  return Object.fromEntries(urlParams.entries());
+}
 
+/**
+ * Verification callback data
+ * @param req
+ * @return return order id in system
+ */
+export async function handleCallback(req: NextRequest) {
+  const body = urlEncodedStringToJson(await req.text()) as unknown as CallbackBody;
+  /* == Verify Security field == */
+  /*
+   Currently only the appId is being validated.
+   In the future, attach will also need to be validated to improve security.
+   */
+  if (body.appid !== appId)
+    return null
+
+  /* == Verify Signature == */
+  // const trueHash = body.hash!
+  // delete body.hash /* remove hash before sign */
+  //
+  // const stringA = sortAndSignParameters(body);
+  // const hash = md5.hash(stringA + appSecret);
+  //
+  // if (hash !== trueHash)
+  //   return null
+  /* ====================== */
+
+  return body.trade_order_id
 }
