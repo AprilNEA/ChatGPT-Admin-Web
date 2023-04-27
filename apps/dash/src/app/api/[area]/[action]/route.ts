@@ -2,7 +2,7 @@ import {NextRequest, NextResponse} from "next/server";
 
 import {OrderDAL, UserDAL} from "database";
 
-type Area = "user" | "order"
+type Area = "user" | "order" | "plan"
 type Action = "list" | "query"
 type DAL = UserDAL | OrderDAL
 
