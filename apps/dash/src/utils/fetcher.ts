@@ -1,12 +1,11 @@
-import {useAtom} from 'jotai'
-import {sessionToken} from "@/store";
+import { useUserStore} from "@/store";
 
 export default function fetcher(url: string, init?: RequestInit) {
-  const [token] = useAtom(sessionToken)
+  const sessionToken = useUserStore.getState().sessionToken ?? "";
 
   return fetch(url, {
     headers: {
-      Authorization: token,
+      Authorization: sessionToken,
       ...init?.headers,
     },
     ...init,
