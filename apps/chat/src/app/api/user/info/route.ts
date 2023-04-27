@@ -1,14 +1,17 @@
 import {NextRequest, NextResponse} from "next/server";
-import {UserLogic, InvitationCodeLogic, AccessControlLogic} from "database";
+import {UserLogic, InvitationCodeLogic, AccessControlLogic, KeywordRateLimiter} from "database";
 import {ResponseStatus} from "@/app/api/typing.d";
+
+const cache = new Map();
 
 export async function GET(req: NextRequest) {
   const email = req.headers.get("email")!;
 
   const user = new UserLogic();
 
-  const accessControlLogic = new AccessControlLogic();
-  const requestNos = await accessControlLogic.getRequestsTimeStamp(email);
+  const role = (await user.getRoleOf(email)) ?? "user";
+  const plan = (await user.getPlanOf(email)) ?? "free";
+
   const resetChances = await user.getResetChancesOf(email) ?? 0;
 
   let invitationCodes = (await user.getInvitationCodesOf(email)) ?? [];
@@ -28,10 +31,9 @@ export async function GET(req: NextRequest) {
   return NextResponse.json({
     status: ResponseStatus.Success,
     email,
-    role: user.getRoleOf(email),
-    plan: user.getPlanOf(email),
+    role,
+    plan,
     inviteCode: invitationCodes[0],
-    requestNos,
     resetChances,
   });
 }
