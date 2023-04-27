@@ -2,7 +2,6 @@
 const nextConfig = {
   experimental: {
     appDir: true,
-    typedRoutes: true,
   },
   webpack(config) {
     config.module.rules.push({
@@ -11,7 +10,7 @@ const nextConfig = {
     }); // 针对 SVG 的处理规则
 
     return config;
-  }
+  },
 };
 
 module.exports = nextConfig;
