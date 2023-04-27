@@ -17,18 +17,17 @@ export function AuthProvider({children}: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (!sessionToken || !validateSessionToken()) {
-      if (pathname !== "/enter") {
-        router.push("/enter");
+      if (!["/login", "/register", "/enter"].includes(pathname)) {
+        return router.push("/enter");
       }
-    }
-    if (["/login", "/register", "/enter"].includes(pathname)) {
-      router.replace("/")
+    } else if (["/login", "/register", "/enter"].includes(pathname)) {
+      return router.replace("/")
     }
   }, [pathname, sessionToken]);
 
   return <>{children}</>;
 }
 
-export function Notice(){
+export function Notice() {
   // Announcement(versionId, updateVersionId);
 }
