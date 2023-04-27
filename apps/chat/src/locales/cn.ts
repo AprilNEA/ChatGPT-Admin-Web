@@ -55,7 +55,7 @@ const cn = {
       SubTitle: "成功邀请他人可获得重置次数和充值折扣",
       Code: "邀请码",
       InviteLink: "邀请链接",
-      CopyInviteLink: "复制邀请码",
+      CopyInviteLink: "复制邀请链接",
       InviteeNumber: "当前邀请人数",
     },
     Upgrade: "升级",
