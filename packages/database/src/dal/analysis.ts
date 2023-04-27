@@ -54,7 +54,7 @@ export class AnalysisDAL {
 
   getUsersPropertyValues<K extends keyof User>(
     property: K,
-  ): Promise<(User[K])[]> {
+  ): Promise<[User[K]][]> {
     return this.redis.eval(getJSONValuesScript, [], [
       "user:*",
       "$." + property,
@@ -63,7 +63,7 @@ export class AnalysisDAL {
 
   getOrdersPropertyValues<K extends keyof Order>(
     property: K,
-  ): Promise<(Order[K])[]> {
+  ): Promise<[Order[K]][]> {
     return this.redis.eval(getJSONValuesScript, [], [
       "order:*",
       "$." + property,
