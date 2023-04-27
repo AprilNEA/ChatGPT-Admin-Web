@@ -88,8 +88,8 @@ function PricingItem(props: {
           )}
           ¥ {props.price.price[props.cycle]}
         </div>
-        {props.price.features.map((feature) => (
-          <div>· {feature}</div>
+        {props.price.features.map((feature, index) => (
+          <div key={index}>· {feature}</div>
         ))}
       </div>
       <div className={styles["purchase-wrapper"]}>
