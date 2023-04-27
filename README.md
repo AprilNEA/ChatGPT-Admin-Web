@@ -19,6 +19,8 @@ Deploy your shared ChatGPT web UI on Vercel.
 
 </div>
 
+<img src="./docs/system.svg" alt="system"/>
+
 ## Difference With ChatGPT-Next-Web
 
 - With a backend management system.
@@ -80,6 +82,8 @@ Deploy your shared ChatGPT web UI on Vercel.
 
 ## Roadmap
 
+<img src="./docs/roadmap.svg" alt="system"/>
+
 - [ ] Set system prompts for each conversation
 - [ ] Plugin mechanism, supporting online search, calculator, and calling APIs of other platforms
 - [ ] Subscription slots with diversified subscription plans
@@ -95,12 +99,7 @@ Deploy your shared ChatGPT web UI on Vercel.
 
 ## 🚀 Tech Stack
 
-- ✅ Bootstrapping: Turborepo
-- ✅ Framework: Nextjs 13 + Typescript
-- ✅ Auth: JWT
-- ✅ Database: Upstash
-- ✅ Styling: Sass
-- ✅ Typescript Schema Validation: Zod
+<img src="./docs/tech-stack.svg" alt="tech-stack"/>
 
 ## Author
 
