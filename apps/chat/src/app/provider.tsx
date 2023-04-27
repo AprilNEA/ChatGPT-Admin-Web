@@ -23,7 +23,7 @@ export function AuthProvider({children}: { children: React.ReactNode }) {
     } else if (["/login", "/register", "/enter"].includes(pathname)) {
       return router.replace("/")
     }
-  }, [pathname, sessionToken]);
+  }, [router, pathname, sessionToken, validateSessionToken]);
 
   return <>{children}</>;
 }
