@@ -1,12 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import dynamic from "next/dynamic";
 
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context";
 import { useRouter } from "next/navigation";
 
-import { Loading } from "@/components/loading";
 import { IconButton } from "@/components/button";
 import CloseIcon from "@/assets/icons/close.svg";
 

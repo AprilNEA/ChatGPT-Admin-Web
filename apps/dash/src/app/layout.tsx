@@ -1,8 +1,21 @@
 import React from "react";
-import BaseLayout from "@/components/layout";
+import { ThemeProvider, AuthProvider } from "@/app/provider";
 
 export const metadata = {
-  title: "LMOBEST Dashboard",
+  title: "ChatGPT-April Dashboard",
+};
+
+const contentStyle: React.CSSProperties = {
+  display: "f***REMOVED***",
+  f***REMOVED***Direction: "column",
+  justifyContent: "center",
+  alignItems: "center",
+  backgroundColor: "#fff",
+  width: "100%",
+  height: "100vh",
+  position: "absolute",
+  top: 0,
+  left: 0,
 };
 
 export default function RootLayout({
@@ -14,7 +27,11 @@ export default function RootLayout({
     <html lang="en-US">
       <head />
       <body>
-        <BaseLayout>{children}</BaseLayout>
+        <ThemeProvider>
+          <div style={contentStyle}>
+            <AuthProvider>{children}</AuthProvider>
+          </div>
+        </ThemeProvider>
       </body>
     </html>
   );
