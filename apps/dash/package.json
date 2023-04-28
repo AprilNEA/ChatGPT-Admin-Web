@@ -9,8 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@ant-design/icons": "^5.0.1",
-    "antd": "^5.4.2",
+    "@geist-ui/core": "^2.3.8",
     "database": "workspace:*",
     "next": "^13.2.3",
     "react": "^18.2.0",
