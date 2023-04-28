@@ -37,6 +37,8 @@ export class ModelRateLimiter extends Ratelimit {
   #limit: number;
   #prefix: string;
 
+  override limit: () => ReturnType<Ratelimit["limit"]>;
+
   private constructor(
     { redis = defaultRedis, planName, model, limit, window, email }:
       ConstructModelRateLimiterParams,
@@ -54,11 +56,9 @@ export class ModelRateLimiter extends Ratelimit {
     this.#redis = redis;
     this.#limit = limit;
     this.#prefix = prefix;
-  }
 
-  // @ts-ignore
-  override limit() {
-    return super.limit(this.#email);
+    const superLimit = super.limit;
+    this.limit = () => superLimit.call(this, email);
   }
 
   async remaining() {
