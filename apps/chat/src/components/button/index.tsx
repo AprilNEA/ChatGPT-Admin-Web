@@ -19,7 +19,7 @@ export function IconButton(props: {
     <div
       className={
         styles["icon-button"] +
-        ` ${props.bordered && styles.border} ${props.className ?? ""}`
+        ` ${props.bordered && styles["border"]} ${props.className ?? ""}`
       }
       onClick={props.onClick}
       title={props.title}
