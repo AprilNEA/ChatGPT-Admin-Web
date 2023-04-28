@@ -57,7 +57,7 @@ export class ModelRateLimiter extends Ratelimit {
   }
 
   limitEmail() {
-    return super.limit(this.#email);
+    return this.limit(this.#email);
   }
 
   async remaining() {
