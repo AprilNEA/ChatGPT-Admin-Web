@@ -1,7 +1,7 @@
 <div align="center">
 <img src="./docs/icon.svg" alt="icon"/>
 
-<h1 align="center">ChatGPT April Web</h1>
+<h1 align="center">ChatGPT Admin Web</h1>
 
 English / 简体中文
 
@@ -9,13 +9,13 @@ Deploy your shared ChatGPT web UI on Vercel.
 
 部署你的商业 ChatGPT 网页应用。
 
+Based on [ChatGPT-Next-Web](https://github.com/Yidadaa/ChatGPT-Next-Web) secondary development.
+
 [Docs](https://docs.lmo.best/) / [Demo](https://lmo.best/) / [Issues](https://github.com/AprilNEA/ChatGPT-April-Web/issues) / [Join Discord](https://discord.gg/zrhvHCr79N) / [Buy Me a Coffee](https://www.buymeacoffee.com/yidadaa)
 
 [文档](https://docs.lmo.best/) / [演示](https://lmo.best/) / [反馈](https://github.com/AprilNEA/ChatGPT-April-Web/issues) / [QQ 群](https://user-images.githubusercontent.com/16968934/233002565-139daa1a-eb3a-4a12-ac37-6418e7a15d36.png) / [打赏开发者](https://user-images.githubusercontent.com/16968934/227772541-5bcd52d8-61b7-488c-a203-0330d8006e2b.jpg)
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FAprilNEA%2FChatGPT-April-Web&env=OPENAI_API_KEY&env=CODE&project-name=chatgpt-next-web&repository-name=ChatGPT-Next-Web)
-
-![cover](./docs/cover.png)
 
 </div>
 
