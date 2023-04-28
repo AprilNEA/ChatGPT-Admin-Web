@@ -24,5 +24,5 @@ const chatRecord = z.object({
 export const postPayload = z.object({
   conversation: chatRecord.array().nonempty(),
   maxTokens: z.number().optional(),
-  model: gptModel && otherModel,
+  model: gptModel || otherModel,
 });
