@@ -31,7 +31,7 @@ import { showModal } from "@/components/ui-lib";
 import dynamic from "next/dynamic";
 import Banner, { Post } from "@/components/banner";
 import useSWR from "swr";
-
+import fetcher from "@/utils/fetcher";
 function useSubmitHandler() {
   const config = useSettingStore((state) => state.config);
   const submitKey = config.submitKey;
@@ -128,7 +128,7 @@ export function Chat() {
   const { data: PlanAndInviteCode, isLoading: PlanLoading } = useSWR(
     "/api/user/info",
     (url) =>
-      fetch(url, {
+      fetcher(url, {
         headers: { email },
       }).then((res) => res.json())
   );
@@ -287,6 +287,11 @@ export function Chat() {
               title={Locale.Chat.Actions.ChatList}
               onClick={() => setSideBarOpen(true)}
             />
+          </div>
+          <div className={styles["window-action-button"]}>
+            <Link href="/pricing">
+              <IconButton icon={<span>🎁</span>} bordered />
+            </Link>
           </div>
           <div className={styles["window-action-button"]}>
             <Link href="/profile">
