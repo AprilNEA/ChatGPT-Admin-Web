@@ -90,14 +90,16 @@ function PricingItem(props: {
           <div key={index}>· {feature}</div>
         ))}
       </div>
-      <div className={styles["purchase-wrapper"]}>
-        <IconButton
-          icon={<span>🎁</span>}
-          text={"购买"}
-          className={styles["purchase"] + " no-dark"}
-          onClick={() => handleUpgrade(props.price.name, props.cycle)}
-        />
-      </div>
+      {props.price.name !== "Free" && (
+        <div className={styles["purchase-wrapper"]}>
+          <IconButton
+            icon={<span>🎁</span>}
+            text={"购买"}
+            className={styles["purchase"] + " no-dark"}
+            onClick={() => handleUpgrade(props.price.name, props.cycle)}
+          />
+        </div>
+      )}
     </div>
   );
 }
