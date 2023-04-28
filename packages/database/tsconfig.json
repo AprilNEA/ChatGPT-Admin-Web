@@ -26,9 +26,6 @@
         "*"
       ]
     },
-    "types": [
-      "@docusaurus/types"
-    ]
   },
   "include": [
     "src/**/*"
