@@ -2,7 +2,6 @@ import { Ratelimit } from "@upstash/ratelimit";
 import { defaultRedis } from "../redis";
 import { Redis } from "@upstash/redis";
 import { PlanDAL, UserDAL } from "../dal";
-import { Duration } from "../types";
 
 export class ModelRateLimiter extends Ratelimit {
   /**
@@ -33,21 +32,94 @@ export class ModelRateLimiter extends Ratelimit {
   }
 
   #email: string;
+  #windowSize: number;
+  #redis: Redis;
+  #limit: number;
+  #prefix: string;
 
   private constructor(
     { redis = defaultRedis, planName, model, limit, window, email }:
       ConstructModelRateLimiterParams,
   ) {
+    const prefix = `ratelimit:${planName}:${model}`;
+
     super({
       redis,
-      prefix: `ratelimit:${planName}:${model}:`,
+      prefix,
       limiter: Ratelimit.slidingWindow(limit, window),
     });
 
     this.#email = email;
+    this.#windowSize = ms(window);
+    this.#redis = redis;
+    this.#limit = limit;
+    this.#prefix = prefix;
   }
 
-  override limit = () => super.limit(this.#email);
+  // @ts-ignore
+  override limit() {
+    return super.limit(this.#email);
+  }
+
+  async remaining() {
+    const script = `
+    local currentKey  = KEYS[1]           -- identifier including prefixes
+    local previousKey = KEYS[2]           -- key of the previous bucket
+    local tokens      = tonumber(ARGV[1]) -- tokens per window
+    local now         = ARGV[2]           -- current timestamp in milliseconds
+    local window      = ARGV[3]           -- interval in milliseconds
+    
+    local requestsInCurrentWindow = redis.call("GET", currentKey)
+    if requestsInCurrentWindow == false then
+      requestsInCurrentWindow = -1
+    end
+    
+    local requestsInPreviousWindow = redis.call("GET", previousKey)
+    if requestsInPreviousWindow == false then
+      requestsInPreviousWindow = 0
+    end
+    
+    local percentageInCurrent = ( now % window) / window
+    if requestsInPreviousWindow * ( 1 - percentageInCurrent ) + requestsInCurrentWindow >= tokens then
+      return -1
+    end
+    
+    return tokens - requestsInCurrentWindow
+    `;
+
+    const now = Date.now();
+
+    const currentWindow = Math.floor(now / this.#windowSize);
+    const currentKey = [this.#email, currentWindow].join(":");
+    const previousWindow = currentWindow - this.#windowSize;
+    const previousKey = [this.#email, previousWindow].join(":");
+
+    const remaining = (await this.#redis.eval(
+      script,
+      [
+        currentKey,
+        previousKey,
+      ],
+      [
+        this.#limit,
+        now,
+        this.#windowSize,
+      ],
+    )) as number;
+
+    const success = remaining >= 0;
+    const reset = (currentWindow + 1) * this.#windowSize;
+
+    return {
+      remaining,
+      success,
+      reset,
+    };
+  }
+
+  clear() {
+    return this.#redis.del(`${this.#prefix}:${this.#email}:*`);
+  }
 }
 
 /**
@@ -60,7 +132,7 @@ export function keywordRateLimiterOf(
 ): Ratelimit {
   return new Ratelimit({
     redis,
-    prefix: `ratelimit:${prefix}:`,
+    prefix: `ratelimit:${prefix}`,
     limiter: Ratelimit.slidingWindow(limit, window),
     ephemeralCache,
   });
@@ -88,3 +160,35 @@ type ConstructModelRateLimiterParams = {
   limit: number;
   window: Duration;
 };
+
+// Copied from @upstash/ratelimit/src/duration.ts
+type Unit = "ms" | "s" | "m" | "h" | "d";
+export type Duration = `${number} ${Unit}` | `${number}${Unit}`;
+
+/**
+ * Convert a human readable duration to milliseconds
+ */
+export function ms(d: Duration): number {
+  const match = d.match(/^(\d+)\s?(ms|s|m|h|d)$/);
+  if (!match) {
+    throw new Error(`Unable to parse window size: ${d}`);
+  }
+  const time = parseInt(match[1]);
+  const unit = match[2] as Unit;
+
+  switch (unit) {
+    case "ms":
+      return time;
+    case "s":
+      return time * 1000;
+    case "m":
+      return time * 1000 * 60;
+    case "h":
+      return time * 1000 * 60 * 60;
+    case "d":
+      return time * 1000 * 60 * 60 * 24;
+
+    default:
+      throw new Error(`Unable to parse window size: ${d}`);
+  }
+}
