@@ -47,7 +47,7 @@ export async function POST(
   const rateLimit = await ModelRateLimiter.of({ email, model });
   if (!rateLimit) return NextResponse.json({}, { status: 404 });
 
-  const { success, remaining } = await rateLimit.limit();
+  const { success, remaining } = await rateLimit.limitEmail();
 
   if (!success)
     return NextResponse.json({ code: LimitReason.TooMany }, { status: 429 });
