@@ -9,9 +9,11 @@ Deploy your shared ChatGPT web UI on Vercel.
 
 部署你的商业 ChatGPT 网页应用。
 
-Based on [ChatGPT-Next-Web](https://github.com/Yidadaa/ChatGPT-Next-Web) secondary development.
+Based on [ChatGPT-Next-Web b1f27aa](https://github.com/Yidadaa/ChatGPT-Next-Web/tree/b1f27aaf93c88c088db6bae5ac8163e2ffe991bd) secondary development.
 
-[Docs](https://docs.lmo.best/) / [Demo](https://lmo.best/) / [Issues](https://github.com/AprilNEA/ChatGPT-April-Web/issues) / [Join Discord](https://discord.gg/zrhvHCr79N) / [Buy Me a Coffee](https://www.buymeacoffee.com/yidadaa)
+基于 [ChatGPT-Next-Web b1f27aa](https://github.com/Yidadaa/ChatGPT-Next-Web/tree/b1f27aaf93c88c088db6bae5ac8163e2ffe991bd) 二次开发.
+
+[Docs](https://docs.lmo.best/) / [Demo](https://lmo.best/) / [Issues](https://github.com/AprilNEA/ChatGPT-April-Web/issues) / [Telegram Group](https://t.me/ChatGPTAdminWeb)
 
 [文档](https://docs.lmo.best/) / [演示](https://lmo.best/) / [反馈](https://github.com/AprilNEA/ChatGPT-April-Web/issues) / [Telegram 群](https://t.me/ChatGPTAdminWeb) 
 
@@ -111,5 +113,5 @@ Based on [ChatGPT-Next-Web](https://github.com/Yidadaa/ChatGPT-Next-Web) seconda
 This repository is re-published under the [MIT license](./LICENSE-MIT) based on
 the [Yidadaa's repository](https://github.com/Yidadaa/ChatGPT-Next-Web).
 
-Before [b1f27aa](https://github.com/lmobest/lmobest/commit/b1f27aaf93c88c088db6bae5ac8163e2ffe991bd) commit you should
+Before [b1f27aa](https://github.com/AprilNEA/ChatGPT-Admin-Web/commit/b1f27aaf93c88c088db6bae5ac8163e2ffe991bd) commit you should
 follow: [996 License](./LICENSE-996)
