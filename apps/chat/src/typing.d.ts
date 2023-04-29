@@ -2,6 +2,7 @@ export enum LimitReason {
   NoLimit,
   TooFast,
   TooMany,
+  TextNotSafe,
 }
 
 export type SessionToken = {

@@ -53,9 +53,11 @@ export async function POST(
     return NextResponse.json({ code: LimitReason.TooMany }, { status: 429 });
 
   // 文本安全 TODO 节流
-  const suggestion = await textSecurity(conversation);
-  if (suggestion.toLowerCase() !== "pass")
-    return NextResponse.json({}, { status: 402 });
+  if (!(await textSecurity(conversation)))
+    return NextResponse.json(
+      { code: LimitReason.TextNotSafe, msg: "Contains sensitive keywords." },
+      { status: 402 }
+    );
 
   return new NextResponse(
     bot.answerStream({ conversation, signal: req.signal })
