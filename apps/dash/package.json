@@ -1,7 +1,27 @@
 {
   "name": "dash",
-  "version": "0.1.0",
-  "private": true,
+  "version": "0.0.1",
+  "description": "The dashboard in ChatGPT-Admin-Web",
+  "keywords": [
+    "chatgpt",
+    "webui",
+    "geist-ui"
+  ],
+  "homepage": "https://github.com/AprilNEA/ChatGPT-Admin-Web",
+  "bugs": {
+    "url": "https://github.com/AprilNEA/ChatGPT-Admin-Web/issues",
+    "email": "github@sku.moe"
+  },
+  "license": "MIT",
+  "author": "AprilNEA <github@sku.moe> (https://sku.moe)",
+  "contributors": [
+    "Peron <peron_ap@icloud.com> (https://github.com/PeronGH)"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AprilNEA/ChatGPT-Admin-Web",
+    "directory": "apps/dash"
+  },
   "scripts": {
     "dev": "next dev -p 3001",
     "build": "next build",

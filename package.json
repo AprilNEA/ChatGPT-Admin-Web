@@ -1,5 +1,25 @@
 {
-  "private": true,
+  "name": "chatgpt-admin-web",
+  "version": "0.0.1",
+  "description": "ChatGPT web ui with user management and dashboard",
+  "keywords": [
+    "chatgpt",
+    "webui"
+  ],
+  "homepage": "https://github.com/AprilNEA/ChatGPT-Admin-Web",
+  "bugs": {
+    "url": "https://github.com/AprilNEA/ChatGPT-Admin-Web/issues",
+    "email": "github@sku.moe"
+  },
+  "license": "MIT",
+  "author": "AprilNEA <github@sku.moe> (https://sku.moe)",
+  "contributors": [
+    "Peron <peron_ap@icloud.com> (https://github.com/PeronGH)"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AprilNEA/ChatGPT-Admin-Web",
+  },
   "workspaces": [
     "apps/*",
     "packages/*"

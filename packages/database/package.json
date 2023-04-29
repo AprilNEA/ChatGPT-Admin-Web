@@ -1,7 +1,28 @@
 {
   "name": "database",
-  "version": "1.0.0",
-  "description": "",
+  "version": "0.0.1",
+  "description": "The database part in ChatGPT-Admin-Web",
+  "keywords": [
+    "dal",
+    "redis",
+    "upstash",
+    "ratelimit"
+  ],
+  "homepage": "https://github.com/AprilNEA/ChatGPT-Admin-Web",
+  "bugs": {
+    "url": "https://github.com/AprilNEA/ChatGPT-Admin-Web/issues",
+    "email": "github@sku.moe"
+  },
+  "license": "MIT",
+  "author": "Peron <peron_ap@icloud.com> (https://github.com/PeronGH)",
+  "contributors": [
+    "AprilNEA <github@sku.moe> (https://sku.moe)"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AprilNEA/ChatGPT-Admin-Web",
+    "directory": "packages/database"
+  },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -13,9 +34,6 @@
     "prettier": "prettier --check 'src/**/*.ts'",
     "prettier:fix": "prettier --write 'src/**/*.ts'"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "devDependencies": {
     "@jest/globals": "^29.5.0",
     "@types/jest": "^29.5.0",
