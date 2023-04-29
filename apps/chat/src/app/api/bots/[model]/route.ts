@@ -1,9 +1,12 @@
-import { ***REMOVED***, BingBot } from "bots";
+import { OpenAIBot, BingBot } from "bots";
 import { NextRequest, NextResponse } from "next/server";
 import { postPayload } from "@/app/api/bots/typing";
 import { textSecurity } from "@/lib/content";
 import { ModelRateLimiter } from "database";
 import { LimitReason } from "@/typing.d";
+
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY!;
+const BING_COOKIE = process.env.BING_COOKIE!;
 
 export async function POST(
   req: NextRequest,
@@ -31,14 +34,10 @@ export async function POST(
 
   switch (params.model) {
     case "openai":
-      bot = new ***REMOVED***({
-        cookie: process.env.***REMOVED***!,
-        token: process.env.***REMOVED***!,
-        model,
-      });
+      bot = new OpenAIBot(OPENAI_API_KEY, model);
       break;
     case "new-bing":
-      bot = new BingBot(process.env.BING_COOKIE!);
+      bot = new BingBot(BING_COOKIE);
       break;
     default:
       return NextResponse.json({}, { status: 404 });
