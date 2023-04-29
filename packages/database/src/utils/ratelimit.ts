@@ -56,9 +56,8 @@ export class ModelRateLimiter extends Ratelimit {
     this.#prefix = prefix;
   }
 
-  // @ts-ignore
-  override limit() {
-    return super.limit(this.#email);
+  limitEmail() {
+    return this.limit(this.#email);
   }
 
   async remaining() {
