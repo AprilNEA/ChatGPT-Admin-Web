@@ -24,10 +24,10 @@
 }
 
 .list-item {
-  display: f***REMOVED***;
-  f***REMOVED***-direction: column;
-  justify-content: f***REMOVED***-start;
-  align-items: f***REMOVED***-start;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
   min-height: 80px;
   border-bottom: var(--border-in-light);
   padding: 10px 20px;
@@ -39,7 +39,7 @@
 }
 
 .row {
-  display: f***REMOVED***;
+  display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
@@ -52,7 +52,7 @@
 }
 
 .switch {
-  display: f***REMOVED***;
+  display: flex;
   justify-content: center;
   margin-top: 20px;
 }

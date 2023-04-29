@@ -11,7 +11,7 @@
   min-height: 480px;
   max-width: 900px;
 
-  display: f***REMOVED***;
+  display: flex;
   overflow: hidden;
   box-sizing: border-box;
 
@@ -44,16 +44,16 @@
   box-sizing: border-box;
   padding: 20px;
   background-color: var(--second);
-  display: f***REMOVED***;
-  f***REMOVED***-direction: column;
+  display: flex;
+  flex-direction: column;
   box-shadow: inset -2px 0px 2px 0px rgb(0, 0, 0, 0.05);
 }
 
 .window-content {
   width: var(--window-content-width);
   height: 100%;
-  display: f***REMOVED***;
-  f***REMOVED***-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .mobile {
@@ -111,7 +111,7 @@
 }
 
 .sidebar-body {
-  f***REMOVED***: 1;
+  flex: 1;
   overflow: auto;
 }
 
@@ -196,7 +196,7 @@
 }
 
 .chat-item-info {
-  display: f***REMOVED***;
+  display: flex;
   justify-content: space-between;
   color: rgb(166, 166, 166);
   font-size: 12px;
@@ -210,13 +210,13 @@
 }
 
 .sidebar-tail {
-  display: f***REMOVED***;
+  display: flex;
   justify-content: space-between;
   padding-top: 20px;
 }
 
 .sidebar-actions {
-  display: inline-f***REMOVED***;
+  display: inline-flex;
 }
 
 .sidebar-action:not(:last-child) {
@@ -224,33 +224,33 @@
 }
 
 .chat {
-  display: f***REMOVED***;
-  f***REMOVED***-direction: column;
+  display: flex;
+  flex-direction: column;
   position: relative;
   height: 100%;
 }
 
 .chat-body {
-  f***REMOVED***: 1;
+  flex: 1;
   overflow: auto;
   padding: 20px;
 }
 
 .chat-message {
-  display: f***REMOVED***;
-  f***REMOVED***-direction: row;
+  display: flex;
+  flex-direction: row;
 }
 
 .chat-message-user {
-  display: f***REMOVED***;
-  f***REMOVED***-direction: row-reverse;
+  display: flex;
+  flex-direction: row-reverse;
 }
 
 .chat-message-container {
   max-width: var(--message-max-width);
-  display: f***REMOVED***;
-  f***REMOVED***-direction: column;
-  align-items: f***REMOVED***-start;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   animation: slide-in ease 0.3s;
 
   &:hover {
@@ -263,7 +263,7 @@
 }
 
 .chat-message-user > .chat-message-container {
-  align-items: f***REMOVED***-end;
+  align-items: flex-end;
 }
 
 .chat-message-avatar {
@@ -280,7 +280,7 @@
 .user-avtar {
   height: 30px;
   width: 30px;
-  display: f***REMOVED***;
+  display: flex;
   align-items: center;
   justify-content: center;
   border: var(--border-in-light);
@@ -311,8 +311,8 @@
   opacity: 0;
   pointer-events: none;
 
-  display: f***REMOVED***;
-  f***REMOVED***-direction: row-reverse;
+  display: flex;
+  flex-direction: row-reverse;
 
   .chat-message-top-action {
     opacity: 0.5;
@@ -334,8 +334,8 @@
 }
 
 .chat-message-actions {
-  display: f***REMOVED***;
-  f***REMOVED***-direction: row-reverse;
+  display: flex;
+  flex-direction: row-reverse;
   width: 100%;
   padding-top: 5px;
   box-sizing: border-box;
@@ -352,7 +352,7 @@
   width: 100%;
   padding: 20px;
   box-sizing: border-box;
-  f***REMOVED***-direction: column;
+  flex-direction: column;
 }
 
 @mixin single-line {
@@ -366,8 +366,8 @@
   width: 100%;
   max-height: 50vh;
   overflow: auto;
-  display: f***REMOVED***;
-  f***REMOVED***-direction: column-reverse;
+  display: flex;
+  flex-direction: column-reverse;
 
   background-color: var(--white);
   border: var(--border-in-light);
@@ -409,8 +409,8 @@
 }
 
 .chat-input-panel-inner {
-  display: f***REMOVED***;
-  f***REMOVED***: 1;
+  display: flex;
+  flex: 1;
 }
 
 .chat-input {
@@ -451,8 +451,8 @@
 }
 
 .loading-content {
-  display: f***REMOVED***;
-  f***REMOVED***-direction: column;
+  display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   height: 100%;

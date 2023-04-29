@@ -95,7 +95,7 @@ const Menu: React.FC<unknown> = () => {
         }
 
         nav .content {
-          display: f***REMOVED***;
+          display: flex;
           align-items: center;
           justify-content: space-between;
           max-width: 1000px;
@@ -106,15 +106,15 @@ const Menu: React.FC<unknown> = () => {
         }
 
         .logo {
-          f***REMOVED***: 1 1;
-          display: f***REMOVED***;
+          flex: 1 1;
+          display: flex;
           align-items: center;
-          justify-content: f***REMOVED***-start;
+          justify-content: flex-start;
         }
 
         .logo a {
-          display: inline-f***REMOVED***;
-          f***REMOVED***-direction: row;
+          display: inline-flex;
+          flex-direction: row;
           align-items: center;
           font-size: 1.125rem;
           font-weight: 500;
@@ -128,7 +128,7 @@ const Menu: React.FC<unknown> = () => {
         }
 
         .tabs {
-          f***REMOVED***: 1 1;
+          flex: 1 1;
           padding: 0 ${theme.layout.gap};
         }
 
@@ -143,14 +143,14 @@ const Menu: React.FC<unknown> = () => {
         }
 
         .controls {
-          f***REMOVED***: 1 1;
-          display: f***REMOVED***;
+          flex: 1 1;
+          display: flex;
           align-items: center;
-          justify-content: f***REMOVED***-end;
+          justify-content: flex-end;
         }
 
         .controls :global(.menu-toggle) {
-          display: f***REMOVED***;
+          display: flex;
           align-items: center;
           min-width: 40px;
           height: 40px;

@@ -4883,7 +4883,7 @@ packages:
     resolution: {integrity: sha512-eXTggHWSooYhq49F2opQhuHWgzucfF2YgODK4e1566GQs5BIfP30B0oenwBJHfWxAs2fyPB1s7Mg949zLf61Yw==}
     engines: {node: '>=8'}
 
-  /cjs-module-***REMOVED***er@1.2.2:
+  /cjs-module-lexer@1.2.2:
     resolution: {integrity: sha512-cOU9usZw8/dXIXKtwa8pM0OTJQuJkxMN6w30csNRUerHfeQ5R6U3kkU/FtJeIf3M202OHfY2U8ccInBG7/xogA==}
     dev: true
 
@@ -5723,11 +5723,11 @@ packages:
     engines: {node: '>=12'}
     dev: true
 
-  /dup***REMOVED***er3@0.1.5:
+  /duplexer3@0.1.5:
     resolution: {integrity: sha512-1A8za6ws41LQgv9HrE/66jyC5yuSjQ3L/KOpFtoBilsAK2iA2wuS5rTt1OCzIvtS2V7nVmedsUU+DGRcjBmOYA==}
     dev: false
 
-  /dup***REMOVED***er@0.1.2:
+  /duplexer@0.1.2:
     resolution: {integrity: sha512-jtD6YG370ZCIi/9GTaJKQxWTZD045+4R4hTk/x1UyoqadyJ9x9CgSi1RlVDQF8U2sxLLSnFkCaMihqljHIWgMg==}
     dev: false
 
@@ -5882,7 +5882,7 @@ packages:
       stop-iteration-iterator: 1.0.0
     dev: false
 
-  /es-module-***REMOVED***er@1.2.1:
+  /es-module-lexer@1.2.1:
     resolution: {integrity: sha512-9978wrXM50Y4rTMmW5kXIC09ZdXQZqkE4mxhwkd8VbzsGkXGPgV4zWuqQJgCEzYngdo2dYDa0l8xhX4fkSwJSg==}
 
   /es-set-tostringtag@2.0.1:
@@ -6919,7 +6919,7 @@ packages:
       '@types/responselike': 1.0.0
       cacheable-request: 6.1.0
       decompress-response: 3.3.0
-      dup***REMOVED***er3: 0.1.5
+      duplexer3: 0.1.5
       get-stream: 4.1.0
       lowercase-keys: 1.0.1
       mimic-response: 1.0.1
@@ -6948,7 +6948,7 @@ packages:
     resolution: {integrity: sha512-ax7ZYomf6jqPTQ4+XCpUGyXKHk5WweS+e05MBO4/y3WJ5RkmPXNKvX+bx1behVILVwr6JSQvZAku021CHPXG3Q==}
     engines: {node: '>=10'}
     dependencies:
-      dup***REMOVED***er: 0.1.2
+      duplexer: 0.1.2
     dev: false
 
   /handle-thing@2.0.1:
@@ -8114,7 +8114,7 @@ packages:
       '@jest/types': 29.5.0
       '@types/node': 18.15.11
       chalk: 4.1.2
-      cjs-module-***REMOVED***er: 1.2.2
+      cjs-module-lexer: 1.2.2
       collect-v8-coverage: 1.0.1
       glob: 7.2.3
       graceful-fs: 4.2.11
@@ -12492,7 +12492,7 @@ packages:
       browserslist: 4.21.5
       chrome-trace-event: 1.0.3
       enhanced-resolve: 5.13.0
-      es-module-***REMOVED***er: 1.2.1
+      es-module-lexer: 1.2.1
       eslint-scope: 5.1.1
       events: 3.3.0
       glob-to-regexp: 0.4.1

@@ -37,7 +37,7 @@
 }
 
 .list-item {
-  display: f***REMOVED***;
+  display: flex;
   justify-content: space-between;
   align-items: center;
   min-height: 40px;
@@ -69,7 +69,7 @@
 
   .modal-header {
     padding: var(--modal-padding);
-    display: f***REMOVED***;
+    display: flex;
     align-items: center;
     justify-content: space-between;
     border-bottom: var(--border-in-light);
@@ -96,11 +96,11 @@
 
   .modal-footer {
     padding: var(--modal-padding);
-    display: f***REMOVED***;
-    justify-content: f***REMOVED***-end;
+    display: flex;
+    justify-content: flex-end;
 
     .modal-actions {
-      display: f***REMOVED***;
+      display: flex;
       align-items: center;
 
       .modal-action {
@@ -134,7 +134,7 @@
   bottom: 0;
   left: 0;
   width: 100vw;
-  display: f***REMOVED***;
+  display: flex;
   justify-content: center;
 
   .toast-content {
@@ -160,13 +160,13 @@
 }
 
 .radio-group {
-  display: f***REMOVED***;
-  f***REMOVED***-direction: column;
+  display: flex;
+  flex-direction: column;
   gap: 10px;
 }
 
 .radio-option {
-  display: f***REMOVED***;
+  display: flex;
   align-items: center;
   cursor: pointer;
   font-size: 16px;

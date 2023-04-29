@@ -16,8 +16,8 @@ const loginStyle: React.CSSProperties = {
   padding: "20px", // 您可以根据需要调整内边距
   margin: "0 auto", // 水平居中
   boxSizing: "border-box",
-  display: "f***REMOVED***",
-  f***REMOVED***Direction: "column",
+  display: "flex",
+  flexDirection: "column",
   justifyContent: "center",
   alignItems: "center",
 };

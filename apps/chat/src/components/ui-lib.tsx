@@ -49,7 +49,7 @@ export function Loading() {
       style={{
         height: "100vh",
         width: "100vw",
-        display: "f***REMOVED***",
+        display: "flex",
         alignItems: "center",
         justifyContent: "center",
       }}

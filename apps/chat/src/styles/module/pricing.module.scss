@@ -1,5 +1,5 @@
 .plan {
-  @apply f***REMOVED*** f***REMOVED***-col overflow-hidden rounded-3xl p-6 shadow-lg;
+  @apply flex flex-col overflow-hidden rounded-3xl p-6 shadow-lg;
   @apply shadow-gray-900/5 bg-white;
 
   &.featured {
@@ -7,15 +7,15 @@
   }
 
   .plan-title {
-    @apply f***REMOVED*** items-center text-sm font-semibold text-gray-900;
+    @apply flex items-center text-sm font-semibold text-gray-900;
 
     .logo {
-      @apply h-6 w-6 f***REMOVED***-none;
+      @apply h-6 w-6 flex-none;
     }
   }
 
   .plan-price {
-    @apply relative mt-5 f***REMOVED*** text-3xl tracking-tight text-gray-900;
+    @apply relative mt-5 flex text-3xl tracking-tight text-gray-900;
   }
 
   .plan-description {
@@ -30,7 +30,7 @@
     }
 
     .feature-item {
-      @apply f***REMOVED*** py-2;
+      @apply flex py-2;
     }
   }
 

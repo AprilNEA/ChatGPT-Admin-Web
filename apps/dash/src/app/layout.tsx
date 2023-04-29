@@ -6,8 +6,8 @@ export const metadata = {
 };
 
 const contentStyle: React.CSSProperties = {
-  display: "f***REMOVED***",
-  f***REMOVED***Direction: "column",
+  display: "flex",
+  flexDirection: "column",
   justifyContent: "center",
   alignItems: "center",
   backgroundColor: "#fff",
