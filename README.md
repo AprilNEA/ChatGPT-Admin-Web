@@ -1,5 +1,5 @@
 <div align="center">
-<img src="./docs/icon.svg" alt="icon"/>
+<img src="apps/docs/static/img/icon.svg" alt="icon"/>
 
 <h1 align="center">ChatGPT Admin Web</h1>
 
@@ -20,6 +20,8 @@ Deploy your shared ChatGPT web UI on Vercel.
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FAprilNEA%2FChatGPT-Admin-Web&env=OPENAI_API_KEY&env=CODE&project-name=chatgpt-next-web&repository-name=ChatGPT-Next-Web)
 
 </div>
+
+> ⚠️ 文档和后台界面仍在快速开发中
 
 <img src="./docs/system.svg" alt="system"/>
 
@@ -79,3 +81,5 @@ Deploy your shared ChatGPT web UI on Vercel.
 996许可证以[MIT license](./LICENSE)的形式从新分发。
 
 其他部分均以[MIT license](./LICENSE)分发。
+
+<img src="https://hits-app.vercel.app/hits?url=https%3A%2F%2Fgithub.com%2FAprilNEA%2FChatGPT-Admin-Web" />
