@@ -3,12 +3,13 @@ import { Role, Plan } from "database";
 export enum ResponseStatus {
   Success,
   Failed,
-  TOO_FAST,
+  tooFast,
   invalidCode,
   notExist,
   alreadyExisted,
-  CONTENT_BLOCK,
+  contentBlock,
   wrongPassword,
+  unknownError,
 }
 
 export enum ReturnStatus {
