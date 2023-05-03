@@ -1,0 +1,8 @@
+{
+  "label": "本地部署",
+  "position": 4,
+  "link": {
+    "type": "generated-index",
+    "description": "本地部署是指在本地不通过任何云服务来部署该项目（不推荐）"
+  }
+}
