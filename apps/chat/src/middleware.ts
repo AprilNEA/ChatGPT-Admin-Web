@@ -19,7 +19,17 @@ const limit = {
 };
 
 export const config = {
-  matcher: ["/api/user/((?!login$|register$).*)", "/api/bots/:model*"],
+  /**
+   * All route start with /api/user & /api/bots
+   * Except:
+   *  /api/user/login
+   *  /api/user/register
+   *  /api/user/register/code
+   */
+  matcher: [
+    "/api/user/((?!login$|register$).*)/((?!code$).*)",
+    "/api/bots/:model*",
+  ],
 };
 
 function setHeaders(headers: Headers, obj: any) {

@@ -9,6 +9,8 @@ import {
 import { sendEmail } from "@/lib/email";
 import { ReturnStatus, ResponseStatus } from "@/app/api/typing.d";
 
+const ifVerifyCode = !!process.env.EMAIL_DOMAIN;
+
 /**
  * Registered user
  * @param req
@@ -25,12 +27,14 @@ export async function POST(req: NextRequest): Promise<Response> {
       return NextResponse.json({ status: ResponseStatus.alreadyExisted });
     }
 
-    // Activation verification code
-    const registerCodeLogic = new RegisterCodeLogic();
-    const success = await registerCodeLogic.activateCode(email, code.trim());
+    /* Activation verification code */
+    if (ifVerifyCode) {
+      const registerCodeLogic = new RegisterCodeLogic();
+      const success = await registerCodeLogic.activateCode(email, code.trim());
 
-    if (!success)
-      return NextResponse.json({ status: ResponseStatus.invalidCode });
+      if (!success)
+        return NextResponse.json({ status: ResponseStatus.invalidCode });
+    }
 
     const user = new UserLogic();
     await user.register(email, password);

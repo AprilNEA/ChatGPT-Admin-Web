@@ -96,7 +96,7 @@ export async function startPay({
     total_fee: price,
     title: title ?? "ChatGPT-April-Web",
     time: Math.floor(Date.now() / 1000),
-    notify_url: "https://new.lmo.best/api/user/pay/callback",
+    notify_url: "https://new.lmo.best/api/user/callback",
     return_url: "https://lmo.best", // After the user has successfully made the payment, we will automatically redirect the user's browser to this URL.
     callback_url: "https://lmo.best", // After the user cancels the payment, we may guide the user to redirect to this URL to make the payment again.
     // plugins: string;

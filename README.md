@@ -1,5 +1,5 @@
 <div align="center">
-<img src="./docs/icon.svg" alt="icon"/>
+<img src="apps/docs/static/img/icon.svg" alt="icon"/>
 
 <h1 align="center">ChatGPT Admin Web</h1>
 
@@ -17,9 +17,13 @@ Deploy your shared ChatGPT web UI on Vercel.
 
 [文档](https://docs.lmo.best/) / [演示](https://lmo.best/) / [反馈](https://github.com/AprilNEA/ChatGPT-April-Web/issues) / [Telegram 群](https://t.me/ChatGPTAdminWeb)
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FAprilNEA%2FChatGPT-Admin-Web&env=OPENAI_API_KEY&env=CODE&project-name=chatgpt-next-web&repository-name=ChatGPT-Next-Web)
+[![Deploy with Vercel](https://vercel.com/button)](https://docs.lmo.best/docs/quick-deploy)
 
 </div>
+
+> ⚠️ 文档和后台界面仍在快速开发中
+> 
+> 用户界面可以在 https://lmo.best 中体验
 
 <img src="./docs/system.svg" alt="system"/>
 
@@ -68,6 +72,18 @@ Deploy your shared ChatGPT web UI on Vercel.
 
 <img src="./docs/tech-stack.svg" alt="tech-stack"/>
 
+## 仓库 Repository
+
+这是一个 monorepo 仓库，由以下部分组成：
+
+| Package           | Package Description | Package Version |
+|-------------------|---------------------|-----------------|
+| apps/chat         | 用户界面                | 0.0.1           |
+| apps/dash         | 后台管理                | 0.0.1           |
+| apps/docs         | 项目文档                | 0.0.1           |
+| packages/bots     | API 接口和自定义模型接口      | 0.0.1           |
+| packages/database | 数据库 DAL 以及部分 Logic  | 0.0.1           |
+
 ## 作者 Author
 
 - [@AprilNEA](https://github.com/AprilNEA)
@@ -79,3 +95,5 @@ Deploy your shared ChatGPT web UI on Vercel.
 996许可证以[MIT license](./LICENSE)的形式从新分发。
 
 其他部分均以[MIT license](./LICENSE)分发。
+
+<img src="https://hits-app.vercel.app/hits?url=https%3A%2F%2Fgithub.com%2FAprilNEA%2FChatGPT-Admin-Web" />

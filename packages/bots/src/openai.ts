@@ -1,13 +1,15 @@
-import { AbstractBot } from "./abstract-bot";
-import { AnswerParams, GPTModel } from "./types";
-import { streamToLineIterator } from "./utils";
+import { AbstractBot } from './abstract-bot';
+import { AnswerParams, GPTModel } from './types';
+import { streamToLineIterator } from './utils';
+import * as process from 'process';
 
-const API_ENDPOINT = "https://api.openai.com/v1/chat/completions";
+const API_END_POINT = process.env.OPENAI_PROXY ?? 'https://api.openai.com';
+const COMPLETIONS_URL = `${API_END_POINT}/v1/chat/completions`;
 
 export class OpenAIBot extends AbstractBot {
   constructor(
     private readonly apiKey: string,
-    private readonly model: GPTModel = "gpt-3.5-turbo",
+    private readonly model: GPTModel = 'gpt-3.5-turbo'
   ) {
     super();
   }
@@ -15,11 +17,11 @@ export class OpenAIBot extends AbstractBot {
   protected async *doAnswer(params: AnswerParams): AsyncIterable<string> {
     const { conversation, maxTokens, signal } = params;
 
-    const response = await fetch(API_ENDPOINT, {
-      method: "POST",
+    const response = await fetch(COMPLETIONS_URL, {
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${this.apiKey}`,
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${this.apiKey}`,
       },
       body: JSON.stringify({
         model: this.model,
@@ -37,13 +39,19 @@ export class OpenAIBot extends AbstractBot {
     const lines = streamToLineIterator(response.body!);
 
     for await (const line of lines) {
-      if (!line.startsWith("data:")) continue;
+      if (!line.startsWith('data:')) continue;
 
-      const data = line.slice("data:".length).trim();
+      const data = line.slice('data:'.length).trim();
 
-      if (!data || data === "[DONE]") continue;
+      if (!data || data === '[DONE]') continue;
 
-      const { choices: [{ delta: { content } }] } = JSON.parse(data);
+      const {
+        choices: [
+          {
+            delta: { content },
+          },
+        ],
+      } = JSON.parse(data);
 
       if (!content) continue;
       yield content;
