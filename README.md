@@ -22,6 +22,8 @@ Deploy your shared ChatGPT web UI on Vercel.
 </div>
 
 > ⚠️ 文档和后台界面仍在快速开发中
+> 
+> 用户界面可以在 https://lmo.best 中体验
 
 <img src="./docs/system.svg" alt="system"/>
 
