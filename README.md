@@ -17,7 +17,7 @@ Deploy your shared ChatGPT web UI on Vercel.
 
 [文档](https://docs.lmo.best/) / [演示](https://lmo.best/) / [反馈](https://github.com/AprilNEA/ChatGPT-April-Web/issues) / [Telegram 群](https://t.me/ChatGPTAdminWeb)
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FAprilNEA%2FChatGPT-Admin-Web&env=OPENAI_API_KEY&env=CODE&project-name=chatgpt-next-web&repository-name=ChatGPT-Next-Web)
+[![Deploy with Vercel](https://vercel.com/button)](https://docs.lmo.best/docs/quick-deploy)
 
 </div>
 
