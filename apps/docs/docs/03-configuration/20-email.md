@@ -9,7 +9,25 @@ title: 配置邮件
 
 ## Mailgun
 
-| Mailgun 中的名称 | 填入环境变量的名称         | 例子               |
-|--------------|-------------------|------------------|
-| 邮箱域名         | EMAIL_DOMAIN      | mail.example.com |
-| 访问密钥 ID      | SMS_ACCESS_KEY_ID | ffffffffffffffff |
+### 注册 mailgun 并获取以下变量
+
+| Mailgun 中的名称 | 填入环境变量的名称                | 例子               |
+|--------------|--------------------------|------------------|
+| 邮箱域名         | NEXT_PUBLIC_EMAIL_DOMAIN | mail.example.com |
+| 访问密钥 ID      | SMS_ACCESS_KEY_ID        | ffffffffffffffff |
+
+### 新建邮件模版
+
+![](img/mailgun-03.png)
+
+选中模板样式：
+![](img/mailgun-04.png)
+
+确保 Name 填入 `verification_code` 无误
+![](img/mailgun-05.png)
+
+自行配置模版样式，确保在页面中通过花括号设置`name`和`code`变量，如图所示。
+
+![](img/mailgun-06.png)
+
+保存模版。
