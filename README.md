@@ -70,6 +70,18 @@ Deploy your shared ChatGPT web UI on Vercel.
 
 <img src="./docs/tech-stack.svg" alt="tech-stack"/>
 
+## 仓库 Repository
+
+这是一个 monorepo 仓库，由以下部分组成：
+
+| Package           | Package Description | Package Version |
+|-------------------|---------------------|-----------------|
+| apps/chat         | 用户界面                | 0.0.1           |
+| apps/dash         | 后台管理                | 0.0.1           |
+| apps/docs         | 项目文档                | 0.0.1           |
+| packages/bots     | API 接口和自定义模型接口      | 0.0.1           |
+| packages/database | 数据库 DAL 以及部分 Logic  | 0.0.1           |
+
 ## 作者 Author
 
 - [@AprilNEA](https://github.com/AprilNEA)
