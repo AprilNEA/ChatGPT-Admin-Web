@@ -27,7 +27,7 @@ export const config = {
    *  /api/user/register/code
    */
   matcher: [
-    "/api/user/((?!login$|register$).*)/((?!code$).*)",
+    "/api/user/((?!login$|register$|callback$).*)/((?!code$).*)",
     "/api/bots/:model*",
   ],
 };
