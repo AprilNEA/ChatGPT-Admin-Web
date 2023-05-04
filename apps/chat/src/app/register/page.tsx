@@ -10,6 +10,8 @@ import { RegisterResponse, ResponseStatus } from "@/app/api/typing.d";
 import Locales from "@/locales";
 import styles from "@/app/login/login.module.scss";
 
+const ifVerifyCode = !!process.env.NEXT_PUBLIC_EMAIL_DOMAIN;
+
 export default function Register() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -49,7 +51,7 @@ export default function Register() {
           password,
           code: verificationCode,
           code_type: "email",
-          invitation_code: invitationCode.toLowerCase(),
+          invitation_code: invitationCode.toLowerCase() ?? "",
         }),
       })
     ).json()) as RegisterResponse;
@@ -170,18 +172,21 @@ export default function Register() {
             </button>
           </div>
         </div>
-        <div className={styles["login-form-input-group"]}>
-          <label htmlFor="email">Invitation Code</label>
-          <div className={styles["verification-code-container"]}>
-            <input
-              type="text"
-              id="invitation-code"
-              placeholder="可选"
-              value={invitationCode}
-              onChange={(e) => setInvitationCode(e.target.value)}
-            />
+
+        {ifVerifyCode && (
+          <div className={styles["login-form-input-group"]}>
+            <label htmlFor="email">Invitation Code</label>
+            <div className={styles["verification-code-container"]}>
+              <input
+                type="text"
+                id="invitation-code"
+                placeholder="可选"
+                value={invitationCode}
+                onChange={(e) => setInvitationCode(e.target.value)}
+              />
+            </div>
           </div>
-        </div>
+        )}
 
         <div className={styles["button-container"]}>
           <button className={styles["login-form-submit"]} type="submit">

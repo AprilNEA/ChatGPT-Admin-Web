@@ -12,9 +12,8 @@
       ],
       "env": [
         "OPENAI_API_KEY",
-        "***REMOVED***",
+        "NEXT_PUBLIC_EMAIL_DOMAIN",
         "EMAIL_API_KEY",
-        "EMAIL_DOMAIN",
         "TENCENT_SECRETID",
         "TENCENT_SECRETKEY",
         "SMS_ACCESS_KEY_ID",
