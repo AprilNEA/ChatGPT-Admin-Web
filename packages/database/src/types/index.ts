@@ -7,3 +7,4 @@ export * from "./sessionToken";
 export * from "./subscription";
 export * from "./user";
 export * from "./plan";
+export * from "./redeem";
