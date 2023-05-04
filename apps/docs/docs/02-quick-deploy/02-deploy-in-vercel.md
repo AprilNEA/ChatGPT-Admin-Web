@@ -14,6 +14,12 @@ sidebar_position: 2
 
 ![](img/deploy-02.png)
 
+## 步骤3: 设置 Root Directory
 
+![](img/deploy-03.png)
 
+## 步骤4: 设置环境变量
 
+![](img/deploy-04.png)
+
+完整的环境变量请见配置说明。
