@@ -79,6 +79,7 @@ Database Plan（数据库套餐）：根据您的需求选择合适的套餐。�
 
 | 环境变量        | 解释                 | 来源                                                               |
 |-------------|--------------------|------------------------------------------------------------------|
+| OPENAI_KEY  | OpenAI 的连接密钥       | OpenAI                                                            |  
 | JWT_SECRET  | 加密 JWT 的密钥，随机字符串即可 | 可以在[1password](https://1password.com/password-generator/)中随机生成一个 |    
 | REDIS_URL   | Upstash 的连接地址      | Upstash                                                          |  
 | REDIS_TOKEN | Upstash 的连接密钥      | Upstash                                                          |  

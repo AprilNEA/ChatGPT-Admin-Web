@@ -11,10 +11,14 @@ title: 配置邮件
 
 ### 注册 mailgun 并获取以下变量
 
+API_KEY 可在账户中如下图位置找到：
+
+![](img/mailgun-07.png)
+
 | Mailgun 中的名称 | 填入环境变量的名称                | 例子               |
 |--------------|--------------------------|------------------|
 | 邮箱域名         | NEXT_PUBLIC_EMAIL_DOMAIN | mail.example.com |
-| 访问密钥 ID      | SMS_ACCESS_KEY_ID        | ffffffffffffffff |
+| 访问密钥 ID      | EMAIL_API_KEY            | ffffffffffffffff |
 
 ### 新建邮件模版
 
