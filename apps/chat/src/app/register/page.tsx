@@ -89,10 +89,13 @@ export default function Register() {
     }
 
     const res = await (
-      await fetch("/api/user/register?email=" + encodeURIComponent(email), {
-        cache: "no-store",
-        headers: { "Content-Type": "application/json" },
-      })
+      await fetch(
+        "/api/user/register/code?email=" + encodeURIComponent(email),
+        {
+          cache: "no-store",
+          headers: { "Content-Type": "application/json" },
+        }
+      )
     ).json();
 
     switch (res.status) {
