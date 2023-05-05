@@ -1,5 +1,5 @@
 <div align="center">
-<img src="./docs/icon.svg" alt="icon"/>
+<img src="apps/docs/static/img/icon.svg" alt="icon"/>
 
 <h1 align="center">ChatGPT Admin Web</h1>
 
