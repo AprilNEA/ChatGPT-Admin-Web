@@ -1,4 +1,4 @@
 ---
-slug: intro
+slug: sms
 title: 短信
 ---

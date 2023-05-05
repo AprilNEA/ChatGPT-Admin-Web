@@ -1,5 +1,5 @@
 ---
-slug: intro
+slug: security
 title: 文本安全
 ---
 

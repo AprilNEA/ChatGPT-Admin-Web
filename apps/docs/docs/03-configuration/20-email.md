@@ -1,6 +1,6 @@
 ---
 slug: email
-title: 配置邮件
+title: 邮件
 ---
 
 # 配置邮件服务器
@@ -15,10 +15,10 @@ API_KEY 可在账户中如下图位置找到：
 
 ![](img/mailgun-07.png)
 
-| Mailgun 中的名称 | 填入环境变量的名称                | 例子               |
-|--------------|--------------------------|------------------|
-| 邮箱域名         | NEXT_PUBLIC_EMAIL_DOMAIN | mail.example.com |
-| 访问密钥 ID      | EMAIL_API_KEY            | ffffffffffffffff |
+| 环境变量的名称(NAME)            | 环境变量的内容(KEY)        | 备注                             |
+|--------------------------|---------------------|--------------------------------|
+| NEXT_PUBLIC_EMAIL_DOMAIN | mailgun 要使用的邮箱域名    | 必填，邮箱域名 eg: `mail.example.com` |
+| MAILGUN_API_KEY          | mailgun 账户的 API KEY | 必填                             |
 
 ### 新建邮件模版
 
