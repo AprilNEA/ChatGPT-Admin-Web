@@ -44,12 +44,15 @@ export async function POST(
   }
 
   const rateLimit = await ModelRateLimiter.of({ email, model });
-  if (!rateLimit) return NextResponse.json({}, { status: 404 });
 
-  const { success, remaining } = await rateLimit.limitEmail();
+  if (rateLimit) {
+    const { success, remaining } = await rateLimit.limitEmail();
 
-  if (!success)
-    return NextResponse.json({ code: LimitReason.TooMany }, { status: 429 });
+    if (!success)
+      return NextResponse.json({ code: LimitReason.TooMany }, { status: 429 });
+  } else {
+    console.debug("[RateLimit] 尚未设置 Free 计划的限制");
+  }
 
   // 文本安全 TODO 节流
   if (!(await textSecurity(conversation)))
