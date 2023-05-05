@@ -26,7 +26,7 @@ export const config = {
    *  /api/user/register
    *  /api/user/register/code
    */
-  matcher: ["/api/user/((?!login|register|pay).*)", "/api/bots/:model*"],
+  matcher: ["/api/user/((?!login|register|callback).*)", "/api/bots/:model*"],
 };
 
 function setHeaders(headers: Headers, obj: any) {
