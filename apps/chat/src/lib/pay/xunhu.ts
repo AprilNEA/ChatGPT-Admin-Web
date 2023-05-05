@@ -1,7 +1,6 @@
 import { fetch } from "@edge-runtime/ponyfill";
 import md5 from "spark-md5";
 import { type NextRequest } from "next/server";
-import * as https from "https";
 
 const appId = process.env.XUNHU_PAY_APPID!;
 const appSecret = process.env.XUNHU_PAY_APPSECRET!;
