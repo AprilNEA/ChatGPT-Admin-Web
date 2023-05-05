@@ -1,24 +1,23 @@
 import { defaultRedis } from "../redis";
+import { Redis } from "@upstash/redis";
 
-export class APIKeyPoolDAL {
-  // data type: list<string>
+export class APIKeyPoolDAL<T extends Redis = Redis> {
+  // data type: Map<Key, Credit>
   readonly key = "apikey:pool";
 
-  constructor(private readonly redis = defaultRedis) {}
+  constructor(private readonly redis: T = defaultRedis as T) {}
 
-  async push(value: string): Promise<void> {
-    await this.redis.rpush(this.key, value);
+  /** Set API Keys, can be either creation or update */
+  set(keyCreditRecord: Record<string, number>) {
+    return this.redis.hset<number>(this.key, keyCreditRecord);
   }
 
-  shift(): Promise<string | null> {
-    return this.redis.lpop(this.key);
+  /** Read all API Keys, the result is a record whose key is API Key and value is credit */
+  read() {
+    return this.redis.hgetall<Record<string, number>>(this.key);
   }
 
-  at(index: number): Promise<string | null> {
-    return this.redis.lindex(this.key, index);
-  }
-
-  length(): Promise<number> {
-    return this.redis.llen(this.key);
+  delete(key: string) {
+    return this.redis.hdel(this.key, key);
   }
 }
