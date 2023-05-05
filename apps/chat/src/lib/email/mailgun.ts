@@ -2,13 +2,13 @@
  * This is a program for sending emails, with the email service provided by Mailgun.
  * TODO Further processing of error reporting for emails.
  */
-const apiKey = process.env.MAILGUN_API_KEY!;
-const domain = process.env.MAIGUN_EMAIL_DOMAIN!;
+const apiKey = process.env.MAILGUN_EMAIL_API_KEY!;
+const domain = process.env.MAILGUN_EMAIL_DOMAIN!;
 
 export default async function sendEmail(
   to: string[],
   name: string,
-  code: string | number
+  code: string
 ) {
   const url = `https://api.mailgun.net/v3/${domain}/messages`;
 

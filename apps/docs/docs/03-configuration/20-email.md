@@ -25,7 +25,7 @@ API_KEY 可在账户中如下图位置找到：
 |---------------------------|---------------------|--------------------------------|
 | NEXT_PUBLIC_EMAIL_SERVICE | `mailgun`           | 选择 `mailgun` 发件服务              |
 | MAILGUN_EMAIL_DOMAIN      | mailgun 要使用的邮箱域名    | 必填，邮箱域名 eg: `mail.example.com` |
-| MAILGUN_API_KEY           | mailgun 账户的 API KEY | 必填                             |
+| MAILGUN_EMAIL_API_KEY     | mailgun 账户的 API KEY | 必填                             |
 
 ### 新建邮件模版
 
