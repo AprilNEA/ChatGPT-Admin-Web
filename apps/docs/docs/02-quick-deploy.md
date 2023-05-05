@@ -71,15 +71,28 @@ Database Plan（数据库套餐）：根据您的需求选择合适的套餐。�
 
 ![](img/deploy-03.png)
 
-### 步骤4: 设置环境变量
+### 步骤4: 更新部署指令
+需要修改两个指令：`Build Command`、`Install Command`。
 
 ![](img/deploy-04.png)
+
+**Build Command**
+``` bash
+npx turbo run build
+```
+
+**Install Command**
+``` bash
+pnpm install
+```
+
+### 步骤5: 设置环境变量
 
 在快速开始中，你只需要部署以下环境变量，即刻开始项目。
 
 | 环境变量        | 解释                 | 来源                                                               |
 |-------------|--------------------|------------------------------------------------------------------|
-| OPENAI_KEY  | OpenAI 的连接密钥       | OpenAI                                                            |  
+| OPENAI_API_KEY  | OpenAI 的连接密钥       | OpenAI                                                            |  
 | JWT_SECRET  | 加密 JWT 的密钥，随机字符串即可 | 可以在[1password](https://1password.com/password-generator/)中随机生成一个 |    
 | REDIS_URL   | Upstash 的连接地址      | Upstash                                                          |  
 | REDIS_TOKEN | Upstash 的连接密钥      | Upstash                                                          |  
