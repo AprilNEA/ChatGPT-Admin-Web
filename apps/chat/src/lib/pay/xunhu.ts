@@ -1,10 +1,14 @@
 import { fetch } from "@edge-runtime/ponyfill";
 import md5 from "spark-md5";
 import { type NextRequest } from "next/server";
+import * as https from "https";
 
-const appId = process.env.PAY_APPID!;
-const appSecret = process.env.PAY_APPSECRET!;
+const appId = process.env.XUNHU_PAY_APPID!;
+const appSecret = process.env.XUNHU_PAY_APPSECRET!;
 const wapName = process.env.PAY_WAPNAME ?? "店铺名称";
+
+const domain = process.env.DOMAIN;
+const callbackDomain = process.env.callBackDoamin ?? domain;
 
 interface PaymentArgs {
   version: string;
@@ -94,16 +98,16 @@ export async function startPay({
     appid: appId,
     trade_order_id: orderId,
     total_fee: price,
-    title: title ?? "ChatGPT-April-Web",
+    title: title ?? "ChatGPT-Admin-Web",
     time: Math.floor(Date.now() / 1000),
-    notify_url: "https://new.lmo.best/api/user/callback",
-    return_url: "https://lmo.best", // After the user has successfully made the payment, we will automatically redirect the user's browser to this URL.
-    callback_url: "https://lmo.best", // After the user cancels the payment, we may guide the user to redirect to this URL to make the payment again.
+    notify_url: `${callbackDomain}/api/user/pay/callback`,
+    return_url: `${domain}`, // After the user has successfully made the payment, we will automatically redirect the user's browser to this URL.
+    callback_url: `${domain}`, // After the user cancels the payment, we may guide the user to redirect to this URL to make the payment again.
     // plugins: string;
     attach, // Return as is during callback. 📢We use it to confirm that the order has not been tampered with.
     nonce_str: orderId, // 1. Avoid server page caching 2. Prevent security keys from being guessed
     type: "WAP",
-    wap_url: "https://lmo.best",
+    wap_url: `${domain}`,
     wap_name: wapName,
   };
   const stringA = sortAndSignParameters(fetchBody);
