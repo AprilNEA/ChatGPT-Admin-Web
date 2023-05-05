@@ -6,10 +6,9 @@ import {
   InvitationCodeLogic,
   AccessControlLogic,
 } from "database";
-import { sendEmail } from "@/lib/email";
 import { ReturnStatus, ResponseStatus } from "@/app/api/typing.d";
 
-const ifVerifyCode = !!process.env.NEXT_PUBLIC_EMAIL_DOMAIN;
+const ifVerifyCode = !!process.env.NEXT_PUBLIC_EMAIL_SERVICE;
 
 /**
  * Registered user

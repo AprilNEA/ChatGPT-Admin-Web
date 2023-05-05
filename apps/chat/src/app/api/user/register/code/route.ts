@@ -21,7 +21,7 @@ export async function GET(req: NextRequest): Promise<Response> {
 
   switch (codeData.status) {
     case RegisterReturnStatus.Success:
-      await sendEmail([email], "", codeData?.code);
+      await sendEmail(email, codeData?.code);
       // @ts-ignore
       delete codeData.code;
       return NextResponse.json({

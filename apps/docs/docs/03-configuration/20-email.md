@@ -9,9 +9,9 @@ title: 邮件
 
 ## 通用环境变量
 
-| 环境变量的名称(NAME) | 环境变量的内容(KEY)          | 备注                |
-|---------------|-----------------------|-------------------|
-| EMAIL_SERVICE | `elastice`或者`mailgun` | 留空或不填写改变量则不启用邮箱验证 |
+| 环境变量的名称(NAME)             | 环境变量的内容(KEY)          | 备注                |
+|---------------------------|-----------------------|-------------------|
+| NEXT_PUBLIC_EMAIL_SERVICE | `elastice`或者`mailgun` | 留空或不填写改变量则不启用邮箱验证 |
 
 ## Mailgun
 
@@ -21,11 +21,11 @@ API_KEY 可在账户中如下图位置找到：
 
 ![](img/mailgun-07.png)
 
-| 环境变量的名称(NAME)        | 环境变量的内容(KEY)        | 备注                             |
-|----------------------|---------------------|--------------------------------|
-| EMAIL_SERVICE        | `mailgun`           | 选择 `mailgun` 发件服务              |
-| MAILGUN_EMAIL_DOMAIN | mailgun 要使用的邮箱域名    | 必填，邮箱域名 eg: `mail.example.com` |
-| MAILGUN_API_KEY      | mailgun 账户的 API KEY | 必填                             |
+| 环境变量的名称(NAME)             | 环境变量的内容(KEY)        | 备注                             |
+|---------------------------|---------------------|--------------------------------|
+| NEXT_PUBLIC_EMAIL_SERVICE | `mailgun`           | 选择 `mailgun` 发件服务              |
+| MAILGUN_EMAIL_DOMAIN      | mailgun 要使用的邮箱域名    | 必填，邮箱域名 eg: `mail.example.com` |
+| MAILGUN_API_KEY           | mailgun 账户的 API KEY | 必填                             |
 
 ### 新建邮件模版
 
@@ -47,9 +47,9 @@ API_KEY 可在账户中如下图位置找到：
 
 ### 注册并验证域名/邮箱
 
-| 环境变量的名称(NAME)          | 环境变量的内容(KEY)         | 备注                                      |
-|------------------------|----------------------|-----------------------------------------|
-| EMAIL_SERVICE          | `elastice`           | 选择 `elastice` 发件服务                      |
-| ELASTICE_EMAIL_SENDER  | elastice 要使用的发件人邮箱地址 | 必填，邮箱域名 eg: `no-reply@mail.example.com` |
-| ELASTICE_EMAIL_API_KEY | elastice 账户的 API KEY | 必填                                      |
+| 环境变量的名称(NAME)             | 环境变量的内容(KEY)         | 备注                                      |
+|---------------------------|----------------------|-----------------------------------------|
+| NEXT_PUBLIC_EMAIL_SERVICE | `elastice`           | 选择 `elastice` 发件服务                      |
+| ELASTICE_EMAIL_SENDER     | elastice 要使用的发件人邮箱地址 | 必填，邮箱域名 eg: `no-reply@mail.example.com` |
+| ELASTICE_EMAIL_API_KEY    | elastice 账户的 API KEY | 必填                                      |
 

@@ -1,29 +1,18 @@
-/**
- * This is a program for sending emails, with the email service provided by Mailgun.
- * TODO Further processing of error reporting for emails.
- */
-const api_key = process.env.MAILGUN_API_KEY!;
-const domain = process.env.NEXT_PUBLIC_EMAIL_DOMAIN!;
+import smtpjsEmail from "@/lib/email/stmpjs";
+import mailgunEmail from "@/lib/email/mailgun";
+import elasticeEmail from "@/lib/email/elasticemail";
 
-export async function sendEmail(to: string[], name: string, code: string) {
-  const url = `https://api.mailgun.net/v3/${domain}/messages`;
+const emailService = process.env.NEXT_PUBLIC_EMAIL_SERVICE;
 
-  const formData = new URLSearchParams();
-  formData.append("from", `ChatGPT <no-reply@${domain}>`);
-  to.forEach((recipient) => formData.append("to", recipient));
-  formData.append("subject", `Your activation code: ${code}`);
-  formData.append("template", "verification_code");
-  formData.append("h:X-Mailgun-Variables", JSON.stringify({ name, code }));
-
-  const response = await fetch(url, {
-    cache: "no-store",
-    method: "POST",
-    headers: {
-      Authorization: `Basic ${btoa(`api:${api_key}`)}`,
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-    body: formData.toString(),
-  });
-
-  return response.ok;
+export async function sendEmail(to: string, code: number | string) {
+  switch (emailService?.toLowerCase()) {
+    case "elastice":
+      return elasticeEmail(to, code);
+    case "mailgun":
+      return mailgunEmail([to], "", code);
+    case "smtpjs":
+      return smtpjsEmail(to, code);
+    default:
+      return true;
+  }
 }

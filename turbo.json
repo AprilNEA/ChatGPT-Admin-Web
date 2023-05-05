@@ -12,7 +12,7 @@
       ],
       "env": [
         "OPENAI_API_KEY",
-        "NEXT_PUBLIC_EMAIL_DOMAIN",
+        "EMAIL_SERVICE",
         "EMAIL_API_KEY",
         "TENCENT_SECRETID",
         "TENCENT_SECRETKEY",

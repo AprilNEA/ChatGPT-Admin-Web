@@ -10,7 +10,7 @@ import { RegisterResponse, ResponseStatus } from "@/app/api/typing.d";
 import Locales from "@/locales";
 import styles from "@/app/login/login.module.scss";
 
-const ifVerifyCode = !!process.env.NEXT_PUBLIC_EMAIL_DOMAIN;
+const ifVerifyCode = !!process.env.NEXT_PUBLIC_EMAIL_SERVICE;
 
 export default function Register() {
   const router = useRouter();
