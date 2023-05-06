@@ -3,7 +3,8 @@
 import React, { useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useUserStore } from "@/store";
-import { GeistProvider, CssBaseline } from "@geist-ui/core";
+import { GeistProvider, CssBaseline, Page } from "@geist-ui/core";
+import Menu from "@/components/layout/menu/menu";
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   return (
@@ -31,5 +32,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, [router, pathname, sessionToken, validateSessionToken]);
 
-  return <>{children}</>;
+  return (
+    <>
+      {pathname.startsWith("/login") ? (
+        <>{children}</>
+      ) : (
+        <Page>
+          <Page.Header>
+            <Menu />
+          </Page.Header>
+          <Page.Content>{children}</Page.Content>
+          <Page.Footer></Page.Footer>
+        </Page>
+      )}
+    </>
+  );
 }
