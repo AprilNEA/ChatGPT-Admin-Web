@@ -1,5 +1,5 @@
-import { defaultRedis } from "../redis";
-import { Order, User } from "../types";
+import { defaultRedis } from '../redis';
+import { Order, User } from '../types';
 
 const countKeysScript = `
 local pattern = ARGV[1]
@@ -44,37 +44,58 @@ end
 export class AnalysisDAL {
   constructor(private readonly redis = defaultRedis) {}
 
+  /**
+   * Count the total number of users.
+   */
   countTotalUsers(): Promise<number> {
-    return this.redis.eval(countKeysScript, [], ["user:*"]);
+    return this.redis.eval(countKeysScript, [], ['user:*']);
   }
 
+  /**
+   * Count the total number of orders.
+   */
   countTotalOrders(): Promise<number> {
-    return this.redis.eval(countKeysScript, [], ["order:*"]);
+    return this.redis.eval(countKeysScript, [], ['order:*']);
   }
 
+  /**
+   * Get the values of all users.
+   */
   getUserValues(): Promise<[User][]> {
-    return this.redis.eval(getJSONValuesScript, [], ["user:*"]);
+    return this.redis.eval(getJSONValuesScript, [], ['user:*']);
   }
 
+  /**
+   * Get the values of all orders.
+   */
   getOrderValues(): Promise<[Order][]> {
-    return this.redis.eval(getJSONValuesScript, [], ["order:*"]);
+    return this.redis.eval(getJSONValuesScript, [], ['order:*']);
   }
 
+  /**
+   * Get the specified key from the user.
+   */
   getUsersPropertyValues<K extends keyof User>(
-    property: K,
+    property: K
   ): Promise<[User[K]][]> {
-    return this.redis.eval(getJSONValuesScript, [], [
-      "user:*",
-      "$." + property,
-    ]);
+    return this.redis.eval(
+      getJSONValuesScript,
+      [],
+      ['user:*', '$.' + property]
+    );
   }
 
+  /**
+   * Get the specified key from the order.
+   * @param property
+   */
   getOrdersPropertyValues<K extends keyof Order>(
-    property: K,
+    property: K
   ): Promise<[Order[K]][]> {
-    return this.redis.eval(getJSONValuesScript, [], [
-      "order:*",
-      "$." + property,
-    ]);
+    return this.redis.eval(
+      getJSONValuesScript,
+      [],
+      ['order:*', '$.' + property]
+    );
   }
 }

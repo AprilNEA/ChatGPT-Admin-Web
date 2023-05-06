@@ -13,7 +13,7 @@ export class AnalysisLogic {
   }
 
   /**
-   *
+   * Count the number of users starting from a certain day.
    * @param timestamp
    */
   async countUsersCreatedSince(timestamp: number): Promise<number> {
@@ -22,12 +22,20 @@ export class AnalysisLogic {
     return count;
   }
 
+  /**
+   * Count the number of orders starting from a certain day.
+   * @param timestamp
+   */
   async countOrdersCreatedSince(timestamp: number): Promise<number> {
     const creationDates = await this.dal.getOrdersPropertyValues('createdAt');
     const count = creationDates.filter(([t]) => t > timestamp).length;
     return count;
   }
 
+  /**
+   * Count the number of orders in different states.
+   * @param status
+   */
   async countOrdersWhoseStatusIs(status: OrderStatus): Promise<number> {
     const orders = await this.dal.getOrdersPropertyValues('status');
     const count = orders.filter(([s]) => s === status).length;
