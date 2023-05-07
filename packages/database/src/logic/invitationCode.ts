@@ -17,7 +17,7 @@ export class InvitationCodeLogic {
   async newCode(
     { code, email, type, limit = 0 }: CreateNewInvitationCodeParams,
   ): Promise<string | null> {
-    code ??= md5.hash(email + Date.now()).slice(0, 6);
+    code ??= crypto.randomUUID();
 
     const createCode = this.invitationCodeDAL.create(
       code,
