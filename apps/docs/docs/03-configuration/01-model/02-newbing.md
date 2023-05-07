@@ -19,7 +19,7 @@ title: New Bing
 
 ## 配置 Bing Cookie
 
-为了使用 New Bing，请在环境变量中设置好 `BING_COOKIE`。请使用 Edge 浏览器访问 [New Bing](https://www.bing.com/search?q=Bing+AI&showconv=1)。在开发者工具中找到 Console，输入 `document.cookie`，并复制输出的内容。
+为了使用 New Bing，请在环境变量中设置好 `BING_COOKIE`。请使用 Edge 浏览器访问 [New Bing](https://www.bing.com/search?q=Bing+AI&showconv=1)。在开发者工具中找到 Console，输入 `document.cookie`，并复制输出的内容，请勿包含最外层的引号。
 
 :::caution
 
