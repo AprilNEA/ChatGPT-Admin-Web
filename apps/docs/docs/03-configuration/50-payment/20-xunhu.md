@@ -1,6 +1,5 @@
 ---
-slug: xunhu
-title: 支付接口
+title: 虎皮椒
 ---
 
 # 接入虎皮椒支付

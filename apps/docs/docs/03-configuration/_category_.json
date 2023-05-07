@@ -1,9 +1,4 @@
 {
-  "label": "配置说明",
-  "position": 3,
   "collapsible": true,
-  "collapsed": false,
-  "link": {
-    "type": "generated-index"
-  }
+  "collapsed": false
 }
