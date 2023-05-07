@@ -1,9 +1,9 @@
 import { OpenAIBot, BingBot } from "bots";
 import { NextRequest, NextResponse } from "next/server";
-import { postPayload } from "@/app/api/bots/typing";
+import { gptModel, postPayload } from "@/app/api/bots/typing";
 import { textSecurity } from "@/lib/content";
 import { ModelRateLimiter } from "database";
-import { LimitReason } from "@/typing.d";
+import { LimitReason } from "@/typing";
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY!;
 const BING_COOKIE = process.env.BING_COOKIE!;
@@ -34,7 +34,8 @@ export async function POST(
 
   switch (params.model) {
     case "openai":
-      bot = new OpenAIBot(OPENAI_API_KEY, model);
+      const validatedModel = gptModel.parse(model);
+      bot = new OpenAIBot(OPENAI_API_KEY, validatedModel);
       break;
     case "new-bing":
       bot = new BingBot(BING_COOKIE);
