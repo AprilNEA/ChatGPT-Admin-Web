@@ -59,7 +59,7 @@ export class AnalysisDAL {
     property?: K,
   ) {
     const keys = await this.getUserKeys();
-    return this.redis.json.mget(keys, property ? `$.${property}` : "$");
+    return this.getJSONValues(keys, property ? `$.${property}` : "$");
   }
 
   async getOrdersPropertyValues<K extends keyof Order>(): Promise<[Order][]>;
@@ -71,6 +71,18 @@ export class AnalysisDAL {
     property?: K,
   ) {
     const keys = await this.getOrderKeys();
-    return this.redis.json.mget(keys, property ? `$.${property}` : "$");
+    return this.getJSONValues(keys, property ? `$.${property}` : "$");
+  }
+
+  private async getJSONValues<T>(keys: string[], path = "$"): Promise<[T][]> {
+    // partition keys to 2500 per group
+    const groups: string[][] = [];
+    for (let i = 0; i < keys.length; i += 2500) {
+      groups.push(keys.slice(i, i + 2500));
+    }
+
+    return (await Promise.all(
+      groups.map((group) => this.redis.json.mget(group, path)),
+    )).flat();
   }
 }
