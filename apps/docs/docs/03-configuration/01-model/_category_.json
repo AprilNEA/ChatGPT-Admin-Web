@@ -1,0 +1,9 @@
+{
+  "label": "模型",
+  "position": 1,
+  "collapsible": true,
+  "collapsed": false,
+  "link": {
+    "type": "generated-index"
+  }
+}
