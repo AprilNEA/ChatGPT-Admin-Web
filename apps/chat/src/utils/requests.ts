@@ -1,4 +1,4 @@
-import type { ChatRequest, ChatReponse } from "@/app/api/bots/typing";
+import type { ChatRequest, ChatResponse } from "@/app/api/bots/typing";
 import { filterConfig, Message, ModelConfig, useUserStore } from "@/store";
 import Locale from "@/locales";
 import { LimitReason } from "@/typing.d";
@@ -16,7 +16,7 @@ const makeRequestParam = (
   options?: {
     filterBot?: boolean;
     stream?: boolean;
-  }
+  },
 ): ChatRequest => {
   let sendMessages = messages.map((v) => ({
     role: v.role,
@@ -47,7 +47,7 @@ export async function requestChat(messages: Message[]) {
     body: JSON.stringify(req),
   });
 
-  return (await res.json()) as ChatReponse;
+  return (await res.json()) as ChatResponse;
 }
 
 /**
@@ -62,7 +62,7 @@ export async function requestChatStream(
     onBlock: () => void;
     onError: (error: Error) => void;
     onController?: (controller: AbortController) => void;
-  }
+  },
 ) {
   const userStore = useUserStore.getState();
 
@@ -91,7 +91,7 @@ export async function requestChatStream(
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(req),
         signal: controller.signal,
-      }
+      },
     );
     clearTimeout(reqTimeoutId);
 
@@ -185,7 +185,7 @@ export const ControllerPool = {
   addController(
     sessionIndex: number,
     messageIndex: number,
-    controller: AbortController
+    controller: AbortController,
   ) {
     const key = this.key(sessionIndex, messageIndex);
     this.controllers[key] = controller;

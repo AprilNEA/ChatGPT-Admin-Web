@@ -12,7 +12,7 @@ export type ChatRequest = {
   stream?: boolean;
 };
 
-export type ChatReponse = CreateChatCompletionResponse;
+export type ChatResponse = CreateChatCompletionResponse;
 
 const chatRole = z.enum(["assistant", "system", "user"]);
 export const gptModel = z.enum(["gpt-3.5-turbo", "gpt-4"]);
