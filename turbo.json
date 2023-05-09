@@ -11,16 +11,30 @@
         "!.next/cache/**"
       ],
       "env": [
-        "OPENAI_API_KEY",
-        "EMAIL_SERVICE",
-        "EMAIL_API_KEY",
-        "TENCENT_SECRETID",
-        "TENCENT_SECRETKEY",
-        "SMS_ACCESS_KEY_ID",
+        "JWT_SECRET",
+        "NEXT_PUBLIC_TITLE",
+        "NEXT_PUBLIC_WECHAT_OA",
         "REDIS_URL",
         "REDIS_TOKEN",
-        "PAY_APPID",
-        "PAY_APPSECRET"
+        "OPENAI_ENDPOINT",
+        "OPENAI_API_KEY",
+        "BING_COOKIE",
+        "DOMAIN",
+        "CALLBACK_DOMAIN",
+        "XUNHU_PAY_APPID",
+        "XUNHU_PAY_APPSECRET",
+        "NEXT_PUBLIC_EMAIL_SERVICE",
+        "MAILGUN_EMAIL_DOMAIN",
+        "MAILGUN_EMAIL_API_KEY",
+        "ELASTICE_EMAIL_API_KEY",
+        "ELASTICE_EMAIL_SENDER",
+        "SMS_ACCESS_KEY_ID",
+        "TEXT_SECURITY",
+        "TENCENT_SECRETID",
+        "TENCENT_SECRETKEY",
+        "BAIDU_APIKEY",
+        "BAIDU_SECRETKEY",
+        "EDGE_CONFIG"
       ]
     },
     "test": {
