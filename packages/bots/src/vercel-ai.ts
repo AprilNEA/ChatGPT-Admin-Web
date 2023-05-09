@@ -49,7 +49,7 @@ async function* generate({
     .then((res) => res.text())
     .then(atob)
     .then(JSON.parse)
-    .then(({ t, c, a }) => ({ t, r: eval(`(${c})`)(a) }))
+    .then(({ t, c, a }) => ({ t, r: [eval(`(${c})`)(a)[0], [], undefined] }))
     .then(JSON.stringify)
     .then(btoa);
 
