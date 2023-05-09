@@ -1,6 +1,6 @@
 import { OpenAIBot, BingBot } from "bots";
 import { NextRequest, NextResponse } from "next/server";
-import { postPayload } from "@/app/api/bots/typing";
+import { gptModel, postPayload } from "@/app/api/bots/typing";
 import { textSecurity } from "@/lib/content";
 import { ModelRateLimiter } from "database";
 import { LimitReason } from "@/typing.d";
@@ -34,7 +34,8 @@ export async function POST(
 
   switch (params.model) {
     case "openai":
-      bot = new OpenAIBot(OPENAI_API_KEY, model);
+      const validatedModel = gptModel.parse(model);
+      bot = new OpenAIBot(OPENAI_API_KEY, validatedModel);
       break;
     case "new-bing":
       bot = new BingBot(BING_COOKIE);
@@ -44,12 +45,15 @@ export async function POST(
   }
 
   const rateLimit = await ModelRateLimiter.of({ email, model });
-  if (!rateLimit) return NextResponse.json({}, { status: 404 });
 
-  const { success, remaining } = await rateLimit.limitEmail();
+  if (rateLimit) {
+    const { success, remaining } = await rateLimit.limitEmail();
 
-  if (!success)
-    return NextResponse.json({ code: LimitReason.TooMany }, { status: 429 });
+    if (!success)
+      return NextResponse.json({ code: LimitReason.TooMany }, { status: 429 });
+  } else {
+    console.debug("[RateLimit] 尚未设置 Free 计划的限制");
+  }
 
   // 文本安全 TODO 节流
   if (!(await textSecurity(conversation)))

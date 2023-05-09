@@ -1,12 +1,11 @@
 import { tencentTextSecurity } from "@/lib/content/tencent";
 import { baiduTextSecurity } from "@/lib/content/baidu";
 
-const service = process.env.TextSecurity ?? "";
+const service = process.env.TEXT_SECURITY ?? "";
 
 export async function textSecurity(conversation: any) {
   /* If the secure text service is not set up.*/
-  if (!service) return true;
-  switch (service) {
+  switch (service?.toLowerCase()) {
     case "baidu":
       return await baiduTextSecurity(JSON.stringify(conversation));
     case "tencent":

@@ -23,6 +23,7 @@ import SendWhiteIcon from "@/assets/icons/send-white.svg";
 import CopyIcon from "@/assets/icons/copy.svg";
 import DownloadIcon from "@/assets/icons/download.svg";
 import UserIcon from "@/assets/icons/user.svg";
+import ShoppingIcon from "@/assets/icons/shopping.svg";
 
 import { Avatar } from "@/components/avatar";
 import { IconButton } from "@/components/button";
@@ -32,6 +33,7 @@ import dynamic from "next/dynamic";
 import Banner, { Post } from "@/components/banner";
 import useSWR from "swr";
 import fetcher from "@/utils/fetcher";
+
 function useSubmitHandler() {
   const config = useSettingStore((state) => state.config);
   const submitKey = config.submitKey;
@@ -290,7 +292,7 @@ export function Chat() {
           </div>
           <div className={styles["window-action-button"]}>
             <Link href="/pricing">
-              <IconButton icon={<span>🎁</span>} bordered />
+              <IconButton icon={<ShoppingIcon />} bordered />
             </Link>
           </div>
           <div className={styles["window-action-button"]}>

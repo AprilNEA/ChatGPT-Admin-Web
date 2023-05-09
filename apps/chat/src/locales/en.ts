@@ -1,27 +1,30 @@
 import type { LocaleType } from "./index";
 
+const title = process.env.NEXT_PUBLIC_TITLE;
+
 const en: LocaleType = {
   Index: {
-    Title: "ChatGPT (GPT-4)",
+    Title: title || "ChatGPT Admin",
     SubTitle: "Follow WeChat OA:",
-    Submit: "提交",
-    Login: "登录",
-    Register: "注册",
-    Success: (action: string) => `${action}成功`,
-    Failed: (action: string) => `${action}失败`,
-    Username: "用户名",
-    Password: "密码",
-    Email: "邮箱",
-    GetEmailCode: "获取邮箱验证码",
-    GetPhoneCode: "获取手机验证码",
-    NoneData: "请确保邮箱、密码和验证码输入完整",
-    EmailNonExistent: "邮箱不存在，请重新输入",
-    NotYetRegister: "新用户，请先注册",
-    DuplicateRegistration: "该邮箱已被注册",
-    CodeError: "验证码错误",
-    PasswordError: "密码错误",
+    Submit: "Submit",
+    Login: "Login",
+    Register: "Registration",
+    Success: (action: string) => `${action} successfully`,
+    Failed: (action: string) => `${action} failed`,
+    Username: "Username",
+    Password: "Password.",
+    Email: "Email",
+    GetEmailCode: "Get email verification code.",
+    GetPhoneCode: "Get mobile phone verification code.",
+    NoneData:
+      "Please make sure to input your email, password and verification code completely.",
+    EmailNonExistent: "Email does not exist, please re-enter.",
+    NotYetRegister: "New users, please register first.",
+    DuplicateRegistration: "This email has already been registered.",
+    CodeError: "Verification code error.",
+    PasswordError: "Incorrect password.",
   },
-  UnknownError: "未知错误，请联系管理员",
+  UnknownError: "Unknown error, please contact the administrator.",
   WIP: "WIP...",
   Error: {
     Unauthorized:

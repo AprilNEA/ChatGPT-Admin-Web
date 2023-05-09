@@ -2,9 +2,12 @@ import { fetch } from "@edge-runtime/ponyfill";
 import md5 from "spark-md5";
 import { type NextRequest } from "next/server";
 
-const appId = process.env.PAY_APPID!;
-const appSecret = process.env.PAY_APPSECRET!;
+const appId = process.env.XUNHU_PAY_APPID!;
+const appSecret = process.env.XUNHU_PAY_APPSECRET!;
 const wapName = process.env.PAY_WAPNAME ?? "店铺名称";
+
+const domain = process.env.DOMAIN;
+const callbackDomain = process.env.callBackDoamin ?? domain;
 
 interface PaymentArgs {
   version: string;
@@ -25,7 +28,7 @@ interface PaymentArgs {
 }
 
 interface PaymentResponse {
-  oderid: number;
+  openid: number; // 来自文档：订单id(此处有个历史遗留错误，返回名称是openid，值是orderid，一般对接不需要这个参数)
   url_qrcode: string;
   url: string;
   errcode: number;
@@ -94,33 +97,35 @@ export async function startPay({
     appid: appId,
     trade_order_id: orderId,
     total_fee: price,
-    title: title ?? "ChatGPT-April-Web",
+    title: title ?? "ChatGPT-Admin-Web",
     time: Math.floor(Date.now() / 1000),
-    notify_url: "https://new.lmo.best/api/user/callback",
-    return_url: "https://lmo.best", // After the user has successfully made the payment, we will automatically redirect the user's browser to this URL.
-    callback_url: "https://lmo.best", // After the user cancels the payment, we may guide the user to redirect to this URL to make the payment again.
+    notify_url: `${callbackDomain}/api/callback`,
+    return_url: `${domain}`, // After the user has successfully made the payment, we will automatically redirect the user's browser to this URL.
+    callback_url: `${domain}`, // After the user cancels the payment, we may guide the user to redirect to this URL to make the payment again.
     // plugins: string;
     attach, // Return as is during callback. 📢We use it to confirm that the order has not been tampered with.
     nonce_str: orderId, // 1. Avoid server page caching 2. Prevent security keys from being guessed
     type: "WAP",
-    wap_url: "https://lmo.best",
+    wap_url: `${domain}`,
     wap_name: wapName,
   };
   const stringA = sortAndSignParameters(fetchBody);
   const hash = md5.hash(stringA + appSecret);
 
-  const resp = (await (
-    await fetch("https://api.xunhupay.com/payment/do.html", {
-      cache: "no-store",
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        ...fetchBody,
-        hash,
-      }),
-    })
-  ).json()) as PaymentResponse;
-  return resp;
+  const resp = await fetch("https://api.xunhupay.com/payment/do.html", {
+    cache: "no-store",
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      ...fetchBody,
+      hash,
+    }),
+  });
+  try {
+    return (await resp.json()) as PaymentResponse;
+  } catch (e) {
+    return null;
+  }
 }
 
 function urlEncodedStringToJson(encodedString: string): Record<string, string> {

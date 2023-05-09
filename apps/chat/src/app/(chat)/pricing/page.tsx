@@ -11,6 +11,7 @@ import CloseIcon from "@/assets/icons/close.svg";
 import Locale from "@/locales";
 import styles from "./pricing.module.scss";
 import fetcher from "@/utils/fetcher";
+import { showToast } from "@/components/ui-lib";
 
 type PlanType = "Free" | "Pro" | "Premium";
 type PaymentCycleType = "yearly" | "monthly" | "quarterly";
@@ -67,11 +68,12 @@ function PricingItem(props: {
 }) {
   async function handleUpgrade(plan: PlanType, cycle: PaymentCycleType) {
     const req = await (
-      await fetcher(`/api/user/pay?plan=${plan}&cycle=${cycle}`, {
+      await fetcher(`/api/user/pay?plan=${plan.toLowerCase()}&cycle=${cycle}`, {
         cache: "no-store",
         method: "GET",
       })
     ).json();
+    if (!req) return showToast("支付接口配置错误，请联系管理员", 10000);
     const url = req.url;
     props.router.push(url);
   }

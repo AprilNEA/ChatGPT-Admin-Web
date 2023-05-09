@@ -1,30 +1,27 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 
 import { IconButton } from "@/components/button";
-import styles from "@/styles/module/home.module.scss";
-
-import SettingsIcon from "@/assets/icons/settings.svg";
-import ChatGptIcon from "@/assets/icons/chatgpt.svg";
+import { ChatList } from "@/components/chat/chat-list";
+import { Loading } from "@/components/loading";
+import { useSwitchTheme } from "@/hooks/switch-theme";
+import { showAnnouncement } from "@/hooks/use-notice";
+import { useChatStore, useSettingStore } from "@/store";
+import { isMobileScreen } from "@/utils/utils";
 
 import AddIcon from "@/assets/icons/add.svg";
-
 import AnnouncementIcon from "@/assets/icons/announcement.svg";
+import ChatGptIcon from "@/assets/icons/chatgpt.svg";
 import CloseIcon from "@/assets/icons/close.svg";
-import { useChatStore, useSettingStore } from "@/store";
+import SettingsIcon from "@/assets/icons/settings.svg";
 
-import { isMobileScreen } from "@/utils/utils";
+import styles from "@/styles/module/home.module.scss";
+
 import Locale from "@/locales";
 
-import { ChatList } from "@/components/chat/chat-list";
-import { useSwitchTheme } from "@/hooks/switch-theme";
-import { Loading } from "@/components/loading";
-
-import dynamic from "next/dynamic";
-import { showAnnouncement } from "@/hooks/use-notice";
-
-import { useRouter } from "next/navigation";
+const wechatOA = process.env.NEXT_PUBLIC_WECHAT_OA;
 
 /**
  * 修复水合错误
@@ -83,10 +80,12 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
       >
         <div className={styles["sidebar-header"]}>
           <div className={styles["sidebar-title"]}>{Locale.Index.Title}</div>
-          <div className={styles["sidebar-sub-title"]}>
-            {Locale.Index.SubTitle}{" "}
-            <span className={styles["sidebar-ad"]}>Magic万事屋</span>
-          </div>
+          {wechatOA && (
+            <div className={styles["sidebar-sub-title"]}>
+              {Locale.Index.SubTitle}{" "}
+              <span className={styles["sidebar-ad"]}>{wechatOA}</span>
+            </div>
+          )}
           <div className={styles["sidebar-logo"]}>
             <ChatGptIcon />
           </div>

@@ -3,7 +3,7 @@ import { UserLogic } from "database";
 import { jwt } from "database";
 
 export const config = {
-  matcher: ["/api/((?!login$).*)"],
+  matcher: ["/api/((?!login).*)"],
 };
 
 function setHeaders(headers: Headers, obj: any) {

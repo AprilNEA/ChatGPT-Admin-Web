@@ -15,7 +15,7 @@ export type ChatRequest = {
 export type ChatReponse = CreateChatCompletionResponse;
 
 const chatRole = z.enum(["assistant", "system", "user"]);
-const gptModel = z.enum(["gpt-3.5-turbo", "gpt-4"]);
+export const gptModel = z.enum(["gpt-3.5-turbo", "gpt-4"]);
 const otherModel = z.enum(["new-bing"]);
 const chatRecord = z.object({
   role: chatRole,
@@ -24,5 +24,5 @@ const chatRecord = z.object({
 export const postPayload = z.object({
   conversation: chatRecord.array().nonempty(),
   maxTokens: z.number().optional(),
-  model: gptModel || otherModel,
+  model: gptModel.or(otherModel),
 });

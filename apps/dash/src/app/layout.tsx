@@ -2,7 +2,7 @@ import React from "react";
 import { ThemeProvider, AuthProvider } from "@/app/provider";
 
 export const metadata = {
-  title: "ChatGPT-April Dashboard",
+  title: "ChatGPT-Admin Dashboard",
 };
 
 const contentStyle: React.CSSProperties = {

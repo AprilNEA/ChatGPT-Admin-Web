@@ -1,5 +1,5 @@
-import { defaultRedis } from "../redis";
-import { Order, User } from "../types";
+import { defaultRedis } from '../redis';
+import { Order, User } from '../types';
 
 const countKeysScript = `
 local pattern = ARGV[1]
@@ -34,12 +34,18 @@ return keys
 export class AnalysisDAL {
   constructor(private readonly redis = defaultRedis) {}
 
+  /**
+   * Count the total number of users.
+   */
   countTotalUsers(): Promise<number> {
-    return this.redis.eval(countKeysScript, [], ["user:*"]);
+    return this.redis.eval(countKeysScript, [], ['user:*']);
   }
 
+  /**
+   * Count the total number of orders.
+   */
   countTotalOrders(): Promise<number> {
-    return this.redis.eval(countKeysScript, [], ["order:*"]);
+    return this.redis.eval(countKeysScript, [], ['order:*']);
   }
 
   getUserKeys(): Promise<string[]> {
