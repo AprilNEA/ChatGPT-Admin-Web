@@ -3,7 +3,7 @@ import { AnswerParams, GPTModel } from './types';
 import { streamToLineIterator } from './utils';
 import * as process from 'process';
 
-const API_END_POINT = process.env.OPENAI_PROXY ?? 'https://api.openai.com';
+const API_END_POINT = process.env.OPENAI_ENDPOINT ?? 'https://api.openai.com';
 const COMPLETIONS_URL = `${API_END_POINT}/v1/chat/completions`;
 
 export class OpenAIBot extends AbstractBot {
