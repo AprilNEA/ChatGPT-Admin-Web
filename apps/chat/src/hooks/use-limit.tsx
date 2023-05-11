@@ -13,7 +13,7 @@ export function useLimit() {
             return res.data;
           case ResponseStatus.Failed:
           default:
-            showToast("邀请码获取失败");
+            showToast("获取剩余用量失败");
             return "";
         }
       })
