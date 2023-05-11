@@ -156,40 +156,41 @@ export default function Register() {
             required
           />
         </div>
-        <div className={styles["login-form-input-group"]}>
-          <label htmlFor="email">Verification Code</label>
-          <div className={styles["verification-code-container"]}>
-            <input
-              type="text"
-              id="verification-code"
-              maxLength={6}
-              pattern="\d{6}"
-              onChange={(e) => setVerificationCode(e.target.value)}
-            />
-            <button
-              className={styles["send-verification-button"]}
-              onClick={handleSendVerification}
-              disabled={submitting}
-            >
-              {isSending ? "Already Send to Email" : "Get Code"}
-            </button>
-          </div>
-        </div>
 
         {ifVerifyCode && (
           <div className={styles["login-form-input-group"]}>
-            <label htmlFor="email">Invitation Code</label>
+            <label htmlFor="email">Verification Code</label>
             <div className={styles["verification-code-container"]}>
               <input
                 type="text"
-                id="invitation-code"
-                placeholder="可选"
-                value={invitationCode}
-                onChange={(e) => setInvitationCode(e.target.value)}
+                id="verification-code"
+                maxLength={6}
+                pattern="\d{6}"
+                onChange={(e) => setVerificationCode(e.target.value)}
               />
+              <button
+                className={styles["send-verification-button"]}
+                onClick={handleSendVerification}
+                disabled={submitting}
+              >
+                {isSending ? "Already Send to Email" : "Get Code"}
+              </button>
             </div>
           </div>
         )}
+
+        <div className={styles["login-form-input-group"]}>
+          <label htmlFor="email">Invitation Code</label>
+          <div className={styles["verification-code-container"]}>
+            <input
+              type="text"
+              id="invitation-code"
+              placeholder="可选"
+              value={invitationCode}
+              onChange={(e) => setInvitationCode(e.target.value)}
+            />
+          </div>
+        </div>
 
         <div className={styles["button-container"]}>
           <button className={styles["login-form-submit"]} type="submit">
