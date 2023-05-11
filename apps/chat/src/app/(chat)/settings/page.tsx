@@ -152,12 +152,11 @@ export default function Settings() {
           <SettingItem title={Locale.Settings.TightBorder}>
             <input
               type="checkbox"
-              checked={tightBorder}
+              checked={config.tightBorder}
               onChange={(e) => {
-                changeTightBorder(e.currentTarget.checked);
-                // updateConfig(
-                //   (config) => (config.tightBorder = e.currentTarget.checked)
-                // );
+                updateConfig(
+                  (config) => (config.tightBorder = e.currentTarget.checked)
+                );
               }}
             ></input>
           </SettingItem>

@@ -1,5 +1,5 @@
-import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import {create} from "zustand";
+import {persist} from "zustand/middleware";
 import {
   Theme,
   SubmitKey,
@@ -19,7 +19,7 @@ const DEFAULT_CONFIG: ChatConfig = {
   submitKey: SubmitKey.Enter as SubmitKey,
   avatar: "1f603",
   theme: Theme.Auto as Theme,
-  tightBorder: false,
+  tightBorder: true,
 
   modelConfig: {
     model: "gpt-3.5-turbo",
@@ -36,14 +36,8 @@ export const useSettingStore = create<SettingStore>()(
         ...DEFAULT_CONFIG,
       },
 
-      tightBorder: true,
-
-      changeTightBorder(v: boolean) {
-        set(() => ({ tightBorder: v }));
-      },
-
       resetConfig() {
-        set(() => ({ config: { ...DEFAULT_CONFIG } }));
+        set(() => ({config: {...DEFAULT_CONFIG}}));
       },
 
       getConfig() {
@@ -53,8 +47,8 @@ export const useSettingStore = create<SettingStore>()(
       updateConfig(updater) {
         const config = get().config;
         updater(config);
-        set(() => ({ config }));
-      },
+        set(() => ({config: {...config}}));
+      }
     }),
     {
       name: LOCAL_KEY,
