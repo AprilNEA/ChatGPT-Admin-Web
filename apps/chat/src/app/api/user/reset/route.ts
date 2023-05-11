@@ -11,3 +11,5 @@ export async function POST(req: NextRequest): Promise<Response> {
 
   return NextResponse.json({ status: ResponseStatus.Failed });
 }
+
+export const runtime = 'edge';

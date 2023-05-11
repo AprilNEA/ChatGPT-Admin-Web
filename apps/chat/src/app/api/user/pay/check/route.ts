@@ -13,3 +13,5 @@ export async function GET(req: NextRequest) {
   const orderStatus = await orderLogic.checkStatus(orderId);
   return NextResponse.json({ status: ResponseStatus.Success, orderStatus });
 }
+
+export const runtime = 'edge';

@@ -37,3 +37,5 @@ export async function GET(req: NextRequest) {
     resetChances,
   });
 }
+
+export const runtime = 'edge';
