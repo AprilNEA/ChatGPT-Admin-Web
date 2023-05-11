@@ -1,9 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useSWR, { mutate } from "swr";
 import { useRouter } from "next/navigation";
 
+import { useLimit } from "@/hooks/use-limit";
+import { useSubscription } from "@/hooks/use-subscription";
 import { useSettingStore } from "@/store";
 
 import { Avatar } from "@/components/avatar";
@@ -18,7 +20,9 @@ import EmojiPicker, { Theme as EmojiTheme } from "emoji-picker-react";
 
 import fetcher from "@/utils/fetcher";
 import { copyToClipboard } from "@/utils/utils";
-import { InfoResponse } from "@/app/api/typing";
+import { InfoResponse, ResponseStatus } from "@/app/api/typing.d";
+import { SubscribeTable } from "@/components/table";
+import { useInviteCode } from "@/hooks/use-invite-code";
 
 function ProfileItem(props: {
   title: string;
@@ -40,6 +44,7 @@ function ProfileItem(props: {
 
 export default function Profile() {
   const router = useRouter();
+
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [config, updateConfig, resetConfig] = useSettingStore((state) => [
     state.config,
@@ -52,21 +57,24 @@ export default function Profile() {
     (url) => fetcher(url).then((res) => res.json())
   );
 
-  if (infoLoading) return <Loading />;
+  /**
+   * 此处使用条件加载，一般来说用户可能不需要邀请码，当用户点击复制邀请码后，再请求邀请码。
+   */
+  const [shouldGetInviteCode, setShouldGetInviteCode] =
+    useState<boolean>(false);
+  const { data: inviteCode, isLoading: inviteCodeLoading } =
+    useInviteCode(shouldGetInviteCode);
 
   const {
     email: email,
     role: role,
     plan: plan,
-    inviteCode: inviteCode,
-    requestNos: requestNos,
     resetChances: resetChances,
   } = info ?? {
     email: "",
     role: "user",
     plan: "free",
     inviteCode: "",
-    requestNos: [],
     resetChances: 0,
   };
 
@@ -87,6 +95,19 @@ export default function Profile() {
     });
   }
 
+  const { data: subscription, isLoading: subscriptionLoading } =
+    useSubscription();
+  useEffect(() => {
+    if (shouldGetInviteCode) showToast("正在获取邀请码");
+  }, [shouldGetInviteCode]);
+
+  useEffect(() => {
+    if (inviteCode)
+      copyToClipboard(`${window.location.origin}/register?code=${inviteCode}`);
+  }, [inviteCode]);
+
+  if (infoLoading) return <Loading />;
+
   return (
     <>
       <div className={styles["window-header"]}>
@@ -100,7 +121,7 @@ export default function Profile() {
           <div className={styles["window-action-button"]}>
             <IconButton
               icon={<CloseIcon />}
-              onClick={() => router.back()}
+              onClick={() => router.push("/")}
               bordered
               title={Locale.Settings.Actions.Close}
             />
@@ -152,6 +173,8 @@ export default function Profile() {
           </ProfileItem>
         </List>
 
+        {subscription && <SubscribeTable data={subscription} />}
+
         <List>
           <ProfileItem
             title={Locale.Profile.Invite.Title}
@@ -160,11 +183,13 @@ export default function Profile() {
             <button
               className={styles["copy-button"]}
               value={config.submitKey}
-              onClick={() =>
-                copyToClipboard(
-                  `${window.location.origin}/register?code=${inviteCode}`
-                )
-              }
+              onClick={() => {
+                if (inviteCode)
+                  copyToClipboard(
+                    `${window.location.origin}/register?code=${inviteCode}`
+                  );
+                else setShouldGetInviteCode(true);
+              }}
             >
               {Locale.Profile.Invite.CopyInviteLink}
             </button>
