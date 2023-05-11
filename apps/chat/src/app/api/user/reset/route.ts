@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+
 import { ResponseStatus } from "@/app/api/typing.d";
 
 /**
@@ -12,4 +13,4 @@ export async function POST(req: NextRequest): Promise<Response> {
   return NextResponse.json({ status: ResponseStatus.Failed });
 }
 
-export const runtime = 'edge';
+export const runtime = "edge";
