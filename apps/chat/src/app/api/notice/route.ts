@@ -21,3 +21,5 @@ export async function GET(req: NextRequest) {
     notice,
   });
 }
+
+export const runtime = "edge";

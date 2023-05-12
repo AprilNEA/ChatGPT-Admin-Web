@@ -52,9 +52,12 @@ export default function Profile() {
     state.resetConfig,
   ]);
 
-  const { data: info, isLoading: infoLoading } = useSWR<InfoResponse>(
-    "/api/user/info",
-    (url) => fetcher(url).then((res) => res.json())
+  const {
+    data: info,
+    isLoading: infoLoading,
+    mutate: infoMutate,
+  } = useSWR<InfoResponse>("/api/user/info", (url) =>
+    fetcher(url).then((res) => res.json())
   );
 
   /**
@@ -202,9 +205,15 @@ export default function Profile() {
             <button
               className={styles["copy-button"]}
               value={config.submitKey}
-              onClick={() => handleResetLimit()}
+              onClick={async () => {
+                await handleResetLimit();
+                await infoMutate({
+                  ...info!,
+                  resetChances: info?.resetChances! - 1 ?? 0,
+                });
+              }}
             >
-              {Locale.Profile.Reset.Click(resetChances ?? -1)}
+              {Locale.Profile.Reset.Click(resetChances ?? 0)}
             </button>
           </ProfileItem>
         </List>
