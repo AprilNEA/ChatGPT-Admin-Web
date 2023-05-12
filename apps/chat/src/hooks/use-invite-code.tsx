@@ -9,12 +9,9 @@ export function useInviteCode(shouldGetInviteCode: boolean) {
     store.inviteCode,
     store.updateInviteCode,
   ]);
-  if (inviteCode) {
-    return {
-      data: inviteCode,
-      isLoading: false,
-    };
-  }
+
+  if (inviteCode) shouldGetInviteCode = false;
+
   const { data, isLoading } = useSWR<string>(
     shouldGetInviteCode ? "/api/user/info/invite-code" : null,
     (url) =>
@@ -38,7 +35,7 @@ export function useInviteCode(shouldGetInviteCode: boolean) {
   }
 
   return {
-    data,
+    data: data ?? inviteCode,
     isLoading,
   };
 }
