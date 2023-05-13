@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import useSWR, { useSWRConfig } from "swr";
 import {
   Button,
@@ -19,7 +19,7 @@ import fetcher from "@/utils/fetcher";
 import Loading from "@/app/loading";
 import { Table } from "@/components/table";
 import { planColumns } from "@/app/setting/item";
-import { data } from "@/components/charts";
+import { PlanItem } from "@/app/setting/typing";
 
 const emptyData = {
   limits: {
@@ -43,7 +43,7 @@ export default function Page() {
   const { mutate } = useSWRConfig();
 
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [targetValue, setTargetValue] = useState(emptyData);
+  const [targetValue, setTargetValue] = useState<PlanItem>(emptyData);
 
   const {
     data: planData,
@@ -60,7 +60,7 @@ export default function Page() {
     setDrawerOpen(true);
   }
 
-  const handleChangeTop = (e, field) => {
+  const handleChangeTop = (e: ChangeEvent<HTMLInputElement>, field: "plan") => {
     const { value } = e.target;
     setTargetValue((prevValues) => ({
       ...prevValues,
@@ -68,7 +68,12 @@ export default function Page() {
     }));
   };
 
-  const handleChange = (e, field, subfield, row) => {
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement>,
+    field: "prices" | "limits",
+    subfield: "monthly" | "quarterly" | "yearly" | "limit" | "window",
+    row?: any
+  ) => {
     const { value } = e.target;
     setTargetValue((prevValues) => ({
       ...prevValues,
@@ -76,6 +81,12 @@ export default function Page() {
         ? {
             ...prevValues[field],
             [row]: {
+              /*
+如果 field 是 "plan"，那么 prevValues[field] 就是字符串，而不是对象。在这种情况下，你不能对其进行展开操作。
+为了解决这个问题，你可以在更新状态之前检查 field 的值，并根据需要进行不同的更新。
+这个错误发生在试图对可能不是对象的值进行展开操作。在你的代码中，prevValues[field] 可能不总是对象，这取决于 field 的值。
+             */
+              // @ts-ignore FIXME TS2698: Spread types may only be created from object types.
               ...prevValues[field][row],
               [subfield]: value,
             },
@@ -113,7 +124,11 @@ export default function Page() {
               {
                 prop: "p",
                 label: "操作",
-                render: (value: T[keyof T], rowData: T, rowIndex: number) => {
+                render: (
+                  value: string,
+                  rowData: PlanItem,
+                  rowIndex: number
+                ) => {
                   return (
                     <Button
                       auto
@@ -157,19 +172,19 @@ export default function Page() {
                 <span> 价格：</span>
                 <Input
                   label="每月"
-                  value={targetValue.prices.monthly}
+                  value={targetValue.prices.monthly.toString()}
                   onChange={(e) => handleChange(e, "prices", "monthly")}
                 />
                 <Spacer w={1} />
                 <Input
                   label="每季"
-                  value={targetValue.prices.quarterly}
+                  value={targetValue.prices.quarterly.toString()}
                   onChange={(e) => handleChange(e, "prices", "quarterly")}
                 />
                 <Spacer w={1} />
                 <Input
                   label="每年"
-                  value={targetValue.prices.yearly}
+                  value={targetValue.prices.yearly.toString()}
                   onChange={(e) => handleChange(e, "prices", "yearly")}
                 />
               </Grid>
@@ -198,7 +213,7 @@ export default function Page() {
                     <>
                       <Input
                         label={row}
-                        value={targetValue.limits?.[row]?.limit}
+                        value={targetValue.limits?.[row]?.limit.toString()}
                         onChange={(e) =>
                           handleChange(e, "limits", "limit", row)
                         }
