@@ -4,20 +4,20 @@ import { persist } from "zustand/middleware";
 const LOCAL_KEY = "dash-user-store";
 
 export interface UserStore {
-  expiredTime: number | null;
+  expiredTime: number;
   sessionToken: string | null;
-  updateSessionToken: (sessionToken: string) => void;
+  updateSessionToken: (sessionToken: string, expiredTime: number) => void;
   validateSessionToken: () => boolean;
 }
 
 export const useUserStore = create<UserStore>()(
   persist(
     (set, get) => ({
-      expiredTime: null,
+      expiredTime: 0,
       sessionToken: null,
 
       updateSessionToken(sessionToken: string, expiredTime: number) {
-        set((state) => ({ sessionToken, expiredTime }));
+        set(() => ({ sessionToken, expiredTime }));
       },
 
       /**
