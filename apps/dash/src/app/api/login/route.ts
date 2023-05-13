@@ -14,20 +14,21 @@ export async function POST(req: NextRequest) {
 
     if (role !== "admin") return NextResponse.json({}, { status: 403 });
 
-    const sessionToken = await accessControlLogic.newJWT(email);
-    if (sessionToken) {
-      return NextResponse.json({
-        // status: ResponseStatus.Success,
-        sessionToken,
-      });
-    } else {
+    const newTokenGenerator = await accessControlLogic.newJWT(email);
+    if (!newTokenGenerator)
       return NextResponse.json(
         {
           // status: ResponseStatus.Failed,
         },
         { status: 404 }
       );
-    }
+    const { token: sessionToken, exp } = newTokenGenerator;
+
+    return NextResponse.json({
+      // status: ResponseStatus.Success,
+      sessionToken,
+      exp,
+    });
   } catch (error) {
     console.error("[SERVER ERROR]", error);
     return new Response("[INTERNAL ERROR]", { status: 500 });
