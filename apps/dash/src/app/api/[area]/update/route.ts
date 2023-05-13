@@ -1,13 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-
 import { PlanDAL } from "database";
+import { PlanItem } from "@/app/setting/typing";
 
 type Area = "user" | "order" | "plan";
-
-interface UpdateType {
-  id: string;
-  data: any;
-}
 
 export async function POST(
   req: NextRequest,
@@ -17,19 +12,21 @@ export async function POST(
     params: { area: Area };
   }
 ) {
-  const data: UpdateType = await req.json();
+  const data: PlanItem = await req.json();
   switch (params.area) {
     case "plan":
       const dal = new PlanDAL();
       const id = data.plan;
       delete data.plan;
 
+      if (!id || !data) return NextResponse.json({ msg: "failed" });
+
       /* Ensure the type. */
       for (let key in data.prices) {
-        data.prices[key] = parseInt(data.prices[key], 10);
+        data.prices[key] = parseInt(data.prices[key].toString(), 10);
       }
       for (let key in data.limits) {
-        data.limits[key].limit = parseInt(data.limits[key].limit, 10);
+        data.limits[key].limit = parseInt(data.limits[key].toString(), 10);
       }
 
       if (await dal.exists(id)) await dal.update(id, data);
@@ -41,6 +38,4 @@ export async function POST(
   }
 }
 
-export const config = {
-  runtime: "edge",
-};
+export const runtime = "edge";
