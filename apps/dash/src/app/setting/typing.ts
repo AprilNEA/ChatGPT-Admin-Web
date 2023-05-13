@@ -9,6 +9,7 @@ export interface PlanItem {
     monthly: number;
     quarterly: number;
     yearly: number;
+    [key: string]: number;
   };
-  plan: string;
+  plan?: string;
 }
