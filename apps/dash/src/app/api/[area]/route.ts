@@ -56,6 +56,4 @@ export async function GET(
   return await Query(req, dal);
 }
 
-export const config = {
-  runtime: "edge",
-};
+export const runtime = "edge";
