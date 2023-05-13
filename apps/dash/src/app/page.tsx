@@ -19,46 +19,36 @@ export default function Page() {
 
   return (
     <Grid.Container gap={2} justify="center">
-      <Grid xs={12}>
+      <Grid xs={4}>
         <Card shadow width="100%" height="100px">
-          <Description
-            title="ChatGPT-Admin-Web"
-            content="带有用户管理的ChatGPT-WebUI"
-          />
-          <Spacer />
-          <span>当前用户总数: {data?.total_users}</span>
+          <div style={{ fontSize: "16px" }}>当前用户总数:</div>
+          <div style={{ fontWeight: "normal", fontSize: "36px" }}>
+            {data?.total_users}
+          </div>
         </Card>
       </Grid>
-      <Grid xs={12} direction="row">
+      <Grid xs={4}>
         <Card shadow width="100%" height="100px">
-          <Grid.Container
-            direction="row"
-            gap={1}
-            alignItems="center"
-            justify="center"
-          >
-            <Grid xs={8}>
-              <Input
-                disabled
-                label="Free"
-                placeholder={data!.plan_status?.free.toString()}
-              />
-            </Grid>
-            <Grid xs={8}>
-              <Input
-                disabled
-                label="Pro"
-                placeholder={data!.plan_status?.pro.toString()}
-              />
-            </Grid>
-            <Grid xs={8}>
-              <Input
-                disabled
-                label="Premium"
-                placeholder={data!.plan_status?.premium.toString()}
-              />
-            </Grid>
-          </Grid.Container>
+          <div style={{ fontSize: "16px" }}>Free :</div>
+          <div style={{ fontWeight: "normal", fontSize: "36px" }}>
+            {data!.plan_status?.free.toString()}
+          </div>
+        </Card>
+      </Grid>
+      <Grid xs={4}>
+        <Card shadow width="100%" height="100px">
+          <div style={{ fontSize: "16px" }}>Pro :</div>
+          <div style={{ fontWeight: "normal", fontSize: "36px" }}>
+            {data!.plan_status?.pro.toString()}
+          </div>
+        </Card>
+      </Grid>
+      <Grid xs={4}>
+        <Card shadow width="100%" height="100px">
+          <div style={{ fontSize: "16px" }}>Premium :</div>
+          <div style={{ fontWeight: "normal", fontSize: "36px" }}>
+            {data!.plan_status?.premium.toString()}
+          </div>
         </Card>
       </Grid>
       <Grid xs={12}>
