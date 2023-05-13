@@ -37,5 +37,5 @@ export interface InfoResponse {
   plan: Plan;
   inviteCode?: string;
   chances?: number;
-  resetChances?: number;
+  resetChances: number;
 }

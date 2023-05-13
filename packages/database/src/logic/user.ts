@@ -1,6 +1,6 @@
-import { User } from "../types";
-import { UserDAL } from "../dal";
-import md5 from "spark-md5";
+import { User } from '../types';
+import { UserDAL } from '../dal';
+import md5 from 'spark-md5';
 
 export class UserLogic {
   constructor(private readonly dal = new UserDAL()) {}
@@ -11,10 +11,10 @@ export class UserLogic {
   register(
     email: string,
     password: string,
-    extraData: Partial<User> = {},
+    extraData: Partial<User> = {}
   ): Promise<boolean> {
     return this.dal.create(email, {
-      name: "Anonymous",
+      name: 'Anonymous',
       passwordHash: md5.hash(password.trim()),
       createdAt: Date.now(),
       lastLoginAt: Date.now(),
@@ -22,7 +22,7 @@ export class UserLogic {
       resetChances: 0,
       invitationCodes: [],
       subscriptions: [],
-      role: "user",
+      role: 'user',
       ...extraData,
     });
   }
@@ -72,5 +72,15 @@ export class UserLogic {
    */
   getResetChancesOf(email: string) {
     return this.dal.readResetChances(email);
+  }
+
+  /**
+   * @returns the reset chances of the user, or null if the user does not exist
+   */
+  async setResetChancesOf(email: string, value: number) {
+    const chancesNow = await this.getResetChancesOf(email);
+    /* Both usage and increase must be ensured to be greater than 0. */
+    if (!chancesNow || chancesNow + value < 0) return null;
+    return this.dal.incrResetChances(email, value);
   }
 }
