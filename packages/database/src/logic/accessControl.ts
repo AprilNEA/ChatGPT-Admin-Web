@@ -1,23 +1,11 @@
-import { UserDAL } from "../dal";
-import { sign, verify } from "../utils/jwt";
+import { UserDAL } from '../dal';
+import { sign, verify } from '../utils/jwt';
 
 export class AccessControlLogic {
-  constructor(
-    private readonly userDAL = new UserDAL(),
-  ) {}
+  constructor(private readonly userDAL = new UserDAL()) {}
 
-  async newJWT(email: string): Promise<string | null> {
-    // const token = md5.hash(`${email}:${new Date()}`);
-    //
-    // const sessionToken: SessionToken = {
-    //   createdAt: Date.now(),
-    //   isRevoked: false,
-    //   userEmail: email,
-    // };
-    //
-    // await this.sessionTokenDAL.create(token, sessionToken);
-    // await this.sessionTokenDAL.setExpiration(token, 24 * 60 * 60);
-    if (await this.userDAL.exists(email)) return sign({ email });
+  async newJWT(email: string): Promise<{ token: string; exp: number } | null> {
+    if (await this.userDAL.exists(email)) return await sign({ email });
     return null;
   }
 

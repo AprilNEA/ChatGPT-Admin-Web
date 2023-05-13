@@ -4,6 +4,7 @@ import { persist } from "zustand/middleware";
 const LOCAL_KEY = "dash-user-store";
 
 export interface UserStore {
+  expiredTime: number | null;
   sessionToken: string | null;
   updateSessionToken: (sessionToken: string) => void;
   validateSessionToken: () => boolean;
@@ -12,19 +13,21 @@ export interface UserStore {
 export const useUserStore = create<UserStore>()(
   persist(
     (set, get) => ({
+      expiredTime: null,
       sessionToken: null,
 
-      updateSessionToken(sessionToken: string) {
-        set((state) => ({ sessionToken }));
+      updateSessionToken(sessionToken: string, expiredTime: number) {
+        set((state) => ({ sessionToken, expiredTime }));
       },
 
       /**
-       * TODO 本地检验 Cookie 是否有效
-       * 后端中间件会二次效验
+       * 效验是否存在 token 以及 token 是否过期。
        */
       validateSessionToken() {
-        const sessionToken = get().sessionToken;
-        return !!sessionToken;
+        return !!(
+          get().sessionToken &&
+          get().expiredTime > Math.floor(Date.now() / 1000)
+        );
       },
     }),
     {
