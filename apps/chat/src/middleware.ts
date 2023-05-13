@@ -45,8 +45,6 @@ export async function middleware(req: NextRequest) {
     and parse out the payload here before passing it to the next layer. */
     const token = req.headers.get("Authorization");
 
-    console.debug("[Middleware]", req.nextUrl.pathname, token);
-
     if (!token) return NextResponse.json({}, { status: 403 });
     const { email } = (await jwt.verify(token)) as unknown as {
       email: string;
