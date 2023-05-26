@@ -6,6 +6,7 @@ export class PlanDAL extends AbstractDataAccessLayer<Plan> {
   namespace: `${string}:` = 'plan:';
 
   async doCreate(name: string, data: Plan) {
+    console.log('doCreate', name, data);
     await this.redis.json.set(this.getKey(name), '$', data);
   }
 
@@ -14,6 +15,7 @@ export class PlanDAL extends AbstractDataAccessLayer<Plan> {
   }
 
   protected doUpdate(name: string, data: Partial<Plan>) {
+    console.log('doUpdate', name, data);
     return this.doJSONUpdate(name, data);
   }
 
