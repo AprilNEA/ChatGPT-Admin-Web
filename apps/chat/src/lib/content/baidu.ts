@@ -62,5 +62,7 @@ export async function baiduTextSecurity(text: string) {
   // if (data.error_code === 18) // error_msg : "Open api qps request limit reached"
   //   return
   // return data
+  console.log(text);
+  console.log(JSON.stringify(data));
   return data.conclusion === "合规";
 }
