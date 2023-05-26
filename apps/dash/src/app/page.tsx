@@ -31,7 +31,7 @@ export default function Page() {
         <Card shadow width="100%" height="100px">
           <div style={{ fontSize: "16px" }}>Free :</div>
           <div style={{ fontWeight: "normal", fontSize: "36px" }}>
-            {data!.plan_status?.free.toString()}
+            {data!.plan_status?.free?.toString()}
           </div>
         </Card>
       </Grid>
