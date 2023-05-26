@@ -172,19 +172,19 @@ export default function Page() {
                 <span> 价格：</span>
                 <Input
                   label="每月"
-                  value={targetValue.prices.monthly.toString()}
+                  value={targetValue.prices.monthly}
                   onChange={(e) => handleChange(e, "prices", "monthly")}
                 />
                 <Spacer w={1} />
                 <Input
                   label="每季"
-                  value={targetValue.prices.quarterly.toString()}
+                  value={targetValue.prices.quarterly}
                   onChange={(e) => handleChange(e, "prices", "quarterly")}
                 />
                 <Spacer w={1} />
                 <Input
                   label="每年"
-                  value={targetValue.prices.yearly.toString()}
+                  value={targetValue.prices.yearly}
                   onChange={(e) => handleChange(e, "prices", "yearly")}
                 />
               </Grid>
@@ -213,7 +213,7 @@ export default function Page() {
                     <>
                       <Input
                         label={row}
-                        value={targetValue.limits?.[row]?.limit.toString()}
+                        value={targetValue.limits?.[row]?.limit}
                         onChange={(e) =>
                           handleChange(e, "limits", "limit", row)
                         }
