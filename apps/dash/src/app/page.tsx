@@ -39,7 +39,7 @@ export default function Page() {
         <Card shadow width="100%" height="100px">
           <div style={{ fontSize: "16px" }}>Pro :</div>
           <div style={{ fontWeight: "normal", fontSize: "36px" }}>
-            {data!.plan_status?.pro.toString()}
+            {data!.plan_status?.pro?.toString()}
           </div>
         </Card>
       </Grid>
@@ -47,7 +47,7 @@ export default function Page() {
         <Card shadow width="100%" height="100px">
           <div style={{ fontSize: "16px" }}>Premium :</div>
           <div style={{ fontWeight: "normal", fontSize: "36px" }}>
-            {data!.plan_status?.premium.toString()}
+            {data!.plan_status?.premium?.toString()}
           </div>
         </Card>
       </Grid>
