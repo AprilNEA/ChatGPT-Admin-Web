@@ -104,6 +104,7 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
             text="个人中心"
             className={styles["sidebar-bar-button"]}
             onClick={() => {
+              setShowSideBar(false);
               router.push("/profile");
             }}
           />
@@ -112,6 +113,7 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
             text="充值中心"
             className={styles["sidebar-bar-button"]}
             onClick={() => {
+              setShowSideBar(false);
               router.push("/pricing");
             }}
           />
