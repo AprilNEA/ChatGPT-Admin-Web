@@ -1,0 +1,107 @@
+// prisma/schema.prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+  // If you want to use Prisma Migrate, you will need to manually create a shadow database
+  // https://neon.tech/docs/guides/prisma-migrate#configure-a-shadow-database-for-prisma-migrate
+  // make sure to append ?connect_timeout=10 to the connection string
+  // shadowDatabaseUrl = env(“SHADOW_DATABASE_URL”)
+}
+
+model Role {
+  roleName String @id
+
+  users User[] @relation("UserRole")
+}
+
+model User {
+  userId       Int     @id @default(autoincrement())
+  email        String? @unique // 邮箱
+  name         String? @unique // 用户名
+  passwordHash String  @db.Text // 密码
+  phone        String  @unique // 手机 +86
+
+  wechat WechatInfo? @relation("UserWechat")
+
+  roleName String
+  role     Role   @relation("UserRole", fields: [roleName], references: [roleName], onDelete: NoAction, onUpdate: NoAction)
+
+  orders        Order[]        @relation("UserOrder") // 用户的订单
+  subscriptions Subscription[] @relation("UserSubscription") // 用户的订阅
+  resetChances  Int            @default(0) // 重置次数
+
+  createdAt DateTime @default(now()) @db.Timestamp(6) // 注册时间
+  isBlocked Boolean  @default(false) // 是否被封禁
+
+  inviterId       Int? // 邀请该用户的人
+  inviter         User?    @relation("Invitation", fields: [inviterId], references: [userId], onDelete: NoAction, onUpdate: NoAction)
+  invitees        User[]   @relation("Invitation") // 该用户的邀请者
+  invitationCodes String[] @db.Text
+}
+
+model WechatInfo {
+  unionId String @id
+  name    String
+  openId  String @unique
+
+  userId Int  @unique
+  user   User @relation("UserWechat", fields: [userId], references: [userId])
+}
+
+model InvitationCode {
+  invitationId String @id
+}
+
+model Plan {
+  planId Int    @id @default(autoincrement())
+  name   String
+  prices Float
+
+  order Order[] @relation("Plan")
+}
+
+enum OrderStatus {
+  Pending
+  Paid
+  Failed
+  Refunded
+}
+
+model Order {
+  orderId Int @id @unique
+
+  userId Int // 订单的用户
+  user   User @relation("UserOrder", fields: [userId], references: [userId])
+
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+
+  planId Int
+  plan   Plan @relation("Plan", fields: [planId], references: [planId])
+
+  count  Int         @default(1)
+  status OrderStatus
+}
+
+model Subscription {
+  subscriptionId String @id @default(uuid())
+  userId         Int
+  user           User   @relation("UserSubscription", fields: [userId], references: [userId])
+}
+
+enum RegisterType {
+  Phone
+  Email
+}
+
+model RegisterCode {
+  id        String       @id @default(uuid())
+  type      RegisterType // 注册类型
+  register  String       @unique // 注册人，邮箱地址或手机号地址
+  code      Int          @unique // 注册效验码
+  expiredAt DateTime     @default(now()) @db.Timestamp(6) // 过期时间
+}
