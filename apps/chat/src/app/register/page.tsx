@@ -79,8 +79,8 @@ export default function Register() {
     }
   };
 
-  const handleSendVerification = async () => {
-    setSubmitting(true);
+  const handleSendVerification = async (event: React.MouseEvent) => {
+    event.preventDefault();
 
     if (!email) {
       showToast("请输入邮箱");
@@ -169,8 +169,9 @@ export default function Register() {
                 onChange={(e) => setVerificationCode(e.target.value)}
               />
               <button
+                type="button"
                 className={styles["send-verification-button"]}
-                onClick={handleSendVerification}
+                onClick={(event) => handleSendVerification(event)}
                 disabled={submitting}
               >
                 {isSending ? "Already Send to Email" : "Get Code"}
