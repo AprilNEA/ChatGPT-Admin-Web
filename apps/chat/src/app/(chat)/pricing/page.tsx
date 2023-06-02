@@ -27,7 +27,7 @@ interface Price {
   features: string[];
 }
 
-const prices: Price[] = [
+export const prices: Price[] = [
   {
     name: "Free",
     price: {
