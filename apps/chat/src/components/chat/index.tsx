@@ -1,11 +1,11 @@
 import Link from "next/link";
 
-import {Message, useChatStore, useSettingStore, useUserStore} from "@/store";
-import {ChatSession} from "@/store/chat/typing";
-import {SubmitKey} from "@/store/setting/typing";
+import { Message, useChatStore, useSettingStore, useUserStore } from "@/store";
+import { ChatSession } from "@/store/chat/typing";
+import { SubmitKey } from "@/store/setting/typing";
 
-import {useLayoutEffect, useRef, useState, memo} from "react";
-import {ControllerPool} from "@/utils/requests";
+import { useLayoutEffect, useRef, useState, memo } from "react";
+import { ControllerPool } from "@/utils/requests";
 import {
   copyToClipboard,
   downloadAs,
@@ -25,12 +25,12 @@ import DownloadIcon from "@/assets/icons/download.svg";
 import UserIcon from "@/assets/icons/user.svg";
 import ShoppingIcon from "@/assets/icons/shopping.svg";
 
-import {Avatar} from "@/components/avatar";
-import {IconButton} from "@/components/button";
-import {showModal} from "@/components/ui-lib";
+import { Avatar } from "@/components/avatar";
+import { IconButton } from "@/components/button";
+import { showModal } from "@/components/ui-lib";
 
 import dynamic from "next/dynamic";
-import Banner, {Post} from "@/components/banner";
+import Banner, { Post } from "@/components/banner";
 import useSWR from "swr";
 import fetcher from "@/utils/fetcher";
 
@@ -79,14 +79,14 @@ function exportMessages(messages: Message[], topic: string) {
     actions: [
       <IconButton
         key="copy"
-        icon={<CopyIcon/>}
+        icon={<CopyIcon />}
         bordered
         text={Locale.Export.Copy}
         onClick={() => copyToClipboard(mdText)}
       />,
       <IconButton
         key="download"
-        icon={<DownloadIcon/>}
+        icon={<DownloadIcon />}
         bordered
         text={Locale.Export.Download}
         onClick={() => downloadAs(mdText, filename)}
@@ -108,7 +108,7 @@ function showMemoryPrompt(session: ChatSession) {
     actions: [
       <IconButton
         key="copy"
-        icon={<CopyIcon/>}
+        icon={<CopyIcon />}
         bordered
         text={Locale.Memory.Copy}
         onClick={() => copyToClipboard(session.memoryPrompt)}
@@ -120,22 +120,22 @@ function showMemoryPrompt(session: ChatSession) {
 const Markdown = dynamic(
   async () => memo((await import("@/components/markdown")).Markdown),
   {
-    loading: () => <LoadingIcon/>,
-  },
+    loading: () => <LoadingIcon />,
+  }
 );
 
 export function Chat() {
   const email = useUserStore((state) => state.email);
 
-  const {data: PlanAndInviteCode, isLoading: PlanLoading} = useSWR(
+  const { data: PlanAndInviteCode, isLoading: PlanLoading } = useSWR(
     "/api/user/info",
     (url) =>
       fetcher(url, {
-        headers: {email},
+        headers: { email },
       }).then((res) => res.json())
   );
 
-  const {role: plan, inviteCode: inviteCode} = PlanAndInviteCode ?? {
+  const { role: plan, inviteCode: inviteCode } = PlanAndInviteCode ?? {
     role: "free",
     inviteCode: "",
   };
@@ -152,7 +152,7 @@ export function Chat() {
   );
   const [userInput, setUserInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const {submitKey, shouldSubmit} = useSubmitHandler();
+  const { submitKey, shouldSubmit } = useSubmitHandler();
 
   const onUserInput = useChatStore((state) => state.onUserInput);
 
@@ -167,7 +167,7 @@ export function Chat() {
         if (userInput.includes(keywords[i])) {
           showModal({
             title: `Ad`,
-            children: <Post/>,
+            children: <Post />,
           });
         }
       }
@@ -229,25 +229,25 @@ export function Chat() {
     .concat(
       isLoading
         ? [
-          {
-            role: "assistant",
-            content: "……",
-            date: new Date().toLocaleString(),
-            preview: true,
-          },
-        ]
+            {
+              role: "assistant",
+              content: "……",
+              date: new Date().toLocaleString(),
+              preview: true,
+            },
+          ]
         : []
     )
     .concat(
       userInput.length > 0
         ? [
-          {
-            role: "user",
-            content: userInput,
-            date: new Date().toLocaleString(),
-            preview: true,
-          },
-        ]
+            {
+              role: "user",
+              content: userInput,
+              date: new Date().toLocaleString(),
+              preview: true,
+            },
+          ]
         : []
     );
 
@@ -267,24 +267,24 @@ export function Chat() {
   return (
     <div className={styles.chat} key={session.id}>
       <div className={styles["window-header"]}>
-        {plan != "free" && (
-          <div
-            className={styles["window-header-title"]}
-            onClick={() => setSideBarOpen(true)}
-          >
-            <div className={styles["window-header-main-title"]}>
-              {session.topic}
-            </div>
-            <div className={styles["window-header-sub-title"]}>
-              {Locale.Chat.SubTitle(session.messages.length)}
-            </div>
+        {/*{plan != "free" && (*/}
+        <div
+          className={styles["window-header-title"]}
+          onClick={() => setSideBarOpen(true)}
+        >
+          <div className={styles["window-header-main-title"]}>
+            {session.topic}
           </div>
-        )}
-        {plan == "free" && <Banner/>}
+          <div className={styles["window-header-sub-title"]}>
+            {Locale.Chat.SubTitle(session.messages.length)}
+          </div>
+        </div>
+        {/*)}*/}
+        {plan == "free" && <Banner />}
         <div className={styles["window-actions"]}>
           <div className={styles["window-action-button"] + " " + styles.mobile}>
             <IconButton
-              icon={<MenuIcon/>}
+              icon={<MenuIcon />}
               bordered
               title={Locale.Chat.Actions.ChatList}
               onClick={() => setSideBarOpen(true)}
@@ -292,7 +292,7 @@ export function Chat() {
           </div>
           <div className={styles["window-action-button"]}>
             <IconButton
-              icon={<BrainIcon/>}
+              icon={<BrainIcon />}
               bordered
               title={Locale.Chat.Actions.CompressedHistory}
               onClick={() => {
@@ -302,7 +302,7 @@ export function Chat() {
           </div>
           <div className={styles["window-action-button"]}>
             <IconButton
-              icon={<ExportIcon/>}
+              icon={<ExportIcon />}
               bordered
               title={Locale.Chat.Actions.Export}
               onClick={() => {
@@ -326,7 +326,7 @@ export function Chat() {
             >
               <div className={styles["chat-message-container"]}>
                 <div className={styles["chat-message-avatar"]}>
-                  <Avatar role={message.role}/>
+                  <Avatar role={message.role} />
                 </div>
                 {(message.preview || message.streaming) && (
                   <div className={styles["chat-message-status"]}>
@@ -362,13 +362,13 @@ export function Chat() {
                   )}
                   {(message.preview || message.content.length === 0) &&
                   !isUser ? (
-                    <LoadingIcon/>
+                    <LoadingIcon />
                   ) : (
                     <div
                       className="markdown-body"
                       onContextMenu={(e) => onRightClick(e, message)}
                     >
-                      <Markdown content={message.content}/>
+                      <Markdown content={message.content} />
                     </div>
                   )}
                 </div>
@@ -388,7 +388,7 @@ export function Chat() {
             </div>
           );
         })}
-        <div ref={latestMessageRef} style={{opacity: 0, height: "2em"}}>
+        <div ref={latestMessageRef} style={{ opacity: 0, height: "2em" }}>
           -
         </div>
       </div>
@@ -408,7 +408,7 @@ export function Chat() {
             autoFocus={sidebarOpen}
           />
           <IconButton
-            icon={<SendWhiteIcon/>}
+            icon={<SendWhiteIcon />}
             text={Locale.Chat.Send}
             className={styles["chat-input-send"] + " no-dark"}
             onClick={onUserSubmit}

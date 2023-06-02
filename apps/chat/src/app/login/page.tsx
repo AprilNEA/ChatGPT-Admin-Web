@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import Link from "next/link";
 import { useUserStore } from "@/store";
 
 import { showToast } from "@/components/ui-lib";
@@ -8,7 +9,6 @@ import { ResponseStatus } from "@/app/api/typing.d";
 import { useRouter } from "next/navigation";
 import Locales from "@/locales";
 import { ReturnButton } from "@/components/ui-lib";
-import Locale from "@/locales";
 
 import styles from "./login.module.scss";
 
@@ -96,6 +96,9 @@ export default function Login() {
               required
             />
           </div>
+          <Link href="/forget" className={styles["forgot-password"]}>
+            Forgot Password?
+          </Link>
           <div className={styles["button-container"]}>
             <button
               className={styles["login-form-submit"]}
