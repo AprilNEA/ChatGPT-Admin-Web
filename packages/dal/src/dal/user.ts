@@ -1,8 +1,8 @@
 import md5 from "spark-md5";
-import { ServerError, serverStatus } from "@caw/types";
+import { ServerError, serverStatus, DALType } from "@caw/types";
 import client, { Prisma, type User } from "@caw/database";
 
-import { sign, verify } from "../utils";
+import { accessTokenUtils } from "../utils";
 
 type userProvider = "email" | "phone" | "wechat";
 
@@ -64,30 +64,53 @@ export class UserDAL {
    * @param phone
    * @param wechatInfo
    * @param password
+   * @param registerCode
    * @param invitationCode
    */
   async register({
     email,
     phone,
-    wechatInfo,
     password,
+    wechatInfo,
+    registerCode,
     invitationCode,
   }: {
     email?: string;
     phone?: string;
+    password?: string;
     wechatInfo?: {
       unionId: string;
       name: string;
       openId: string;
     };
-    password?: string;
+    registerCode?: string;
     invitationCode?: string;
-  }) {
-    if (email || password) {
+  }): Promise<DALType.UserRegister> {
+    /* 当不使用微信注册时，必须输入密码
+     * When not using WeChat to register, you must enter your password
+     * */
+    if (email || phone) {
+      if (email && phone)
+        throw Error("Cannot pass both email and phone at one time");
       if (!password)
         throw Error(
           "The password must be registered at the time of using cell phone number or email"
         );
+      if (!registerCode)
+        throw Error(
+          "The code must be registered at the time of using cell phone number or email"
+        );
+
+      /* 效验验证码
+       * Validation code
+       * */
+      const validationCode = await client.registerCode.findUniqueOrThrow({
+        where: {
+          register: email ?? phone,
+        },
+      });
+      if (validationCode.code.toString() !== registerCode)
+        throw new ServerError(serverStatus.wrongPassword, "Password error");
     } else {
       if (!wechatInfo) throw Error("Information must be supplied to register");
     }
@@ -161,6 +184,13 @@ export class UserDAL {
         where: {
           code: invitationCode,
         },
+        include: {
+          owner: {
+            select: {
+              name: true,
+            },
+          },
+        },
       });
 
       if (code) {
@@ -184,8 +214,22 @@ export class UserDAL {
          * TODO Some invitation may have some benefit
          * */
       }
+      return {
+        invitation: {
+          status: serverStatus.success,
+          inviter: code?.owner?.name ? code.owner.name : undefined,
+        },
+        signedToken: await accessTokenUtils.sign(7 * 24 * (60 * 60), {
+          uid: user.userId,
+        }),
+      };
     }
-    return user;
+
+    return {
+      signedToken: await accessTokenUtils.sign(7 * 24 * (60 * 60), {
+        uid: user.userId,
+      }),
+    };
   }
 
   /**
@@ -222,7 +266,8 @@ export class UserDAL {
     });
     if (!user) throw Error("Unable to find User");
     if (md5.hash(password) != user.passwordHash) throw Error("");
-    return sign({ email });
+    /* default session duration is a week */
+    return accessTokenUtils.sign(7 * 24 * (60 * 60), { uid: user.userId });
   }
 
   async getCurrentSubscription() {}
