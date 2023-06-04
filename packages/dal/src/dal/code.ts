@@ -18,7 +18,7 @@ export class CodeDAL {
    * Get verification code
    * @param register Verification Information
    */
-  async getCode(register: string): Promise<RegisterCode | null> {
+  static async getCode(register: string): Promise<RegisterCode | null> {
     return client.registerCode.findUnique({
       where: {
         register: register,
@@ -32,21 +32,21 @@ export class CodeDAL {
    * @param register 注册信息 手机号或邮箱地址
    * @return 返回过期的时间戳
    */
-  async newCode({
+  static async newCode({
     type,
     register,
   }: {
     type: RegisterType;
     register: string;
-  }): Promise<{ expiredAt: number }> {
+  }): Promise<RegisterCode> {
     const expiredTimeStamp = Date.now() + 600 * 1000 * 10;
-    const code: Prisma.RegisterCodeCreateInput = {
+    const codeInput: Prisma.RegisterCodeCreateInput = {
       type: type,
       register: register,
       code: generateRandomSixDigitNumber(),
       expiredAt: new Date(expiredTimeStamp), // 默认十分钟
     };
-    return { expiredAt: expiredTimeStamp };
+    return await client.registerCode.create({ data: codeInput });
   }
 
   /**
@@ -55,7 +55,7 @@ export class CodeDAL {
    * @param codeProvided 需要被验证的验证码
    * @return 验证码是否一致
    */
-  async validationCode({
+  static async validationCode({
     register,
     codeProvided,
   }: {
@@ -72,7 +72,7 @@ export class CodeDAL {
    * @param userId 用户主键
    * @param createIfNull 当用户无邀请码时是否自动生成并返回
    */
-  async getInvitationCode(
+  static async getInvitationCode(
     userId: number,
     createIfNull: boolean = true
   ): Promise<InvitationCode[]> {
