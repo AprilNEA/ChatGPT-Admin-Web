@@ -1,13 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
+import { UserDAL } from "@caw/dal";
 import {
-  UserDAL,
-  UserLogic,
-  RegisterCodeLogic,
-  InvitationCodeLogic,
-  AccessControlLogic,
-} from "database";
-import { ResponseStatus } from "@/app/api/typing.d";
-import { REPLServer } from "repl";
+  ServerError,
+  serverStatus,
+  ChatRequest,
+  ChatResponse,
+} from "@caw/types";
 
 const ifVerifyCode = !!process.env.NEXT_PUBLIC_EMAIL_SERVICE;
 
@@ -17,59 +15,35 @@ const ifVerifyCode = !!process.env.NEXT_PUBLIC_EMAIL_SERVICE;
  * @constructor
  */
 export async function POST(req: NextRequest): Promise<Response> {
+  /* TODO Next.js currently does not support the return type description
+   * The correct return type here maybe look like Promise<NextResponse<ChatResponse.UserRegister>>
+   * */
   try {
-    const { email, password, code, code_type, phone, invitation_code } =
-      await req.json();
-
-    const userDal = new UserDAL();
-    if (await userDal.exists(email)) {
-      // User already exists.
-      return NextResponse.json({ status: ResponseStatus.alreadyExisted });
-    }
+    const {
+      email,
+      phone,
+      password,
+      register_code: registerCode,
+      invitation_code: invitationCode,
+    } = await ChatRequest.UserRegisterPost.parseAsync(await req.json());
 
     /* Activation verification code */
-    if (ifVerifyCode) {
-      const registerCodeLogic = new RegisterCodeLogic();
-      const success = await registerCodeLogic.activateCode(email, code.trim());
-
-      if (!success)
-        return NextResponse.json({ status: ResponseStatus.invalidCode });
-    }
-
-    const user = new UserLogic();
-    await user.register(email, password);
-
-    // If using an invitation code to register,
-    // then determine the type of activation code and grant corresponding rights.
-    if (invitation_code) {
-      const invitationCode = new InvitationCodeLogic();
-
-      const code = await invitationCode.acceptCode(
-        email,
-        invitation_code.toLowerCase()
-      );
-      // await user.newSubscription({
-      //   startsAt: Date.now(),
-      //   endsAt: Date.now() + 3 * 60 * 60 * 24 * 1000,
-      //   plan: "pro",
-      //   tradeOrderId: `club-code-${invitation_code.toLowerCase()}`,
-      // });
-    }
-
-    // After registration, directly generate a JWT Token and return it.
-    const accessControl = new AccessControlLogic();
-    const tokenGenerator = await accessControl.newJWT(email);
-    if (!tokenGenerator)
-      return NextResponse.json({
-        status: ResponseStatus.Failed,
-      });
-    const { token: sessionToken, exp } = tokenGenerator;
-    return NextResponse.json({
-      status: ResponseStatus.Success,
-      sessionToken,
-      exp,
+    const result = await new UserDAL().register({
+      email,
+      phone: phone.toString(),
+      password,
+      registerCode: registerCode.toString(),
+      invitationCode,
     });
+
+    return NextResponse.json({
+      status: serverStatus.success,
+      ...result,
+    } as ChatResponse.UserRegister);
   } catch (error) {
+    if (error instanceof ServerError)
+      return NextResponse.json({ status: error.errorCode, msg: error.message });
+
     console.error("[REGISTER]", error);
     return new Response("[INTERNAL ERROR]", { status: 500 });
   }

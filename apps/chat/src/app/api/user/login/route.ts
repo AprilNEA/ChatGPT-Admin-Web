@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { UserLogic, AccessControlLogic } from "database";
+import { UserLogic, AccessControlLogic } from "database-old";
 import { ResponseStatus } from "@/app/api/typing.d";
 
 export async function POST(req: NextRequest) {
@@ -16,12 +16,12 @@ export async function POST(req: NextRequest) {
 
     if (!tokenGenerator)
       return NextResponse.json({
-        status: ResponseStatus.Failed,
+        status: ResponseStatus.failed,
       });
 
     const { token: sessionToken, exp } = tokenGenerator;
     return NextResponse.json({
-      status: ResponseStatus.Success,
+      status: ResponseStatus.success,
       sessionToken,
       exp,
     });

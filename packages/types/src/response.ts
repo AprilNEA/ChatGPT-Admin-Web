@@ -5,6 +5,11 @@ export namespace ChatResponse {
   export interface UserRegister extends DALType.UserRegister {
     status: serverStatus;
   }
+
+  export interface UserRegisterCode {
+    status: serverStatus;
+    expiredAt: Date;
+  }
 }
 
 export interface RegisterResponse {

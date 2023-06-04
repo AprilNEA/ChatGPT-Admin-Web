@@ -1,7 +1,7 @@
 import type { ChatRequest, ChatReponse } from "@/app/api/bots/typing";
 import { filterConfig, Message, ModelConfig, useUserStore } from "@/store";
 import Locale from "@/locales";
-import { LimitReason } from "@/typing.d";
+// import { LimitReason } from "@/typing.d";
 import fetcher from "@/utils/fetcher";
 
 /* 请求的超时时间 */
@@ -142,12 +142,12 @@ export async function requestChatStream(
         case 429:
           const data = await res.json();
           switch (data.code) {
-            case LimitReason.TooMany:
-              responseText = Locale.Error.TooManyRequests;
-              break;
-            case LimitReason.TooFast:
-              responseText = Locale.Error.TooFastRequests;
-              break;
+            // case LimitReason.TooMany:
+            //   responseText = Locale.Error.TooManyRequests;
+            //   break;
+            // case LimitReason.TooFast:
+            //   responseText = Locale.Error.TooFastRequests;
+            //   break;
             default:
               break;
           }

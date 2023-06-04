@@ -1,26 +1,12 @@
-import {NextRequest, NextResponse} from "next/server";
-import {UserLogic, InvitationCodeLogic} from "database";
-import {ResponseStatus} from "@/app/api/typing.d";
+import { NextRequest, NextResponse } from "next/server";
+import { serverStatus } from "@caw/types";
 
 const cache = new Map();
 
 export async function GET(req: NextRequest) {
-  const email = req.headers.get("email")!;
-
-  const user = new UserLogic();
-
-  const role = (await user.getRoleOf(email)) ?? "user";
-  const plan = (await user.getPlanOf(email)) ?? "free";
-
-  const resetChances = (await user.getResetChancesOf(email)) ?? 0;
-
   return NextResponse.json({
-    status: ResponseStatus.Success,
-    email,
-    role,
-    plan,
-    resetChances,
+    status: serverStatus.success,
   });
 }
 
-export const runtime = 'edge';
+export const runtime = "edge";

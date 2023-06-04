@@ -1,44 +1,43 @@
 import { NextRequest, NextResponse } from "next/server";
-import { RegisterCodeLogic, RegisterReturnStatus } from "database";
+import { CodeDAL, RegisterType } from "@caw/dal";
+
+import { ChatRequest, ChatResponse, serverStatus } from "@caw/types";
+
 import { sendEmail } from "@/lib/email";
-import { ResponseStatus } from "@/app/api/typing.d";
+import { serverErrorCatcher } from "@/app/api/catcher";
 
 /**
  * Request verification code.
  * @param req
  * @constructor
  */
-export async function GET(req: NextRequest): Promise<Response> {
-  const { searchParams } = new URL(req.url);
+export const GET = serverErrorCatcher(
+  async (req: NextRequest): Promise<Response> => {
+    const { searchParams } = new URL(req.url);
 
-  const email = searchParams.get("email");
+    const { type, value } = await ChatRequest.UserRegisterCodeGet.parseAsync(
+      searchParams
+    );
 
-  if (!email) return NextResponse.json({ status: ResponseStatus.notExist });
-
-  // Logic will automatically check the speed.
-  const registerCode = new RegisterCodeLogic();
-  const codeData = await registerCode.newCode(email);
-
-  switch (codeData.status) {
-    case RegisterReturnStatus.Success:
-      await sendEmail(email, codeData?.code);
-      // @ts-ignore
-      delete codeData.code;
-      return NextResponse.json({
-        status: ResponseStatus.Success,
-        code_data: codeData,
-      });
-    case RegisterReturnStatus.AlreadyRegister:
-      return NextResponse.json({ status: ResponseStatus.alreadyExisted });
-    case RegisterReturnStatus.TooFast:
-      return NextResponse.json({ status: ResponseStatus.tooFast });
-    case RegisterReturnStatus.UnknownError:
-    default:
-      return NextResponse.json(
-        { status: ResponseStatus.unknownError },
-        { status: 500 }
-      );
+    // Logic will automatically check the speed.
+    const result = await CodeDAL.newCode({
+      type: type as RegisterType,
+      register: value,
+    });
+    switch (result.type) {
+      case RegisterType.Email:
+        // TODO 完善类型说明 @ Dc Amy
+        await sendEmail(result.register, result.code);
+        break;
+      case RegisterType.Phone:
+        // TODO
+        break;
+    }
+    return NextResponse.json({
+      status: serverStatus.success,
+      expiredAt: result.expiredAt,
+    } as ChatResponse.UserRegisterCode);
   }
-}
+);
 
-export const runtime = 'edge';
+export const runtime = "edge";
