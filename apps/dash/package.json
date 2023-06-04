@@ -31,7 +31,7 @@
   "dependencies": {
     "@geist-ui/core": "^2.3.8",
     "chart.js": "^4.3.0",
-    "database": "workspace:*",
+    "database-old": "workspace:*",
     "next": "^13.4.2",
     "react": "^18.2.0",
     "react-chartjs-2": "^5.2.0",
