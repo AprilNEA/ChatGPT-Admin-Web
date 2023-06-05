@@ -1,2 +1,0 @@
-.png filter=lfs diff=lfs merge=lfs -text
-docs/*.svg filter=lfs diff=lfs merge=lfs -text
