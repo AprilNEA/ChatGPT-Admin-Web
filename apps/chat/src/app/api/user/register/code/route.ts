@@ -21,13 +21,24 @@ export async function GET(req: NextRequest): Promise<Response> {
 
   switch (codeData.status) {
     case RegisterReturnStatus.Success:
-      await sendEmail(email, codeData?.code);
-      // @ts-ignore
-      delete codeData.code;
-      return NextResponse.json({
-        status: ResponseStatus.Success,
-        code_data: codeData,
-      });
+      try {
+        await sendEmail(email, codeData?.code);
+        // @ts-ignore
+        delete codeData.code;
+        return NextResponse.json({
+          status: ResponseStatus.Success,
+          code_data: codeData,
+        });
+      } catch(e) {
+        if(e instanceof Error) {
+          return NextResponse.json({ status: ResponseStatus.upstreamServiceFailure, message: e.message }, { status: 500 });
+        } else {
+          return NextResponse.json(
+            { status: ResponseStatus.unknownError, },
+            { status: 500 }
+          );
+        }
+      }
     case RegisterReturnStatus.AlreadyRegister:
       return NextResponse.json({ status: ResponseStatus.alreadyExisted });
     case RegisterReturnStatus.TooFast:

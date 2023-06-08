@@ -10,6 +10,7 @@ export enum ResponseStatus {
   contentBlock,
   wrongPassword,
   unknownError,
+  upstreamServiceFailure
 }
 
 export enum ReturnStatus {

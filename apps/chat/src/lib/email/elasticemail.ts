@@ -24,5 +24,9 @@ export default async function sendEmail(to: string, code: string | number) {
     body: formData,
   });
 
-  return response.ok;
+  if (response.ok) {
+    return true;
+  } else {
+    throw new Error(`elasticemail api error: code ${response.status}, ${response.body}`);
+  }
 }

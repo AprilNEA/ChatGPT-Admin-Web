@@ -29,5 +29,9 @@ export default async function sendEmail(
     body: formData.toString(),
   });
 
-  return response.ok;
+  if (response.ok) {
+    return true;
+  } else {
+    throw new Error(`mailgun api error: code ${response.status}, ${response.body}`);
+  }
 }

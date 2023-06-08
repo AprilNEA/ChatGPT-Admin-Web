@@ -48,6 +48,6 @@ export default async function sendEmail(to: string, code: string | number) {
     console.log(await response.text());
     return true;
   } else {
-    throw new Error("Network response was not ok.");
+    throw new Error(`stmpjs api error: code ${response.status}, ${response.body}`);
   }
 }
