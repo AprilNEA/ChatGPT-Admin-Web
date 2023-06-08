@@ -97,7 +97,7 @@ export default function Register() {
         }
       )
     ).json();
-
+    
     switch (res.status) {
       case ResponseStatus.Success: {
         switch (res.code_data.status) {
@@ -124,6 +124,11 @@ export default function Register() {
       }
       case ResponseStatus.tooFast: {
         showToast(Locales.Index.RequestVeriCodeTooFrequently);
+        break;
+      }
+      case ResponseStatus.upstreamServiceFailure: {
+        // more info about failure is in res.message
+        showToast(Locales.Index.FailToSendEmail);
         break;
       }
       default: {
