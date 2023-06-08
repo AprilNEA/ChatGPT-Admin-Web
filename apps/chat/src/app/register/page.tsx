@@ -109,7 +109,7 @@ export default function Register() {
             showToast(Locales.Index.DuplicateRegistration);
             break;
           case 2:
-            showToast("请求验证码过快，请稍后再试!");
+            showToast(Locales.Index.RequestVeriCodeTooFrequently);
             break;
           case 4:
           default:
@@ -122,8 +122,12 @@ export default function Register() {
         showToast(Locales.Index.EmailNonExistent);
         break;
       }
+      case ResponseStatus.tooFast: {
+        showToast(Locales.Index.RequestVeriCodeTooFrequently);
+        break;
+      }
       default: {
-        showToast(Locales.UnknownError);
+        showToast("请求验证码过快，请稍后再试!");
         break;
       }
     }

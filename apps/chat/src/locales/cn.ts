@@ -20,6 +20,7 @@ const cn = {
     DuplicateRegistration: "该邮箱已被注册",
     CodeError: "验证码错误",
     PasswordError: "密码错误",
+    RequestVeriCodeTooFrequently: "请求验证码过快，请稍后再试!"
   },
   UnknownError: "未知错误，请联系管理员",
   WIP: "该功能仍在开发中……",
