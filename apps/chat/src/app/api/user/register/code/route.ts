@@ -30,13 +30,12 @@ export async function GET(req: NextRequest): Promise<Response> {
           code_data: codeData,
         });
       } catch(e) {
+        // TODO: delete the code in db (because the code is not sent to user,
+        // not deleting will prevent generating new code for this email next time before the code is expired)
         if(e instanceof Error) {
           return NextResponse.json({ status: ResponseStatus.upstreamServiceFailure, message: e.message }, { status: 500 });
         } else {
-          return NextResponse.json(
-            { status: ResponseStatus.unknownError, },
-            { status: 500 }
-          );
+          return NextResponse.json({ status: ResponseStatus.unknownError, }, { status: 500 });
         }
       }
     case RegisterReturnStatus.AlreadyRegister:
