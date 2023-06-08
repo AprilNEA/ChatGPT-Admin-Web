@@ -102,7 +102,7 @@ export default function Register() {
       case ResponseStatus.Success: {
         switch (res.code_data.status) {
           case 0:
-            showToast("验证码成功发送!");
+            showToast(Locales.Index.VeriCodeSent);
             setIsSending(true);
             break;
           case 1:
