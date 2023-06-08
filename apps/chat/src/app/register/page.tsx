@@ -127,7 +127,7 @@ export default function Register() {
         break;
       }
       default: {
-        showToast("请求验证码过快，请稍后再试!");
+        showToast(Locales.UnknownError);
         break;
       }
     }
