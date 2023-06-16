@@ -1,6 +1,7 @@
 import useSWR from "swr";
+import { serverStatus } from "@caw/types";
+
 import { showModal } from "@/components/ui-lib";
-import { ResponseStatus } from "@/app/api/typing.d";
 import { useNoticeStore } from "@/store";
 import { Markdown } from "@/components/markdown";
 
@@ -22,7 +23,7 @@ export function useNotice() {
         .then((res) => res.json())
         .then((res) => {
           switch (res.status) {
-            case ResponseStatus.Success:
+            case serverStatus.success:
               return res.notice as string;
             default:
               return null;

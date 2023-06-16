@@ -1,10 +1,11 @@
-import Link from "next/link";
+import useSWR from "swr";
+import dynamic from "next/dynamic";
+import { useLayoutEffect, useRef, useState, memo } from "react";
+import { StoreType } from "@caw/types";
 
 import { Message, useChatStore, useSettingStore, useUserStore } from "@/store";
 import { ChatSession } from "@/store/chat/typing";
-import { SubmitKey } from "@/store/setting/typing";
 
-import { useLayoutEffect, useRef, useState, memo } from "react";
 import { ControllerPool } from "@/utils/requests";
 import {
   copyToClipboard,
@@ -12,6 +13,7 @@ import {
   isIOS,
   selectOrCopy,
 } from "@/utils/utils";
+import fetcher from "@/utils/fetcher";
 import styles from "@/styles/module/home.module.scss";
 import Locale from "@/locales";
 
@@ -26,13 +28,9 @@ import UserIcon from "@/assets/icons/user.svg";
 import ShoppingIcon from "@/assets/icons/shopping.svg";
 
 import { Avatar } from "@/components/avatar";
+import Banner, { Post } from "@/components/banner";
 import { IconButton } from "@/components/button";
 import { showModal } from "@/components/ui-lib";
-
-import dynamic from "next/dynamic";
-import Banner, { Post } from "@/components/banner";
-import useSWR from "swr";
-import fetcher from "@/utils/fetcher";
 
 function useSubmitHandler() {
   const config = useSettingStore((state) => state.config);
@@ -42,10 +40,10 @@ function useSubmitHandler() {
     if (e.key !== "Enter") return false;
 
     return (
-      (config.submitKey === SubmitKey.AltEnter && e.altKey) ||
-      (config.submitKey === SubmitKey.CtrlEnter && e.ctrlKey) ||
-      (config.submitKey === SubmitKey.ShiftEnter && e.shiftKey) ||
-      (config.submitKey === SubmitKey.Enter &&
+      (config.submitKey === StoreType.SubmitKey.AltEnter && e.altKey) ||
+      (config.submitKey === StoreType.SubmitKey.CtrlEnter && e.ctrlKey) ||
+      (config.submitKey === StoreType.SubmitKey.ShiftEnter && e.shiftKey) ||
+      (config.submitKey === StoreType.SubmitKey.Enter &&
         !e.altKey &&
         !e.ctrlKey &&
         !e.shiftKey &&

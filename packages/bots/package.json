@@ -1,5 +1,5 @@
 {
-  "name": "bots",
+  "name": "@caw/bots",
   "version": "0.0.1",
   "description": "The bots part in ChatGPT-Admin-Web",
   "keywords": [

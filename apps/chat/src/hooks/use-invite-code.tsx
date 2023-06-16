@@ -2,7 +2,7 @@ import useSWR from "swr";
 import fetcher from "@/utils/fetcher";
 import { useUserStore } from "@/store";
 import { showToast } from "@/components/ui-lib";
-import { ResponseStatus } from "@/app/api/typing.d";
+import { serverStatus } from "@caw/types";
 
 export function useInviteCode(shouldGetInviteCode: boolean) {
   const [inviteCode, updateInviteCode] = useUserStore((store) => [
@@ -19,10 +19,10 @@ export function useInviteCode(shouldGetInviteCode: boolean) {
         .then((res) => res.json())
         .then((res) => {
           switch (res.status) {
-            case ResponseStatus.Success:
+            case serverStatus.success:
               showToast(`邀请码获取成功：${res.inviteCode}`);
               return res.inviteCode;
-            case ResponseStatus.Failed:
+            case serverStatus.failed:
             default:
               showToast("邀请码获取失败");
               return null;

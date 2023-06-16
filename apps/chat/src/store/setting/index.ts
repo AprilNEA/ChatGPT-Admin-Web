@@ -1,24 +1,19 @@
-import {create} from "zustand";
-import {persist} from "zustand/middleware";
-import {
-  Theme,
-  SubmitKey,
-  ChatConfig,
-  SettingStore,
-} from "@/store/setting/typing";
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import { StoreType } from "@caw/types";
 
 const LOCAL_KEY = "setting-store";
 
 /***
  * 默认设置, 用于初始化以及重置
  */
-const DEFAULT_CONFIG: ChatConfig = {
+const DEFAULT_CONFIG: StoreType.ChatConfig = {
   historyMessageCount: 8,
   compressMessageLengthThreshold: 1000,
   sendBotMessages: true as boolean,
-  submitKey: SubmitKey.Enter as SubmitKey,
+  submitKey: StoreType.SubmitKey.Enter as StoreType.SubmitKey,
   avatar: "1f603",
-  theme: Theme.Auto as Theme,
+  theme: StoreType.Theme.Auto as StoreType.Theme,
   tightBorder: true,
 
   modelConfig: {
@@ -29,7 +24,7 @@ const DEFAULT_CONFIG: ChatConfig = {
   },
 };
 
-export const useSettingStore = create<SettingStore>()(
+export const useSettingStore = create<StoreType.SettingStore>()(
   persist(
     (set, get) => ({
       config: {
@@ -37,7 +32,7 @@ export const useSettingStore = create<SettingStore>()(
       },
 
       resetConfig() {
-        set(() => ({config: {...DEFAULT_CONFIG}}));
+        set(() => ({ config: { ...DEFAULT_CONFIG } }));
       },
 
       getConfig() {
@@ -47,8 +42,8 @@ export const useSettingStore = create<SettingStore>()(
       updateConfig(updater) {
         const config = get().config;
         updater(config);
-        set(() => ({config: {...config}}));
-      }
+        set(() => ({ config: { ...config } }));
+      },
     }),
     {
       name: LOCAL_KEY,

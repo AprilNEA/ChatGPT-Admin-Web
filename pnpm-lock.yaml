@@ -10,6 +10,9 @@ importers:
 
   apps/chat:
     dependencies:
+      '@caw/bots':
+        specifier: workspace:*
+        version: link:../../packages/bots
       '@caw/dal':
         specifier: workspace:*
         version: link:../../packages/dal
@@ -49,9 +52,6 @@ importers:
       array.prototype.at:
         specifier: ^1.1.1
         version: 1.1.1
-      bots:
-        specifier: workspace:*
-        version: link:../../packages/bots
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
@@ -121,6 +121,9 @@ importers:
       typescript:
         specifier: 4.9.5
         version: 4.9.5
+      xml-js:
+        specifier: ^1.6.11
+        version: 1.6.11
       zod:
         specifier: ^3.21.4
         version: 3.21.4
@@ -408,6 +411,9 @@ importers:
 
   packages/types:
     dependencies:
+      openai:
+        specifier: ^3.2.1
+        version: 3.2.1
       zod:
         specifier: ^3.21.4
         version: 3.21.4

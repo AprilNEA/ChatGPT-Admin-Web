@@ -21,8 +21,8 @@
   },
   "scripts": {
     "docusaurus": "docusaurus",
-    "dev": "docusaurus start -p 3002",
-    "build": "docusaurus build",
+    "dev-docs": "docusaurus start -p 3002",
+    "build-docs": "docusaurus build",
     "swizzle": "docusaurus swizzle",
     "deploy": "docusaurus deploy",
     "clear": "docusaurus clear",

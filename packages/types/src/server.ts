@@ -2,17 +2,27 @@ export enum serverStatus {
   success,
 
   failed,
+  unknownError,
+
+  /* Authentication */
   authFailed,
-
-  tooFast,
-
   invalidCode,
   wrongPassword,
+  invalidToken,
 
-  notExist,
-  alreadyExisted,
+  /* Rate Limit*/
+  tooFast,
+  tooMany,
+  notEnoughChances,
 
+  /* Content Safe */
   contentBlock,
+  contentNotSafe,
 
-  unknownError,
+  /* General */
+  notExist,
+  userNotExist,
+
+  alreadyExisted,
+  userAlreadyExisted,
 }

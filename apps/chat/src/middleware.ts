@@ -1,22 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { jwt } from "database";
+// import { accessTokenUtils } from "@caw/dal";
+import { getRuntime } from "@/utils";
 
-const cache = new Map();
-
-const limit = {
-  "/api/user/info": {
-    limit: 10,
-    window: "1m",
-  },
-  "/api/user/login": {
-    limit: 10,
-    window: "1m",
-  },
-  "/api/user/register": {
-    limit: 10,
-    window: "1m",
-  },
-};
+export const runtime = getRuntime();
 
 export const config = {
   /**
@@ -43,12 +29,14 @@ export async function middleware(req: NextRequest) {
   try {
     /* The user will bring the JWT Token in the header
     and parse out the payload here before passing it to the next layer. */
-    const token = req.headers.get("Authorization");
-
-    if (!token) return NextResponse.json({}, { status: 403 });
-    const { email } = (await jwt.verify(token)) as unknown as {
-      email: string;
-    };
+    // const token = req.headers.get("Authorization");
+    //
+    // if (!token) return NextResponse.json({}, { status: 403 });
+    // const { uid: userId } = (await accessTokenUtils.verify(
+    //   token
+    // )) as unknown as {
+    //   uid: number;
+    // };
 
     /* TODO The global rate limit according to the request path with cache */
     // const limiter = await KeywordRateLimiter.of({
@@ -58,17 +46,15 @@ export async function middleware(req: NextRequest) {
     // if (success) return
 
     /* TODO Rate limit info may require here to get*/
-
-    console.debug("[Middleware]", req.nextUrl.pathname, email);
-
+    return NextResponse.next();
     /* Pass user data */
-    return NextResponse.next({
-      request: {
-        headers: setHeaders(req.headers, {
-          email,
-        }),
-      },
-    });
+    // return NextResponse.next({
+    //   request: {
+    //     headers: setHeaders(req.headers, {
+    //       userId,
+    //     }),
+    //   },
+    // });
   } catch (e) {
     /* Check for validity */
     return NextResponse.json({}, { status: 401 });

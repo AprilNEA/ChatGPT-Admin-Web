@@ -3,9 +3,11 @@ import { ServerError, serverStatus, DALType } from "@caw/types";
 import client, { Prisma, type User } from "@caw/database";
 
 import { accessTokenUtils } from "../utils";
+import { dalErrorCatcher } from "../decorator";
 
-type userProvider = "email" | "phone" | "wechat";
+export type providerType = "email" | "phone" | "wechat";
 
+@dalErrorCatcher
 export class UserDAL {
   constructor() {}
 
@@ -13,40 +15,32 @@ export class UserDAL {
    * 根据主键获取用户
    * @param id 主键，自增主键
    */
-  async getUser(id: number): Promise<User | null> {
+  static async getUser(id: number): Promise<User | null> {
     return client.user.findUnique({ where: { userId: id } });
   }
 
   /**
    * 根据唯一信息搜索用户
-   * @param findType
-   * @param email
-   * @param phone
-   * @param unionId
    */
-  async findUser({
-    findType,
-    email,
-    phone,
-    unionId,
+  static async findUser({
+    providerId,
+    providerContent,
   }: {
-    findType: userProvider;
-    email?: string;
-    phone?: string;
-    unionId?: string;
+    providerId: providerType;
+    providerContent: string;
   }): Promise<User | null> {
-    switch (findType) {
+    switch (providerId) {
       case "email":
         return client.user.findUnique({
-          where: { email: email },
+          where: { email: providerContent },
         });
       case "phone":
         return client.user.findUnique({
-          where: { phone: phone },
+          where: { phone: providerContent },
         });
       case "wechat":
         const wechatInfo = await client.wechatInfo.findUnique({
-          where: { unionId: unionId },
+          where: { unionId: providerContent },
           include: {
             user: true,
           },
@@ -67,7 +61,7 @@ export class UserDAL {
    * @param registerCode
    * @param invitationCode
    */
-  async register({
+  static async register({
     email,
     phone,
     password,
@@ -235,39 +229,58 @@ export class UserDAL {
   /**
    * 登录
    * @param loginType
-   * @param email
-   * @param phone
-   * @param unionId
-   * @param password
    */
-  async login({
-    loginType,
-    email,
-    phone,
-    unionId,
-    password,
+  static async login({
+    providerId,
+    providerContent,
   }: {
-    loginType: userProvider;
-    email?: string;
-    phone?: string;
-    unionId?: string;
-    password: string;
-  }) {
-    if (email || password) {
-      if (!password) throw Error("Password must be provided");
-    } else {
-      if (!unionId) throw Error("Please provide information");
+    providerId: providerType;
+    providerContent: { content: string; password?: string };
+  }): Promise<DALType.UserLogin> {
+    if (providerId !== "wechat" && !providerContent.password) {
+      throw Error("password must be provided when login by email and phone");
     }
     const user = await this.findUser({
-      findType: loginType,
-      email,
-      phone,
-      unionId,
+      providerId,
+      providerContent: providerContent.content,
     });
-    if (!user) throw Error("Unable to find User");
-    if (md5.hash(password) != user.passwordHash) throw Error("");
+    if (!user)
+      throw new ServerError(serverStatus.userNotExist, "user does not exist");
+    if (
+      providerId !== "wechat" &&
+      md5.hash(providerContent.password ?? "") != user.passwordHash
+    )
+      throw new ServerError(serverStatus.wrongPassword, "password not right");
     /* default session duration is a week */
-    return accessTokenUtils.sign(7 * 24 * (60 * 60), { uid: user.userId });
+    return {
+      signedToken: await accessTokenUtils.sign(7 * 24 * (60 * 60), {
+        uid: user.userId,
+      }),
+    };
+  }
+
+  async resetChances(userId: number, value: number) {
+    const user = await client.user.findUniqueOrThrow({
+      where: {
+        userId: userId,
+      },
+      select: {
+        resetChances: true,
+      },
+    });
+    if (user.resetChances + value < 0)
+      throw new ServerError(
+        serverStatus.notEnoughChances,
+        "not enough chances"
+      );
+    return await client.user.update({
+      where: {
+        userId: userId,
+      },
+      data: {
+        resetChances: value,
+      },
+    });
   }
 
   async getCurrentSubscription() {}

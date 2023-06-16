@@ -6,17 +6,19 @@ import { ChatRequest, ChatResponse, serverStatus } from "@caw/types";
 import { sendEmail } from "@/lib/email";
 import { serverErrorCatcher } from "@/app/api/catcher";
 
+import { getRuntime } from "@/utils";
+
+export const runtime = getRuntime();
+
 /**
  * Request verification code.
  * @param req
  * @constructor
  */
-export const GET = serverErrorCatcher(
+export const POST = serverErrorCatcher(
   async (req: NextRequest): Promise<Response> => {
-    const { searchParams } = new URL(req.url);
-
     const { type, value } = await ChatRequest.UserRegisterCodeGet.parseAsync(
-      searchParams
+      await req.json()
     );
 
     // Logic will automatically check the speed.
@@ -39,5 +41,3 @@ export const GET = serverErrorCatcher(
     } as ChatResponse.UserRegisterCode);
   }
 );
-
-export const runtime = "edge";

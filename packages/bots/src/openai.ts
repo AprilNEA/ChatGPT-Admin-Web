@@ -3,9 +3,10 @@ import { AnswerParams, GPTModel } from './types';
 import { streamToLineIterator } from './utils';
 import * as process from 'process';
 
-const API_PROXY = process.env.OPENAI_PROXY ?? 'https://api.openai.com';
-const API_END_POINT =
-  process.env.OPENAI_ENDPOINT ?? `${API_PROXY}/v1/chat/completions`;
+const openAiBase = process.env.OPENAI_BASE ?? 'https://api.openai.com';
+const openAiKey = process.env.OPENAI_KEY!;
+const openAiProxy = process.env.OPENAI_PROXY ?? '';
+const openAiEndpoint = `${openAiProxy}${openAiBase}/v1/chat/completions`;
 
 export class OpenAIBot extends AbstractBot {
   constructor(
@@ -17,11 +18,11 @@ export class OpenAIBot extends AbstractBot {
 
   protected async *doAnswer(params: AnswerParams): AsyncIterable<string> {
     const { conversation, maxTokens, signal } = params;
-    const response = await fetch(API_END_POINT, {
+    const response = await fetch(openAiEndpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${this.apiKey}`,
+        Authorization: `Bearer ${this.apiKey ?? openAiKey}`,
       },
       body: JSON.stringify({
         model: this.model,

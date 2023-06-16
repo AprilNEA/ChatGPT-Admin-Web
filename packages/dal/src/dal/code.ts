@@ -1,7 +1,7 @@
 import client, {
   Prisma,
   type RegisterCode,
-  type RegisterType,
+  RegisterType,
   type InvitationCode,
 } from "@caw/database";
 import { generateRandomSixDigitNumber, generateRandomString } from "../utils";
@@ -10,7 +10,7 @@ import { dalErrorCatcher } from "../decorator";
 /**
  * 一些码的管理，包括注册码、邀请码
  */
-@dalErrorCatcher
+// @dalErrorCatcher
 export class CodeDAL {
   constructor() {}
 
@@ -41,12 +41,34 @@ export class CodeDAL {
   }): Promise<RegisterCode> {
     const expiredTimeStamp = Date.now() + 600 * 1000 * 10;
     const codeInput: Prisma.RegisterCodeCreateInput = {
-      type: type,
+      type: RegisterType.Email,
       register: register,
       code: generateRandomSixDigitNumber(),
       expiredAt: new Date(expiredTimeStamp), // 默认十分钟
     };
-    return await client.registerCode.create({ data: codeInput });
+    try {
+      return await client.registerCode.create({ data: codeInput });
+    } catch (error) {
+      /* Registration records exist */
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code == "P2002"
+      ) {
+        return await client.registerCode.upsert({
+          where: {
+            register: register,
+          },
+          update: {
+            type: RegisterType.Email,
+            code: generateRandomSixDigitNumber(),
+            expiredAt: new Date(expiredTimeStamp),
+          },
+          create: codeInput,
+        });
+      } else {
+        throw error;
+      }
+    }
   }
 
   /**

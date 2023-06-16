@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-// import { NoticeDAL } from "database";
-// import { ResponseStatus } from "@/app/api/typing.d";
+
+import { getRuntime } from "@/utils";
+
+export const runtime = getRuntime();
 
 export async function GET(req: NextRequest) {
   // const noticeDal = new NoticeDAL();
@@ -21,5 +23,3 @@ export async function GET(req: NextRequest) {
   //   notice,
   // });
 }
-
-export const runtime = "edge";

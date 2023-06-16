@@ -1,34 +1,44 @@
 import { NextRequest, NextResponse } from "next/server";
-import { UserLogic, AccessControlLogic } from "database-old";
-import { ResponseStatus } from "@/app/api/typing.d";
+import { UserDAL, providerType } from "@caw/dal";
+import { serverStatus, ChatRequest } from "@caw/types";
+import { serverErrorCatcher } from "@/app/api/catcher";
+import { WechatLib } from "@/lib/wechat";
+import { getRuntime } from "@/utils";
 
-export async function POST(req: NextRequest) {
+export const runtime = getRuntime();
+
+/**
+ * Request Code Ticket for WeChat Login
+ * @param req
+ * @returns Return Ticket and Expiration Time
+ */
+export const GET = serverErrorCatcher(async (req: NextRequest) => {
+  const wechatLib = await WechatLib.create();
+  return NextResponse.json({
+    status: serverStatus.success,
+    ...(await wechatLib.getLoginTicket()),
+  });
+});
+
+/**
+ * Login via mobile number or email
+ * @param req
+ * @constructor
+ */
+export const POST = serverErrorCatcher(async (req: NextRequest) => {
   try {
-    const { email, password } = await req.json();
-    const userLogic = new UserLogic();
-    const accessControlLogic = new AccessControlLogic();
+    const { providerId, providerContent } =
+      await ChatRequest.UserLogin.parseAsync(await req.json());
 
-    if (!(await userLogic.login(email, password))) {
-      return NextResponse.json({ status: ResponseStatus.wrongPassword });
-    }
-
-    const tokenGenerator = await accessControlLogic.newJWT(email);
-
-    if (!tokenGenerator)
-      return NextResponse.json({
-        status: ResponseStatus.failed,
-      });
-
-    const { token: sessionToken, exp } = tokenGenerator;
     return NextResponse.json({
-      status: ResponseStatus.success,
-      sessionToken,
-      exp,
+      status: serverStatus.success,
+      ...(await UserDAL.login({
+        providerId: providerId as providerType,
+        providerContent,
+      })),
     });
   } catch (error) {
     console.error("[SERVER ERROR]", error);
     return new Response("[INTERNAL ERROR]", { status: 500 });
   }
-}
-
-export const runtime = "edge";
+});

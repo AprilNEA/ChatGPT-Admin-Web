@@ -2,73 +2,64 @@
 
 import { FormEvent, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+
+import { ChatResponse, serverStatus } from "@caw/types";
+
 import { showToast } from "@/components/ui-lib";
 import { useUserStore } from "@/store";
 import { ReturnButton } from "@/components/ui-lib";
-import { RegisterResponse, ResponseStatus } from "@/app/api/typing.d";
-
 import Locales from "@/locales";
 import styles from "@/app/login/login.module.scss";
+import { apiUserRegister } from "@/app/api/user/register";
+import { apiUserRegisterCode } from "@/app/api/user/register/code";
+import usePreventFormSubmit from "@/hooks/use-prevent-form";
 
 const ifVerifyCode = !!process.env.NEXT_PUBLIC_EMAIL_SERVICE;
 
 export default function Register() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const [isSubmitting, handleSubmit] = usePreventFormSubmit();
+  const [isCodeSubmitting, handleCodeSubmit] = usePreventFormSubmit();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const [isSending, setIsSending] = useState(false);
-  const [verificationCode, setVerificationCode] = useState("");
-  const [invitationCode, setInvitationCode] = useState(
-    searchParams.get("code") ?? ""
+  const [verificationCode, setVerificationCode] = useState<string>("");
+  const [invitationCode, setInvitationCode] = useState<string>(
+    searchParams.get("code") ?? "" /* Get from url */
   );
-
-  const [submitting, setSubmitting] = useState(false);
 
   const [updateSessionToken, updateEmail] = useUserStore((state) => [
     state.updateSessionToken,
     state.updateEmail,
   ]);
 
-  const handleRegister = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  async function handleRegister(event: FormEvent<InputEvent>) {
+    event.preventDefault();
 
-    if (!email || !password || !verificationCode) {
-      showToast(Locales.Index.NoneData);
-      setSubmitting(false);
-      return;
-    }
+    if (!email || !password || !verificationCode)
+      return showToast(Locales.Index.NoneData);
 
-    const res = (await (
-      await fetch("/api/user/register", {
-        cache: "no-store",
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: email.trim(),
-          password,
-          code: verificationCode,
-          code_type: "email",
-          invitation_code: invitationCode.toLowerCase() ?? "",
-        }),
-      })
-    ).json()) as RegisterResponse;
+    const response = await apiUserRegister({
+      email,
+      password,
+      verificationCode,
+      invitationCode,
+    });
 
-    switch (res.status) {
-      case ResponseStatus.Success: {
-        updateSessionToken(res.sessionToken);
-        updateEmail(email);
+    switch (response.status) {
+      case serverStatus.success: {
+        updateSessionToken(response.signedToken.token);
         router.replace("/");
-        showToast(Locales.Index.Success(Locales.Index.Register), 3000);
+        showToast(Locales.Index.Success(Locales.Index.Register));
         break;
       }
-      case ResponseStatus.alreadyExisted: {
+      case serverStatus.alreadyExisted: {
         showToast(Locales.Index.DuplicateRegistration);
         break;
       }
-      case ResponseStatus.invalidCode: {
+      case serverStatus.invalidCode: {
         showToast(Locales.Index.CodeError);
         break;
       }
@@ -77,33 +68,20 @@ export default function Register() {
         break;
       }
     }
-  };
+  }
 
   const handleSendVerification = async (event: React.MouseEvent) => {
     event.preventDefault();
 
-    if (!email) {
-      showToast("请输入邮箱");
-      setSubmitting(false);
-      return;
-    }
+    if (!email) return showToast("请输入邮箱");
 
-    const res = await (
-      await fetch(
-        "/api/user/register/code?email=" + encodeURIComponent(email),
-        {
-          cache: "no-store",
-          headers: { "Content-Type": "application/json" },
-        }
-      )
-    ).json();
+    const response = await apiUserRegisterCode(email);
 
-    switch (res.status) {
-      case ResponseStatus.Success: {
-        switch (res.code_data.status) {
+    switch (response.status) {
+      case serverStatus.success: {
+        switch (response.code_data.status) {
           case 0:
             showToast("验证码成功发送!");
-            setIsSending(true);
             break;
           case 1:
             showToast(Locales.Index.DuplicateRegistration);
@@ -118,7 +96,7 @@ export default function Register() {
         }
         break;
       }
-      case ResponseStatus.notExist: {
+      case serverStatus.notExist: {
         showToast(Locales.Index.EmailNonExistent);
         break;
       }
@@ -127,12 +105,14 @@ export default function Register() {
         break;
       }
     }
-    setSubmitting(false);
   };
 
   return (
     <div className={styles["login-form-container"]}>
-      <form className={styles["login-form"]} onSubmit={handleRegister}>
+      <form
+        className={styles["login-form"]}
+        onSubmit={(event) => handleSubmit(event, handleRegister)}
+      >
         <ReturnButton onClick={() => router.push("/enter")} />
 
         <h2 className={styles["login-form-title"]}>Register</h2>
@@ -157,28 +137,28 @@ export default function Register() {
           />
         </div>
 
-        {ifVerifyCode && (
-          <div className={styles["login-form-input-group"]}>
-            <label htmlFor="email">Verification Code</label>
-            <div className={styles["verification-code-container"]}>
-              <input
-                type="text"
-                id="verification-code"
-                maxLength={6}
-                pattern="\d{6}"
-                onChange={(e) => setVerificationCode(e.target.value)}
-              />
-              <button
-                type="button"
-                className={styles["send-verification-button"]}
-                onClick={(event) => handleSendVerification(event)}
-                disabled={submitting}
-              >
-                {isSending ? "Already Send to Email" : "Get Code"}
-              </button>
-            </div>
+        <div className={styles["login-form-input-group"]}>
+          <label htmlFor="email">Verification Code</label>
+          <div className={styles["verification-code-container"]}>
+            <input
+              type="text"
+              id="verification-code"
+              maxLength={6}
+              pattern="\d{6}"
+              onChange={(e) => setVerificationCode(e.target.value)}
+            />
+            <button
+              type="button"
+              className={styles["send-verification-button"]}
+              onClick={(event) =>
+                handleCodeSubmit(event, handleSendVerification)
+              }
+              disabled={isCodeSubmitting}
+            >
+              {isCodeSubmitting ? "Already Send to Email" : "Get Code"}
+            </button>
           </div>
-        )}
+        </div>
 
         <div className={styles["login-form-input-group"]}>
           <label htmlFor="email">Invitation Code</label>

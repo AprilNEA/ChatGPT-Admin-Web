@@ -19,7 +19,7 @@ export function dalErrorCatcher<T extends { new (...args: any[]): any }>(
       } catch (error) {
         if (error instanceof Prisma.PrismaClientKnownRequestError) {
           switch (error.code) {
-            case "P2002":
+            case "P2002" /* Unique constraint failed on the {constraint} */:
               console.error(`Error occurred in method ${methodName}: `, error);
               break;
             case "P2025":

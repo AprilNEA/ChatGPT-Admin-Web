@@ -56,6 +56,15 @@ model WechatInfo {
   user   User @relation("UserWechat", fields: [userId], references: [userId])
 }
 
+model WechatTicket {
+  id String @id @default(uuid())
+
+  code      Int // 验证 Code
+  ticket    String   @unique // 微信返回的 Ticket
+  openId    String? // 若该 Ticket 被扫码则填入用户 openId
+  expiredAt DateTime @db.Timestamp(6)
+}
+
 model InvitationCode {
   code String @id // id 即 code 应为 6 位大小写数字混合
 
@@ -83,37 +92,43 @@ model Model {
   modelId   Int    @id @default(autoincrement())
   modelName String @unique
 
-  prices Prices[] @relation("PricesWithModel")
-  limits Limits[] @relation("LimitsWithModel")
+  unitPrice Int // 单位为分
+  limits    Limits[] @relation("LimitsWithModel")
+
+  @@unique([modelId, modelName])
 }
 
 model Prices {
   id Int @id @default(autoincrement())
 
+  name     String // 价格名称，如月付、季付、年付
+  amount   Int // 单位为分
+  duration Int // 单位为秒
+
   planId Int
   plan   Plan @relation("PricesWithPlan", fields: [planId], references: [planId])
-
-  modelId Int
-  model   Model @relation("PricesWithModel", fields: [modelId], references: [modelId])
 }
 
 model Limits {
   id Int @id @default(autoincrement())
 
+  times    Int // 限制次数
+  duration Int // 单位为秒，限制持续时间 若为 0 则不限制 如每三小时小时
+
   planId Int
   plan   Plan @relation("LimitsWithPlan", fields: [planId], references: [planId])
 
-  modelId Int
-  model   Model @relation("LimitsWithModel", fields: [modelId], references: [modelId])
+  modelId   Int
+  modelName String
+  model     Model  @relation("LimitsWithModel", fields: [modelId, modelName], references: [modelId, modelName])
 }
 
 model Plan {
   planId Int    @id @default(autoincrement())
   name   String @unique
 
-  duration Int
-  prices   Prices[] @relation("PricesWithPlan")
-  limits   Limits[] @relation("LimitsWithPlan")
+  prices Prices[] @relation("PricesWithPlan") // 该计划不同时间（月、季或者年...）的价格
+  limits Limits[] @relation("LimitsWithPlan") // 该计划每个模型的价格
 
   orders        Order[]        @relation("OrderPlan")
   redeems       Redeem[]       @relation("RedeemPlan")
@@ -130,6 +145,7 @@ enum OrderStatus {
 model Order {
   orderId Int         @id @unique
   count   Int         @default(1)
+  amount  Float // 订单金额
   status  OrderStatus
 
   userId Int // 订单的用户
@@ -141,8 +157,22 @@ model Order {
   planId Int
   plan   Plan @relation("OrderPlan", fields: [planId], references: [planId])
 
-  subscriptionId String       @unique
-  subscription   Subscription @relation("OrderSubscription", fields: [subscriptionId], references: [subscriptionId])
+  subscriptionId Subscription? @relation("OrderSubscription")
+}
+
+model Redeem {
+  redeemCode  String   @id
+  isActivated Boolean  @default(false) // 是否被激活
+  createdAt   DateTime @default(now()) @db.Timestamp(6)
+  activatedAt DateTime
+
+  activatedBy   Int
+  activatedUser User @relation("UserRedeem", fields: [activatedBy], references: [userId])
+
+  planId Int // 将订阅与计划关联
+  plan   Plan @relation("RedeemPlan", fields: [planId], references: [planId])
+
+  subscibption Subscription? @relation("RedeemSubscription")
 }
 
 model Subscription {
@@ -151,10 +181,14 @@ model Subscription {
   createdAt DateTime @default(now()) @db.Timestamp(6)
   expiredAt DateTime @db.Timestamp(6)
 
-  redeem Redeem? @relation("RedeemSubscription")
-  order  Order?  @relation("OrderSubscription") // 对应的计划
+  // 一个订阅对应一个卡密或者订单
+  redeemCode String? @unique // 对应的卡密
+  redeem     Redeem? @relation("RedeemSubscription", fields: [redeemCode], references: [redeemCode])
+  orderId    Int?    @unique // 对应的订单
+  order      Order?  @relation("OrderSubscription", fields: [orderId], references: [orderId]) // 对应的计划
+
   planId Int // 将订阅与计划关联
-  plan   Plan    @relation("SubscriptionPlan", fields: [planId], references: [planId])
+  plan   Plan @relation("SubscriptionPlan", fields: [planId], references: [planId])
 
   userId Int
   user   User @relation("UserSubscription", fields: [userId], references: [userId])
@@ -171,21 +205,6 @@ model RegisterCode {
   register  String       @unique // 注册人，邮箱地址或手机号地址
   code      Int          @unique // 注册效验码
   expiredAt DateTime     @default(now()) @db.Timestamp(6) // 过期时间
-}
-
-model Redeem {
-  redeemCode  String   @id
-  isActivated Boolean  @default(false) // 是否被激活
-  activatedAt DateTime
-
-  activatedBy   Int
-  activatedUser User @relation("UserRedeem", fields: [activatedBy], references: [userId])
-
-  planId Int // 将订阅与计划关联
-  plan   Plan @relation("RedeemPlan", fields: [planId], references: [planId])
-
-  subcribptionId String       @unique
-  subscibption   Subscription @relation("RedeemSubscription", fields: [subcribptionId], references: [subscriptionId])
 }
 
 model OpenAIKey {

@@ -20,7 +20,6 @@ import EmojiPicker, { Theme as EmojiTheme } from "emoji-picker-react";
 
 import fetcher from "@/utils/fetcher";
 import { copyToClipboard } from "@/utils/utils";
-import { InfoResponse, ResponseStatus } from "@/app/api/typing.d";
 import { SubscribeTable } from "@/components/table";
 import { useInviteCode } from "@/hooks/use-invite-code";
 
@@ -56,9 +55,7 @@ export default function Profile() {
     data: info,
     isLoading: infoLoading,
     mutate: infoMutate,
-  } = useSWR<InfoResponse>("/api/user/info", (url) =>
-    fetcher(url).then((res) => res.json())
-  );
+  } = useSWR("/api/user/info", (url) => fetcher(url).then((res) => res.json()));
 
   /**
    * 此处使用条件加载，一般来说用户可能不需要邀请码，当用户点击复制邀请码后，再请求邀请码。

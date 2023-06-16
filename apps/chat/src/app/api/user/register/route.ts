@@ -9,6 +9,10 @@ import {
 
 const ifVerifyCode = !!process.env.NEXT_PUBLIC_EMAIL_SERVICE;
 
+import { getRuntime } from "@/utils";
+
+export const runtime = getRuntime();
+
 /**
  * Registered user
  * @param req
@@ -28,11 +32,11 @@ export async function POST(req: NextRequest): Promise<Response> {
     } = await ChatRequest.UserRegisterPost.parseAsync(await req.json());
 
     /* Activation verification code */
-    const result = await new UserDAL().register({
+    const result = await UserDAL.register({
       email,
-      phone: phone.toString(),
+      phone: phone?.toString(),
       password,
-      registerCode: registerCode.toString(),
+      registerCode: registerCode?.toString(),
       invitationCode,
     });
 
@@ -48,5 +52,3 @@ export async function POST(req: NextRequest): Promise<Response> {
     return new Response("[INTERNAL ERROR]", { status: 500 });
   }
 }
-
-export const runtime = "edge";

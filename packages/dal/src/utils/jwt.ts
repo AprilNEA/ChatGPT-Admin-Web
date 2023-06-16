@@ -1,4 +1,5 @@
 import { SignJWT, jwtVerify, type JWTPayload } from "jose";
+import { ServerError, serverStatus } from "@caw/types";
 
 export namespace accessTokenUtils {
   /**
@@ -28,10 +29,21 @@ export namespace accessTokenUtils {
    * @param token
    */
   export async function verify(token: string): Promise<JWTPayload> {
-    const { payload } = await jwtVerify(
-      token,
-      new TextEncoder().encode(process.env.JWT_SECRET!)
-    );
-    return payload;
+    try {
+      const { payload } = await jwtVerify(
+        token,
+        new TextEncoder().encode(process.env.JWT_SECRET!)
+      );
+      return payload;
+    } catch (e) {
+      throw new ServerError(serverStatus.invalidToken, "Invalid token");
+    }
   }
+}
+
+export async function parseUserId(token: string) {
+  const { uid: userId } = (await accessTokenUtils.verify(token)) as unknown as {
+    uid: number;
+  };
+  return userId;
 }

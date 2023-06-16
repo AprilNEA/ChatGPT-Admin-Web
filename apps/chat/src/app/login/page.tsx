@@ -2,13 +2,13 @@
 
 import { FormEvent, useState } from "react";
 import Link from "next/link";
-import { useUserStore } from "@/store";
-
-import { showToast } from "@/components/ui-lib";
-import { ResponseStatus } from "@/app/api/typing.d";
 import { useRouter } from "next/navigation";
+
+import { serverStatus } from "@caw/types";
+
 import Locales from "@/locales";
-import { ReturnButton } from "@/components/ui-lib";
+import { useUserStore } from "@/store";
+import { showToast, ReturnButton } from "@/components/ui-lib";
 
 import styles from "./login.module.scss";
 
@@ -18,7 +18,7 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  // 防止表单重复 提交
+  /* Prevent duplicate form submissions */
   const [submitting, setSubmitting] = useState(false);
   const [updateSessionToken, updateEmail] = useUserStore((state) => [
     state.updateSessionToken,
@@ -40,23 +40,26 @@ export default function Login() {
         cache: "no-store",
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: email.trim(), password }),
+        body: JSON.stringify({
+          providerId: "email",
+          providerContent: { content: email.trim(), password },
+        }),
       })
     ).json();
 
     switch (res.status) {
-      case ResponseStatus.Success: {
+      case serverStatus.success: {
         updateSessionToken(res.sessionToken);
         updateEmail(email);
         showToast(Locales.Index.Success(Locales.Index.Login), 3000);
         router.replace("/");
         break;
       }
-      case ResponseStatus.notExist: {
+      case serverStatus.notExist: {
         showToast(Locales.Index.NotYetRegister);
         break;
       }
-      case ResponseStatus.wrongPassword: {
+      case serverStatus.wrongPassword: {
         showToast(Locales.Index.PasswordError);
         break;
       }

@@ -27,7 +27,7 @@ interface Price {
   features: string[];
 }
 
-export const prices: Price[] = [
+const prices: Price[] = [
   {
     name: "Free",
     price: {
@@ -66,7 +66,6 @@ function PricingItem(props: {
   cycle: PaymentCycleType;
   price: Price;
 }) {
-
   async function handleUpgrade(plan: PlanType, cycle: PaymentCycleType) {
     const req = await (
       await fetcher(`/api/user/pay?plan=${plan.toLowerCase()}&cycle=${cycle}`, {
