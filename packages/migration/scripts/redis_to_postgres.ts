@@ -13,28 +13,39 @@ async function migrateData() {
   // Migrate Roles
   const roles = ["user", "mod", "admin"];
   for (const role of roles) {
-    await prisma.role.create({
-      data: {
-        name: role,
-      },
+    // Check if the role already exists before creating it
+    const existingRole = await prisma.role.findUnique({
+      where: { name: role },
     });
+    if (!existingRole) {
+      await prisma.role.create({
+        data: {
+          name: role,
+        },
+      });
+    }
   }
 
   // Migrate Users
   for (const userEntry of userEntries) {
     const user = userEntry.value;
-    await prisma.user.create({
-      data: {
-        email: userEntry.key.split(":")[1], // Assuming the key is in the format "user:{email}"
-        name: user.name,
-        passwordHash: user.passwordHash,
-        phone: user.phone,
-        resetChances: user.resetChances,
-        createdAt: new Date(user.createdAt),
-        isBlocked: user.isBlocked,
-        roleId: roles.indexOf(user.role) + 1, // Assuming the roles are created in the order ["user", "mod", "admin"]
-      },
-    });
+    try {
+      await prisma.user.create({
+        data: {
+          email: userEntry.key.split(":")[1], // Assuming the key is in the format "user:{email}"
+          name: user.name,
+          passwordHash: user.passwordHash,
+          phone: user.phone,
+          resetChances: user.resetChances,
+          createdAt: new Date(user.createdAt),
+          isBlocked: user.isBlocked,
+          roleId: roles.indexOf(user.role) + 1, // Assuming the roles are created in the order ["user", "mod", "admin"]
+        },
+      });
+    } catch (error) {
+      console.error(`Failed to create user: ${userEntry.key}`, error);
+      // Decide how to handle the error (e.g., stop the process, continue, etc.)
+    }
   }
 
   // Migrate Plans
@@ -48,15 +59,20 @@ async function migrateData() {
 
     // Migrate Prices
     for (const [duration, amount] of Object.entries(plan.prices)) {
+      const durationInSeconds = {
+        monthly: 30 * 24 * 60 * 60,
+        quarterly: 3 * 30 * 24 * 60 * 60,
+        yearly: 365 * 24 * 60 * 60,
+      }[duration];
+      if (durationInSeconds === undefined) {
+        console.error(`Unknown duration: ${duration}`);
+        continue;
+      }
       await prisma.prices.create({
         data: {
           name: duration,
           amount: amount,
-          duration: duration === "monthly"
-            ? 30 * 24 * 60 * 60
-            : duration === "quarterly"
-            ? 3 * 30 * 24 * 60 * 60
-            : 365 * 24 * 60 * 60, // Assuming the duration is either 'monthly', 'quarterly', or 'yearly'
+          duration: durationInSeconds,
           planId: createdPlan.planId,
         },
       });
@@ -64,12 +80,19 @@ async function migrateData() {
 
     // Migrate Limits
     for (const [modelName, limit] of Object.entries(plan.limits)) {
+      const model = await prisma.model.findUnique({
+        where: { modelName: modelName },
+      });
+      if (!model) {
+        console.error(`Unknown model: ${modelName}`);
+        continue;
+      }
       await prisma.limits.create({
         data: {
           times: limit.limit,
-          duration: parseInt(limit.window), // Assuming the window is in the format "{number} {unit}"
+          duration: parseInt(limit.window), // Fixme: implement a function to parse the window
           planId: createdPlan.planId,
-          modelId: 1, // Assuming the modelId is 1
+          modelId: model.modelId,
           modelName: modelName,
         },
       });
@@ -79,55 +102,90 @@ async function migrateData() {
   // Migrate Orders
   for (const orderEntry of orderEntries) {
     const order = orderEntry.value;
-    await prisma.order.create({
-      data: {
-        orderId: parseInt(orderEntry.key.split(":")[1]), // Assuming the key is in the format "order:{internalOrderId}"
-        count: order.count,
-        amount: order.totalCents / 100, // Assuming the totalCents is in cents and the amount is in dollars
-        status: `${order.status[0].toUpperCase()}${
-          order.status.slice(1)
-        }` as OrderStatus,
-        userId: userEntries.findIndex((userEntry) =>
-          userEntry.key === `user:${order.email}`
-        ) + 1, // Assuming the userId is the index + 1
-        createdAt: new Date(order.createdAt),
-        planId: planEntries.findIndex((planEntry) =>
-          planEntry.key === `plan:${order.plan}`
-        ) + 1, // Assuming the planId is the index + 1
-      },
+    const user = await prisma.user.findUnique({
+      where: { email: order.email },
     });
+    const plan = await prisma.plan.findUnique({
+      where: { name: order.plan },
+    });
+    if (!user || !plan) {
+      console.error(`Unknown user or plan for order: ${orderEntry.key}`);
+      continue;
+    }
+    try {
+      await prisma.order.create({
+        data: {
+          orderId: parseInt(orderEntry.key.split(":")[1]), // Assuming the key is in the format "order:{internalOrderId}"
+          count: order.count,
+          amount: order.totalCents / 100, // Assuming the totalCents is in cents and the amount is in dollars
+          status: order.status.toUpperCase() as OrderStatus, // FIXME: only first letter should be capitalized
+          userId: user.userId,
+          createdAt: new Date(order.createdAt),
+          planId: plan.planId,
+        },
+      });
+    } catch (error) {
+      console.error(`Failed to create order: ${orderEntry.key}`, error);
+      // Decide how to handle the error (e.g., stop the process, continue, etc.)
+    }
   }
 
   // Migrate InvitationCodes
   for (const invitationCodeEntry of invitationCodeEntries) {
     const invitationCode = invitationCodeEntry.value;
-    await prisma.invitationCode.create({
-      data: {
-        code: invitationCodeEntry.key.split(":")[1], // Assuming the key is in the format "invitationCode:{code}"
-        ownerId: userEntries.findIndex((userEntry) =>
-          userEntry.key === `user:${invitationCode.inviterEmail}`
-        ) + 1, // Assuming the ownerId is the index + 1
-      },
+    const user = await prisma.user.findUnique({
+      where: { email: invitationCode.inviterEmail },
     });
+    if (!user) {
+      console.error(
+        `Unknown user for invitation code: ${invitationCodeEntry.key}`,
+      );
+      continue;
+    }
+    try {
+      await prisma.invitationCode.create({
+        data: {
+          code: invitationCodeEntry.key.split(":")[1], // Assuming the key is in the format "invitationCode:{code}"
+          ownerId: user.userId,
+        },
+      });
+    } catch (error) {
+      console.error(
+        `Failed to create invitation code: ${invitationCodeEntry.key}`,
+        error,
+      );
+      // Decide how to handle the error (e.g., stop the process, continue, etc.)
+    }
 
     // Migrate InvitationRecords
     for (const inviteeEmail of invitationCode.inviteeEmails) {
-      await prisma.invitationRecord.create({
-        data: {
-          inviterId: userEntries.findIndex((userEntry) =>
-            userEntry.key === `user:${invitationCode.inviterEmail}`
-          ) + 1, // Assuming the inviterId is the index + 1
-          inviteeId: userEntries.findIndex((userEntry) =>
-            userEntry.key === `user:${inviteeEmail}`
-          ) + 1, // Assuming the inviteeId is the index + 1
-          code: invitationCodeEntry.key.split(":")[1], // Assuming the key is in the format "invitationCode:{code}"
-        },
+      const invitee = await prisma.user.findUnique({
+        where: { email: inviteeEmail },
       });
+      if (!invitee) {
+        console.error(`Unknown invitee for invitation record: ${inviteeEmail}`);
+        continue;
+      }
+      try {
+        await prisma.invitationRecord.create({
+          data: {
+            inviterId: user.userId,
+            inviteeId: invitee.userId,
+            code: invitationCodeEntry.key.split(":")[1], // Assuming the key is in the format "invitationCode:{code}"
+          },
+        });
+      } catch (error) {
+        console.error(
+          `Failed to create invitation record for invitee: ${inviteeEmail}`,
+          error,
+        );
+        // Decide how to handle the error (e.g., stop the process, continue, etc.)
+      }
     }
   }
 }
 
-await migrateData().catch((e) => {
+migrateData().catch((e) => {
   console.error(e);
   process.exit(1);
 });
