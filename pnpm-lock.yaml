@@ -411,8 +411,8 @@ importers:
         version: 5.0.3
     devDependencies:
       bun-types:
-        specifier: ^0.5.0
-        version: 0.5.0
+        specifier: ^0.6.9
+        version: 0.6.9
 
   packages/ratelimit:
     dependencies:
@@ -5353,8 +5353,8 @@ packages:
       ieee754: 1.2.1
     dev: false
 
-  /bun-types@0.5.0:
-    resolution: {integrity: sha512-W74XkTKdOP2HV1PbzL7k6+8TZlcJyj1IuD7y9wX2SiHIaVjlqVwM9fXgsCvTlQQqkkkyZxSPSDFF10J6qml2eA==}
+  /bun-types@0.6.9:
+    resolution: {integrity: sha512-qsxwgWWl6qBrHhj+c8QKte+Qyn8MwQweCp7gR51dfw6G43z+PmNk+ipx3xJj/EIU8i9QPyikriZ/tOeEoYPKyw==}
     dev: true
 
   /bundle-name@3.0.0:
