@@ -1,13 +1,11 @@
-import { connect } from "https://deno.land/x/redis@v0.30.0/mod.ts";
+import { Redis } from "@upstash/redis";
 
-const REDIS_URL = Deno.env.get("REDIS_URL")!;
-const { hostname, port, username, password } = new URL(REDIS_URL);
+const REDIS_URL = Bun.env.REDIS_URL!;
+const REDIS_TOKEN = Bun.env.REDIS_TOKEN!;
 
-const redis = await connect({
-  hostname,
-  port,
-  username,
-  password,
+const redis = new Redis({
+  url: REDIS_URL,
+  token: REDIS_TOKEN,
 });
 
 export default redis;
