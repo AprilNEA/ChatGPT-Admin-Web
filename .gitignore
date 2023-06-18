@@ -11,3 +11,6 @@
 .turbo
 
 **/node_modules/
+
+# Env
+**/.env
