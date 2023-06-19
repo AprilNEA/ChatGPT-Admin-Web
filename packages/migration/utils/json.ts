@@ -1,11 +1,6 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
-import { resolve } from "node:path";
 import { KvEntry } from "../types/common";
-
-const dumpPath = resolve(
-  Bun.fileURLToPath(new URL(import.meta.url)),
-  "../../dumps",
-);
+import { dumpPath } from "./common";
 
 export async function saveJson(name: string, obj: unknown) {
   await mkdir(dumpPath).catch(() => {});

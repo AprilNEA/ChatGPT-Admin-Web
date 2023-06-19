@@ -11,7 +11,25 @@ async function dump(name: string, schema: ZodSchema) {
   console.debug(`dump: collected ${entries.length} ${name} entries`);
 
   const validatedEntries = entries
-    .filter(({ value }) => schema.safeParse(value).success);
+    .filter(({ key, value }, i) => {
+      if (key.length <= prefix.length) {
+        console.warn(
+          `dump: invalid ${name} entry: ${JSON.stringify(entries[i])}`,
+        );
+        return false;
+      }
+
+      const parseResult = schema.safeParse(value);
+      const isKept = parseResult.success;
+      if (!isKept) {
+        console.warn(
+          `dump: invalid ${name} entry: ${
+            JSON.stringify(entries[i])
+          } due to ${parseResult.error}`,
+        );
+      }
+      return isKept;
+    });
   console.debug(`dump: validated ${validatedEntries.length} ${name} entries`);
 
   await saveJson(names, validatedEntries);
