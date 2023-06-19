@@ -9,7 +9,9 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
+    "@caw/database": "workspace:*",
     "@upstash/redis": "^1.21.0",
-    "@caw/database": "workspace:*"
+    "database-old": "workspace:*",
+    "zod": "^3.21.4"
   }
 }

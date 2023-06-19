@@ -406,9 +406,15 @@ importers:
       '@upstash/redis':
         specifier: ^1.21.0
         version: 1.21.0
+      database-old:
+        specifier: workspace:*
+        version: link:../database-old
       typescript:
         specifier: ^5.0.0
         version: 5.0.3
+      zod:
+        specifier: ^3.21.4
+        version: 3.21.4
     devDependencies:
       bun-types:
         specifier: ^0.6.9
