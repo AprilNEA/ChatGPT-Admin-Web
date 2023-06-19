@@ -106,7 +106,7 @@ Table Plan {
 }
 
 Table Order {
-  orderId Int [pk]
+  orderId String [pk]
   count Int [not null, default: 1]
   amount Float [not null]
   status OrderStatus [not null]
@@ -137,7 +137,7 @@ Table Subscription {
   expiredAt DateTime [not null]
   redeemCode String [unique]
   redeem Redeem
-  orderId Int [unique]
+  orderId String [unique]
   order Order
   planId Int [not null]
   plan Plan [not null]

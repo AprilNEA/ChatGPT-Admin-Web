@@ -143,7 +143,7 @@ enum OrderStatus {
 }
 
 model Order {
-  orderId Int         @id @unique
+  orderId String      @id @unique
   count   Int         @default(1)
   amount  Float // 订单金额
   status  OrderStatus
@@ -184,7 +184,7 @@ model Subscription {
   // 一个订阅对应一个卡密或者订单
   redeemCode String? @unique // 对应的卡密
   redeem     Redeem? @relation("RedeemSubscription", fields: [redeemCode], references: [redeemCode])
-  orderId    Int?    @unique // 对应的订单
+  orderId    String? @unique // 对应的订单
   order      Order?  @relation("OrderSubscription", fields: [orderId], references: [orderId]) // 对应的计划
 
   planId Int // 将订阅与计划关联

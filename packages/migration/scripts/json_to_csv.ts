@@ -35,7 +35,7 @@ const roles: Role[] = deepDistinct(
   userEntries
     .map(({ value }) => value.role),
 )
-  .map((name, id) => ({ name, id }));
+  .map((name, id) => ({ id, name }));
 
 const queryRoleByName = (name: string) => {
   const role = roles.find(({ name: roleName }) => roleName === name);
@@ -52,7 +52,6 @@ const users: User[] = distinctBy(userEntries, ({ key }) => key.toLowerCase())
   .map(({
     key,
     value: {
-      name,
       passwordHash,
       phone,
       resetChances,
@@ -63,14 +62,14 @@ const users: User[] = distinctBy(userEntries, ({ key }) => key.toLowerCase())
   }, userId) => ({
     userId,
     email: key.split(":")[1].toLowerCase(),
-    name,
+    name: null,
     passwordHash,
     phone: phone ?? null,
+    roleId: queryRoleByName(role).id,
     resetChances,
     createdAt: new Date(createdAt),
     updatedAt: new Date(createdAt),
     isBlocked,
-    roleId: queryRoleByName(role).id,
   }));
 
 const userEmailMap: Map<string, User> = new Map(
@@ -156,7 +155,7 @@ const orders: Order[] = orderEntries
   .map((
     { key, value: { status, count, totalCents, email, createdAt, plan } },
   ) => ({
-    orderId: parseInt(key.split(":")[1]),
+    orderId: key.split(":")[1],
     count,
     amount: totalCents, // A previous bug caused the totalCents actually not in cents
     status: firstCharUpperCase(status) as OrderStatus,
@@ -165,11 +164,6 @@ const orders: Order[] = orderEntries
     updatedAt: new Date(createdAt),
     planId: queryPlanByName(plan).planId,
   }));
-
-const queryOrderById = (orderId: string | number) => {
-  const order = orders.find(({ orderId: id }) => id === parseInt("" + orderId));
-  return order;
-};
 
 await saveCsv("orders", orders);
 
@@ -217,7 +211,7 @@ const invitationRecords: InvitationRecord[] = invitationCodeEntries
 await saveCsv("invitationRecords", invitationRecords);
 
 // Subscriptions
-const subscriptions: Subscription[] = userEntries
+const rawSubscriptions: Subscription[] = userEntries
   .flatMap(({ key, value: { subscriptions } }) => {
     try {
       const userId = queryUserByEmail(key.split(":")[1]).userId;
@@ -227,7 +221,7 @@ const subscriptions: Subscription[] = userEntries
         createdAt: new Date(startsAt),
         expiredAt: new Date(endsAt),
         redeemCode: null,
-        orderId: queryOrderById(tradeOrderId)?.orderId ?? null,
+        orderId: isNaN(parseInt(tradeOrderId)) ? null : tradeOrderId,
         planId: queryPlanByName(plan).planId,
         userId,
       }));
@@ -238,5 +232,29 @@ const subscriptions: Subscription[] = userEntries
       return [];
     }
   });
+
+const orderIdToSubscription = new Map<string, Subscription>();
+for (const subscription of rawSubscriptions) {
+  const key = subscription.orderId ?? crypto.randomUUID();
+  if (orderIdToSubscription.has(key)) {
+    const oldSubscription = orderIdToSubscription.get(key)!;
+    const newSubscription: Subscription = {
+      ...subscription,
+      createdAt: oldSubscription.createdAt < subscription.createdAt
+        ? oldSubscription.createdAt
+        : subscription.createdAt,
+      expiredAt: oldSubscription.expiredAt > subscription.expiredAt
+        ? oldSubscription.expiredAt
+        : subscription.expiredAt,
+      redeemCode: oldSubscription.redeemCode ?? subscription.redeemCode ?? null,
+    };
+    orderIdToSubscription.set(key, newSubscription);
+  } else {
+    orderIdToSubscription.set(key, subscription);
+  }
+}
+
+const subscriptions = Array.from(orderIdToSubscription.values());
+console.log(rawSubscriptions.length, subscriptions.length);
 
 await saveCsv("subscriptions", subscriptions);
