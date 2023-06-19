@@ -48,7 +48,7 @@ const queryRoleByName = (name: string) => {
 await saveCsv("roles", roles);
 
 // Users
-const users: User[] = distinctBy(userEntries, ({ key }) => key.toUpperCase())
+const users: User[] = distinctBy(userEntries, ({ key }) => key.toLowerCase())
   .map(({
     key,
     value: {
@@ -62,7 +62,7 @@ const users: User[] = distinctBy(userEntries, ({ key }) => key.toUpperCase())
     },
   }, userId) => ({
     userId,
-    email: key.split(":")[1],
+    email: key.split(":")[1].toLowerCase(),
     name,
     passwordHash,
     phone: phone ?? null,
@@ -74,7 +74,7 @@ const users: User[] = distinctBy(userEntries, ({ key }) => key.toUpperCase())
   }));
 
 const userEmailMap: Map<string, User> = new Map(
-  users.map((user) => [user.email!.toLowerCase(), user]),
+  users.map((user) => [user.email!, user]),
 );
 
 const queryUserByEmail = (email: string) => {
