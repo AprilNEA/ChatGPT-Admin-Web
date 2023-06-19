@@ -1,6 +1,7 @@
-import { InvitationCode, Order, Plan, User } from "../types/old_dal";
+import { Duration, InvitationCode, ms, Order, Plan, User } from "database-old";
 import { loadJson } from "../utils/json";
 import prisma, { OrderStatus } from "@caw/database";
+import { firstCharUpperCase } from "../utils/common";
 
 async function migrateData() {
   const userEntries = await loadJson<User>("users");
@@ -11,22 +12,18 @@ async function migrateData() {
   );
 
   // Migrate Roles
-  const roles = ["user", "mod", "admin"];
+  console.debug(`migration: migrating roles`);
+  const roles = [...new Set(userEntries.map(({ value: { role } }) => role))];
   for (const role of roles) {
-    // Check if the role already exists before creating it
-    const existingRole = await prisma.role.findUnique({
-      where: { name: role },
+    await prisma.role.create({
+      data: {
+        name: role,
+      },
     });
-    if (!existingRole) {
-      await prisma.role.create({
-        data: {
-          name: role,
-        },
-      });
-    }
   }
 
   // Migrate Users
+  console.debug(`migration: migrating users`);
   for (const userEntry of userEntries) {
     const user = userEntry.value;
     try {
@@ -71,7 +68,7 @@ async function migrateData() {
       await prisma.prices.create({
         data: {
           name: duration,
-          amount: amount,
+          amount: amount * 100, // Convert the amount to cents
           duration: durationInSeconds,
           planId: createdPlan.planId,
         },
@@ -90,7 +87,7 @@ async function migrateData() {
       await prisma.limits.create({
         data: {
           times: limit.limit,
-          duration: parseInt(limit.window), // Fixme: implement a function to parse the window
+          duration: ms(limit.window as Duration) / 1000, // Convert the duration to seconds
           planId: createdPlan.planId,
           modelId: model.modelId,
           modelName: modelName,
@@ -100,6 +97,7 @@ async function migrateData() {
   }
 
   // Migrate Orders
+  console.debug(`migration: migrating orders`);
   for (const orderEntry of orderEntries) {
     const order = orderEntry.value;
     const user = await prisma.user.findUnique({
@@ -118,7 +116,7 @@ async function migrateData() {
           orderId: parseInt(orderEntry.key.split(":")[1]), // Assuming the key is in the format "order:{internalOrderId}"
           count: order.count,
           amount: order.totalCents / 100, // Assuming the totalCents is in cents and the amount is in dollars
-          status: order.status.toUpperCase() as OrderStatus, // FIXME: only first letter should be capitalized
+          status: firstCharUpperCase(order.status) as OrderStatus,
           userId: user.userId,
           createdAt: new Date(order.createdAt),
           planId: plan.planId,
@@ -131,6 +129,7 @@ async function migrateData() {
   }
 
   // Migrate InvitationCodes
+  console.debug(`migration: migrating invitation codes`);
   for (const invitationCodeEntry of invitationCodeEntries) {
     const invitationCode = invitationCodeEntry.value;
     const user = await prisma.user.findUnique({
@@ -185,7 +184,7 @@ async function migrateData() {
   }
 }
 
-migrateData().catch((e) => {
+await migrateData().catch((e) => {
   console.error(e);
   process.exit(1);
 });
