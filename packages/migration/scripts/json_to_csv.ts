@@ -168,9 +168,6 @@ const orders: Order[] = orderEntries
 
 const queryOrderById = (orderId: string | number) => {
   const order = orders.find(({ orderId: id }) => id === parseInt("" + orderId));
-  if (!order) {
-    throw new Error(`Order with id ${orderId} not found`);
-  }
   return order;
 };
 
@@ -230,7 +227,7 @@ const subscriptions: Subscription[] = userEntries
         createdAt: new Date(startsAt),
         expiredAt: new Date(endsAt),
         redeemCode: null,
-        orderId: queryOrderById(tradeOrderId).orderId,
+        orderId: queryOrderById(tradeOrderId)?.orderId ?? null,
         planId: queryPlanByName(plan).planId,
         userId,
       }));
