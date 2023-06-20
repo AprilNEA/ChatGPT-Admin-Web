@@ -1,2 +1,0 @@
-## ChatGPT-Admin-Web Dashboard
-

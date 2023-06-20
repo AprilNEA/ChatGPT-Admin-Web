@@ -1,10 +1,11 @@
 import { AbstractBot } from './abstract-bot';
 import { AnswerParams, GPTModel } from './types';
 import { streamToLineIterator } from './utils';
-import * as process from 'process';
 
-const API_END_POINT = process.env.OPENAI_ENDPOINT ?? 'https://api.openai.com';
-const COMPLETIONS_URL = `${API_END_POINT}/v1/chat/completions`;
+const openAiBase = process.env.OPENAI_BASE ?? 'https://api.openai.com';
+const openAiKey = process.env.OPENAI_KEY!;
+const openAiProxy = process.env.OPENAI_PROXY ?? '';
+const openAiEndpoint = `${openAiProxy}${openAiBase}/v1/chat/completions`;
 
 export class OpenAIBot extends AbstractBot {
   constructor(
@@ -14,14 +15,20 @@ export class OpenAIBot extends AbstractBot {
     super();
   }
 
+  /**
+   *
+   * @param params
+   * @protected
+   */
   protected async *doAnswer(params: AnswerParams): AsyncIterable<string> {
+    console.log(openAiEndpoint);
     const { conversation, maxTokens, signal } = params;
 
-    const response = await fetch(COMPLETIONS_URL, {
+    const response = await fetch(openAiEndpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${this.apiKey}`,
+        Authorization: `Bearer ${this.apiKey ?? openAiKey}`,
       },
       body: JSON.stringify({
         model: this.model,

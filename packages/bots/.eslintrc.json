@@ -1,9 +1,6 @@
 {
   "root": true,
   "parser": "typescript-eslint-parser",
-  "extends": [
-    "custom"
-  ],
   "env": {
     "node": true,
     "es6": true

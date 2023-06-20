@@ -14,7 +14,6 @@
 
 # production
 /build
-/.env
 
 # misc
 .DS_Store
@@ -36,3 +35,12 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 dev
+
+.vscode
+.idea
+
+# docker-compose env files
+.env
+
+*.key
+*.key.pub
