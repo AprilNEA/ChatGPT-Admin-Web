@@ -1,0 +1,227 @@
+// prisma/schema.prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+// generator dbml {
+//   provider = "prisma-dbml-generator"
+//   output   = "./"
+// }
+
+datasource db {
+  provider          = "postgresql"
+  url               = env("DATABASE_URL")
+  directUrl         = env("DIRECT_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+}
+
+model Role {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+
+  users User[] @relation("UserRole")
+}
+
+model User {
+  userId       Int     @id @default(autoincrement())
+  email        String? @unique // 邮箱
+  name         String? @unique // 用户名
+  passwordHash String? @db.Text // 密码
+  phone        String? @unique // 手机 +86
+
+  wechat WechatInfo? @relation("UserWechat")
+
+  roleId Int
+  role   Role @relation("UserRole", fields: [roleId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  orders        Order[]        @relation("UserOrder") // 用户的订单
+  subscriptions Subscription[] @relation("UserSubscription") // 用户的订阅
+  redeems       Redeem[]       @relation("UserRedeem") // 用户的卡密
+  resetChances  Int            @default(0)
+
+  createdAt DateTime @default(now()) @db.Timestamp(6) // 注册时间
+  updatedAt DateTime @default(now()) @updatedAt
+  isBlocked Boolean  @default(false) // 是否被封禁
+
+  invitationCodes InvitationCode[]  @relation("UserInvitationCodes") // 当前用户的邀请码，一般用户只有一个
+  invitation      InvitationRecord? @relation("InvitationOnInvitee") // 当前用户被邀请的对应记录，可以不通过邀请直接注册
+}
+
+model WechatInfo {
+  openId  String  @id
+  unionId String? @unique
+
+  userId Int  @unique
+  user   User @relation("UserWechat", fields: [userId], references: [userId])
+}
+
+model WechatTicket {
+  id String @id @default(uuid())
+
+  code      Int // 验证 Code
+  ticket    String   @unique // 微信返回的 Ticket
+  openId    String? // 若该 Ticket 被扫码则填入用户 openId
+  expiredAt DateTime @db.Timestamp(6)
+}
+
+model InvitationCode {
+  code String @id // id 即 code 应为 6 位大小写数字混合
+
+  ownerId Int?
+  owner   User? @relation("UserInvitationCodes", fields: [ownerId], references: [userId]) // 关联至用户的邀请码
+
+  invitations InvitationRecord[] @relation("InvitationOnCode") // 产生的邀请
+
+  @@unique([code, ownerId]) // 组合后唯一
+}
+
+// 邀请记录
+model InvitationRecord {
+  id String @id @default(uuid())
+
+  inviterId Int // 邀请者
+  inviteeId Int  @unique // 被邀请者
+  invitee   User @relation("InvitationOnInvitee", fields: [inviteeId], references: [userId])
+
+  code    String
+  codeRaw InvitationCode @relation("InvitationOnCode", fields: [code, inviterId], references: [code, ownerId])
+}
+
+model Model {
+  modelId   Int    @id @default(autoincrement())
+  modelName String @unique
+
+  unitPrice Int // 单位为分
+  limits    Limits[] @relation("LimitsWithModel")
+
+  @@unique([modelId, modelName])
+}
+
+model Prices {
+  id Int @id @default(autoincrement())
+
+  name     String // 价格名称，如月付、季付、年付
+  amount   Int // 单位为分
+  duration Int // 单位为秒
+
+  planId Int
+  plan   Plan @relation("PricesWithPlan", fields: [planId], references: [planId])
+
+  Order Order[] @relation("OrderPrices")
+}
+
+model Limits {
+  id Int @id @default(autoincrement())
+
+  times    Int // 限制次数
+  duration Int // 单位为秒，限制持续时间 若为 0 则不限制 如每三小时小时
+
+  planId Int
+  plan   Plan @relation("LimitsWithPlan", fields: [planId], references: [planId])
+
+  modelId   Int
+  modelName String
+  model     Model  @relation("LimitsWithModel", fields: [modelId, modelName], references: [modelId, modelName])
+}
+
+model Plan {
+  planId   Int      @id @default(autoincrement())
+  name     String   @unique
+  features String[]
+
+  prices Prices[] @relation("PricesWithPlan") // 该计划不同时间（月、季或者年...）的价格
+  limits Limits[] @relation("LimitsWithPlan") // 该计划每个模型的价格
+
+  orders        Order[]        @relation("OrderPlan")
+  redeems       Redeem[]       @relation("RedeemPlan")
+  subscriptions Subscription[] @relation("SubscriptionPlan")
+}
+
+enum OrderStatus {
+  Pending
+  Paid
+  Failed
+  Refunded
+}
+
+model Order {
+  orderId String      @id @unique
+  count   Int         @default(1)
+  amount  Float // 订单金额
+  status  OrderStatus
+
+  userId Int // 订单的用户
+  user   User @relation("UserOrder", fields: [userId], references: [userId])
+
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  updatedAt DateTime @default(now()) @updatedAt
+
+  planId Int
+  plan   Plan @relation("OrderPlan", fields: [planId], references: [planId])
+
+  priceId Int
+  price   Prices @relation("OrderPrices", fields: [priceId], references: [id])
+
+  subscriptionId Subscription? @relation("OrderSubscription")
+}
+
+model Redeem {
+  redeemCode  String   @id
+  isActivated Boolean  @default(false) // 是否被激活
+  createdAt   DateTime @default(now()) @db.Timestamp(6)
+  activatedAt DateTime
+
+  activatedBy   Int
+  activatedUser User @relation("UserRedeem", fields: [activatedBy], references: [userId])
+
+  planId Int // 将订阅与计划关联
+  plan   Plan @relation("RedeemPlan", fields: [planId], references: [planId])
+
+  subscibption Subscription? @relation("RedeemSubscription")
+}
+
+model Subscription {
+  subscriptionId String @id @default(uuid())
+
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  expiredAt DateTime @db.Timestamp(6)
+
+  // 一个订阅对应一个卡密或者订单
+  redeemCode String? @unique // 对应的卡密
+  redeem     Redeem? @relation("RedeemSubscription", fields: [redeemCode], references: [redeemCode])
+  orderId    String? @unique // 对应的订单
+  order      Order?  @relation("OrderSubscription", fields: [orderId], references: [orderId]) // 对应的计划
+
+  planId Int // 将订阅与计划关联
+  plan   Plan @relation("SubscriptionPlan", fields: [planId], references: [planId])
+
+  userId Int
+  user   User @relation("UserSubscription", fields: [userId], references: [userId])
+}
+
+enum RegisterType {
+  Phone
+  Email
+}
+
+model RegisterCode {
+  id        String       @id @default(uuid())
+  type      RegisterType // 注册类型
+  register  String       @unique // 注册人，邮箱地址或手机号地址
+  code      Int          @unique // 注册效验码
+  expiredAt DateTime     @default(now()) @db.Timestamp(6) // 过期时间
+}
+
+model OpenAIKey {
+  key String @id
+}
+
+model RateLimit {
+  key   String @id
+  value Int[]
+}
+
+model Setting {
+  key   String @id
+  value String
+}

@@ -1,3 +1,5 @@
+.env
+**/.env
 # IDE
 .vscode/
 .idea/

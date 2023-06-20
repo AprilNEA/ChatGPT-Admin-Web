@@ -1,14 +1,12 @@
 {
-  "name": "@caw/bots",
+  "name": "database-old",
   "version": "0.0.1",
-  "description": "The bots part in ChatGPT-Admin-Web",
+  "description": "The database part in ChatGPT-Admin-Web",
   "keywords": [
-    "chatgpt",
-    "bots",
-    "newbing",
-    "openai",
-    "gpt-3.5-turbo",
-    "gpt-4"
+    "dal",
+    "redis",
+    "upstash",
+    "ratelimit"
   ],
   "homepage": "https://github.com/AprilNEA/ChatGPT-Admin-Web",
   "bugs": {
@@ -23,20 +21,25 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/AprilNEA/ChatGPT-Admin-Web",
-    "directory": "packages/bots"
+    "directory": "packages/database"
   },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc --build",
     "dev": "tsc --watch",
+    "test": "jest",
     "lint": "eslint 'src/**/*.ts'",
     "lint:fix": "eslint --fix 'src/**/*.ts'",
     "prettier": "prettier --check 'src/**/*.ts'",
     "prettier:fix": "prettier --write 'src/**/*.ts'"
   },
   "devDependencies": {
+    "@jest/globals": "^29.5.0",
+    "@types/jest": "^29.5.0",
     "@types/node": "^18.15.11",
+    "@types/spark-md5": "^3.0.2",
+    "dotenv": "^16.0.3",
     "eslint": "^8.37.0",
     "jest": "^29.5.0",
     "prettier": "^2.8.7",
@@ -44,5 +47,12 @@
     "ts-node": "^10.9.1",
     "tsconfig": "workspace:*",
     "typescript": "^5.0.3"
+  },
+  "dependencies": {
+    "@upstash/ratelimit": "^0.4.2",
+    "@upstash/redis": "^1.20.2",
+    "jose": "^4.14.1",
+    "spark-md5": "^3.0.2",
+    "zod": "^3.21.4"
   }
 }
