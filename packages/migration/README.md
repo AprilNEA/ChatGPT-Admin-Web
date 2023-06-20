@@ -2,9 +2,13 @@
 
 ## Basic Usage
 
-First, fill `.env` according to `.env.example`.
+1. install `bun` and `prisma` CLI
 
-Then, run the following command:
+2. clear your postgres database and run `prisma db push`
+
+3. fill `.env` according to `.env.example`.
+
+4. run the following command:
 
 ```shell
 bun run scripts/dump_redis.ts
