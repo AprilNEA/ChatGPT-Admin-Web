@@ -1,0 +1,102 @@
+.auth-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  flex-direction: column;
+
+  .auth-container {
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .auth-logo {
+    transform: scale(1.4);
+  }
+
+  .auth-title {
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 2;
+  }
+
+  .auth-tips {
+    font-size: 14px;
+  }
+
+  .auth-input {
+    margin: 1vh 0;
+    width: 100%;
+  }
+
+  .auth-actions {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    margin-top: 10px;
+
+    button:not(:last-child) {
+      margin-bottom: 10px;
+    }
+  }
+}
+
+.wechat-part {
+  flex-basis: 40%;
+  padding: 10px;
+}
+
+.password-part {
+  flex-basis: 60%;
+  padding: 10px;
+}
+
+
+.tab-container {
+  display: flex;
+  justify-content: flex-end;
+
+  .tab-button {
+    border: none;
+    background-color: transparent;
+    padding: 10px;
+    cursor: pointer;
+  }
+
+  .tab-button.active {
+    font-weight: bold;
+  }
+}
+
+.form-container {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+
+  .row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-direction: row;
+    width: 100%;
+  }
+
+  .qrcode {
+    width: 200px;
+    height: 200px;
+  }
+
+  .send-button {
+    width: 40%;
+    flex-grow: 0;
+  }
+
+  .auth-input {
+    flex-grow: 1;
+    max-height: 20px;
+  }
+}
