@@ -1,17 +1,17 @@
 import styles from "./auth.module.scss";
-import { IconButton } from "../button/button";
+import {IconButton} from "../button/button";
 
-import { NavigateFunction, useNavigate } from "react-router-dom";
-import { Path } from "../../constant";
+import {NavigateFunction, useNavigate} from "react-router-dom";
+import {Path} from "../../constant";
 
 import Locale from "../../locales";
 
 import BotIcon from "../../icons/bot.svg";
-import React, { FormEvent, useCallback, useState } from "react";
+import React, {FormEvent, useCallback, useState} from "react";
 
 import usePreventFormSubmit from "@/app/hooks/use-prevent-form";
-import { useUserStore } from "@/app/store";
-import { Input, showToast } from "@/app/components/ui-lib/ui-lib";
+import {useUserStore} from "@/app/store";
+import {Input, showToast} from "@/app/components/ui-lib/ui-lib";
 import Locales from "@/app/locales";
 import {
   apiUserLoginGet,
@@ -20,9 +20,9 @@ import {
   apiUserRegister,
   apiUserRegisterCode,
 } from "@/app/api";
-import { serverStatus } from "@caw/types";
+import {serverStatus} from "@caw/types";
 import useIntervalAsync from "@/app/hooks/use-interval-async";
-import { Loading } from "@/app/components/loading";
+import {Loading} from "@/app/components/loading";
 import Image from "next/image";
 
 const emailService = process.env.NEXT_PUBLIC_EMAIL_SERVICE;
@@ -64,7 +64,7 @@ const PhoneLogin: React.FC = () => {
         Locales.User.PleaseInput(`${Locales.User.Phone}, ${Locales.User.Code}`),
       );
 
-    const res = await apiUserRegister({ phone: phone, verificationCode: code });
+    const res = await apiUserRegister({phone: phone, verificationCode: code});
 
     switch (res.status) {
       case serverStatus.success: {
@@ -193,7 +193,7 @@ const EmailLogin: React.FC = () => {
       </div>
 
       <div className={styles["auth-actions"]}>
-        <IconButton text={Locale.Auth.Confirm} type="primary" />
+        <IconButton text={Locale.Auth.Confirm} type="primary"/>
       </div>
     </div>
   );
@@ -202,6 +202,7 @@ const EmailLogin: React.FC = () => {
 const WeChatLogin: React.FC = () => {
   const navigate = useNavigate();
   const [ticket, setTicket] = useState("");
+  const updateSessionToken = useUserStore((state) => state.updateSessionToken);
 
   useIntervalAsync(
     useCallback(async () => {
@@ -221,13 +222,12 @@ const WeChatLogin: React.FC = () => {
             return;
         }
       }
-    }, [ticket]),
+    }, [ticket, navigate, updateSessionToken]),
     3000,
   );
 
-  const updateSessionToken = useUserStore((state) => state.updateSessionToken);
 
-  if (!ticket) return <Loading noLogo={true} />;
+  if (!ticket) return <Loading noLogo={true}/>;
 
   return (
     <div className={styles["form-container"]}>
@@ -249,7 +249,7 @@ export function AuthPage() {
   return (
     <div className={styles["auth-page"]}>
       <div className={`no-dark ${styles["auth-logo"]}`}>
-        <BotIcon />
+        <BotIcon/>
       </div>
 
       <div className={styles["auth-title"]}>{Locale.Auth.Title}</div>
@@ -257,7 +257,7 @@ export function AuthPage() {
 
       <div className={styles["auth-container"]}>
         <div className={styles["wechat-part"]}>
-          <WeChatLogin />
+          <WeChatLogin/>
         </div>
 
         <div className={styles["password-part"]}>
@@ -281,7 +281,7 @@ export function AuthPage() {
               </button>
             )}
           </div>
-          {tab === "phone" ? <PhoneLogin /> : <EmailLogin />}
+          {tab === "phone" ? <PhoneLogin/> : <EmailLogin/>}
         </div>
       </div>
     </div>
