@@ -64,3 +64,5 @@ Please see [documentation](https://caw.sku.moe)
 感谢您的激励，能让该项目持续发展。
 
 [GitHub Sponsor](https://github.com/sponsors/AprilNEA)  |  [爱发电](https://afdian.net/a/aprilnea)
+
+<img src="https://hits-app.vercel.app/hits?url=https%3A%2F%2Fgithub.com%2FAprilNEA%2FChatGPT-Admin-Web" />
