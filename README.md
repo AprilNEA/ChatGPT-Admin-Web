@@ -19,16 +19,16 @@
 - 用户管理、订单管理和订阅管理
 - 支付接口
     - 第三方支付接口
-      -[x]虎皮椒
+      - 虎皮椒
 - 文本安全
-    -[ ] 敏感词过滤
-    -[x] 第三方过滤
+    - 敏感词过滤
+    - 第三方过滤
 - 模型接入
-    -[x] OpenAI
-    -[ ] Bing
+    - OpenAI
+    - New Bing
 - 收益模式
-    -[ ] 广告
-    -[ ] 分销
+    - 广告
+    - 分销
 
 <details><summary>思维导图</summary>
 
@@ -41,17 +41,17 @@
 - Mask and prompt list
 - User management, order management and subscription management
 - Payment interface
-- Third party payment interface
-  -[x]Xunhu Pay
+  - Third party payment interface
+    - Xunhu Pay
 - Text Security
--[ ] Sensitive word filter
--[x] Third-party filtering
-- Model Access
--[x] OpenAI
--[ ] Bing
+  - Sensitive word filter
+  - Third-party filtering
+- Model
+  - OpenAI
+  - Bing
 - Revenue model
--[ ] Advertising
--[ ] Distribution
+  - Advertising
+  - Distribution
 
 ## Start
 
