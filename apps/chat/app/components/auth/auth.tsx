@@ -1,17 +1,15 @@
-import styles from "./auth.module.scss";
-import {IconButton} from "../button/button";
-
-import {NavigateFunction, useNavigate} from "react-router-dom";
-import {Path} from "../../constant";
-
-import Locale from "../../locales";
-
-import BotIcon from "../../icons/bot.svg";
+import Image from "next/image";
 import React, {FormEvent, useCallback, useState} from "react";
+import {useNavigate} from "react-router-dom";
 
-import usePreventFormSubmit from "@/app/hooks/use-prevent-form";
+import {serverStatus} from "@caw/types";
+
 import {useUserStore} from "@/app/store";
-import {Input, showToast} from "@/app/components/ui-lib/ui-lib";
+import useIntervalAsync from "@/app/hooks/use-interval-async";
+import usePreventFormSubmit from "@/app/hooks/use-prevent-form";
+
+import {Loading} from "@/app/components/loading";
+import {showToast} from "@/app/components/ui-lib/ui-lib";
 import Locales from "@/app/locales";
 import {
   apiUserLoginGet,
@@ -20,11 +18,13 @@ import {
   apiUserRegister,
   apiUserRegisterCode,
 } from "@/app/api";
-import {serverStatus} from "@caw/types";
-import useIntervalAsync from "@/app/hooks/use-interval-async";
-import {Loading} from "@/app/components/loading";
-import Image from "next/image";
 
+import styles from "./auth.module.scss";
+import {Path} from "../../constant";
+import {IconButton} from "../button/button";
+import BotIcon from "../../icons/bot.svg";
+
+const wechatService = process.env.NEXT_PUBLIC_WECHAT;
 const emailService = process.env.NEXT_PUBLIC_EMAIL_SERVICE;
 
 const PhoneLogin: React.FC = () => {
@@ -193,7 +193,7 @@ const EmailLogin: React.FC = () => {
       </div>
 
       <div className={styles["auth-actions"]}>
-        <IconButton text={Locale.Auth.Confirm} type="primary"/>
+        <IconButton text={Locales.Auth.Confirm} type="primary"/>
       </div>
     </div>
   );
@@ -252,13 +252,16 @@ export function AuthPage() {
         <BotIcon/>
       </div>
 
-      <div className={styles["auth-title"]}>{Locale.Auth.Title}</div>
-      <div className={styles["auth-tips"]}>{Locale.Auth.Tips}</div>
+      <div className={styles["auth-title"]}>{Locales.Auth.Title}</div>
+      <div className={styles["auth-tips"]}>{Locales.Auth.Tips}</div>
 
       <div className={styles["auth-container"]}>
-        <div className={styles["wechat-part"]}>
-          <WeChatLogin/>
-        </div>
+        {wechatService &&
+            <div className={styles["wechat-part"]}>
+                <WeChatLogin/>
+            </div>
+        }
+
 
         <div className={styles["password-part"]}>
           <div className={styles["tab-container"]}>
