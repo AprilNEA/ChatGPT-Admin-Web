@@ -25,8 +25,12 @@ export namespace BotType {
     content: z.string(),
   });
   export const postPayload = z.object({
-    conversation: chatRecord.array().nonempty(),
-    maxTokens: z.number().optional(),
+    messages: chatRecord.array().nonempty(),
+    // maxTokens: z.number().optional(),
+    stream: z.boolean(),
     model: gptModel.or(otherModel),
+    temperature: z.number().optional(),
+    presence_penalty: z.number().optional(),
+    frequency_penalty: z.number().optional(),
   });
 }

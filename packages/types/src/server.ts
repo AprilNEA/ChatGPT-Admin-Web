@@ -9,6 +9,8 @@ export enum serverStatus {
   invalidCode,
   wrongPassword,
   invalidToken,
+  invalidTicket,
+  unScannedTicket,
 
   /* Rate Limit*/
   tooFast,

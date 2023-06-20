@@ -1,13 +1,14 @@
 import type { serverStatus } from "./server";
 
 export namespace DALType {
-  type Price = {
+  export type Price = {
+    id: number;
     name: string;
     amount: number;
     duration: number;
   };
 
-  type Limit = {
+  export type Limit = {
     modelName: string;
     times: number;
     duration: number;
@@ -30,6 +31,7 @@ export namespace DALType {
   export interface Plan {
     planId: number;
     name: string;
+    features: string[];
     prices: Price[];
     limits: Limit[];
   }

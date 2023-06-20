@@ -1,6 +1,6 @@
 export * from "./dal";
 export * from "./utils";
-export { startUp } from "./startup";
+export { chatStartUp } from "./utils/startup";
 export { dalErrorCatcher } from "./decorator";
 
 export { RegisterType } from "@caw/database";

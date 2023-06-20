@@ -2,6 +2,7 @@ import client, { Prisma, Plan } from "@caw/database";
 import { dalErrorCatcher } from "../decorator";
 import { DALType } from "@caw/types";
 
+// @dalErrorCatcher
 export class PlanDAL {
   constructor() {}
 
@@ -10,6 +11,7 @@ export class PlanDAL {
       include: {
         prices: {
           select: {
+            id: true,
             name: true,
             amount: true,
             duration: true,
@@ -30,22 +32,22 @@ export class PlanDAL {
     });
   }
 
-  static async newPlan(plan: DALType.newPlan): Promise<Plan> {
-    return await client.plan.create({
-      data: {
-        name: plan.name,
-        prices: {
-          createMany: {
-            data: [
-              ...plan.prices.map((price) => ({
-                name: price.name,
-                amount: price.amount,
-                duration: price.duration,
-              })),
-            ],
-          },
-        },
-      },
-    });
-  }
+  // static async newPlan(plan: DALType.newPlan): Promise<Plan> {
+  //   return await client.plan.create({
+  //     data: {
+  //       name: plan.name,
+  //       prices: {
+  //         createMany: {
+  //           data: [
+  //             ...plan.prices.map((price) => ({
+  //               name: price.name,
+  //               amount: price.amount,
+  //               duration: price.duration,
+  //             })),
+  //           ],
+  //         },
+  //       },
+  //     },
+  //   });
+  // }
 }

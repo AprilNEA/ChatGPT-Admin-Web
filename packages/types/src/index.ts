@@ -6,3 +6,4 @@ export * from "./dal";
 export * from "./wechat";
 export * from "./model";
 export * from "./store";
+export * from "./ratelimit";

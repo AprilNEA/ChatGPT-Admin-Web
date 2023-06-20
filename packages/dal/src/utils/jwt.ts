@@ -47,3 +47,11 @@ export async function parseUserId(token: string) {
   };
   return userId;
 }
+
+export async function resumeToken(
+  token: string
+): Promise<{ token: string; expiredAt: number }> {
+  return await accessTokenUtils.sign(7 * 24 * (60 * 60), {
+    uid: parseUserId(token),
+  });
+}

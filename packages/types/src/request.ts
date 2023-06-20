@@ -18,7 +18,7 @@ export namespace ChatRequest {
   export const UserRegisterPost = z.object({
     email: z.string().optional(),
     phone: z.string().optional(),
-    password: z.string(),
+    password: z.string().optional(),
     register_code: z.string().optional(),
     invitation_code: z.string().optional(),
   });
@@ -33,5 +33,6 @@ export namespace ChatRequest {
 
   export const RequestNewOrder = z.object({
     planId: z.number(),
+    priceId: z.number(),
   });
 }

@@ -1,7 +1,6 @@
 import { AbstractBot } from './abstract-bot';
 import { AnswerParams, GPTModel } from './types';
 import { streamToLineIterator } from './utils';
-import * as process from 'process';
 
 const openAiBase = process.env.OPENAI_BASE ?? 'https://api.openai.com';
 const openAiKey = process.env.OPENAI_KEY!;
@@ -16,8 +15,15 @@ export class OpenAIBot extends AbstractBot {
     super();
   }
 
+  /**
+   *
+   * @param params
+   * @protected
+   */
   protected async *doAnswer(params: AnswerParams): AsyncIterable<string> {
+    console.log(openAiEndpoint);
     const { conversation, maxTokens, signal } = params;
+
     const response = await fetch(openAiEndpoint, {
       method: 'POST',
       headers: {

@@ -3,11 +3,10 @@ import { ServerError, serverStatus, DALType } from "@caw/types";
 import client, { Prisma, type User } from "@caw/database";
 
 import { accessTokenUtils } from "../utils";
-import { dalErrorCatcher } from "../decorator";
 
 export type providerType = "email" | "phone" | "wechat";
 
-@dalErrorCatcher
+// @dalErrorCatcher
 export class UserDAL {
   constructor() {}
 
@@ -65,28 +64,22 @@ export class UserDAL {
     email,
     phone,
     password,
-    wechatInfo,
     registerCode,
     invitationCode,
   }: {
     email?: string;
     phone?: string;
     password?: string;
-    wechatInfo?: {
-      unionId: string;
-      name: string;
-      openId: string;
-    };
     registerCode?: string;
     invitationCode?: string;
   }): Promise<DALType.UserRegister> {
-    /* 当不使用微信注册时，必须输入密码
-     * When not using WeChat to register, you must enter your password
+    /* 当使用邮箱注册时，必须输入密码
+     * When using Email to register, you must enter your password
      * */
     if (email || phone) {
       if (email && phone)
         throw Error("Cannot pass both email and phone at one time");
-      if (!password)
+      if (email && !password)
         throw Error(
           "The password must be registered at the time of using cell phone number or email"
         );
@@ -98,15 +91,13 @@ export class UserDAL {
       /* 效验验证码
        * Validation code
        * */
-      const validationCode = await client.registerCode.findUniqueOrThrow({
+      const validationCode = await client.registerCode.findUnique({
         where: {
-          register: email ?? phone,
+          register: phone ? phone : email,
         },
       });
-      if (validationCode.code.toString() !== registerCode)
+      if (validationCode?.code.toString() !== registerCode)
         throw new ServerError(serverStatus.wrongPassword, "Password error");
-    } else {
-      if (!wechatInfo) throw Error("Information must be supplied to register");
     }
 
     const existUser = await client.user.findMany({
@@ -126,18 +117,20 @@ export class UserDAL {
       },
     });
 
-    if (wechatInfo) {
-      const existWechat = await client.wechatInfo.findUnique({
-        where: {
-          unionId: wechatInfo.unionId,
-        },
-      });
-
-      if (existUser.length > 0 || existWechat)
+    if (existUser.length > 0) {
+      if (email) {
         throw new ServerError(
           serverStatus.alreadyExisted,
           "wechat user already exists"
         );
+      }
+      if (phone) {
+        return {
+          signedToken: await accessTokenUtils.sign(7 * 24 * (60 * 60), {
+            uid: existUser[0].userId,
+          }),
+        };
+      }
     }
 
     const userInput: Prisma.UserCreateInput = {
@@ -157,20 +150,6 @@ export class UserDAL {
     };
 
     const user = await client.user.create({ data: userInput });
-
-    /* 绑定微信账号 */
-    if (wechatInfo) {
-      const wechatInfoInput: Prisma.WechatInfoCreateInput = {
-        unionId: wechatInfo.unionId,
-        name: wechatInfo.name,
-        openId: wechatInfo.openId,
-        user: {
-          connect: {
-            userId: user.userId,
-          },
-        },
-      };
-    }
 
     /* Accept Invitation */
     if (invitationCode) {
@@ -202,7 +181,9 @@ export class UserDAL {
               },
             },
           };
-          await client.invitationRecord.create({ data: invitationRecordInput });
+          await client.invitationRecord.create({
+            data: invitationRecordInput,
+          });
         }
         /*
          * TODO Some invitation may have some benefit

@@ -3,10 +3,10 @@ generator client {
   provider = "prisma-client-js"
 }
 
-generator dbml {
-  provider = "prisma-dbml-generator"
-  output   = "./"
-}
+// generator dbml {
+//   provider = "prisma-dbml-generator"
+//   output   = "./"
+// }
 
 datasource db {
   provider          = "postgresql"
@@ -48,9 +48,8 @@ model User {
 }
 
 model WechatInfo {
-  unionId String @id
-  name    String
-  openId  String @unique
+  openId  String  @id
+  unionId String? @unique
 
   userId Int  @unique
   user   User @relation("UserWechat", fields: [userId], references: [userId])
@@ -107,6 +106,8 @@ model Prices {
 
   planId Int
   plan   Plan @relation("PricesWithPlan", fields: [planId], references: [planId])
+
+  Order Order[] @relation("OrderPrices")
 }
 
 model Limits {
@@ -124,8 +125,9 @@ model Limits {
 }
 
 model Plan {
-  planId Int    @id @default(autoincrement())
-  name   String @unique
+  planId   Int      @id @default(autoincrement())
+  name     String   @unique
+  features String[]
 
   prices Prices[] @relation("PricesWithPlan") // 该计划不同时间（月、季或者年...）的价格
   limits Limits[] @relation("LimitsWithPlan") // 该计划每个模型的价格
@@ -156,6 +158,9 @@ model Order {
 
   planId Int
   plan   Plan @relation("OrderPlan", fields: [planId], references: [planId])
+
+  priceId Int
+  price   Prices @relation("OrderPrices", fields: [priceId], references: [id])
 
   subscriptionId Subscription? @relation("OrderSubscription")
 }
@@ -214,4 +219,9 @@ model OpenAIKey {
 model RateLimit {
   key   String @id
   value Int[]
+}
+
+model Setting {
+  key   String @id
+  value String
 }

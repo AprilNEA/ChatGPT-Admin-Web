@@ -51,6 +51,7 @@
   },
   "dependencies": {
     "@caw/database": "workspace:*",
+    "@prisma/client": "^4.15.0",
     "jose": "^4.14.1",
     "spark-md5": "^3.0.2",
     "zod": "^3.21.4"

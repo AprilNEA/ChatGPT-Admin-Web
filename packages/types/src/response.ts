@@ -1,7 +1,14 @@
-import type { serverStatus } from "./server";
-import { DALType } from "./dal";
+import type {serverStatus} from "./server";
+import {DALType} from "./dal";
 
 export namespace ChatResponse {
+
+  export interface TicketGet {
+    status: serverStatus;
+    ticket: string;
+    expiredAt: string;
+  }
+
   export interface UserLogin extends DALType.UserLogin {
     status: serverStatus;
   }
