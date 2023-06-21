@@ -46,8 +46,6 @@ const queryRoleByName = (name: string) => {
   return role;
 };
 
-await saveCsv("roles", roles);
-
 // Users
 const users: User[] = distinctBy(userEntries, ({ key }) => key.toLowerCase())
   .map(({
@@ -85,8 +83,6 @@ const queryUserByEmail = (email: string) => {
   return user;
 };
 
-await saveCsv("users", users);
-
 // Plans
 const plans: Plan[] = planEntries
   .map(({ key }, planId) => ({
@@ -103,13 +99,12 @@ const queryPlanByName = (name: string) => {
   return plan;
 };
 
-await saveCsv("plans", plans);
-
 // Prices
 const durationToSeconds: Record<string, number> = {
   monthly: 30 * 24 * 60 * 60,
   quarterly: 3 * 30 * 24 * 60 * 60,
   yearly: 365 * 24 * 60 * 60,
+  unknown: 0,
 };
 
 const prices: Prices[] = planEntries
@@ -117,24 +112,35 @@ const prices: Prices[] = planEntries
     Object.entries(prices)
       .map(([duration, amount]) => ({
         name: duration,
-        amount,
+        amount: amount * 100, // Convert to cents
         duration: durationToSeconds[duration]!,
-        planId: planId,
+        isCurrent: true,
+        planId,
       }))
   )
   .map((prices, id) => ({ id, ...prices }));
 
-const queryPriceByAmount = (amount: number) => {
+const queryOrCreatePriceByAmount = (
+  amount: number,
+  creationInfo?: Pick<Prices, "name" | "planId">,
+): Prices => {
   const price = prices.find(({ amount: priceAmount }) =>
     priceAmount === amount
   );
-  if (!price) {
-    throw new Error(`Price with amount ${amount} not found`);
-  }
-  return price;
-};
+  if (price) return price;
+  if (!creationInfo) throw new Error("Price creation info not provided");
 
-await saveCsv("prices", prices);
+  const priceId = prices.length;
+  prices.push({
+    id: priceId,
+    name: creationInfo.name,
+    amount,
+    duration: durationToSeconds[creationInfo.name]!,
+    isCurrent: false,
+    planId: creationInfo.planId,
+  });
+  return prices[priceId];
+};
 
 // Models
 const modelNames = deepDistinct(planEntries.flatMap(
@@ -146,8 +152,6 @@ const models: Model[] = modelNames.map((modelName, modelId) => ({
   modelName,
   unitPrice: 0, // unitPrice = 0 is a placeholder
 }));
-
-await saveCsv("models", models);
 
 // Limits
 const limits: Limits[] = planEntries
@@ -163,8 +167,6 @@ const limits: Limits[] = planEntries
   )
   .map((limits, id) => ({ id, ...limits }));
 
-await saveCsv("limits", limits);
-
 // Orders
 const orders: Order[] = orderEntries
   .map((
@@ -172,16 +174,16 @@ const orders: Order[] = orderEntries
   ) => ({
     orderId: key.split(":")[1],
     count,
-    amount: totalCents, // A previous bug caused the totalCents actually not in cents
+    amount: totalCents * 100, // A previous bug caused the totalCents actually not in cents
     status: firstCharUpperCase(status) as OrderStatus,
     userId: queryUserByEmail(email).userId,
     createdAt: new Date(createdAt),
     updatedAt: new Date(createdAt),
-    planId: queryPlanByName(plan).planId,
-    priceId: queryPriceByAmount(totalCents / count).id,
+    priceId: queryOrCreatePriceByAmount(totalCents * 100 / count, {
+      name: "unknown",
+      planId: queryPlanByName(plan).planId,
+    }).id,
   }));
-
-await saveCsv("orders", orders);
 
 // InvitationCodes
 const invitationCodes: InvitationCode[] = invitationCodeEntries
@@ -199,8 +201,6 @@ const invitationCodes: InvitationCode[] = invitationCodeEntries
       return [];
     }
   });
-
-await saveCsv("invitationCodes", invitationCodes);
 
 // InvitationRecords
 const invitationRecords: InvitationRecord[] = invitationCodeEntries
@@ -224,8 +224,6 @@ const invitationRecords: InvitationRecord[] = invitationCodeEntries
     }
   });
 
-await saveCsv("invitationRecords", invitationRecords);
-
 // Redeem
 const redeemSubscriptions = userEntries.map((entry) => {
   const paidSubscription = entry.value.subscriptions
@@ -237,29 +235,31 @@ const redeemSubscriptions = userEntries.map((entry) => {
   return newEntry;
 });
 
-const redeems: Redeem[] = redeemSubscriptions.flatMap(
-  ({ key, value: { subscriptions } }) => {
-    try {
-      const userId = queryUserByEmail(key.split(":")[1]).userId;
+const redeems: Redeem[] = distinctBy(
+  redeemSubscriptions.flatMap(
+    ({ key, value: { subscriptions } }) => {
+      try {
+        const userId = queryUserByEmail(key.split(":")[1]).userId;
 
-      return subscriptions.map(({ startsAt, endsAt, tradeOrderId, plan }) => ({
-        redeemCode: tradeOrderId,
-        isActivated: true,
-        createdAt: new Date(startsAt),
-        activatedAt: new Date(startsAt),
-        activatedBy: userId,
-        planId: queryPlanByName(plan).planId,
-      }));
-    } catch (e) {
-      if (e instanceof Error) {
-        console.warn(key, e.message);
+        return subscriptions
+          .map(({ startsAt, tradeOrderId, plan }) => ({
+            redeemCode: tradeOrderId,
+            isActivated: true,
+            createdAt: new Date(startsAt),
+            activatedAt: new Date(startsAt),
+            activatedBy: userId,
+            planId: queryPlanByName(plan).planId,
+          }));
+      } catch (e) {
+        if (e instanceof Error) {
+          console.warn(key, e.message);
+        }
+        return [];
       }
-      return [];
-    }
-  },
+    },
+  ),
+  ({ redeemCode }) => redeemCode,
 );
-
-await saveCsv("redeems", redeems);
 
 // Subscriptions
 const paidSubscriptions = userEntries.map((entry) => {
@@ -316,6 +316,15 @@ for (const subscription of rawSubscriptions) {
 }
 
 const subscriptions = Array.from(orderIdToSubscription.values());
-console.log(rawSubscriptions.length, subscriptions.length);
 
+await saveCsv("roles", roles);
+await saveCsv("users", users);
+await saveCsv("plans", plans);
+await saveCsv("prices", prices);
+await saveCsv("models", models);
+await saveCsv("limits", limits);
+await saveCsv("orders", orders);
+await saveCsv("invitationCodes", invitationCodes);
+await saveCsv("invitationRecords", invitationRecords);
+await saveCsv("redeems", redeems);
 await saveCsv("subscriptions", subscriptions);
