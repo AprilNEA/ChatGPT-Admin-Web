@@ -7,10 +7,14 @@
   flex-direction: column;
 
   .auth-container {
-
+    box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
     display: flex;
     justify-content: center;
     align-items: center;
+    border-radius: 12px;
+    width: 250px;
+    padding: 24px;
+    margin-top: 16px;
   }
 
   .auth-logo {
@@ -37,6 +41,7 @@
     justify-content: center;
     flex-direction: column;
     margin-top: 10px;
+    width: 100%;
 
     button:not(:last-child) {
       margin-bottom: 10px;
@@ -45,20 +50,82 @@
 }
 
 .wechat-part {
-  flex-basis: 40%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   padding: 10px;
+  width: 100%;
+  position: relative;
+  .wechat-part-title {
+    border: none;
+    background-color: transparent;
+    font-weight: bold;
+  }
+  .wechat-login-container {
+    border-radius: 10px;
+    width: 200px;
+    height: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #ededed;
+    margin-top: 12px;
+  }
+  .wechat-part-go-back {
+    position: absolute;
+    top: -5px;
+    left: -5px;
+  }
 }
 
 .password-part {
-  flex-basis: 60%;
-  padding: 10px;
+  width: 100%;
+  .divider {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 12px;
+    .divider-line {
+      border-radius: 1px;
+      width: 35%;
+      height: 1px;
+      background: #bababa;
+    }
+
+    .divider-text {
+      color: #bababa;
+      padding: 0 6px;
+    }
+  }
+  .third-part-login-options {
+    margin-top: 12px;
+    display: flex;
+    width: 100%;
+    justify-content: center;
+
+    .third-part-option {
+      width: 30px;
+      height: 30px;
+      padding: 5px;
+      box-sizing: border-box;
+      background-color: #ececec;
+      border-radius: 100%;
+    }
+    .third-part-option:active {
+      opacity: 0.9;
+
+    }
+    .third-part-option:hover {
+      background-color: #e7e7e7;
+    }
+  }
 }
 
 
 .tab-container {
   display: flex;
-  justify-content: flex-end;
-
+  justify-content: space-around;
+  
   .tab-button {
     border: none;
     background-color: transparent;
@@ -75,6 +142,7 @@
   display: flex;
   align-items: center;
   flex-direction: column;
+  margin-top: 12px;
 
   .row {
     display: flex;
@@ -98,5 +166,18 @@
   .auth-input {
     flex-grow: 1;
     max-height: 20px;
+    max-width: none;
+    width: 100%;
+  }
+
+  .auth-get-code-btn {
+    margin-left: 12px;
+    width: 150px;
+  }
+
+  .auth-submit-btn {
+    display: block;
+    width: 100%;
+    max-width: none;
   }
 }
