@@ -1,0 +1,17 @@
+{
+  "name": "@caw/migration",
+  "module": "index.ts",
+  "type": "module",
+  "devDependencies": {
+    "bun-types": "^0.6.9"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@caw/database": "workspace:*",
+    "@upstash/redis": "^1.21.0",
+    "database-old": "workspace:*",
+    "zod": "^3.21.4"
+  }
+}
