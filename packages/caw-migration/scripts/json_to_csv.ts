@@ -17,6 +17,7 @@ import {
   OrderStatus,
   Plan,
   Prices,
+  Redeem,
   Role,
   Subscription,
   User,
@@ -88,7 +89,11 @@ await saveCsv("users", users);
 
 // Plans
 const plans: Plan[] = planEntries
-  .map(({ key }, planId) => ({ planId, name: key.split(":")[1] }));
+  .map(({ key }, planId) => ({
+    planId,
+    name: key.split(":")[1],
+    features: [],
+  }));
 
 const queryPlanByName = (name: string) => {
   const plan = plans.find(({ name: planName }) => planName === name);
@@ -112,12 +117,22 @@ const prices: Prices[] = planEntries
     Object.entries(prices)
       .map(([duration, amount]) => ({
         name: duration,
-        amount: amount * 100, // Convert the amount to cents
+        amount,
         duration: durationToSeconds[duration]!,
         planId: planId,
       }))
   )
   .map((prices, id) => ({ id, ...prices }));
+
+const queryPriceByAmount = (amount: number) => {
+  const price = prices.find(({ amount: priceAmount }) =>
+    priceAmount === amount
+  );
+  if (!price) {
+    throw new Error(`Price with amount ${amount} not found`);
+  }
+  return price;
+};
 
 await saveCsv("prices", prices);
 
@@ -163,6 +178,7 @@ const orders: Order[] = orderEntries
     createdAt: new Date(createdAt),
     updatedAt: new Date(createdAt),
     planId: queryPlanByName(plan).planId,
+    priceId: queryPriceByAmount(totalCents / count).id,
   }));
 
 await saveCsv("orders", orders);
@@ -210,8 +226,53 @@ const invitationRecords: InvitationRecord[] = invitationCodeEntries
 
 await saveCsv("invitationRecords", invitationRecords);
 
+// Redeem
+const redeemSubscriptions = userEntries.map((entry) => {
+  const paidSubscription = entry.value.subscriptions
+    .filter(({ tradeOrderId }) => isNaN(parseInt(tradeOrderId)));
+  const newEntry = {
+    ...entry,
+    value: { ...entry.value, subscriptions: paidSubscription },
+  };
+  return newEntry;
+});
+
+const redeems: Redeem[] = redeemSubscriptions.flatMap(
+  ({ key, value: { subscriptions } }) => {
+    try {
+      const userId = queryUserByEmail(key.split(":")[1]).userId;
+
+      return subscriptions.map(({ startsAt, endsAt, tradeOrderId, plan }) => ({
+        redeemCode: tradeOrderId,
+        isActivated: true,
+        createdAt: new Date(startsAt),
+        activatedAt: new Date(startsAt),
+        activatedBy: userId,
+        planId: queryPlanByName(plan).planId,
+      }));
+    } catch (e) {
+      if (e instanceof Error) {
+        console.warn(key, e.message);
+      }
+      return [];
+    }
+  },
+);
+
+await saveCsv("redeems", redeems);
+
 // Subscriptions
-const rawSubscriptions: Subscription[] = userEntries
+const paidSubscriptions = userEntries.map((entry) => {
+  const paidSubscription = entry.value.subscriptions
+    .filter(({ tradeOrderId }) => !isNaN(parseInt(tradeOrderId)));
+  const newEntry = {
+    ...entry,
+    value: { ...entry.value, subscriptions: paidSubscription },
+  };
+  return newEntry;
+});
+
+const rawSubscriptions: Subscription[] = paidSubscriptions
   .flatMap(({ key, value: { subscriptions } }) => {
     try {
       const userId = queryUserByEmail(key.split(":")[1]).userId;
@@ -221,7 +282,7 @@ const rawSubscriptions: Subscription[] = userEntries
         createdAt: new Date(startsAt),
         expiredAt: new Date(endsAt),
         redeemCode: null,
-        orderId: isNaN(parseInt(tradeOrderId)) ? null : tradeOrderId,
+        orderId: tradeOrderId,
         planId: queryPlanByName(plan).planId,
         userId,
       }));
