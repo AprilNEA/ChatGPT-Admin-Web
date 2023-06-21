@@ -8,7 +8,8 @@ import Locale from "../../locales";
 
 import BotIcon from "../../icons/bot.svg";
 import React, { FormEvent, useCallback, useState } from "react";
-
+import WechatLogo from '../../icons/wechat-logo.png';
+import LeftArrow from '../../icons/left.svg';
 import usePreventFormSubmit from "@/app/hooks/use-prevent-form";
 import { useUserStore } from "@/app/store";
 import { Input, showToast } from "@/app/components/ui-lib/ui-lib";
@@ -90,7 +91,6 @@ const PhoneLogin: React.FC = () => {
 
   return (
     <div className={styles["form-container"]}>
-      <div className={styles["row"]}>
         <input
           type="text"
           id="phone"
@@ -100,12 +100,7 @@ const PhoneLogin: React.FC = () => {
           placeholder={Locales.User.Phone}
           required
         />
-        <IconButton
-          text={isCodeSubmitting ? Locales.User.Sent : Locales.User.GetCode}
-          type="primary"
-          onClick={() => handleCodeSubmit(undefined, handleCode)}
-        />
-      </div>
+
       <div className={styles["row"]}>
         <input
           type="text"
@@ -116,11 +111,18 @@ const PhoneLogin: React.FC = () => {
           placeholder={Locales.User.Code}
           required
         />
+        <IconButton
+          text={isCodeSubmitting ? Locales.User.Sent : Locales.User.GetCode}
+          className={styles["auth-get-code-btn"]}
+          type="primary"
+          onClick={() => handleCodeSubmit(undefined, handleCode)}
+        />
       </div>
       <div className={styles["auth-actions"]}>
         <IconButton
           onClick={() => handleSubmit(undefined, handleLogin)}
           text={`${Locales.User.Login} / ${Locales.User.Register}`}
+          className={styles["auth-submit-btn"]}
           type="primary"
         />
       </div>
@@ -244,22 +246,25 @@ const WeChatLogin: React.FC = () => {
 };
 
 export function AuthPage() {
-  const [tab, setTab] = useState<"email" | "phone">("phone");
+  const [tab, setTab] = useState<"email" | "phone" | "wechat">("phone");
 
-  return (
-    <div className={styles["auth-page"]}>
-      <div className={`no-dark ${styles["auth-logo"]}`}>
-        <BotIcon />
-      </div>
-
-      <div className={styles["auth-title"]}>{Locale.Auth.Title}</div>
-      <div className={styles["auth-tips"]}>{Locale.Auth.Tips}</div>
-
-      <div className={styles["auth-container"]}>
+  let content = null;
+  switch (tab) {
+    case "wechat":
+      content =         
         <div className={styles["wechat-part"]}>
-          <WeChatLogin />
+          <div className={styles["wechat-part-title"]}>{Locales.User.WeChatLogin}</div>
+          <div className={styles["wechat-login-container"]}>
+            <WeChatLogin />
+          </div>
+          <div className={styles["wechat-part-go-back"]} onClick={()=>{setTab('phone')}}>
+            <LeftArrow />
+          </div>
         </div>
-
+      break;
+    case "email":
+    case "phone":
+      content =         
         <div className={styles["password-part"]}>
           <div className={styles["tab-container"]}>
             <button
@@ -282,7 +287,28 @@ export function AuthPage() {
             )}
           </div>
           {tab === "phone" ? <PhoneLogin /> : <EmailLogin />}
+          <div className={styles["divider"]} >
+            <div className={styles["divider-line"]}/>
+            <div className={styles["divider-text"]}>or</div>
+            <div className={styles["divider-line"]}/>
+          </div>
+          <div className={styles["third-part-login-options"]}>
+            <img src={WechatLogo.src} className={styles["third-part-option"]} onClick={() => {setTab('wechat')}}/>
+          </div>
         </div>
+      break;
+  }
+
+
+  return (
+    <div className={styles["auth-page"]}>
+      <div className={`no-dark ${styles["auth-logo"]}`}>
+        <BotIcon />
+      </div>
+      <div className={styles["auth-title"]}>{Locale.Auth.Title}</div>
+      <div className={styles["auth-tips"]}>{Locale.Auth.Tips}</div>
+      <div className={styles["auth-container"]}>
+        {content}
       </div>
     </div>
   );
