@@ -104,6 +104,8 @@ model Prices {
   amount   Int // 单位为分
   duration Int // 单位为秒
 
+  isCurrent Boolean
+
   planId Int
   plan   Plan @relation("PricesWithPlan", fields: [planId], references: [planId])
 
