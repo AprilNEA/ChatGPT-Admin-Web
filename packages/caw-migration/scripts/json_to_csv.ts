@@ -104,8 +104,11 @@ const durationToSeconds: Record<string, number> = {
   monthly: 30 * 24 * 60 * 60,
   quarterly: 3 * 30 * 24 * 60 * 60,
   yearly: 365 * 24 * 60 * 60,
-  unknown: 0,
 };
+
+const findNameByDuration = (duration: number) =>
+  Object.entries(durationToSeconds)
+    .find(([, seconds]) => seconds === duration)?.[0] ?? "monthly";
 
 const prices: Prices[] = planEntries
   .flatMap(({ value: { prices } }, planId) =>
@@ -168,6 +171,18 @@ const limits: Limits[] = planEntries
   .map((limits, id) => ({ id, ...limits }));
 
 // Orders
+const userSubscriptions = userEntries
+  .flatMap(({ value: { subscriptions } }) => subscriptions);
+
+const orderIdToDuration = new Map(
+  userSubscriptions.map((
+    { startsAt, endsAt, tradeOrderId },
+  ) => [tradeOrderId, (endsAt - startsAt) / 1000]),
+);
+
+const queryDurationByOrderId = (orderId: string) =>
+  orderIdToDuration.get(orderId) ?? durationToSeconds.monthly;
+
 const orders: Order[] = orderEntries
   .map((
     { key, value: { status, count, totalCents, email, createdAt, plan } },
@@ -180,7 +195,7 @@ const orders: Order[] = orderEntries
     createdAt: new Date(createdAt),
     updatedAt: new Date(createdAt),
     priceId: queryOrCreatePriceByAmount(totalCents * 100 / count, {
-      name: "unknown",
+      name: findNameByDuration(queryDurationByOrderId(key.split(":")[1])!),
       planId: queryPlanByName(plan).planId,
     }).id,
   }));
