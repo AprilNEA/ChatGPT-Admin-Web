@@ -47,8 +47,8 @@ const en: LocaleType = {
     Name: "Pricing",
   },
   Auth: {
-    Title: "Need Access Code",
-    Tips: "Please enter access code below",
+    Title: process.env.NEXT_PUBLIC_TITLE ?? "ChatGPT Admin Web",
+    Tips: "Please continue with the identification",
     Input: "access code",
     Confirm: "Confirm",
     Later: "Later",

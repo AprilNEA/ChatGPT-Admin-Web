@@ -1,15 +1,15 @@
 import Image from "next/image";
-import React, {FormEvent, useCallback, useState} from "react";
-import {useNavigate} from "react-router-dom";
+import React, { FormEvent, useCallback, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-import {serverStatus} from "@caw/types";
+import { serverStatus } from "@caw/types";
 
-import {useUserStore} from "@/app/store";
+import { useUserStore } from "@/app/store";
 import useIntervalAsync from "@/app/hooks/use-interval-async";
 import usePreventFormSubmit from "@/app/hooks/use-prevent-form";
 
-import {Loading} from "@/app/components/loading";
-import {showToast} from "@/app/components/ui-lib/ui-lib";
+import { Loading } from "@/app/components/loading";
+import { showToast } from "@/app/components/ui-lib/ui-lib";
 import Locales from "@/app/locales";
 import {
   apiUserLoginGet,
@@ -20,18 +20,18 @@ import {
 } from "@/app/api";
 
 import styles from "./auth.module.scss";
-import {Path} from "../../constant";
-import {IconButton} from "../button/button";
+import { Path } from "../../constant";
+import { IconButton } from "../button/button";
 import BotIcon from "../../icons/bot.svg";
-import LeftArrow from '../../icons/left.svg';
-import WechatLogo from '../../icons/wechat-logo.png';
+import LeftArrow from "../../icons/left.svg";
+import WechatLogo from "../../icons/wechat-logo.png";
 
-const wechatService = process.env.NEXT_PUBLIC_WECHAT;
+const wechatService = process.env.NEXT_PUBLIC_WECHAT_SERVICE;
 const emailService = process.env.NEXT_PUBLIC_EMAIL_SERVICE;
 
-const PhoneLogin: React.FC = () => {
+const CaptchaLogin: React.FC = () => {
   const navigate = useNavigate();
-  const [phone, setPhone] = useState("");
+  const [register, setRegister] = useState("");
   const [code, setCode] = useState("");
 
   const [isSubmitting, handleSubmit] = usePreventFormSubmit();
@@ -40,9 +40,11 @@ const PhoneLogin: React.FC = () => {
   const updateSessionToken = useUserStore((state) => state.updateSessionToken);
 
   const handleCode = async (event: FormEvent | undefined) => {
-    if (!phone) return showToast(Locales.User.PleaseInput(Locales.User.Phone));
+    if (!register)
+      return showToast(Locales.User.PleaseInput(Locales.User.Phone));
 
-    const res = await apiUserRegisterCode("phone", phone);
+    const type = register.includes("@") ? "email" : "phone";
+    const res = await apiUserRegisterCode(type, register);
 
     switch (res.status) {
       case serverStatus.success: {
@@ -61,12 +63,15 @@ const PhoneLogin: React.FC = () => {
   };
 
   const handleLogin = async (e: FormEvent | undefined) => {
-    if (!phone || !code)
+    if (!register || !code)
       return showToast(
         Locales.User.PleaseInput(`${Locales.User.Phone}, ${Locales.User.Code}`),
       );
 
-    const res = await apiUserRegister({phone: phone, verificationCode: code});
+    const res = await apiUserRegister({
+      phone: register,
+      verificationCode: code,
+    });
 
     switch (res.status) {
       case serverStatus.success: {
@@ -92,15 +97,15 @@ const PhoneLogin: React.FC = () => {
 
   return (
     <div className={styles["form-container"]}>
-        <input
-          type="text"
-          id="phone"
-          value={phone}
-          className={styles["auth-input"]}
-          onChange={(e) => setPhone(e.target.value)}
-          placeholder={Locales.User.Phone}
-          required
-        />
+      <input
+        type="text"
+        id="phone"
+        value={register}
+        className={styles["auth-input"]}
+        onChange={(e) => setRegister(e.target.value)}
+        placeholder={`${Locales.User.Phone} / ${Locales.User.Email}`}
+        required
+      />
 
       <div className={styles["row"]}>
         <input
@@ -196,7 +201,7 @@ const EmailLogin: React.FC = () => {
       </div>
 
       <div className={styles["auth-actions"]}>
-        <IconButton text={Locales.Auth.Confirm} type="primary"/>
+        <IconButton text={Locales.Auth.Confirm} type="primary" />
       </div>
     </div>
   );
@@ -229,8 +234,7 @@ const WeChatLogin: React.FC = () => {
     3000,
   );
 
-
-  if (!ticket) return <Loading noLogo={true}/>;
+  if (!ticket) return <Loading noLogo={true} />;
 
   return (
     <div className={styles["form-container"]}>
@@ -248,24 +252,32 @@ const WeChatLogin: React.FC = () => {
 
 export function AuthPage() {
   const [tab, setTab] = useState<"email" | "phone" | "wechat">("phone");
-
+  console.log(wechatService);
   let content = null;
   switch (tab) {
     case "wechat":
-      content =
+      content = (
         <div className={styles["wechat-part"]}>
-          <div className={styles["wechat-part-title"]}>{Locales.User.WeChatLogin}</div>
+          <div className={styles["wechat-part-title"]}>
+            {Locales.User.WeChatLogin}
+          </div>
           <div className={styles["wechat-login-container"]}>
             <WeChatLogin />
           </div>
-          <div className={styles["wechat-part-go-back"]} onClick={()=>{setTab('phone')}}>
+          <div
+            className={styles["wechat-part-go-back"]}
+            onClick={() => {
+              setTab("phone");
+            }}
+          >
             <LeftArrow />
           </div>
         </div>
+      );
       break;
     case "email":
     case "phone":
-      content =
+      content = (
         <div className={styles["password-part"]}>
           <div className={styles["tab-container"]}>
             <button
@@ -287,30 +299,35 @@ export function AuthPage() {
               </button>
             )}
           </div>
-          {tab === "phone" ? <PhoneLogin /> : <EmailLogin />}
-          <div className={styles["divider"]} >
-            <div className={styles["divider-line"]}/>
+          {tab === "phone" ? <CaptchaLogin /> : <EmailLogin />}
+
+          <div className={styles["divider"]}>
+            <div className={styles["divider-line"]} />
             <div className={styles["divider-text"]}>or</div>
-            <div className={styles["divider-line"]}/>
+            <div className={styles["divider-line"]} />
           </div>
           <div className={styles["third-part-login-options"]}>
-            <img src={WechatLogo.src} className={styles["third-part-option"]} onClick={() => {setTab('wechat')}}/>
+            <img
+              src={WechatLogo.src}
+              className={styles["third-part-option"]}
+              onClick={() => {
+                setTab("wechat");
+              }}
+            />
           </div>
         </div>
+      );
       break;
   }
-
 
   return (
     <div className={styles["auth-page"]}>
       <div className={`no-dark ${styles["auth-logo"]}`}>
         <BotIcon />
       </div>
-      <div className={styles["auth-title"]}>{Locale.Auth.Title}</div>
-      <div className={styles["auth-tips"]}>{Locale.Auth.Tips}</div>
-      <div className={styles["auth-container"]}>
-        {content}
-      </div>
+      <div className={styles["auth-title"]}>{Locales.Auth.Title}</div>
+      <div className={styles["auth-tips"]}>{Locales.Auth.Tips}</div>
+      <div className={styles["auth-container"]}>{content}</div>
     </div>
   );
 }
