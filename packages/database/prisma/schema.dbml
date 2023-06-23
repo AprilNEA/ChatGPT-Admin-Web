@@ -1,0 +1,207 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Table Role {
+  id Int [pk, increment]
+  name String [unique, not null]
+  users User [not null]
+}
+
+Table User {
+  userId Int [pk, increment]
+  email String [unique]
+  name String [unique]
+  passwordHash String
+  phone String [unique]
+  wechat WechatInfo
+  roleId Int [not null]
+  role Role [not null]
+  orders Order [not null]
+  subscriptions Subscription [not null]
+  redeems Redeem [not null]
+  resetChances Int [not null, default: 0]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [default: `now()`, not null]
+  isBlocked Boolean [not null, default: false]
+  invitationCodes InvitationCode [not null]
+  invitation InvitationRecord
+}
+
+Table WechatInfo {
+  unionId String [pk]
+  name String [not null]
+  openId String [unique, not null]
+  userId Int [unique, not null]
+  user User [not null]
+}
+
+Table WechatTicket {
+  id String [pk]
+  code Int [not null]
+  ticket String [unique, not null]
+  openId String
+  expiredAt DateTime [not null]
+}
+
+Table InvitationCode {
+  code String [pk]
+  ownerId Int
+  owner User
+  invitations InvitationRecord [not null]
+
+  indexes {
+    (code, ownerId) [unique]
+  }
+}
+
+Table InvitationRecord {
+  id String [pk]
+  inviterId Int [not null]
+  inviteeId Int [unique, not null]
+  invitee User [not null]
+  code String [not null]
+  codeRaw InvitationCode [not null]
+}
+
+Table Model {
+  modelId Int [pk, increment]
+  modelName String [unique, not null]
+  unitPrice Int [not null]
+  limits Limits [not null]
+
+  indexes {
+    (modelId, modelName) [unique]
+  }
+}
+
+Table Prices {
+  id Int [pk, increment]
+  name String [not null]
+  amount Int [not null]
+  duration Int [not null]
+  planId Int [not null]
+  plan Plan [not null]
+}
+
+Table Limits {
+  id Int [pk, increment]
+  times Int [not null]
+  duration Int [not null]
+  planId Int [not null]
+  plan Plan [not null]
+  modelId Int [not null]
+  modelName String [not null]
+  model Model [not null]
+}
+
+Table Plan {
+  planId Int [pk, increment]
+  name String [unique, not null]
+  prices Prices [not null]
+  limits Limits [not null]
+  orders Order [not null]
+  redeems Redeem [not null]
+  subscriptions Subscription [not null]
+}
+
+Table Order {
+  orderId String [pk]
+  count Int [not null, default: 1]
+  amount Float [not null]
+  status OrderStatus [not null]
+  userId Int [not null]
+  user User [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [default: `now()`, not null]
+  planId Int [not null]
+  plan Plan [not null]
+  subscriptionId Subscription
+}
+
+Table Redeem {
+  redeemCode String [pk]
+  isActivated Boolean [not null, default: false]
+  createdAt DateTime [default: `now()`, not null]
+  activatedAt DateTime [not null]
+  activatedBy Int [not null]
+  activatedUser User [not null]
+  planId Int [not null]
+  plan Plan [not null]
+  subscibption Subscription
+}
+
+Table Subscription {
+  subscriptionId String [pk]
+  createdAt DateTime [default: `now()`, not null]
+  expiredAt DateTime [not null]
+  redeemCode String [unique]
+  redeem Redeem
+  orderId String [unique]
+  order Order
+  planId Int [not null]
+  plan Plan [not null]
+  userId Int [not null]
+  user User [not null]
+}
+
+Table RegisterCode {
+  id String [pk]
+  type RegisterType [not null]
+  register String [unique, not null]
+  code Int [unique, not null]
+  expiredAt DateTime [default: `now()`, not null]
+}
+
+Table OpenAIKey {
+  key String [pk]
+}
+
+Table RateLimit {
+  key String [pk]
+  value Int[] [not null]
+}
+
+Enum OrderStatus {
+  Pending
+  Paid
+  Failed
+  Refunded
+}
+
+Enum RegisterType {
+  Phone
+  Email
+}
+
+Ref: User.roleId > Role.id [delete: No Action]
+
+Ref: WechatInfo.userId - User.userId
+
+Ref: InvitationCode.ownerId > User.userId
+
+Ref: InvitationRecord.inviteeId - User.userId
+
+Ref: InvitationRecord.(code, inviterId) > InvitationCode.(code, ownerId)
+
+Ref: Prices.planId > Plan.planId
+
+Ref: Limits.planId > Plan.planId
+
+Ref: Limits.(modelId, modelName) > Model.(modelId, modelName)
+
+Ref: Order.userId > User.userId
+
+Ref: Order.planId > Plan.planId
+
+Ref: Redeem.activatedBy > User.userId
+
+Ref: Redeem.planId > Plan.planId
+
+Ref: Subscription.redeemCode - Redeem.redeemCode
+
+Ref: Subscription.orderId - Order.orderId
+
+Ref: Subscription.planId > Plan.planId
+
+Ref: Subscription.userId > User.userId
