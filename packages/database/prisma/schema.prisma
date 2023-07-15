@@ -104,6 +104,8 @@ model Prices {
   amount   Int // 单位为分
   duration Int // 单位为秒
 
+  isCurrent Boolean
+
   planId Int
   plan   Plan @relation("PricesWithPlan", fields: [planId], references: [planId])
 
@@ -132,7 +134,6 @@ model Plan {
   prices Prices[] @relation("PricesWithPlan") // 该计划不同时间（月、季或者年...）的价格
   limits Limits[] @relation("LimitsWithPlan") // 该计划每个模型的价格
 
-  orders        Order[]        @relation("OrderPlan")
   redeems       Redeem[]       @relation("RedeemPlan")
   subscriptions Subscription[] @relation("SubscriptionPlan")
 }
@@ -147,7 +148,7 @@ enum OrderStatus {
 model Order {
   orderId String      @id @unique
   count   Int         @default(1)
-  amount  Float // 订单金额
+  amount  Int // 订单金额，单位为分
   status  OrderStatus
 
   userId Int // 订单的用户
@@ -156,13 +157,10 @@ model Order {
   createdAt DateTime @default(now()) @db.Timestamp(6)
   updatedAt DateTime @default(now()) @updatedAt
 
-  planId Int
-  plan   Plan @relation("OrderPlan", fields: [planId], references: [planId])
-
   priceId Int
   price   Prices @relation("OrderPrices", fields: [priceId], references: [id])
 
-  subscriptionId Subscription? @relation("OrderSubscription")
+  subscription Subscription? @relation("OrderSubscription")
 }
 
 model Redeem {
@@ -177,7 +175,7 @@ model Redeem {
   planId Int // 将订阅与计划关联
   plan   Plan @relation("RedeemPlan", fields: [planId], references: [planId])
 
-  subscibption Subscription? @relation("RedeemSubscription")
+  subscription Subscription? @relation("RedeemSubscription")
 }
 
 model Subscription {
