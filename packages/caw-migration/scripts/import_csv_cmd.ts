@@ -1,5 +1,4 @@
-import prisma from "@caw/database";
-import { dumpPath, firstCharUpperCase } from "../utils/common";
+import { dumpPath } from "../utils/common";
 
 interface ImportCommandParams {
   filename: string;
@@ -24,6 +23,7 @@ const params: ImportCommandParams[] = [
   { filename: "orders", table: "Order" },
   { filename: "invitationCodes", table: "InvitationCode" },
   { filename: "invitationRecords", table: "InvitationRecord" },
+  { filename: "redeems", table: "Redeem" },
   { filename: "subscriptions", table: "Subscription" },
 ];
 

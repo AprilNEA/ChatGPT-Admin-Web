@@ -41,7 +41,7 @@ export class CodeDAL {
   }): Promise<RegisterCode> {
     const expiredTimeStamp = Date.now() + 600 * 1000 * 10;
     const codeInput: Prisma.RegisterCodeCreateInput = {
-      type: "phone" ? RegisterType.Phone : RegisterType.Email,
+      type: type === "phone" ? RegisterType.Phone : RegisterType.Email,
       register: register,
       code: generateRandomSixDigitNumber(),
       expiredAt: new Date(expiredTimeStamp), // 默认十分钟
@@ -59,7 +59,7 @@ export class CodeDAL {
             register: register,
           },
           update: {
-            type: "phone" ? RegisterType.Phone : RegisterType.Email,
+            type: type === "phone" ? RegisterType.Phone : RegisterType.Email,
             code: generateRandomSixDigitNumber(),
             expiredAt: new Date(expiredTimeStamp),
           },
