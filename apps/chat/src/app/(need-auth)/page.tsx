@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Chat } from "@/components/chat";
+import { Chat } from "./chat";
 
 /**
  * 修复水合错误

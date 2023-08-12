@@ -71,6 +71,9 @@ importers:
       iron-session:
         specifier: ^6.3.1
         version: 6.3.1(next@13.4.10)
+      js-yaml:
+        specifier: ^4.1.0
+        version: 4.1.0
       next:
         specifier: ^13.4.10
         version: 13.4.10(@babel/core@7.22.10)(react-dom@18.2.0)(react@18.2.0)(sass@1.59.2)
@@ -83,6 +86,9 @@ importers:
       react-dom:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
+      react-iframe:
+        specifier: ^1.8.5
+        version: 1.8.5(react@18.2.0)
       react-markdown:
         specifier: ^8.0.5
         version: 8.0.5(@types/react@18.0.28)(react@18.2.0)
@@ -7797,6 +7803,15 @@ packages:
       loose-envify: 1.4.0
       react: 18.2.0
       scheduler: 0.23.0
+    dev: false
+
+  /react-iframe@1.8.5(react@18.2.0):
+    resolution: {integrity: sha512-F4cQJGs3ydaG6fJWfuz9yLwOU0Trzl6kttXuUG+vYwosH8enOOFxZWEDQCSbNVO8ayjfYZeqLxEvdvcsSy4GvA==}
+    peerDependencies:
+      react: '>=16.x.x'
+    dependencies:
+      object-assign: 4.1.1
+      react: 18.2.0
     dev: false
 
   /react-is@16.13.1:

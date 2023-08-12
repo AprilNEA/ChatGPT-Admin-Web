@@ -1,5 +1,16 @@
+const fs = require("fs");
+const yaml = require("js-yaml");
+
+const config = yaml.load(fs.readFileSync("../../config.yaml", "utf8"));
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  env: {
+    NEXT_PUBLIC_BASE_URL: config.url.backend,
+    NEXT_PUBLIC_WECHAT_MP_APP_ID: config?.wechat?.mp?.appId,
+    NEXT_PUBLIC_WECHAT_OAUTH_APP_ID: config?.wechat?.oauth?.appId,
+    NEXT_PUBLIC_WECHAT_OAUTH_REDIRECT_URL: config?.wechat?.oauth?.redirectUrl,
+  },
   experimental: {
     appDir: true,
   },

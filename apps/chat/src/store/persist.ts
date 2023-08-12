@@ -1,41 +1,61 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { useRouter } from "next/navigation";
 import { loginByCodeDto, byPasswordDto, requestCodeDto } from "@caw/types";
 import { Message } from "@/store/chat";
 import { CreateChatCompletionResponse as ChatResponse } from "openai/dist/api";
 import { ChatRequest } from "@/utils/requests";
 import { TextLineStream } from "@/utils/text_line_stream";
+import useSWR from "swr";
 
 const BASE_URL = "http://localhost:3001";
 
 type Value = {
   sessionToken?: string;
+  chatSessionId?: string;
   streamingText?: string;
+
+  // layout state
+  showSideBar: boolean;
 };
 
 type Action = {
   fetcher: (url: string, options?: RequestInit) => Promise<Response>;
-
+  selectSession: (sid: string) => void;
   loginByCode: (data: loginByCodeDto) => void;
   loginByPassword: (data: byPasswordDto) => void;
+  loginByWeChat: (router: ReturnType<typeof useRouter>, code?: string) => void;
   requestCode: (data: requestCodeDto) => void;
   register: (code: string, data: byPasswordDto) => void;
   validateSession: () => Promise<boolean>;
 
+  // layout actions
+  setShowSideBar: (open: boolean) => void;
   clearData: () => void;
 };
 
 export const useStore = create<Value & Action>()(
   persist(
     (set, get) => ({
+      showSideBar: true,
+      async setShowSideBar(open: boolean) {
+        set({ showSideBar: open });
+      },
+
       async fetcher(url: string, init?: RequestInit) {
-        return fetch(url, {
+        return fetch(`${BASE_URL}url`, {
           ...init,
           headers: {
             ...init?.headers,
             Authorization: `Bearer ${get().sessionToken}`,
           },
         });
+      },
+
+      selectSession(sid: string) {
+        set({ chatSessionId: sid });
+        const router = useRouter();
+        router.push(`/chat/${sid}`);
       },
 
       async *requestChat(
@@ -80,6 +100,13 @@ export const useStore = create<Value & Action>()(
           method: "POST",
           body: JSON.stringify(data),
         }).then((res) => {});
+      },
+
+      async loginByWeChat(router, code?: string) {
+        if (!code) router.refresh();
+        fetch(`${BASE_URL}/auth/login/wechat?code=${code}`).then((res) =>
+          res.json(),
+        );
       },
 
       async requestCode(data: requestCodeDto) {

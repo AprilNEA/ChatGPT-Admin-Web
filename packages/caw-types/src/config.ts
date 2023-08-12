@@ -22,6 +22,12 @@ export interface ConfigType {
     keyPath: string;
   };
   email: {};
+  wechat: {
+    oauth: {
+      appId: string;
+      appSecret: string;
+    };
+  };
   payment: {
     xunhu: {
       wapName: string;

@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Iframe from "react-iframe";
 import { useRouter } from "next/navigation";
 import React, { FormEvent, useCallback, useState } from "react";
 
@@ -121,21 +122,36 @@ const EmailLogin: React.FC = () => {
 
 const WeChatLogin: React.FC = () => {
   const router = useRouter();
-  const [ticket, setTicket] = useState("");
+  // const [ticket, setTicket] = useState("");
   // const updateSessionToken = useStore((state) => state.updateSessionToken);
 
-  if (!ticket) return <Loading noLogo={true} />;
+  // if (!ticket) return <Loading noLogo={true} />;
 
   return (
     <div className={styles["form-container"]}>
-      <span className={styles["title"]}>{Locales.User.WeChatLogin}</span>
-      <Image
-        className={styles["qrcode"]}
-        src={`https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=${ticket}`}
-        alt="Wechat QrCdoe"
-        width={200}
-        height={200}
+      {/*<span className={styles["title"]}>{Locales.User.WeChatLogin}</span>*/}
+      <Iframe
+        className={styles["iframe"]}
+        url={
+          "https://open.weixin.qq.com/connect/qrconnect?" +
+          new URLSearchParams({
+            appid: process.env.NEXT_PUBLIC_WECHAT_OAUTH_APP_ID!,
+            redirect_uri: process.env.NEXT_PUBLIC_WECHAT_OAUTH_REDIRECT_URL!,
+            scope: "snsapi_login,snsapi_userinfo",
+            // login_type: "jssdk",
+            self_redirect: "true",
+            styletype: "white",
+            href: "data:text/css;base64,LmltcG93ZXJCb3ggLnFyY29kZSB7IHdpZHRoOiAxODBweDsgYm9yZGVyOiBub25lO30KLmltcG93ZXJCb3ggLnRpdGxlIHsgZGlzcGxheTogbm9uZTt9Ci5pbXBvd2VyQm94IC5pbmZvIHtkaXNwbGF5OiBub25lO30KLnN0YXR1c19pY29uIHtkaXNwbGF5OiBub25lfQouaW1wb3dlckJveCAuc3RhdHVzIHt0ZXh0LWFsaWduOiBjZW50ZXI7fQpodG1sIHtiYWNrZ3JvdW5kLWNvbG9yOiB0cmFuc3BhcmVudDt9CmJvZHkge292ZXJmbG93LXg6IGhpZGRlbjtvdmVyZmxvdy15OiBoaWRkZW47YmFja2dyb3VuZC1jb2xvcjogdHJhbnNwYXJlbnQ7fQo=",
+          })
+        }
       />
+      {/*<Image*/}
+      {/*  className={styles["qrcode"]}*/}
+      {/*  src={`https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=${ticket}`}*/}
+      {/*  alt="Wechat QrCdoe"*/}
+      {/*  width={200}*/}
+      {/*  height={200}*/}
+      {/*/>*/}
     </div>
   );
 };
