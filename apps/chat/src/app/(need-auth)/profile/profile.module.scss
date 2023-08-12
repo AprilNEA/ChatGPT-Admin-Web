@@ -1,0 +1,42 @@
+@import "../../../styles/window";
+
+.invite-code {
+  font-family: "Courier New", monospace;
+  font-size: 24px;
+  font-weight: bold;
+  color: #007bff;
+  border: 2px dashed #007bff;
+  padding: 10px 20px;
+  border-radius: 5px;
+}
+
+.settings {
+  padding: 20px;
+  overflow: auto;
+}
+
+.title {
+  font-size: 14px;
+  font-weight: bolder;
+}
+
+.sub-title {
+  font-size: 12px;
+  font-weight: normal;
+}
+
+.avatar {
+  cursor: pointer;
+}
+
+.copy-button {
+  background-color: var(--white);
+  border: var(--border-in-light);
+  border-radius: 10px;
+  padding: 4px 12px;
+
+  &:hover {
+    background-color: var(--gray);
+    border: var(--border-in-light);
+  }
+}

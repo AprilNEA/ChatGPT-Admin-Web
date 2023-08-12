@@ -1,0 +1,107 @@
+@import "../../../styles/window.scss";
+
+.container {
+  padding: 20px;
+  overflow: auto;
+}
+
+.title {
+  font-size: 16px;
+  font-weight: bolder;
+}
+
+.sub-title {
+  font-size: 12px;
+  font-weight: normal;
+}
+
+.list {
+  border: var(--border-in-light);
+  border-radius: 10px;
+  box-shadow: var(--card-shadow);
+  margin-bottom: 20px;
+  animation: slide-in ease 0.3s;
+}
+
+.list-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  min-height: 80px;
+  border-bottom: var(--border-in-light);
+  padding: 10px 20px;
+  animation: slide-in ease 0.6s;
+}
+
+.list .list-item:last-child {
+  border: 0;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 10px;
+  animation: slide-in ease 0.6s;
+}
+
+.list .list-item:last-child {
+  border: 0;
+}
+
+.switch {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.switch button {
+  padding: 10px 20px;
+  border: 1px solid #ccc;
+  background-color: #f1f1f1;
+  cursor: pointer;
+  transition: background-color 0.3s, border-color 0.3s;
+  margin: 0 5px;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.switch button:hover {
+  background-color: #e1e1e1;
+}
+
+.switch button.active {
+  background-color: #39d1f7;
+  color: #fff;
+}
+
+.discount-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  padding: 5px 10px;
+  background-color: transparent;
+  color: #ff6b6b;
+  font-weight: bold;
+  font-size: 12px;
+  transform: rotate(30deg);
+}
+
+.button-with-badge {
+  position: relative;
+}
+
+.purchase-wrapper {
+  position: relative;
+}
+
+.purchase {
+  background-color: #10bbe7 !important;
+  color: white;
+
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+}

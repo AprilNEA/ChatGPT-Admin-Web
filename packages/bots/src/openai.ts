@@ -1,34 +1,25 @@
-import { AbstractBot } from './abstract-bot';
-import { AnswerParams, GPTModel } from './types';
-import { streamToLineIterator } from './utils';
+import { AbstractBot } from "./abstract-bot";
+import { AnswerParams, GPTModel } from "./types";
+import { streamToLineIterator } from "./utils";
 
-const openAiBase = process.env.OPENAI_BASE ?? 'https://api.openai.com';
-const openAiKey = process.env.OPENAI_KEY!;
-const openAiProxy = process.env.OPENAI_PROXY ?? '';
-const openAiEndpoint = `${openAiProxy}${openAiBase}/v1/chat/completions`;
+const API_ENDPOINT = "https://api.openai.com/v1/chat/completions";
 
 export class OpenAIBot extends AbstractBot {
   constructor(
     private readonly apiKey: string,
-    private readonly model: GPTModel = 'gpt-3.5-turbo'
+    private readonly model: GPTModel = "gpt-3.5-turbo",
   ) {
     super();
   }
 
-  /**
-   *
-   * @param params
-   * @protected
-   */
   protected async *doAnswer(params: AnswerParams): AsyncIterable<string> {
-    console.log(openAiEndpoint);
     const { conversation, maxTokens, signal } = params;
 
-    const response = await fetch(openAiEndpoint, {
-      method: 'POST',
+    const response = await fetch(API_ENDPOINT, {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${this.apiKey ?? openAiKey}`,
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${this.apiKey}`,
       },
       body: JSON.stringify({
         model: this.model,
@@ -46,19 +37,13 @@ export class OpenAIBot extends AbstractBot {
     const lines = streamToLineIterator(response.body!);
 
     for await (const line of lines) {
-      if (!line.startsWith('data:')) continue;
+      if (!line.startsWith("data:")) continue;
 
-      const data = line.slice('data:'.length).trim();
+      const data = line.slice("data:".length).trim();
 
-      if (!data || data === '[DONE]') continue;
+      if (!data || data === "[DONE]") continue;
 
-      const {
-        choices: [
-          {
-            delta: { content },
-          },
-        ],
-      } = JSON.parse(data);
+      const { choices: [{ delta: { content } }] } = JSON.parse(data);
 
       if (!content) continue;
       yield content;
