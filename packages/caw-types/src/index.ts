@@ -15,5 +15,6 @@ export interface Product {
 }
 
 export enum ErrorCode {
+  Forbidden = "Forbidden",
   LimitExceeded = "LimitExceeded",
 }

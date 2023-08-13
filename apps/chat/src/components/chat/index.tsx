@@ -1,9 +1,10 @@
+"use client";
+
 import Link from "next/link";
 
 import { Message, useChatStore, useSettingStore, useStore } from "@/store";
 import { ChatSession } from "@/store/chat/typing";
 import { SubmitKey } from "@/store/setting/typing";
-
 import { useLayoutEffect, useRef, useState } from "react";
 import { ControllerPool } from "@/utils/requests";
 import {
@@ -31,6 +32,8 @@ import { showModal } from "@/components/ui-lib";
 import dynamic from "next/dynamic";
 import Banner, { Post } from "@/components/banner";
 import useSWR from "swr";
+import { ChatSessionWithMessage } from "@caw/types";
+import { Loading } from "@/components/loading";
 
 function useSubmitHandler() {
   const config = useSettingStore((state) => state.config);
@@ -122,17 +125,18 @@ const Markdown = dynamic(
   },
 );
 
-export function Chat() {
-  type RenderMessage = Message & { preview?: boolean };
+export default function ChatPage(props: { sid: string }) {
+  const [fetcher, sidebarOpen, setSideBarOpen] = useStore((state) => [
+    state.fetcher,
+    state.showSideBar,
+    state.setShowSideBar,
+  ]);
 
-  const [sidebarOpen, setSideBarOpen, session, sessionIndex] = useChatStore(
-    (state) => [
-      state.showSideBar,
-      state.setShowSideBar,
-      state.currentSession(),
-      state.currentSessionIndex,
-    ],
+  const { data: session } = useSWR<ChatSessionWithMessage>(
+    `/chat/messages/${props.sid}`,
+    (url) => fetcher(url).then((res) => res.json()),
   );
+
   const [userInput, setUserInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { submitKey, shouldSubmit } = useSubmitHandler();
@@ -152,8 +156,9 @@ export function Chat() {
 
   // stop response
   const onUserStop = (messageIndex: number) => {
-    console.log(ControllerPool, sessionIndex, messageIndex);
-    ControllerPool.stop(sessionIndex, messageIndex);
+    // TODO
+    // console.log(ControllerPool, sessionIndex, messageIndex);
+    // ControllerPool.stop(sessionIndex, messageIndex);
   };
 
   // check if you should send message
@@ -177,11 +182,14 @@ export function Chat() {
   };
 
   const onResend = (botIndex: number) => {
+    if (!session) return;
     // find last user input message and resend
     for (let i = botIndex; i >= 0; i -= 1) {
-      if (messages[i].role === "user") {
+      if (session.messages[i].role === "user") {
         setIsLoading(true);
-        onUserInput(messages[i].content).then(() => setIsLoading(false));
+        onUserInput(session.messages[i].content).then(() =>
+          setIsLoading(false),
+        );
         return;
       }
     }
@@ -190,36 +198,9 @@ export function Chat() {
   // for auto-scroll
   const latestMessageRef = useRef<HTMLDivElement>(null);
 
-  // wont scroll while hovering messages
+  // won't scroll while hovering messages
   const [autoScroll, setAutoScroll] = useState(false);
   const inputRef = useRef<HTMLTextAreaElement>(null);
-
-  // preview messages
-  const messages = (session.messages as RenderMessage[])
-    .concat(
-      isLoading
-        ? [
-            {
-              role: "assistant",
-              content: "……",
-              date: new Date().toLocaleString(),
-              preview: true,
-            },
-          ]
-        : [],
-    )
-    .concat(
-      userInput.length > 0
-        ? [
-            {
-              role: "user",
-              content: userInput,
-              date: new Date().toLocaleString(),
-              preview: true,
-            },
-          ]
-        : [],
-    );
 
   // auto scroll
   useLayoutEffect(() => {
@@ -233,6 +214,10 @@ export function Chat() {
       }
     }, 500);
   });
+
+  if (!session) {
+    return <Loading />;
+  }
 
   return (
     <div className={styles.chat} key={session.id}>
@@ -278,7 +263,7 @@ export function Chat() {
               bordered
               title={Locale.Chat.Actions.CompressedHistory}
               onClick={() => {
-                showMemoryPrompt(session);
+                // showMemoryPrompt(session);
               }}
             />
           </div>
@@ -288,7 +273,7 @@ export function Chat() {
               bordered
               title={Locale.Chat.Actions.Export}
               onClick={() => {
-                exportMessages(session.messages, session.topic);
+                // exportMessages(session.messages, session.topic);
               }}
             />
           </div>
@@ -296,7 +281,7 @@ export function Chat() {
       </div>
 
       <div className={styles["chat-body"]}>
-        {messages.map((message, i) => {
+        {session.messages.map((message, i) => {
           const isUser = message.role === "user";
 
           return (
@@ -310,15 +295,15 @@ export function Chat() {
                 <div className={styles["chat-message-avatar"]}>
                   <Avatar role={message.role} />
                 </div>
-                {(message.preview || message.streaming) && (
-                  <div className={styles["chat-message-status"]}>
-                    {Locale.Chat.Typing}
-                  </div>
-                )}
+                {/*{(message.preview || message.streaming) && (*/}
+                {/*  <div className={styles["chat-message-status"]}>*/}
+                {/*    {Locale.Chat.Typing}*/}
+                {/*  </div>*/}
+                {/*)}*/}
                 <div className={styles["chat-message-item"]}>
                   {!isUser && (
                     <div className={styles["chat-message-top-actions"]}>
-                      {message.streaming ? (
+                      {message.isStreaming ? (
                         <div
                           className={styles["chat-message-top-action"]}
                           onClick={() => onUserStop(i)}
@@ -342,22 +327,23 @@ export function Chat() {
                       </div>
                     </div>
                   )}
-                  {(message.preview || message.content.length === 0) &&
+                  {(message.isPreview || message.content.length === 0) &&
                   !isUser ? (
                     <LoadingIcon />
                   ) : (
                     <div
                       className="markdown-body"
-                      onContextMenu={(e) => onRightClick(e, message)}
+                      // onContextMenu={(e) => onRightClick(e, message)}
                     >
                       <Markdown content={message.content} />
                     </div>
                   )}
                 </div>
-                {!isUser && !message.preview && (
+                {!isUser && !message.isPreview && (
                   <div className={styles["chat-message-actions"]}>
                     <div className={styles["chat-message-action-date"]}>
-                      {message.date.toLocaleString()}
+                      时间
+                      {/*{message..toLocaleString()}*/}
                     </div>
                     {message.model && (
                       <div className={styles["chat-message-action-date"]}>

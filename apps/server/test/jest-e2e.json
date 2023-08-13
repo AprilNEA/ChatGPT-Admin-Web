@@ -1,0 +1,31 @@
+{
+  "moduleFileExtensions": [
+    "js",
+    "json",
+    "ts"
+  ],
+  "rootDir": ".",
+  "testEnvironment": "node",
+  "testRegex": ".e2e-spec.ts$",
+  "transform": {
+    "^.+\\.(t|j)s$": "ts-jest"
+  },
+  "moduleNameMapper": {
+    "@kool/key-pool/(.*)": "<rootDir>/../libs/key-pool/src/$1",
+    "@kool/key-pool": "<rootDir>/../libs/key-pool/src",
+    "@libs/key-pool/(.*)": "<rootDir>/../libs/key-pool/src/$1",
+    "@libs/key-pool": "<rootDir>/../libs/key-pool/src",
+    "@libs/jwt/(.*)": "<rootDir>/../libs/jwt/src/$1",
+    "@libs/jwt": "<rootDir>/../libs/jwt/src",
+    "@libs/redis/(.*)": "<rootDir>/../libs/redis/src/$1",
+    "@libs/redis": "<rootDir>/../libs/redis/src",
+    "@libs/prisma/(.*)": "<rootDir>/../libs/prisma/src/$1",
+    "@libs/prisma": "<rootDir>/../libs/prisma/src",
+    "@libs/email/(.*)": "<rootDir>/../libs/email/src/$1",
+    "@libs/email": "<rootDir>/../libs/email/src",
+    "@libs/payment/(.*)": "<rootDir>/../libs/payment/src/$1",
+    "@libs/payment": "<rootDir>/../libs/payment/src",
+    "@libs/openai/(.*)": "<rootDir>/../libs/openai/src/$1",
+    "@libs/openai": "<rootDir>/../libs/openai/src"
+  }
+}

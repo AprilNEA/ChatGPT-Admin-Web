@@ -68,9 +68,10 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background: #ededed;
+    background: white;
     margin-top: 12px;
   }
+
   .wechat-part-go-back {
     position: absolute;
     top: -5px;
@@ -156,6 +157,13 @@
   .qrcode {
     width: 200px;
     height: 200px;
+  }
+
+  .iframe {
+    width: 200px;
+    height: 200px;
+    border: none;
+    padding-bottom: 20px;
   }
 
   .send-button {

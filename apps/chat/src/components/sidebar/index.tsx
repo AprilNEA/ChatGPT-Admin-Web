@@ -14,7 +14,7 @@ import AnnouncementIcon from "@/icons/announcement.svg";
 import CloseIcon from "@/icons/close.svg";
 import { useChatStore, useSettingStore } from "@/store";
 
-import { isMobileScreen } from "@/utils/utils";
+import { isMobileScreen } from "@/utils/client-utils";
 import Locale from "@/locales";
 
 import { ChatList } from "@/components/chat/chat-list";
@@ -52,7 +52,7 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
       state.newSession,
       state.currentSessionIndex,
       state.removeSession,
-    ]
+    ],
   );
 
   // 是否加载中

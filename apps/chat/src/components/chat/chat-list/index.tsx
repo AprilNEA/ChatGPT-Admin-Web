@@ -1,14 +1,19 @@
+"use client";
+
+import useSWR from "swr";
 import styles from "@/styles/module/home.module.scss";
 import Locale from "@/locales";
 import DeleteIcon from "@/icons/delete.svg";
-import { useChatStore } from "@/store";
+import { useStore } from "@/store";
+
+import { ChatSession } from "@caw/types";
 
 export function ChatItem(props: {
   onClick?: () => void;
   onDelete?: () => void;
   title: string;
   count: number;
-  time: string;
+  time: Date;
   selected: boolean;
 }) {
   return (
@@ -23,7 +28,9 @@ export function ChatItem(props: {
         <div className={styles["chat-item-count"]}>
           {Locale.ChatItem.ChatItemCount(props.count)}
         </div>
-        <div className={styles["chat-item-date"]}>{props.time}</div>
+        <div className={styles["chat-item-date"]}>
+          {props.time.toLocaleString()}
+        </div>
       </div>
       <div className={styles["chat-item-delete"]} onClick={props.onDelete}>
         <DeleteIcon />
@@ -33,26 +40,29 @@ export function ChatItem(props: {
 }
 
 export function ChatList() {
-  const [sessions, selectedIndex, selectSession, removeSession] = useChatStore(
-    (state) => [
-      state.sessions,
-      state.currentSessionIndex,
-      state.selectSession,
-      state.removeSession,
-    ]
+  const [fetcher, session, selectSession] = useStore((state) => [
+    state.fetcher,
+    state.chatSessionId,
+    state.selectSession,
+  ]);
+  const { data: sessions }: { data: ChatSession[] } = useSWR(
+    "/chat/sessions",
+    (url) => {
+      return fetcher(url).then((res) => res.json());
+    },
   );
 
   return (
     <div className={styles["chat-list"]}>
       {sessions.map((item, i) => (
         <ChatItem
-          title={item.topic}
-          time={item.lastUpdate}
-          count={item.messages.length}
           key={i}
-          selected={i === selectedIndex}
-          onClick={() => selectSession(i)}
-          onDelete={() => removeSession(i)}
+          title={item.topic}
+          time={item.updatedAt}
+          count={item.messagesCount}
+          selected={session === item.id}
+          onClick={() => selectSession(item.id)}
+          onDelete={() => {}}
         />
       ))}
     </div>
