@@ -1,11 +1,12 @@
 "use client";
 
+import useSWR from "swr";
 import Link from "next/link";
-
-import { Message, useChatStore, useSettingStore, useStore } from "@/store";
+import dynamic from "next/dynamic";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { Message, useSettingStore, useUserStore, useStore } from "@/store";
 import { ChatSession } from "@/store/chat/typing";
 import { SubmitKey } from "@/store/setting/typing";
-import { useLayoutEffect, useRef, useState } from "react";
 import { ControllerPool } from "@/utils/requests";
 import {
   copyToClipboard,
@@ -13,9 +14,13 @@ import {
   isIOS,
   selectOrCopy,
 } from "@/utils/client-utils";
-import styles from "@/styles/module/home.module.scss";
-import Locale from "@/locales";
 
+import { Avatar } from "@/components/avatar";
+import { IconButton } from "@/components/button";
+import { showModal } from "@/components/ui-lib";
+import { Loading } from "@/components/loading";
+
+import Locale from "@/locales";
 import MenuIcon from "@/icons/menu.svg";
 import BrainIcon from "@/icons/brain.svg";
 import ExportIcon from "@/icons/export.svg";
@@ -24,16 +29,10 @@ import SendWhiteIcon from "@/icons/send-white.svg";
 import CopyIcon from "@/icons/copy.svg";
 import DownloadIcon from "@/icons/download.svg";
 import UserIcon from "@/icons/user.svg";
+import ShoppingIcon from "@/icons/shopping.svg";
+import styles from "@/styles/module/home.module.scss";
 
-import { Avatar } from "@/components/avatar";
-import { IconButton } from "@/components/button";
-import { showModal } from "@/components/ui-lib";
-
-import dynamic from "next/dynamic";
-import Banner, { Post } from "@/components/banner";
-import useSWR from "swr";
-import { ChatSessionWithMessage } from "@caw/types";
-import { Loading } from "@/components/loading";
+import { ChatMessage, ChatSessionWithMessage } from "@caw/types";
 
 function useSubmitHandler() {
   const config = useSettingStore((state) => state.config);
@@ -125,40 +124,48 @@ const Markdown = dynamic(
   },
 );
 
-export default function ChatPage(props: { sid: string }) {
-  const [fetcher, sidebarOpen, setSideBarOpen] = useStore((state) => [
-    state.fetcher,
+// export function Message({ message }: { message: ChatMessage }) {
+//
+// }
+
+export default function Chat(props: { sid: string }) {
+  // 侧边栏
+  const [sidebarOpen, setSideBarOpen] = useUserStore((state) => [
     state.showSideBar,
     state.setShowSideBar,
   ]);
 
-  const { data: session } = useSWR<ChatSessionWithMessage>(
-    `/chat/messages/${props.sid}`,
-    (url) => fetcher(url).then((res) => res.json()),
-  );
+  // 对话
+  const [
+    requestChat,
+    sessionId,
+    session,
+    messages,
+    updateSessionId,
+    getIsStreaming,
+    onUserStop, // stop response
+  ] = useStore((state) => [
+    state.requestChat,
+    state.chatSessionId,
+    state.chatSession,
+    state.chatSessionMessages,
+    state.selectSession,
+    state.isStreaming,
+    state.stopStreaming,
+  ]);
 
   const [userInput, setUserInput] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const { submitKey, shouldSubmit } = useSubmitHandler();
+  const isStreaming = getIsStreaming();
 
-  const onUserInput = useChatStore((state) => state.onUserInput);
+  const { submitKey, shouldSubmit } = useSubmitHandler();
 
   // submit user input
   const onUserSubmit = () => {
     if (userInput.length <= 0) return;
 
-    setIsLoading(true);
-    onUserInput(userInput).then(() => setIsLoading(false));
+    requestChat(userInput);
     setUserInput("");
     inputRef.current?.focus();
-    // }
-  };
-
-  // stop response
-  const onUserStop = (messageIndex: number) => {
-    // TODO
-    // console.log(ControllerPool, sessionIndex, messageIndex);
-    // ControllerPool.stop(sessionIndex, messageIndex);
   };
 
   // check if you should send message
@@ -169,6 +176,7 @@ export default function ChatPage(props: { sid: string }) {
       e.preventDefault();
     }
   };
+
   const onRightClick = (e: any, message: Message) => {
     // auto fill user input
     if (message.role === "user") {
@@ -181,19 +189,19 @@ export default function ChatPage(props: { sid: string }) {
     }
   };
 
-  const onResend = (botIndex: number) => {
-    if (!session) return;
-    // find last user input message and resend
-    for (let i = botIndex; i >= 0; i -= 1) {
-      if (session.messages[i].role === "user") {
-        setIsLoading(true);
-        onUserInput(session.messages[i].content).then(() =>
-          setIsLoading(false),
-        );
-        return;
-      }
-    }
-  };
+  // const onResend = (botIndex: number) => {
+  //   if (!session) return;
+  //   // find last user input message and resend
+  //   for (let i = botIndex; i >= 0; i -= 1) {
+  //     if (session.messages[i].role === "user") {
+  //       setIsLoading(true);
+  //       requestChat(session.messages[i].content).then(() =>
+  //         setIsLoading(false),
+  //       );
+  //       return;
+  //     }
+  //   }
+  // };
 
   // for auto-scroll
   const latestMessageRef = useRef<HTMLDivElement>(null);
@@ -201,6 +209,12 @@ export default function ChatPage(props: { sid: string }) {
   // won't scroll while hovering messages
   const [autoScroll, setAutoScroll] = useState(false);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    if (props.sid !== sessionId) {
+      updateSessionId(props.sid);
+    }
+  }, [props.sid, sessionId, updateSessionId]);
 
   // auto scroll
   useLayoutEffect(() => {
@@ -215,22 +229,22 @@ export default function ChatPage(props: { sid: string }) {
     }, 500);
   });
 
-  if (!session) {
+  if (!messages) {
     return <Loading />;
   }
 
   return (
-    <div className={styles.chat} key={session.id}>
+    <div className={styles.chat}>
       <div className={styles["window-header"]}>
         <div
           className={styles["window-header-title"]}
           onClick={() => setSideBarOpen(true)}
         >
           <div className={styles["window-header-main-title"]}>
-            {session.topic}
+            {session?.topic ?? "新的对话"}
           </div>
           <div className={styles["window-header-sub-title"]}>
-            {Locale.Chat.SubTitle(session.messages.length)}
+            {Locale.Chat.SubTitle(messages.length)}
           </div>
         </div>
 
@@ -245,7 +259,7 @@ export default function ChatPage(props: { sid: string }) {
           </div>
           <div className={styles["window-action-button"]}>
             <Link href="/pricing">
-              <IconButton icon={<span>🎁</span>} bordered />
+              <IconButton icon={<ShoppingIcon />} bordered />
             </Link>
           </div>
           <div className={styles["window-action-button"]}>
@@ -281,7 +295,7 @@ export default function ChatPage(props: { sid: string }) {
       </div>
 
       <div className={styles["chat-body"]}>
-        {session.messages.map((message, i) => {
+        {messages.map((message, i) => {
           const isUser = message.role === "user";
 
           return (
@@ -295,25 +309,25 @@ export default function ChatPage(props: { sid: string }) {
                 <div className={styles["chat-message-avatar"]}>
                   <Avatar role={message.role} />
                 </div>
-                {/*{(message.preview || message.streaming) && (*/}
-                {/*  <div className={styles["chat-message-status"]}>*/}
-                {/*    {Locale.Chat.Typing}*/}
-                {/*  </div>*/}
-                {/*)}*/}
+                {message.isStreaming && (
+                  <div className={styles["chat-message-status"]}>
+                    {Locale.Chat.Typing}
+                  </div>
+                )}
                 <div className={styles["chat-message-item"]}>
                   {!isUser && (
                     <div className={styles["chat-message-top-actions"]}>
                       {message.isStreaming ? (
                         <div
                           className={styles["chat-message-top-action"]}
-                          onClick={() => onUserStop(i)}
+                          onClick={() => onUserStop()}
                         >
                           {Locale.Chat.Actions.Stop}
                         </div>
                       ) : (
                         <div
                           className={styles["chat-message-top-action"]}
-                          onClick={() => onResend(i)}
+                          // onClick={() => onResend(i)}
                         >
                           {Locale.Chat.Actions.Retry}
                         </div>
@@ -327,8 +341,7 @@ export default function ChatPage(props: { sid: string }) {
                       </div>
                     </div>
                   )}
-                  {(message.isPreview || message.content.length === 0) &&
-                  !isUser ? (
+                  {message.content.length === 0 && !isUser ? (
                     <LoadingIcon />
                   ) : (
                     <div
@@ -339,15 +352,16 @@ export default function ChatPage(props: { sid: string }) {
                     </div>
                   )}
                 </div>
-                {!isUser && !message.isPreview && (
+                {!isUser && (
                   <div className={styles["chat-message-actions"]}>
                     <div className={styles["chat-message-action-date"]}>
                       时间
                       {/*{message..toLocaleString()}*/}
                     </div>
-                    {message.model && (
+                    {message.modelId && (
                       <div className={styles["chat-message-action-date"]}>
-                        {message.model.toUpperCase()}
+                        {message.modelId}
+                        {/*{message.model.toUpperCase()}*/}
                       </div>
                     )}
                   </div>

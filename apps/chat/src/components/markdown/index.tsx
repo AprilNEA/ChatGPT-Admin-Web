@@ -6,7 +6,7 @@ import RemarkBreaks from "remark-breaks";
 import RemarkGfm from "remark-gfm";
 import RehypePrsim from "rehype-prism-plus";
 import { useRef } from "react";
-import { copyToClipboard } from "@/utils/utils";
+import { copyToClipboard } from "@/utils/client-utils";
 
 export function PreCode(props: { children: any }) {
   const ref = useRef<HTMLPreElement>(null);

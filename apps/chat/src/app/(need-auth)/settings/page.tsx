@@ -9,7 +9,7 @@ import ClearIcon from "@/icons/clear.svg";
 import { List, ListItem } from "@/components/ui-lib";
 
 import { IconButton } from "@/components/button";
-import { useChatStore, useSettingStore, ALL_MODELS } from "@/store";
+import { useUserStore, useSettingStore, ALL_MODELS } from "@/store";
 import { Model, SubmitKey, Theme } from "@/store/setting/typing";
 
 import Locale, { changeLang, getLang } from "@/locales";
@@ -41,7 +41,7 @@ export default function Settings() {
     state.updateConfig,
     state.resetConfig,
   ]);
-  const clearChatData = useChatStore((state) => state.clearAllData);
+  const clearChatData = useUserStore((state) => state.clearAllData);
 
   const [tightBorder, changeTightBorder] = useSettingStore((state) => [
     state.tightBorder,
@@ -98,7 +98,7 @@ export default function Settings() {
               onChange={(e) => {
                 updateConfig(
                   (config) =>
-                    (config.submitKey = e.target.value as any as SubmitKey)
+                    (config.submitKey = e.target.value as any as SubmitKey),
                 );
               }}
             >
@@ -118,7 +118,7 @@ export default function Settings() {
               value={config.theme}
               onChange={(e) => {
                 updateConfig(
-                  (config) => (config.theme = e.target.value as any as Theme)
+                  (config) => (config.theme = e.target.value as any as Theme),
                 );
               }}
             >
@@ -178,7 +178,7 @@ export default function Settings() {
               onChange={(e) =>
                 updateConfig(
                   (config) =>
-                    (config.historyMessageCount = e.target.valueAsNumber)
+                    (config.historyMessageCount = e.target.valueAsNumber),
                 )
               }
             ></input>
@@ -197,7 +197,7 @@ export default function Settings() {
                 updateConfig(
                   (config) =>
                     (config.compressMessageLengthThreshold =
-                      e.currentTarget.valueAsNumber)
+                      e.currentTarget.valueAsNumber),
                 )
               }
             ></input>
@@ -211,7 +211,7 @@ export default function Settings() {
               onChange={(e) => {
                 updateConfig(
                   (config) =>
-                    (config.modelConfig.model = e.currentTarget.value as Model)
+                    (config.modelConfig.model = e.currentTarget.value as Model),
                 );
               }}
             >
@@ -237,7 +237,7 @@ export default function Settings() {
                 updateConfig(
                   (config) =>
                     (config.modelConfig.temperature =
-                      e.currentTarget.valueAsNumber)
+                      e.currentTarget.valueAsNumber),
                 );
               }}
             ></input>
@@ -255,7 +255,7 @@ export default function Settings() {
                 updateConfig(
                   (config) =>
                     (config.modelConfig.max_tokens =
-                      e.currentTarget.valueAsNumber)
+                      e.currentTarget.valueAsNumber),
                 )
               }
             ></input>
@@ -274,7 +274,7 @@ export default function Settings() {
                 updateConfig(
                   (config) =>
                     (config.modelConfig.presence_penalty =
-                      e.currentTarget.valueAsNumber)
+                      e.currentTarget.valueAsNumber),
                 );
               }}
             ></input>

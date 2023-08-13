@@ -1,81 +1,81 @@
 "use client";
 
-import { useState } from "react";
+import useSWR from "swr";
 
-import { AppRouterInstance } from "next/dist/shared/lib/app-router-context";
-import { useRouter } from "next/navigation";
-
+import { useUserStore } from "@/store";
 import { IconButton } from "@/components/button";
-import CloseIcon from "@/icons/close.svg";
+import { ProductType, CategoryType } from "@caw/types";
 
 import Locale from "@/locales";
 import styles from "./pricing.module.scss";
+import TickIcon from "@/icons/tick.svg";
+import CloseIcon from "@/icons/close.svg";
+import ShoppingIcon from "@/icons/shopping.svg";
 
-function PricingItem(props: {
-  router: AppRouterInstance;
-  cycle: PaymentCycleType;
-  price: Price;
-}) {
-  async function handleUpgrade(plan: PlanType, cycle: PaymentCycleType) {
-    const req = await (
-      await fetcher(`/api/user/pay?plan=${plan.toLowerCase()}&cycle=${cycle}`, {
-        cache: "no-store",
-        method: "GET",
-      })
-    ).json();
-    const url = req.url;
-    props.router.push(url);
-  }
-
+function ProductItem({ product }: { product: ProductType }) {
   return (
-    <div className={styles.list}>
-      <div className={styles["list-item"]}>
-        <div className={styles.row}>
-          <div className={styles["title"]}>{props.price.name}</div>
-          {props.price.description && (
-            <div className={styles["sub-title"]}>{props.price.description}</div>
-          )}
-          ¥ {props.price.price[props.cycle]}
+    <div className={styles["pricing-item"]}>
+      <div className={styles["pricing-item-inner"]}>
+        <div className={styles["title"]}>{product.name}</div>
+        {/*{props.price.description && (*/}
+        {/*  <div className={styles["sub-title"]}>{props.price.description}</div>*/}
+        {/*)}*/}
+        <div className={styles["pricing-item-price"]}>¥ {product.price}</div>
+        <div style={{ marginTop: "5px" }}>
+          {product.features.map((feature, index) => (
+            <div key={index} className={styles["pricing-item-plan-feature"]}>
+              <TickIcon
+                style={{
+                  fill: "#15b077",
+                  width: 12,
+                  height: 12,
+                  marginRight: 4,
+                }}
+              />{" "}
+              {feature}
+            </div>
+          ))}
         </div>
-        {props.price.features.map((feature, index) => (
-          <div key={index}>· {feature}</div>
-        ))}
       </div>
-      {props.price.name !== "Free" && (
-        <div className={styles["purchase-wrapper"]}>
-          <IconButton
-            icon={<span>🎁</span>}
-            text={"购买"}
-            className={styles["purchase"] + " no-dark"}
-            onClick={() => handleUpgrade(props.price.name, props.cycle)}
-          />
-        </div>
-      )}
+      <div className={styles["purchase-wrapper"]}>
+        <IconButton
+          icon={<ShoppingIcon style={{ fill: "white" }} />}
+          text={"购买"}
+          className={styles["purchase"] + " no-dark"}
+          onClick={() => {}}
+        />
+      </div>
     </div>
   );
 }
 
 export default function PricingPage() {
-  const router = useRouter();
+  const [fetcher] = useUserStore((state) => [state.fetcher]);
+  const { data: categories, isLoading } = useSWR<CategoryType[]>(
+    "/product",
+    (url) => fetcher(url).then((res) => res.json()),
+  );
 
-  const [paymentCycle, setPaymentCycle] = useState<PaymentCycleType>("monthly");
-
-  const handlePaymentCycle = (cycle: PaymentCycleType) => {
-    setPaymentCycle(cycle);
-  };
+  if (isLoading) {
+    return <div>loading...</div>;
+  }
 
   return (
     <>
       <div className={styles["window-header"]}>
         <div className={styles["window-header-title"]}>
-          <div className={styles["window-header-main-title"]}>定价</div>
-          <div className={styles["window-header-sub-title"]}>解锁更多权益</div>
+          <div className={styles["window-header-main-title"]}>
+            {Locale.Profile.Title}
+          </div>
+          <div className={styles["window-header-sub-title"]}>
+            {/*{!Locale.Profile.SubTitle}*/}副标题
+          </div>
         </div>
         <div className={styles["window-actions"]}>
           <div className={styles["window-action-button"]}>
             <IconButton
               icon={<CloseIcon />}
-              onClick={() => router.back()}
+              onClick={() => {}}
               bordered
               title={Locale.Settings.Actions.Close}
             />
@@ -83,44 +83,13 @@ export default function PricingPage() {
         </div>
       </div>
 
-      <div className={styles.switch}>
-        <button
-          className={`${styles.button} ${
-            paymentCycle === "monthly" ? styles.active : ""
-          }`}
-          onClick={() => handlePaymentCycle("monthly")}
-        >
-          月付
-        </button>
-        <button
-          className={`${styles.button} ${styles["button-with-badge"]} ${
-            paymentCycle === "quarterly" ? styles.active : ""
-          }`}
-          onClick={() => handlePaymentCycle("quarterly")}
-        >
-          季付
-          <span className={styles["discount-badge"]}>八五折</span>
-        </button>
-        <button
-          className={`${styles.button} ${styles["button-with-badge"]} ${
-            paymentCycle === "yearly" ? styles.active : ""
-          }`}
-          onClick={() => handlePaymentCycle("yearly")}
-        >
-          年付
-          <span className={styles["discount-badge"]}>七折</span>
-        </button>
-      </div>
-
       <div className={styles["container"]}>
-        {prices.map((price, index) => (
-          <PricingItem
-            key={index}
-            router={router}
-            cycle={paymentCycle}
-            price={price}
-          />
-        ))}
+        {categories &&
+          categories.map((category) =>
+            category.products.map((product) => (
+              <ProductItem key={product.id} product={product} />
+            )),
+          )}
       </div>
     </>
   );

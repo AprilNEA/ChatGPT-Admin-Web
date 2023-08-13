@@ -2,7 +2,7 @@ import type {
   ChatCompletionResponseMessage,
   CreateChatCompletionResponse as ChatResponse,
 } from "openai";
-import { filterConfig, Message, ModelConfig, useStore } from "@/store";
+import { filterConfig, Message, ModelConfig, useUserStore } from "@/store";
 import Locale from "@/locales";
 
 export type ChatRequest = {

@@ -13,11 +13,20 @@ export class ChatController {
   ) {}
 
   @Get('sessions')
-  getChatSession(@Payload('id') uid: number) {}
+  getChatSession(@Payload('id') uid: number) {
+    return this.chatService.getRecentChatSession(uid);
+  }
 
   @Get('messages/:sid')
-  getChatMessages(@Payload('id') uid: number, @Param('sid') sid: string) {
-    return this.chatService.getChatMessages(uid, sid);
+  async getChatMessages(@Payload('id') uid: number, @Param('sid') sid: string) {
+    const data = await this.chatService.getChatMessages(uid, sid);
+    return {
+      ...data,
+      messages: data.messages.map((m) => ({
+        ...m,
+        role: m.role.toLowerCase(),
+      })),
+    };
   }
 
   @Post('messages/:sid?')

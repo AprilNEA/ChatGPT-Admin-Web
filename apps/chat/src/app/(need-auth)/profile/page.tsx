@@ -17,7 +17,7 @@ import CloseIcon from "@/icons/close.svg";
 import EmojiPicker, { Theme as EmojiTheme } from "emoji-picker-react";
 
 import fetcher from "@/utils/fetcher";
-import { copyToClipboard } from "@/utils/utils";
+import { copyToClipboard } from "@/utils/client-utils";
 import { InfoResponse } from "@/app/api/typing";
 
 function ProfileItem(props: {
@@ -49,7 +49,7 @@ export default function Profile() {
 
   const { data: info, isLoading: infoLoading } = useSWR<InfoResponse>(
     "/api/user/info",
-    (url) => fetcher(url).then((res) => res.json())
+    (url) => fetcher(url).then((res) => res.json()),
   );
 
   if (infoLoading) return <Loading />;
@@ -162,7 +162,7 @@ export default function Profile() {
               value={config.submitKey}
               onClick={() =>
                 copyToClipboard(
-                  `${window.location.origin}/register?code=${inviteCode}`
+                  `${window.location.origin}/register?code=${inviteCode}`,
                 )
               }
             >

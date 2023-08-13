@@ -7,6 +7,7 @@ import DeleteIcon from "@/icons/delete.svg";
 import { useStore } from "@/store";
 
 import { ChatSession } from "@caw/types";
+import { useRouter } from "next/navigation";
 
 export function ChatItem(props: {
   onClick?: () => void;
@@ -40,31 +41,39 @@ export function ChatItem(props: {
 }
 
 export function ChatList() {
+  const router = useRouter();
+
   const [fetcher, session, selectSession] = useStore((state) => [
     state.fetcher,
     state.chatSessionId,
     state.selectSession,
   ]);
-  const { data: sessions }: { data: ChatSession[] } = useSWR(
-    "/chat/sessions",
-    (url) => {
-      return fetcher(url).then((res) => res.json());
-    },
-  );
+  const { data: sessions } = useSWR<ChatSession[]>("/chat/sessions", (url) => {
+    return fetcher(url)
+      .then((res) => res.json())
+      .then((res) =>
+        res.map((session: ChatSession & { _count: { messages: number } }) => ({
+          ...session,
+          messagesCount: session._count.messages,
+          _count: undefined,
+        })),
+      );
+  });
 
   return (
     <div className={styles["chat-list"]}>
-      {sessions.map((item, i) => (
-        <ChatItem
-          key={i}
-          title={item.topic}
-          time={item.updatedAt}
-          count={item.messagesCount}
-          selected={session === item.id}
-          onClick={() => selectSession(item.id)}
-          onDelete={() => {}}
-        />
-      ))}
+      {sessions &&
+        sessions.map((item, i) => (
+          <ChatItem
+            key={i}
+            title={item.topic ?? "新的对话"}
+            time={item.updatedAt}
+            count={item.messagesCount}
+            selected={session === item.id}
+            onClick={() => selectSession(item.id, router)}
+            onDelete={() => {}}
+          />
+        ))}
     </div>
   );
 }

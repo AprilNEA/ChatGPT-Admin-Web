@@ -1,8 +1,21 @@
-@import "../../../styles/window.scss";
+@import "@/styles/window.scss";
 
 .container {
   padding: 20px;
   overflow: auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  place-items: center;
+}
+
+@media (max-width: 1000px) {
+  .container {
+    padding: 20px;
+    overflow: auto;
+    display: grid;
+    grid-template-columns: 1fr;
+    place-items: center;
+  }
 }
 
 .title {
@@ -15,23 +28,40 @@
   font-weight: normal;
 }
 
-.list {
+.pricing-item {
   border: var(--border-in-light);
   border-radius: 10px;
   box-shadow: var(--card-shadow);
   margin-bottom: 20px;
   animation: slide-in ease 0.3s;
-}
-
-.list-item {
+  width: 80%;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  align-items: flex-start;
-  min-height: 80px;
-  border-bottom: var(--border-in-light);
   padding: 10px 20px;
-  animation: slide-in ease 0.6s;
+  background-image: url("../../../icons/chatgpt.png");
+  background-repeat: no-repeat;
+  background-position: top -20px right -15px;
+
+  &-inner {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    min-height: 80px;
+    animation: slide-in ease 0.6s;
+  }
+
+  &-price {
+    color: #fe6401;
+  }
+
+  &-plan-feature {
+    color: #a29da4;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+  }
+
 }
 
 .list .list-item:last-child {
@@ -95,13 +125,14 @@
 
 .purchase-wrapper {
   position: relative;
+  display: flex;
+  justify-content: center;
+  margin-top: 12px;
 }
 
 .purchase {
   background-color: #10bbe7 !important;
   color: white;
-
-  position: absolute;
-  right: 10px;
-  bottom: 10px;
+  width: 100%;
+  margin-left: none;
 }

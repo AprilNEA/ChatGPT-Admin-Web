@@ -12,6 +12,7 @@ import { OrderModule } from './order/order.module';
 import { JwtModule } from '@libs/jwt';
 import { AuthGuard } from '@/auth.guard';
 import { DashboardModule } from './dashboard/dashboard.module';
+import { ProductModule } from './product/product.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { DashboardModule } from './dashboard/dashboard.module';
     OrderModule,
     JwtModule,
     DashboardModule,
+    ProductModule,
   ],
   controllers: [AppController],
   providers: [

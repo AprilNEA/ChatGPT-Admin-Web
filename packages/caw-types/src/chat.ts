@@ -1,14 +1,15 @@
 export type ChatMessageRole = "system" | "user" | "assistant";
 
 export interface ChatMessage {
-  id: string;
   role: ChatMessageRole;
-  model?: string;
   content: string;
-  chatSessionId: string;
+
+  modelId: number;
+
+  createdAt: Date;
+  updatedAt: Date;
 
   isStreaming?: boolean;
-  isPreview?: boolean;
 }
 
 export interface ChatSession {

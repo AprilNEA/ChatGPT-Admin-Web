@@ -1,6 +1,6 @@
 config.yaml
 .env
-**/.env
+apps/server/.env
 # IDE
 .vscode/
 .idea/
@@ -16,4 +16,4 @@ config.yaml
 **/node_modules/
 
 # Env
-**/.env
+apps/server/.env

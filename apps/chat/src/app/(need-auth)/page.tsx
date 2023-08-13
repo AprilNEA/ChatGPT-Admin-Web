@@ -1,21 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Chat } from "./chat";
-
-/**
- * 修复水合错误
- */
-const useHasHydrated = () => {
-  const [hasHydrated, setHasHydrated] = useState<boolean>(false);
-
-  useEffect(() => {
-    setHasHydrated(true);
-  }, []);
-
-  return hasHydrated;
-};
 
 export default function ChatPage() {
-  return <Chat />;
+  return <p>WIP</p>;
 }

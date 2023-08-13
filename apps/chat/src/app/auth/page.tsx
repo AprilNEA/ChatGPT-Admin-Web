@@ -7,18 +7,21 @@ import React, { FormEvent, useCallback, useState } from "react";
 
 import useIntervalAsync from "@/hooks/use-interval-async";
 import usePreventFormSubmit from "@/hooks/use-prevent-form";
-import { useStore } from "@/store";
+import { useUserStore } from "@/store";
 
 import { Loading } from "@/components/loading";
-import Locales from "../../locales";
-
-import styles from "./auth.module.scss";
 
 import { IconButton } from "@/components/button";
 
+import Locales from "@/locales";
+import styles from "./auth.module.scss";
 import BotIcon from "@/icons/bot.svg";
 import LeftArrow from "@/icons/left.svg";
 import WechatLogo from "@/icons/wechat-logo.png";
+
+const weChatOauthAppId = process.env.NEXT_PUBLIC_WECHAT_OAUTH_APP_ID!;
+const weChatOauthRedirectUrl =
+  process.env.NEXT_PUBLIC_WECHAT_OAUTH_REDIRECT_URL!;
 
 const CaptchaLogin: React.FC = () => {
   const router = useRouter();
@@ -28,7 +31,7 @@ const CaptchaLogin: React.FC = () => {
   const [isSubmitting, handleSubmit] = usePreventFormSubmit();
   const [isCodeSubmitting, handleCodeSubmit] = usePreventFormSubmit();
 
-  const [loginByCode, requestCode] = useStore((state) => [
+  const [loginByCode, requestCode] = useUserStore((state) => [
     state.loginByCode,
     state.requestCode,
   ]);
@@ -81,7 +84,7 @@ const EmailLogin: React.FC = () => {
   const [isSubmitting, handleSubmit] = usePreventFormSubmit();
 
   /* Prevent duplicate form submissions */
-  const loginByPassword = useStore((state) => state.loginByPassword);
+  const loginByPassword = useUserStore((state) => state.loginByPassword);
 
   return (
     <div className={styles["form-container"]}>
@@ -111,7 +114,7 @@ const EmailLogin: React.FC = () => {
 
       <div className={styles["auth-actions"]}>
         <IconButton
-          onClick={() => loginByPassword({ identity, password })}
+          onClick={() => loginByPassword(router, { identity, password })}
           text={Locales.Auth.Confirm}
           type="primary"
         />
@@ -123,35 +126,35 @@ const EmailLogin: React.FC = () => {
 const WeChatLogin: React.FC = () => {
   const router = useRouter();
   // const [ticket, setTicket] = useState("");
-  // const updateSessionToken = useStore((state) => state.updateSessionToken);
 
   // if (!ticket) return <Loading noLogo={true} />;
 
   return (
     <div className={styles["form-container"]}>
-      {/*<span className={styles["title"]}>{Locales.User.WeChatLogin}</span>*/}
-      <Iframe
-        className={styles["iframe"]}
-        url={
-          "https://open.weixin.qq.com/connect/qrconnect?" +
-          new URLSearchParams({
-            appid: process.env.NEXT_PUBLIC_WECHAT_OAUTH_APP_ID!,
-            redirect_uri: process.env.NEXT_PUBLIC_WECHAT_OAUTH_REDIRECT_URL!,
-            scope: "snsapi_login,snsapi_userinfo",
-            // login_type: "jssdk",
-            self_redirect: "true",
-            styletype: "white",
-            href: "data:text/css;base64,LmltcG93ZXJCb3ggLnFyY29kZSB7IHdpZHRoOiAxODBweDsgYm9yZGVyOiBub25lO30KLmltcG93ZXJCb3ggLnRpdGxlIHsgZGlzcGxheTogbm9uZTt9Ci5pbXBvd2VyQm94IC5pbmZvIHtkaXNwbGF5OiBub25lO30KLnN0YXR1c19pY29uIHtkaXNwbGF5OiBub25lfQouaW1wb3dlckJveCAuc3RhdHVzIHt0ZXh0LWFsaWduOiBjZW50ZXI7fQpodG1sIHtiYWNrZ3JvdW5kLWNvbG9yOiB0cmFuc3BhcmVudDt9CmJvZHkge292ZXJmbG93LXg6IGhpZGRlbjtvdmVyZmxvdy15OiBoaWRkZW47YmFja2dyb3VuZC1jb2xvcjogdHJhbnNwYXJlbnQ7fQo=",
-          })
-        }
-      />
-      {/*<Image*/}
-      {/*  className={styles["qrcode"]}*/}
-      {/*  src={`https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=${ticket}`}*/}
-      {/*  alt="Wechat QrCdoe"*/}
-      {/*  width={200}*/}
-      {/*  height={200}*/}
-      {/*/>*/}
+      {weChatOauthAppId ? (
+        <Iframe
+          className={styles["iframe"]}
+          url={
+            "https://open.weixin.qq.com/connect/qrconnect?" +
+            new URLSearchParams({
+              appid: weChatOauthAppId,
+              redirect_uri: weChatOauthRedirectUrl,
+              scope: "snsapi_login,snsapi_userinfo",
+              self_redirect: "true",
+              styletype: "white",
+              href: "data:text/css;base64,LmltcG93ZXJCb3ggLnFyY29kZSB7IHdpZHRoOiAxODBweDsgYm9yZGVyOiBub25lO30KLmltcG93ZXJCb3ggLnRpdGxlIHsgZGlzcGxheTogbm9uZTt9Ci5pbXBvd2VyQm94IC5pbmZvIHtkaXNwbGF5OiBub25lO30KLnN0YXR1c19pY29uIHtkaXNwbGF5OiBub25lfQouaW1wb3dlckJveCAuc3RhdHVzIHt0ZXh0LWFsaWduOiBjZW50ZXI7fQpodG1sIHtiYWNrZ3JvdW5kLWNvbG9yOiB0cmFuc3BhcmVudDt9CmJvZHkge292ZXJmbG93LXg6IGhpZGRlbjtvdmVyZmxvdy15OiBoaWRkZW47YmFja2dyb3VuZC1jb2xvcjogdHJhbnNwYXJlbnQ7fQo=",
+            })
+          }
+        />
+      ) : (
+        <Image
+          className={styles["qrcode"]}
+          src={`https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=`}
+          alt="Wechat QrCdoe"
+          width={200}
+          height={200}
+        />
+      )}
     </div>
   );
 };

@@ -119,7 +119,7 @@ export class ChatService {
         id: sid,
         userId: uid,
       },
-      select: {
+      include: {
         messages: {
           // take: limit,
           orderBy: {
@@ -135,6 +135,13 @@ export class ChatService {
       take: limit,
       where: {
         userId: uid,
+      },
+      include: {
+        _count: {
+          select: {
+            messages: true,
+          },
+        },
       },
     });
   }
@@ -171,6 +178,7 @@ export class ChatService {
         model: model as OpenAIChatModel,
       },
       async (generated) => {
+        const time = Date.now();
         await this.prisma.$transaction([
           // save both messages
           this.prisma.chatMessage.create({
@@ -179,6 +187,7 @@ export class ChatService {
               content,
               userId: userId,
               chatSessionId: sessionId,
+              createdAt: new Date(time),
             },
           }),
           this.prisma.chatMessage.create({
@@ -188,6 +197,7 @@ export class ChatService {
               userId: userId,
               modelId: modelId,
               chatSessionId: sessionId,
+              createdAt: new Date(time + 1),
             },
           }),
         ]);
@@ -198,7 +208,7 @@ export class ChatService {
       (async () => {
         try {
           for await (const token of tokenStream) {
-            subscriber.next({ data: token });
+            subscriber.next({ data: JSON.stringify(token) });
           }
         } catch (e) {
           console.warn('[Caught Error]', e);

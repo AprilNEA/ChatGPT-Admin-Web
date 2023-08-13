@@ -2,14 +2,14 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { Loading } from "@/components/loading";
-import { useStore } from "@/store";
+import { useUserStore } from "@/store";
 import { useEffect } from "react";
 
 export default function Page() {
   const router = useRouter();
 
   const code = useSearchParams().get("code") ?? undefined;
-  const loginByWeChat = useStore((state) => state.loginByWeChat);
+  const loginByWeChat = useUserStore((state) => state.loginByWeChat);
 
   useEffect(() => {
     loginByWeChat(router, code);

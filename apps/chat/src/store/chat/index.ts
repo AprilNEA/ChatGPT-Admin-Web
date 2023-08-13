@@ -111,7 +111,7 @@ const LOCAL_KEY = "chat-store";
 
 const settingStore = useSettingStore.getState();
 
-export const useChatStore = create<ChatStore>()(
+export const useUserStore = create<ChatStore>()(
   persist(
     (set, get) => ({
       sessions: [createEmptySession()],
@@ -218,7 +218,7 @@ export const useChatStore = create<ChatStore>()(
 
         // make request 请求对话
         console.log("[User Input] ", sendMessages);
-        requestChatStream(sendMessages, {
+        await requestChatStream(sendMessages, {
           onMessage(content, done) {
             // stream response
             if (done) {

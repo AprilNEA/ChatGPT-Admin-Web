@@ -1,30 +1,24 @@
 "use client";
-
+import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 
+import { useUserStore, useSettingStore } from "@/store";
 import { IconButton } from "@/components/button";
-import styles from "@/styles/module/home.module.scss";
 
-import SettingsIcon from "@/icons/settings.svg";
-import ChatGptIcon from "@/icons/chatgpt.svg";
-
-import AddIcon from "@/icons/add.svg";
-
-import AnnouncementIcon from "@/icons/announcement.svg";
-import CloseIcon from "@/icons/close.svg";
-import { useChatStore, useSettingStore } from "@/store";
-
-import { isMobileScreen } from "@/utils/client-utils";
-import Locale from "@/locales";
-
+import { Loading } from "@/components/loading";
 import { ChatList } from "@/components/chat/chat-list";
 import { useSwitchTheme } from "@/hooks/switch-theme";
-import { Loading } from "@/components/loading";
-
-import dynamic from "next/dynamic";
 import { showAnnouncement } from "@/hooks/use-notice";
 
-import { useRouter } from "next/navigation";
+import styles from "@/styles/module/home.module.scss";
+import Locale from "@/locales";
+import AddIcon from "@/icons/add.svg";
+import AnnouncementIcon from "@/icons/announcement.svg";
+import CloseIcon from "@/icons/close.svg";
+import ChatGptIcon from "@/icons/chatgpt.svg";
+import SettingsIcon from "@/icons/settings.svg";
+
+import { isMobileScreen } from "@/utils/client-utils";
 
 /**
  * 修复水合错误
@@ -41,13 +35,13 @@ const useHasHydrated = () => {
 
 export function Sidebar({ children }: { children: React.ReactNode }) {
   // 侧边栏是否展开
-  const [showSideBar, setShowSideBar] = useChatStore((state) => [
+  const [showSideBar, setShowSideBar] = useUserStore((state) => [
     state.showSideBar,
     state.setShowSideBar,
   ]);
 
   // 对话
-  const [createNewSession, currentIndex, removeSession] = useChatStore(
+  const [createNewSession, currentIndex, removeSession] = useUserStore(
     (state) => [
       state.newSession,
       state.currentSessionIndex,
@@ -90,6 +84,23 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
           <div className={styles["sidebar-logo"]}>
             <ChatGptIcon />
           </div>
+        </div>
+
+        <div className={styles["sidebar-header-bar"]}>
+          <IconButton
+            icon={<ChatGptIcon />}
+            text={"Profile"}
+            className={styles["sidebar-bar-button"]}
+            onClick={() => {}}
+            shadow
+          />
+          <IconButton
+            icon={<ChatGptIcon />}
+            text={"Purchase"}
+            className={styles["sidebar-bar-button"]}
+            onClick={() => {}}
+            shadow
+          />
         </div>
 
         <div

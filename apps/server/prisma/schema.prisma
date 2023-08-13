@@ -87,6 +87,8 @@ model Product {
   name     String   @unique
   features String[]
 
+  isHidden Boolean @default(false) // 是否隐藏
+
   price    Int // 单位为分
   stock    Int @default(-1) // 库存
   duration Int // 产品的持续时间
