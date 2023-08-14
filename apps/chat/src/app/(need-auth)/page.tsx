@@ -1,7 +1,5 @@
-"use client";
-
-import { useState, useEffect } from "react";
+import Chat from "@/components/chat";
 
 export default function ChatPage() {
-  return <p>WIP</p>;
+  return <div>WIP</div>;
 }

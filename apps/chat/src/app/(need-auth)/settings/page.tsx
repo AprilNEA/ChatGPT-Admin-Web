@@ -1,19 +1,17 @@
 "use client";
 
-import styles from "@/styles/module/settings.module.scss";
+import { useRouter } from "next/navigation";
 
+import { SubmitKey, Theme, useStore } from "@/store";
+
+import { IconButton } from "@/components/button";
+import { List, ListItem } from "@/components/ui-lib";
+
+import Locale, { changeLang, getLang } from "@/locales";
+import styles from "@/styles/module/settings.module.scss";
 import ResetIcon from "@/icons/reload.svg";
 import CloseIcon from "@/icons/close.svg";
 import ClearIcon from "@/icons/clear.svg";
-
-import { List, ListItem } from "@/components/ui-lib";
-
-import { IconButton } from "@/components/button";
-import { useUserStore, useSettingStore, ALL_MODELS } from "@/store";
-import { Model, SubmitKey, Theme } from "@/store/setting/typing";
-
-import Locale, { changeLang, getLang } from "@/locales";
-import { useRouter } from "next/navigation";
 
 function SettingItem(props: {
   title: string;
@@ -36,21 +34,10 @@ function SettingItem(props: {
 export default function Settings() {
   const router = useRouter();
 
-  const [config, updateConfig, resetConfig] = useSettingStore((state) => [
+  const [config, updateConfig] = useStore((state) => [
     state.config,
     state.updateConfig,
-    state.resetConfig,
   ]);
-  const clearChatData = useUserStore((state) => state.clearAllData);
-
-  const [tightBorder, changeTightBorder] = useSettingStore((state) => [
-    state.tightBorder,
-    state.changeTightBorder,
-  ]);
-
-  function clearAllData() {
-    clearChatData();
-  }
 
   return (
     <>
@@ -64,22 +51,22 @@ export default function Settings() {
           </div>
         </div>
         <div className={styles["window-actions"]}>
-          <div className={styles["window-action-button"]}>
-            <IconButton
-              icon={<ClearIcon />}
-              onClick={clearAllData}
-              bordered
-              title={Locale.Settings.Actions.ClearAll}
-            />
-          </div>
-          <div className={styles["window-action-button"]}>
-            <IconButton
-              icon={<ResetIcon />}
-              onClick={resetConfig}
-              bordered
-              title={Locale.Settings.Actions.ResetAll}
-            />
-          </div>
+          {/*<div className={styles["window-action-button"]}>*/}
+          {/*  <IconButton*/}
+          {/*    icon={<ClearIcon />}*/}
+          {/*    onClick={}*/}
+          {/*    bordered*/}
+          {/*    title={Locale.Settings.Actions.ClearAll}*/}
+          {/*  />*/}
+          {/*</div>*/}
+          {/*<div className={styles["window-action-button"]}>*/}
+          {/*  <IconButton*/}
+          {/*    icon={<ResetIcon />}*/}
+          {/*    onClick={resetConfig}*/}
+          {/*    bordered*/}
+          {/*    title={Locale.Settings.Actions.ResetAll}*/}
+          {/*  />*/}
+          {/*</div>*/}
           <div className={styles["window-action-button"]}>
             <IconButton
               icon={<CloseIcon />}
@@ -152,134 +139,133 @@ export default function Settings() {
           <SettingItem title={Locale.Settings.TightBorder}>
             <input
               type="checkbox"
-              checked={tightBorder}
-              onChange={(e) => {
-                changeTightBorder(e.currentTarget.checked);
-                // updateConfig(
-                //   (config) => (config.tightBorder = e.currentTarget.checked)
-                // );
-              }}
-            ></input>
-          </SettingItem>
-        </List>
-
-        <List>
-          <SettingItem
-            title={Locale.Settings.HistoryCount.Title}
-            subTitle={Locale.Settings.HistoryCount.SubTitle}
-          >
-            <input
-              type="range"
-              title={config.historyMessageCount.toString()}
-              value={config.historyMessageCount}
-              min="2"
-              max="25"
-              step="2"
-              onChange={(e) =>
-                updateConfig(
-                  (config) =>
-                    (config.historyMessageCount = e.target.valueAsNumber),
-                )
-              }
-            ></input>
-          </SettingItem>
-
-          <SettingItem
-            title={Locale.Settings.CompressThreshold.Title}
-            subTitle={Locale.Settings.CompressThreshold.SubTitle}
-          >
-            <input
-              type="number"
-              min={500}
-              max={4000}
-              value={config.compressMessageLengthThreshold}
-              onChange={(e) =>
-                updateConfig(
-                  (config) =>
-                    (config.compressMessageLengthThreshold =
-                      e.currentTarget.valueAsNumber),
-                )
-              }
-            ></input>
-          </SettingItem>
-        </List>
-
-        <List>
-          <SettingItem title={Locale.Settings.Model}>
-            <select
-              value={config.modelConfig.model}
+              checked={config.tightBorder}
               onChange={(e) => {
                 updateConfig(
-                  (config) =>
-                    (config.modelConfig.model = e.currentTarget.value as Model),
-                );
-              }}
-            >
-              {ALL_MODELS.map((v) => (
-                <option value={v.name} key={v.name} disabled={!v.available}>
-                  {v.name}
-                </option>
-              ))}
-            </select>
-          </SettingItem>
-
-          <SettingItem
-            title={Locale.Settings.Temperature.Title}
-            subTitle={Locale.Settings.Temperature.SubTitle}
-          >
-            <input
-              type="range"
-              value={config.modelConfig.temperature.toFixed(1)}
-              min="0"
-              max="1"
-              step="0.1"
-              onChange={(e) => {
-                updateConfig(
-                  (config) =>
-                    (config.modelConfig.temperature =
-                      e.currentTarget.valueAsNumber),
-                );
-              }}
-            ></input>
-          </SettingItem>
-          <SettingItem
-            title={Locale.Settings.MaxTokens.Title}
-            subTitle={Locale.Settings.MaxTokens.SubTitle}
-          >
-            <input
-              type="number"
-              min={100}
-              max={4096}
-              value={config.modelConfig.max_tokens}
-              onChange={(e) =>
-                updateConfig(
-                  (config) =>
-                    (config.modelConfig.max_tokens =
-                      e.currentTarget.valueAsNumber),
-                )
-              }
-            ></input>
-          </SettingItem>
-          <SettingItem
-            title={Locale.Settings.PresencePenlty.Title}
-            subTitle={Locale.Settings.PresencePenlty.SubTitle}
-          >
-            <input
-              type="range"
-              value={config.modelConfig.presence_penalty.toFixed(1)}
-              min="-2"
-              max="2"
-              step="0.5"
-              onChange={(e) => {
-                updateConfig(
-                  (config) =>
-                    (config.modelConfig.presence_penalty =
-                      e.currentTarget.valueAsNumber),
+                  (config) => (config.tightBorder = e.currentTarget.checked),
                 );
               }}
             ></input>
           </SettingItem>
         </List>
+
+        {/*<List>*/}
+        {/*  <SettingItem*/}
+        {/*    title={Locale.Settings.HistoryCount.Title}*/}
+        {/*    subTitle={Locale.Settings.HistoryCount.SubTitle}*/}
+        {/*  >*/}
+        {/*    <input*/}
+        {/*      type="range"*/}
+        {/*      title={config.historyMessageCount.toString()}*/}
+        {/*      value={config.historyMessageCount}*/}
+        {/*      min="2"*/}
+        {/*      max="25"*/}
+        {/*      step="2"*/}
+        {/*      onChange={(e) =>*/}
+        {/*        updateConfig(*/}
+        {/*          (config) =>*/}
+        {/*            (config.historyMessageCount = e.target.valueAsNumber),*/}
+        {/*        )*/}
+        {/*      }*/}
+        {/*    ></input>*/}
+        {/*  </SettingItem>*/}
+
+        {/*  <SettingItem*/}
+        {/*    title={Locale.Settings.CompressThreshold.Title}*/}
+        {/*    subTitle={Locale.Settings.CompressThreshold.SubTitle}*/}
+        {/*  >*/}
+        {/*    <input*/}
+        {/*      type="number"*/}
+        {/*      min={500}*/}
+        {/*      max={4000}*/}
+        {/*      value={config.compressMessageLengthThreshold}*/}
+        {/*      onChange={(e) =>*/}
+        {/*        updateConfig(*/}
+        {/*          (config) =>*/}
+        {/*            (config.compressMessageLengthThreshold =*/}
+        {/*              e.currentTarget.valueAsNumber),*/}
+        {/*        )*/}
+        {/*      }*/}
+        {/*    ></input>*/}
+        {/*  </SettingItem>*/}
+        {/*</List>*/}
+
+        {/*<List>*/}
+        {/*  <SettingItem title={Locale.Settings.Model}>*/}
+        {/*    <select*/}
+        {/*      value={config.modelConfig.model}*/}
+        {/*      onChange={(e) => {*/}
+        {/*        updateConfig(*/}
+        {/*          (config) =>*/}
+        {/*            (config.modelConfig.model = e.currentTarget.value as Model),*/}
+        {/*        );*/}
+        {/*      }}*/}
+        {/*    >*/}
+        {/*      {ALL_MODELS.map((v) => (*/}
+        {/*        <option value={v.name} key={v.name} disabled={!v.available}>*/}
+        {/*          {v.name}*/}
+        {/*        </option>*/}
+        {/*      ))}*/}
+        {/*    </select>*/}
+        {/*  </SettingItem>*/}
+
+        {/*  <SettingItem*/}
+        {/*    title={Locale.Settings.Temperature.Title}*/}
+        {/*    subTitle={Locale.Settings.Temperature.SubTitle}*/}
+        {/*  >*/}
+        {/*    <input*/}
+        {/*      type="range"*/}
+        {/*      value={config.modelConfig.temperature.toFixed(1)}*/}
+        {/*      min="0"*/}
+        {/*      max="1"*/}
+        {/*      step="0.1"*/}
+        {/*      onChange={(e) => {*/}
+        {/*        updateConfig(*/}
+        {/*          (config) =>*/}
+        {/*            (config.modelConfig.temperature =*/}
+        {/*              e.currentTarget.valueAsNumber),*/}
+        {/*        );*/}
+        {/*      }}*/}
+        {/*    ></input>*/}
+        {/*  </SettingItem>*/}
+        {/*  <SettingItem*/}
+        {/*    title={Locale.Settings.MaxTokens.Title}*/}
+        {/*    subTitle={Locale.Settings.MaxTokens.SubTitle}*/}
+        {/*  >*/}
+        {/*    <input*/}
+        {/*      type="number"*/}
+        {/*      min={100}*/}
+        {/*      max={4096}*/}
+        {/*      value={config.modelConfig.max_tokens}*/}
+        {/*      onChange={(e) =>*/}
+        {/*        updateConfig(*/}
+        {/*          (config) =>*/}
+        {/*            (config.modelConfig.max_tokens =*/}
+        {/*              e.currentTarget.valueAsNumber),*/}
+        {/*        )*/}
+        {/*      }*/}
+        {/*    ></input>*/}
+        {/*  </SettingItem>*/}
+        {/*  <SettingItem*/}
+        {/*    title={Locale.Settings.PresencePenlty.Title}*/}
+        {/*    subTitle={Locale.Settings.PresencePenlty.SubTitle}*/}
+        {/*  >*/}
+        {/*    <input*/}
+        {/*      type="range"*/}
+        {/*      value={config.modelConfig.presence_penalty.toFixed(1)}*/}
+        {/*      min="-2"*/}
+        {/*      max="2"*/}
+        {/*      step="0.5"*/}
+        {/*      onChange={(e) => {*/}
+        {/*        updateConfig(*/}
+        {/*          (config) =>*/}
+        {/*            (config.modelConfig.presence_penalty =*/}
+        {/*              e.currentTarget.valueAsNumber),*/}
+        {/*        );*/}
+        {/*      }}*/}
+        {/*    ></input>*/}
+        {/*  </SettingItem>*/}
+        {/*</List>*/}
       </div>
     </>
   );

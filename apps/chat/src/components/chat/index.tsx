@@ -4,10 +4,7 @@ import useSWR from "swr";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { Message, useSettingStore, useUserStore, useStore } from "@/store";
-import { ChatSession } from "@/store/chat/typing";
-import { SubmitKey } from "@/store/setting/typing";
-import { ControllerPool } from "@/utils/requests";
+import { useStore, SubmitKey, Theme } from "@/store";
 import {
   copyToClipboard,
   downloadAs,
@@ -32,10 +29,10 @@ import UserIcon from "@/icons/user.svg";
 import ShoppingIcon from "@/icons/shopping.svg";
 import styles from "@/styles/module/home.module.scss";
 
-import { ChatMessage, ChatSessionWithMessage } from "@caw/types";
+import { ChatSession, ChatMessage, ChatSessionWithMessage } from "@caw/types";
 
 function useSubmitHandler() {
-  const config = useSettingStore((state) => state.config);
+  const config = useStore((state) => state.config);
   const submitKey = config.submitKey;
 
   const shouldSubmit = (e: KeyboardEvent) => {
@@ -59,63 +56,27 @@ function useSubmitHandler() {
   };
 }
 
-function exportMessages(messages: Message[], topic: string) {
-  const mdText =
-    `# ${topic}\n\n` +
-    messages
-      .map((m) => {
-        return m.role === "user" ? `## ${m.content}` : m.content.trim();
-      })
-      .join("\n\n");
-  const filename = `${topic}.md`;
-
-  showModal({
-    title: Locale.Export.Title,
-    children: (
-      <div className="markdown-body">
-        <pre className={styles["export-content"]}>{mdText}</pre>
-      </div>
-    ),
-    actions: [
-      <IconButton
-        key="copy"
-        icon={<CopyIcon />}
-        bordered
-        text={Locale.Export.Copy}
-        onClick={() => copyToClipboard(mdText)}
-      />,
-      <IconButton
-        key="download"
-        icon={<DownloadIcon />}
-        bordered
-        text={Locale.Export.Download}
-        onClick={() => downloadAs(mdText, filename)}
-      />,
-    ],
-  });
-}
-
-function showMemoryPrompt(session: ChatSession) {
-  showModal({
-    title: `${Locale.Memory.Title} (${session.lastSummarizeIndex} of ${session.messages.length})`,
-    children: (
-      <div className="markdown-body">
-        <pre className={styles["export-content"]}>
-          {session.memoryPrompt || Locale.Memory.EmptyContent}
-        </pre>
-      </div>
-    ),
-    actions: [
-      <IconButton
-        key="copy"
-        icon={<CopyIcon />}
-        bordered
-        text={Locale.Memory.Copy}
-        onClick={() => copyToClipboard(session.memoryPrompt)}
-      />,
-    ],
-  });
-}
+// function showMemoryPrompt(session: ChatSession) {
+//   showModal({
+//     title: `${Locale.Memory.Title} (${session.lastSummarizeIndex} of ${session.messages.length})`,
+//     children: (
+//       <div className="markdown-body">
+//         <pre className={styles["export-content"]}>
+//           {session.memoryPrompt || Locale.Memory.EmptyContent}
+//         </pre>
+//       </div>
+//     ),
+//     actions: [
+//       <IconButton
+//         key="copy"
+//         icon={<CopyIcon />}
+//         bordered
+//         text={Locale.Memory.Copy}
+//         onClick={() => copyToClipboard(session.memoryPrompt)}
+//       />,
+//     ],
+//   });
+// }
 
 const Markdown = dynamic(
   async () => (await import("@/components/markdown")).Markdown,
@@ -124,13 +85,9 @@ const Markdown = dynamic(
   },
 );
 
-// export function Message({ message }: { message: ChatMessage }) {
-//
-// }
-
-export default function Chat(props: { sid: string }) {
+export default function Chat(props: { sid?: string }) {
   // 侧边栏
-  const [sidebarOpen, setSideBarOpen] = useUserStore((state) => [
+  const [sidebarOpen, setSideBarOpen] = useStore((state) => [
     state.showSideBar,
     state.setShowSideBar,
   ]);
@@ -146,10 +103,10 @@ export default function Chat(props: { sid: string }) {
     onUserStop, // stop response
   ] = useStore((state) => [
     state.requestChat,
-    state.chatSessionId,
-    state.chatSession,
-    state.chatSessionMessages,
-    state.selectSession,
+    state.currentChatSessionId,
+    state.currentChatSession,
+    state.currentChatSessionMessages,
+    state.updateSessionId,
     state.isStreaming,
     state.stopStreaming,
   ]);
@@ -177,7 +134,7 @@ export default function Chat(props: { sid: string }) {
     }
   };
 
-  const onRightClick = (e: any, message: Message) => {
+  const onRightClick = (e: any, message: ChatMessage) => {
     // auto fill user input
     if (message.role === "user") {
       setUserInput(message.content);
@@ -244,7 +201,7 @@ export default function Chat(props: { sid: string }) {
             {session?.topic ?? "新的对话"}
           </div>
           <div className={styles["window-header-sub-title"]}>
-            {Locale.Chat.SubTitle(messages.length)}
+            {Locale.Chat.SubTitle(messages?.length ?? 0)}
           </div>
         </div>
 

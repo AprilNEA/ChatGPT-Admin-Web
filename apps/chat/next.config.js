@@ -6,7 +6,9 @@ const config = yaml.load(fs.readFileSync("../../config.yaml", "utf8"));
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   env: {
-    NEXT_PUBLIC_BASE_URL: config.url.backend,
+    NEXT_PUBLIC_TITLE: config?.site?.title ?? "ChatGPT-Admin-Web",
+    NEXT_PUBLIC_OA: config?.site?.oa ?? "",
+    NEXT_PUBLIC_BASE_URL: config?.url?.backend ?? "http://localhost:3001",
     NEXT_PUBLIC_WECHAT_MP_APP_ID: config?.wechat?.mp?.appId,
     NEXT_PUBLIC_WECHAT_OAUTH_APP_ID: config?.wechat?.oauth?.appId,
     NEXT_PUBLIC_WECHAT_OAUTH_REDIRECT_URL: config?.wechat?.oauth?.redirectUrl,

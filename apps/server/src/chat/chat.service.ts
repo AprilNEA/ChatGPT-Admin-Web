@@ -5,6 +5,7 @@ import { type ChatMessage, ChatMessageRole } from '@/prisma/client';
 import { Message, OpenAIChatModel, Role } from '@libs/openai/typing';
 import { ConfigService } from '@nestjs/config';
 import { Observable } from 'rxjs';
+import { ErrorCode, ServerException } from '@/error.filter';
 
 @Injectable()
 export class ChatService {
@@ -85,36 +86,37 @@ export class ChatService {
     memoryPrompt?: string,
     limit = 10,
   ) {
-    return sid
-      ? this.prisma.chatSession.update({
-          where: {
-            id: sid,
-          },
-          data: {
-            memoryPrompt,
-          },
-          include: {
-            messages: {
-              take: limit,
-              orderBy: {
-                createdAt: 'asc',
-              },
+    return this.prisma.$transaction(async (prisma) => {
+      const chatSession = await this.prisma.chatSession.upsert({
+        where: {
+          id: sid,
+        },
+        update: {
+          memoryPrompt,
+        },
+        create: {
+          id: sid,
+          memoryPrompt,
+          user: { connect: { id: uid } },
+        },
+        include: {
+          messages: {
+            take: limit,
+            orderBy: {
+              createdAt: 'asc',
             },
           },
-        })
-      : this.prisma.chatSession.create({
-          data: {
-            memoryPrompt,
-            user: { connect: { id: uid } },
-          },
-          include: {
-            messages: true,
-          },
-        });
+        },
+      });
+      if (chatSession.userId !== uid) {
+        throw new ServerException(ErrorCode.Forbidden, '该会话不属于你');
+      }
+      return chatSession;
+    });
   }
 
   async getChatMessages(uid: number, sid: string, limit = 10) {
-    return this.prisma.chatSession.findUniqueOrThrow({
+    return this.prisma.chatSession.findUnique({
       where: {
         id: sid,
         userId: uid,

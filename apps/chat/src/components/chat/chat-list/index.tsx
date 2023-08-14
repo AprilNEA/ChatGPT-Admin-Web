@@ -45,8 +45,8 @@ export function ChatList() {
 
   const [fetcher, session, selectSession] = useStore((state) => [
     state.fetcher,
-    state.chatSessionId,
-    state.selectSession,
+    state.currentChatSessionId,
+    state.updateSessionId,
   ]);
   const { data: sessions } = useSWR<ChatSession[]>("/chat/sessions", (url) => {
     return fetcher(url)

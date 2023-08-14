@@ -2,7 +2,7 @@
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 
-import { useUserStore, useSettingStore } from "@/store";
+import { useStore } from "@/store";
 import { IconButton } from "@/components/button";
 
 import { Loading } from "@/components/loading";
@@ -34,31 +34,29 @@ const useHasHydrated = () => {
 };
 
 export function Sidebar({ children }: { children: React.ReactNode }) {
+  const router = useRouter();
+
   // 侧边栏是否展开
-  const [showSideBar, setShowSideBar] = useUserStore((state) => [
+  const [showSideBar, setShowSideBar] = useStore((state) => [
     state.showSideBar,
     state.setShowSideBar,
   ]);
 
   // 对话
-  const [createNewSession, currentIndex, removeSession] = useUserStore(
-    (state) => [
-      state.newSession,
-      state.currentSessionIndex,
-      state.removeSession,
-    ],
-  );
+  const [createNewSession, currentIndex, removeSession] = useStore((state) => [
+    state.newSession,
+    state.currentChatSessionId,
+    state.removeSession,
+  ]);
 
   // 是否加载中
   const loading = !useHasHydrated();
 
   // 设置
-  const config = useSettingStore((state) => state.config);
-  const tightBorder = useSettingStore((state) => state.tightBorder);
+  const config = useStore((state) => state.config);
 
   // 暗色模式切换
   useSwitchTheme();
-  const router = useRouter();
 
   if (loading) {
     return <Loading />;
@@ -67,7 +65,7 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
   return (
     <div
       className={`${
-        tightBorder && !isMobileScreen()
+        config.tightBorder && !isMobileScreen()
           ? styles["tight-container"]
           : styles.container
       }`}
@@ -79,7 +77,9 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
           <div className={styles["sidebar-title"]}>{Locale.Index.Title}</div>
           <div className={styles["sidebar-sub-title"]}>
             {Locale.Index.SubTitle}{" "}
-            <span className={styles["sidebar-ad"]}>Magic万事屋</span>
+            <span className={styles["sidebar-ad"]}>
+              {process.env.NEXT_PUBLIC_OA}
+            </span>
           </div>
           <div className={styles["sidebar-logo"]}>
             <ChatGptIcon />
@@ -118,7 +118,7 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
               <IconButton
                 icon={<CloseIcon />}
                 onClick={() => {
-                  if (confirm(Locale.Home.DeleteChat)) {
+                  if (confirm(Locale.Home.DeleteChat) && currentIndex) {
                     removeSession(currentIndex);
                   }
                 }}
@@ -146,7 +146,7 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
               icon={<AddIcon />}
               text={Locale.Home.NewChat}
               onClick={() => {
-                createNewSession();
+                createNewSession(router);
                 setShowSideBar(false);
               }}
             />

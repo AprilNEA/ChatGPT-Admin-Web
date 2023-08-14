@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useStore } from "@/store";
 
 import { Loading } from "@/components/loading";
+import { SWRConfig } from "swr";
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const validateSession = useStore((state) => state.validateSession);
@@ -35,4 +36,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   return children;
+}
+
+export function SWRProvider({ children }: { children: React.ReactNode }) {
+  return (
+    <SWRConfig value={{ provider: () => new Map() }}>{children}</SWRConfig>
+  );
 }

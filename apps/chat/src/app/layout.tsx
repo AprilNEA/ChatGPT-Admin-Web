@@ -2,6 +2,7 @@
 import "@/styles/globals.scss";
 import "@/styles/markdown.scss";
 import "@/styles/prism.scss";
+import { SWRProvider } from "@/app/provider";
 
 export const metadata = {
   title: "ChatGPT",
@@ -28,7 +29,9 @@ export default function RootLayout({
           rel="stylesheet"
         ></link>
       </head>
-      <body>{children}</body>
+      <body>
+        <SWRProvider>{children}</SWRProvider>
+      </body>
     </html>
   );
 }

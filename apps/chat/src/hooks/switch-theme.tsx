@@ -1,8 +1,8 @@
 import { useEffect } from "react";
-import { useSettingStore } from "@/store";
+import { useStore } from "@/store";
 
 export function useSwitchTheme() {
-  const config = useSettingStore((state) => state.config);
+  const config = useStore((state) => state.config);
 
   useEffect(() => {
     document.body.classList.remove("light");

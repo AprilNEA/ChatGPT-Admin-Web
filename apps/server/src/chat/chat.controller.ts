@@ -20,6 +20,22 @@ export class ChatController {
   @Get('messages/:sid')
   async getChatMessages(@Payload('id') uid: number, @Param('sid') sid: string) {
     const data = await this.chatService.getChatMessages(uid, sid);
+    if (!data) {
+      return {
+        sid: sid,
+        topic: '新的话题',
+        messages: [
+          {
+            role: 'system',
+            content: '你好，请问有什么可以帮助您？',
+          },
+        ],
+        updateAt: new Date(),
+        _count: {
+          messages: 1,
+        },
+      };
+    }
     return {
       ...data,
       messages: data.messages.map((m) => ({
@@ -34,7 +50,7 @@ export class ChatController {
   async newMessage(
     @Payload('id') uid: number,
     @Body() data: NewMessageDto,
-    @Param('sid') sid?: string,
+    @Param('sid') sid: string,
   ) {
     const isValid = await this.chatService.limitCheck(uid, data.mid);
     if (!isValid) {
@@ -45,9 +61,6 @@ export class ChatController {
       uid,
       data.memoryPrompt,
     );
-    if (chatSession.userId !== uid) {
-      return new ServerException(ErrorCode.Forbidden, '该会话不属于你');
-    }
     const key = await this.keyPool.select();
     return await this.chatService.newMessage({
       userId: uid,

@@ -5,7 +5,11 @@ import { PrismaService } from '@/prisma/prisma.service';
 export class UserService {
   constructor(private prisma: PrismaService) {}
 
-  async getSettings(userId: string) {
-    // return this.prisma.chatSetting.findUnique({});
+  async getSettings(userId: number) {
+    return this.prisma.chatSetting.findUnique({
+      where: {
+        userId,
+      },
+    });
   }
 }

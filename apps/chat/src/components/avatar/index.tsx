@@ -1,8 +1,9 @@
-import { Message, useSettingStore } from "@/store";
+import { useStore } from "@/store";
 import BotIcon from "@/icons/bot.svg";
 import styles from "@/styles/module/home.module.scss";
 import dynamic from "next/dynamic";
 import LoadingIcon from "@/icons/three-dots.svg";
+import { ChatMessage } from "@caw/types";
 
 const Emoji = dynamic(async () => (await import("emoji-picker-react")).Emoji, {
   loading: () => <LoadingIcon />,
@@ -13,8 +14,8 @@ const Emoji = dynamic(async () => (await import("emoji-picker-react")).Emoji, {
  * @param props
  * @constructor
  */
-export function Avatar(props: { role: Message["role"] }) {
-  const config = useSettingStore((state) => state.config);
+export function Avatar(props: { role: ChatMessage["role"] }) {
+  const config = useStore((state) => state.config);
 
   if (props.role === "assistant") {
     return <BotIcon className={styles["user-avtar"]} />;
@@ -22,7 +23,7 @@ export function Avatar(props: { role: Message["role"] }) {
 
   return (
     <div className={styles["user-avtar"]}>
-      <Emoji unified={config.avatar} size={18} />
+      <Emoji unified="1f603" size={18} />
     </div>
   );
 }
