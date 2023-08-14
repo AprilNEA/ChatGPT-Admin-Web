@@ -2,7 +2,7 @@ import type { LocaleType } from "./index";
 
 const en: LocaleType = {
   Index: {
-    Title: "ChatGPT (GPT-4)",
+    Title: "ChatGPT",
     SubTitle: "Follow WeChat OA:",
     Submit: "提交",
     Login: "登录",
@@ -20,13 +20,6 @@ const en: LocaleType = {
     DuplicateRegistration: "该邮箱已被注册",
     CodeError: "验证码错误",
     PasswordError: "密码错误",
-  },
-  Auth: {
-    Title: process.env.NEXT_PUBLIC_TITLE ?? "ChatGPT Admin Web",
-    Tips: "Please continue with the identification",
-    Input: "access code",
-    Confirm: "Confirm",
-    Later: "Later",
   },
   User: {
     Submit: "Submit",

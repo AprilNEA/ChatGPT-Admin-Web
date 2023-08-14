@@ -19,13 +19,6 @@ const cn = {
     CodeError: "验证码错误",
     PasswordError: "密码错误",
   },
-  Auth: {
-    Title: process.env.NEXT_PUBLIC_TITLE ?? "ChatGPT Admin Web",
-    Tips: "身份认证",
-    Input: "在此处填写访问码",
-    Confirm: "确认",
-    Later: "稍后再说",
-  },
   User: {
     Submit: "提交",
     Login: "登录",

@@ -31,6 +31,7 @@
     "joi": "^17.9.2",
     "jose": "^4.14.1",
     "js-yaml": "^4.1.0",
+    "mint-filter": "^4.0.3",
     "nest-router": "^1.0.9",
     "redis": "^4.6.7",
     "redis-om": "^0.4.2",
@@ -90,7 +91,8 @@
       "^@libs/email(|/.*)$": "<rootDir>/libs/email/src/$1",
       "^@libs/payment(|/.*)$": "<rootDir>/libs/payment/src/$1",
       "^@libs/openai(|/.*)$": "<rootDir>/libs/openai/src/$1",
-      "^@libs/key-pool(|/.*)$": "<rootDir>/libs/key-pool/src/$1"
+      "^@libs/key-pool(|/.*)$": "<rootDir>/libs/key-pool/src/$1",
+      "^@libs/content-safe(|/.*)$": "<rootDir>/libs/content-safe/src/$1"
     }
   }
 }

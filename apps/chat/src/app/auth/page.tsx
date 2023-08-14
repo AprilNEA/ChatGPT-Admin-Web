@@ -7,10 +7,7 @@ import React, { FormEvent, useCallback, useState } from "react";
 
 import useIntervalAsync from "@/hooks/use-interval-async";
 import usePreventFormSubmit from "@/hooks/use-prevent-form";
-import { useUserStore } from "@/store";
-
-import { Loading } from "@/components/loading";
-
+import { useStore } from "@/store";
 import { IconButton } from "@/components/button";
 
 import Locales from "@/locales";
@@ -31,7 +28,7 @@ const CaptchaLogin: React.FC = () => {
   const [isSubmitting, handleSubmit] = usePreventFormSubmit();
   const [isCodeSubmitting, handleCodeSubmit] = usePreventFormSubmit();
 
-  const [loginByCode, requestCode] = useUserStore((state) => [
+  const [loginByCode, requestCode] = useStore((state) => [
     state.loginByCode,
     state.requestCode,
   ]);
@@ -84,7 +81,7 @@ const EmailLogin: React.FC = () => {
   const [isSubmitting, handleSubmit] = usePreventFormSubmit();
 
   /* Prevent duplicate form submissions */
-  const loginByPassword = useUserStore((state) => state.loginByPassword);
+  const loginByPassword = useStore((state) => state.loginByPassword);
 
   return (
     <div className={styles["form-container"]}>
@@ -115,7 +112,7 @@ const EmailLogin: React.FC = () => {
       <div className={styles["auth-actions"]}>
         <IconButton
           onClick={() => loginByPassword(router, { identity, password })}
-          text={Locales.Auth.Confirm}
+          text={Locales.User.Submit}
           type="primary"
         />
       </div>
@@ -232,8 +229,10 @@ export default function AuthPage() {
       <div className={`no-dark ${styles["auth-logo"]}`}>
         <BotIcon />
       </div>
-      <div className={styles["auth-title"]}>{Locales.Auth.Title}</div>
-      <div className={styles["auth-tips"]}>{Locales.Auth.Tips}</div>
+      <div className={styles["auth-title"]}>
+        {process.env.NEXT_PUBLIC_TITLE}
+      </div>
+      <div className={styles["auth-tips"]}></div>
       <div className={styles["auth-container"]}>{content}</div>
     </div>
   );

@@ -55,6 +55,12 @@
       ],
       "@libs/key-pool/*": [
         "libs/key-pool/src/*"
+      ],
+      "@libs/content-safe": [
+        "libs/content-safe/src"
+      ],
+      "@libs/content-safe/*": [
+        "libs/content-safe/src/*"
       ]
     },
     "types": [

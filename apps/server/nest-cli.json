@@ -60,6 +60,15 @@
       "compilerOptions": {
         "tsConfigPath": "libs/key-pool/tsconfig.lib.json"
       }
+    },
+    "content-safe": {
+      "type": "library",
+      "root": "libs/content-safe",
+      "entryFile": "index",
+      "sourceRoot": "libs/content-safe/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/content-safe/tsconfig.lib.json"
+      }
     }
   }
 }
