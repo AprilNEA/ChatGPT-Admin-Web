@@ -1,0 +1,34 @@
+---
+title: '内容安全'
+description: ''
+---
+# 接入文本安全
+
+<Warning>
+    据不可靠的试验，当未设置文本安全服务时，网站可能很快被封禁。
+</Warning>
+
+## 通用环境变量
+
+| 环境变量的名称(NAME) | 环境变量的内容(KEY)       | 备注 |
+|---------------|--------------------|----|
+| TEXT_SECURITY | `tencent`或者`baidu` | 必填 |
+
+### 腾讯云 文本安全
+
+| 环境变量的名称(NAME)     | 环境变量的内容(KEY) | 备注 |
+|-------------------|--------------|----|
+| TEXT_SECURITY     | `tencent`    | 必填 |
+| TENCENT_SECRETID  | 腾讯云密钥ID      | 必填 |
+| TENCENT_SECRETKEY | 腾讯云密钥KEY     | 必填 |
+
+### 百度云 文本安全
+
+![](/images/content-safe/baidu.png)
+
+| 环境变量的名称(NAME)     | 环境变量的内容(KEY) | 备注 |
+|-------------------|--------------|----|
+| TEXT_SECURITY     | `baidu`      | 必填 |
+| BAIDU_SECRETID  | 百度云密钥ID      | 必填 |
+| BAIDU_SECRETKEY | 百度云密钥KEY     | 必填 |
+

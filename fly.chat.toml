@@ -1,0 +1,18 @@
+app = "caw-chat"
+primary_region = "hkg"
+
+[env]
+NEXT_PUBLIC_BACKEND_URL = "https://api.offer.cafe"
+HOSTNAME = "0.0.0.0"
+PORT = "3000"
+
+[build]
+dockerfile = "./apps/chat/Dockerfile"
+
+[build.args]
+NEXT_PUBLIC_API_URL = "https://api.offer.cafe"
+
+[http_service]
+internal_port = 3000
+auto_stop_machines = true
+auto_start_machines = true

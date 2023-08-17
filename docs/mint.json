@@ -1,0 +1,93 @@
+{
+  "$schema": "https://mintlify.com/schema.json",
+  "name": "ChatGPT Admin Web",
+  "logo": {
+    "light": "/logo.svg",
+    "dark": "/logo.svg"
+  },
+  "favicon": "/favicon.png",
+  "colors": {
+    "primary": "#9563FF",
+    "light": "#AE87FF",
+    "dark": "#0D001D",
+    "background": {
+      "dark": "#090014"
+    },
+    "anchors": {
+      "from": "#FF7F57",
+      "to": "#9563FF"
+    }
+  },
+  "topbarLinks": [
+    {
+      "name": "Telegram Group",
+      "url": "https://t.me/ChatGPTAdminWeb"
+    }
+  ],
+  "topbarCtaButton": {
+    "name": "Github",
+    "url": "https://github/AprilNEA/ChatGPT-Admin-Web"
+  },
+  "tabs": [
+    {
+      "name": "API Reference",
+      "url": "api-reference"
+    }
+  ],
+  "anchors": [
+    {
+      "name": "Documentation",
+      "icon": "book-open-cover",
+      "url": "https://caw.sku.moe"
+    },
+    {
+      "name": "Telegram Channel",
+      "icon": "telegram",
+      "url": "https://t.me/ChatGPTAdminWebChannel"
+    },
+    {
+      "name": "Github",
+      "icon": "github",
+      "url": "https://github/AprilNEA/ChatGPT-Admin-Web"
+    }
+  ],
+  "navigation": [
+    {
+      "group": "开始",
+      "pages": [
+        "introduction",
+        "quickstart",
+        "configuration",
+        "faq",
+        "development"
+      ]
+    },
+    {
+      "group": "配置",
+      "pages": [
+        "config/email",
+        "config/sms",
+        "config/wechat",
+        "config/openai",
+        "config/pay",
+        "config/content-safe"
+      ]
+    },
+    {
+      "group": "升级",
+      "pages": [
+        "upgrade/v1tov3"
+      ]
+    },
+    {
+      "group": "API Documentation",
+      "pages": [
+        "api-reference/authentication"
+      ]
+    }
+  ],
+  "footerSocials": {
+    "twitter": "https://twitter.com/AprilNEA",
+    "github": "https://github.com/AprilNEA/ChatGPT-Admin-Web"
+  }
+}
