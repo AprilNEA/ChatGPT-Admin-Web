@@ -2,7 +2,7 @@
 
 import useSWR from "swr";
 
-import { useUserStore } from "@/store";
+import { useStore } from "@/store";
 import { IconButton } from "@/components/button";
 import { ProductType, CategoryType } from "@caw/types";
 
@@ -50,7 +50,7 @@ function ProductItem({ product }: { product: ProductType }) {
 }
 
 export default function PricingPage() {
-  const [fetcher] = useUserStore((state) => [state.fetcher]);
+  const [fetcher] = useStore((state) => [state.fetcher]);
   const { data: categories, isLoading } = useSWR<CategoryType[]>(
     "/product",
     (url) => fetcher(url).then((res) => res.json()),
