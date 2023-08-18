@@ -29,6 +29,11 @@
         "^test"
       ]
     },
+    "start": {
+      "dependsOn": [
+        "^start"
+      ]
+    },
     "dev": {
       "cache": false,
       "persistent": true

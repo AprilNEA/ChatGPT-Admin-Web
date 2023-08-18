@@ -1,0 +1,55 @@
+site:
+  title: 'ChatGPT-Admin-Web' # 网站标题
+  oa: '微信公众号' # 微信公众号
+url:
+  backend: 'http://localhost:3001'
+port:
+  frontend: 3000
+  backend: 3001
+# JWT 用户加密用户令牌
+jwt:
+  algorithm: HS256
+  secret: secret
+  publicKey: ''
+  privateKey: ''
+# Redis 数据库设置，如不使用外部数据库请勿修改
+redis:
+  url: redis://localhost:6379/0
+# Postgres 数据库设置，如不使用外部数据库请勿修改
+postgres:
+  url: postgresql://postgres:postgres@localhost:5433/postgres
+openai:
+  # 对于一般的服务如 openai, api2d 等，你只需要填写 baseUrl
+  baseUrl: ''
+  # 如果你清楚完成的地址，请填写 endpointUrl
+  endpointUrl: ''
+  keys:
+    - ''
+  keyPath: ''
+email: # 邮件设置
+  use: ''
+  mailgun:
+    domain: ''
+    apiKey: ''
+  elastice:
+    sender: ''
+    apiKey: ''
+sms: # 短信设置
+  use: ''
+  uni:
+wechat:
+  mp:
+    appId:
+    appSecret:
+  oauth:
+    appId:
+    appSecret:
+    redirectUrl:
+# 支付设置
+payment:
+  xunhu:
+    wapName:
+    appId:
+    appSecret:
+    notifyUrl:
+    returnUrl:
