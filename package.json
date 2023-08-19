@@ -1,5 +1,13 @@
 {
-  "private": true,
+  "name": "chatgpt-admin-web",
+  "version": "3.0.0",
+  "description": "ChatGPT Admin Web",
+  "license": "MIT",
+  "author": "AprilNEA <github@sku.moe> (https://sku.moe)",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AprilNEA/ChatGPT-Admin-Web"
+  },
   "workspaces": [
     "apps/*",
     "packages/*"
@@ -16,5 +24,6 @@
     "turbo": "latest",
     "prettier": "latest",
     "typescript": "latest"
-  }
+  },
+  "packageManager": "pnpm@8.6.3"
 }

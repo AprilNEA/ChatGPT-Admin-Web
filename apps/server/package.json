@@ -12,6 +12,7 @@
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
+    "db:generate": "prisma generate",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -94,5 +95,6 @@
       "^@libs/key-pool(|/.*)$": "<rootDir>/libs/key-pool/src/$1",
       "^@libs/content-safe(|/.*)$": "<rootDir>/libs/content-safe/src/$1"
     }
-  }
+  },
+  "packageManager": "pnpm@8.6.3"
 }
