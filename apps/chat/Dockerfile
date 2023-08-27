@@ -1,25 +1,26 @@
 FROM node:20-alpine AS base
 
-FROM base AS base-pnpm
+USER root
+
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
 
 RUN npm i -g pnpm
-RUN apk add --no-cache libc6-compat \
-  & apk update
 
-FROM base-pnpm AS builder
-
-ARG NEXT_PUBLIC_API_URL
-ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+FROM base AS builder
 
 WORKDIR /app
 
 COPY . .
 
-RUN pnpm add turbo -g \
+RUN apk add --no-cache libc6-compat \
+  & apk update \
+  & pnpm add turbo -g \
   & pnpx turbo prune --scope=chat --docker
 
+
 # Add lockfile and package.json's of isolated subworkspace
-FROM base-pnpm AS installer
+FROM base AS installer
 
 WORKDIR /app
 
@@ -30,6 +31,7 @@ COPY --from=builder /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
 RUN pnpm install
 
 # Build the project
+COPY ./config.yaml /app/config.yaml
 COPY --from=builder /app/out/full/ .
 RUN pnpx turbo run db:generate \
     & pnpx turbo run build --filter=chat...
@@ -46,8 +48,8 @@ RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 USER nextjs
 
-COPY --from=installer /app/apps/offercafe-web/next.config.js .
-COPY --from=installer /app/apps/offercafe-web/package.json .
+COPY --from=installer /app/apps/chat/next.config.js .
+COPY --from=installer /app/apps/chat/package.json .
 
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing

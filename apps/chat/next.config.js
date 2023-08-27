@@ -5,6 +5,7 @@ const config = yaml.load(fs.readFileSync("../../config.yaml", "utf8"));
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: "standalone",
   env: {
     NEXT_PUBLIC_TITLE: config?.site?.title ?? "ChatGPT-Admin-Web",
     NEXT_PUBLIC_OA: config?.site?.oa ?? "",

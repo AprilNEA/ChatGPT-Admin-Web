@@ -1,0 +1,47 @@
+version: "3"
+
+services:
+  chat:
+    build:
+      context: .
+      dockerfile: apps/chat/Dockerfile
+    networks:
+      - caw
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./config.yaml:/app/config.yaml
+  server:
+    build:
+      context: .
+      dockerfile: apps/server/Dockerfile
+    networks:
+      - caw
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./config.yaml:/app/config.yaml
+  postgres:
+    image: postgres:latest
+    networks:
+      - caw
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+  redis:
+    image: redis:latest
+    networks:
+      - caw
+    ports:
+      - "6379:6379"
+
+volumes:
+  postgres_data:
+
+networks:
+  caw:

@@ -2,7 +2,7 @@ site:
   title: 'ChatGPT-Admin-Web' # 网站标题
   oa: '微信公众号' # 微信公众号
 url:
-  backend: 'http://localhost:3001'
+  backend: http://server:3001 # docker-compose 默认地址
 port:
   frontend: 3000
   backend: 3001
@@ -14,17 +14,17 @@ jwt:
   privateKey: ''
 # Redis 数据库设置，如不使用外部数据库请勿修改
 redis:
-  url: redis://localhost:6379/0
+  url: redis://redis:6379/0 # docker-compose 默认地址
 # Postgres 数据库设置，如不使用外部数据库请勿修改
 postgres:
-  url: postgresql://postgres:postgres@localhost:5433/postgres
+  url: postgresql://postgres:postgres@postgres:5432/postgres # docker-compose 默认地址
 openai:
   # 对于一般的服务如 openai, api2d 等，你只需要填写 baseUrl
   baseUrl: ''
   # 如果你清楚完成的地址，请填写 endpointUrl
   endpointUrl: ''
   keys:
-    - ''
+    - 'sk-ffffff'
   keyPath: ''
 email: # 邮件设置
   use: ''
