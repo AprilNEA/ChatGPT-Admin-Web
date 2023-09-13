@@ -26,7 +26,7 @@
   ],
   "topbarCtaButton": {
     "name": "Github",
-    "url": "https://github/AprilNEA/ChatGPT-Admin-Web"
+    "url": "https://github.com/AprilNEA/ChatGPT-Admin-Web"
   },
   "tabs": [
     {
@@ -48,7 +48,7 @@
     {
       "name": "Github",
       "icon": "github",
-      "url": "https://github/AprilNEA/ChatGPT-Admin-Web"
+      "url": "https://github.com/AprilNEA/ChatGPT-Admin-Web"
     }
   ],
   "navigation": [
