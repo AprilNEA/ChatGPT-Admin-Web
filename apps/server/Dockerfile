@@ -41,4 +41,6 @@ COPY --from=builder /app/apps/server/run.sh ./apps/server/run.sh
 RUN pnpx turbo run db:generate \
     & pnpx turbo run build
 
-CMD node /app/apps/server/dist/main.js
+WORKDIR /app/apps/server
+
+CMD pnpx prisma migrate deploy && node /app/apps/server/dist/main.js
