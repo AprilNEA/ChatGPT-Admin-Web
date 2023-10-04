@@ -21,6 +21,8 @@ services:
       - "3001:3001"
     volumes:
       - ./config.yaml:/app/config.yaml
+    env_file:
+      - .env
   postgres:
     image: postgres:latest
     networks:
