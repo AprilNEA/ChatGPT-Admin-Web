@@ -4,12 +4,7 @@
   "private": true,
   "main": "./client/index.js",
   "exports": {
-    ".": "./client/index.js",
-    "./zod": {
-      "types": "./zod/index.js",
-      "require": "./dist/zod/index.js",
-      "import": "./dist/zod/index.js"
-    }
+    ".": "./client/index.js"
   },
   "scripts": {
     "migrate:dev": "prisma migrate dev",
@@ -24,13 +19,9 @@
     "build": "prisma generate && tsc && cp -r client dist/client"
   },
   "dependencies": {
-    "@prisma/client": "5.3.1",
-    "nestjs-zod": "3.0.0",
-    "prisma-json-types-generator": "3.0.1",
-    "zod-prisma-types": "2.7.9"
+    "@prisma/client": "5.3.1"
   },
   "devDependencies": {
-    "nestjs-zod-prisma": "3.0.1",
     "prisma": "5.3.1"
   }
 }
