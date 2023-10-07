@@ -1,6 +1,8 @@
-#config.yaml
+config.yaml
+
 .env
 apps/server/.env
+
 # IDE
 .vscode/
 .idea/

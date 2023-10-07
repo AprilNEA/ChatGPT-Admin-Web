@@ -4,17 +4,17 @@ services:
   chat:
     build:
       context: .
-      dockerfile: apps/chat/Dockerfile
+      dockerfile: packages/frontend/Dockerfile
     networks:
       - caw
     ports:
       - "3000:3000"
     volumes:
-      - ./config.yaml:/app/config.yaml
+      - ./config.yaml:/packages/config.yaml
   server:
     build:
       context: .
-      dockerfile: apps/server/Dockerfile
+      dockerfile: packages/backend/Dockerfile
     networks:
       - caw
     ports:
