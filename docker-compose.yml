@@ -21,6 +21,8 @@ services:
       - "3001:3001"
     volumes:
       - ./config.yaml:/app/config.yaml
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/postgres
   postgres:
     image: postgres:latest
     networks:
@@ -42,6 +44,7 @@ services:
 
 volumes:
   postgres_data:
+
 
 networks:
   caw:
