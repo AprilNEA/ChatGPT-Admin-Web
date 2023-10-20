@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '@/processors/database/prisma.service';
-import { OpenaiService } from '@libs/openai';
-import { type ChatMessage, ChatMessageRole } from '@/prisma/client';
-import { Message, OpenAIChatModel, Role } from '@libs/openai/typing';
+import { DatabaseService } from '@/processors/database/database.service';
+import { OpenaiService } from '@/libs/openai/openai.service';
+import { type ChatMessage, ChatMessageRole } from '@prisma/client';
+import { Message, OpenAIChatModel, Role } from '@/libs/openai/typing';
 import { ConfigService } from '@nestjs/config';
 import { Observable } from 'rxjs';
 import { ErrorCode, ServerException } from '@/error.filter';
@@ -12,7 +12,7 @@ export class ChatService {
   private openaiConfig;
 
   constructor(
-    private prisma: PrismaService,
+    private prisma: DatabaseService,
     private openaiService: OpenaiService,
     config: ConfigService,
   ) {

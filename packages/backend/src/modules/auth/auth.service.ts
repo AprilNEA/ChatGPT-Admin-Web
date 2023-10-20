@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '@/processors/database/prisma.service';
+import { DatabaseService } from '@/processors/database/database.service';
 import { Prisma, Role } from '@prisma/client';
 import { compare, hashSync } from 'bcrypt';
-import { JwtService } from '@libs/jwt';
-import { RedisService } from '@libs/redis/redis.service';
-import { EmailService } from '@libs/email/email.service';
+import { JwtService } from '@/libs/jwt/jwt.service';
+import { RedisService } from '@/processors/redis/redis.service';
+import { EmailService } from '@/libs/email/email.service';
 import * as Joi from 'joi';
 
 type ByPassword = {
@@ -35,7 +35,7 @@ const getPhoneOrEmail = (identity: string) => {
 @Injectable()
 export class AuthService {
   constructor(
-    private prisma: PrismaService,
+    private prisma: DatabaseService,
     private jwt: JwtService,
     private redisService: RedisService,
     private emailService: EmailService,

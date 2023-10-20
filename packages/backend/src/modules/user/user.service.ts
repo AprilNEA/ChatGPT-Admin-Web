@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '@/processors/database/prisma.service';
+import { DatabaseService } from '@/processors/database/database.service';
 
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: DatabaseService) {}
 
   async getSettings(userId: number) {
     return this.prisma.chatSetting.findUnique({

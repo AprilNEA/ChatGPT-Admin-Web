@@ -1,15 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '@/processors/database/prisma.service';
+import { DatabaseService } from '@/processors/database/database.service';
 import { OrderStatus, OrderType } from '@prisma/client';
 import {
   monthDuration,
   quarterDuration,
   yearDuration,
-} from '@/processors/database/prisma.service';
+} from '@/processors/database/database.service';
 
 @Injectable()
 export class OrderService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: DatabaseService) {}
 
   getNextId(): string {
     const timestamp: string = new Date().getTime().toString();

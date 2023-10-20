@@ -3,7 +3,7 @@ import { ChatService } from './chat.service';
 import { Payload, Public } from '@/common/guards/auth.guard';
 import { NewMessageDto } from 'shared';
 import { ErrorCode, ServerException } from '@/error.filter';
-import { KeyPoolService } from '@libs/key-pool';
+import { KeyPoolService } from '@/libs/key-pool';
 
 @Controller('chat')
 export class ChatController {

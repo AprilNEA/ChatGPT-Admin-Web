@@ -7,8 +7,9 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { JwtService, JWTPayload } from '@libs/jwt/jwt.service';
-import { Role } from '@/prisma/client';
+
+import { Role } from '@prisma/client';
+import { JwtService, JWTPayload } from '@/libs/jwt/jwt.service';
 
 export const ROLES_KEY = 'roles';
 export const IS_PUBLIC_KEY = 'isPublic';
@@ -30,7 +31,10 @@ export interface AuthUser {
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  constructor(private reflector: Reflector, private jwtService: JwtService) {}
+  constructor(
+    private reflector: Reflector,
+    private jwtService: JwtService,
+  ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [

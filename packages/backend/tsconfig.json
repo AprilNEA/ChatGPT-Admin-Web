@@ -14,58 +14,7 @@
       "@/*": [
         "src/*"
       ],
-      "@/prisma/*": [
-        "prisma/*"
-      ],
-      "@libs/*": [
-        "libs/*"
-      ],
-      "@libs/jwt": [
-        "libs/jwt/src"
-      ],
-      "@libs/jwt/*": [
-        "libs/jwt/src/*"
-      ],
-      "@libs/redis": [
-        "libs/redis/src"
-      ],
-      "@libs/redis/*": [
-        "libs/redis/src/*"
-      ],
-      "@libs/email": [
-        "libs/email/src"
-      ],
-      "@libs/email/*": [
-        "libs/email/src/*"
-      ],
-      "@libs/payment": [
-        "libs/payment/src"
-      ],
-      "@libs/payment/*": [
-        "libs/payment/src/*"
-      ],
-      "@libs/openai": [
-        "libs/openai/src"
-      ],
-      "@libs/openai/*": [
-        "libs/openai/src/*"
-      ],
-      "@libs/key-pool": [
-        "libs/key-pool/src"
-      ],
-      "@libs/key-pool/*": [
-        "libs/key-pool/src/*"
-      ],
-      "@libs/content-safe": [
-        "libs/content-safe/src"
-      ],
-      "@libs/content-safe/*": [
-        "libs/content-safe/src/*"
-      ]
     },
-    "types": [
-      "@types/caw"
-    ]
   },
   "incremental": true,
   "skipLibCheck": true,

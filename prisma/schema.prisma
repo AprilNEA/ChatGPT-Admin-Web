@@ -14,18 +14,15 @@ datasource db {
 
 enum Role {
   Admin
-  Mod
-  Sell
   User
 }
 
 model User {
-  id    Int     @id @default(autoincrement())
-  role  Role    @default(User)
-  name  String  @unique // 用户名
-  email String? @unique // 邮箱
-  phone String? @unique // 手机 +86
-
+  id       Int     @id @default(autoincrement())
+  role     Role    @default(User)
+  name     String? @unique // 用户名
+  email    String? @unique // 邮箱
+  phone    String? @unique // 手机 +86
   password String? @db.Text // 密码
 
   // relation
@@ -40,7 +37,6 @@ model User {
 }
 
 enum OAuthProvider {
-  Google
   Github
   Wechat
 }

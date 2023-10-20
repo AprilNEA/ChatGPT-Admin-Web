@@ -5,7 +5,7 @@ import {
   HttpException,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
-import { ErrorCode } from '@caw/types';
+import { ErrorCode } from 'shared';
 export { ErrorCode };
 export class ServerException extends Error {
   constructor(

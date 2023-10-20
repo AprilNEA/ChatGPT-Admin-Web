@@ -9,12 +9,12 @@ import {
   Req,
 } from '@nestjs/common';
 import { OrderService } from './order.service';
-import { newOrderDto } from '@caw/types';
+import { newOrderDto } from 'shared';
 import { Payload, Roles } from '@/common/guards/auth.guard';
-import { PaymentService } from '@libs/payment';
+import { PaymentService } from '@/libs/payment/payment.service';
 import { Public } from '@/common/guards/auth.guard';
-import { Role } from '@/prisma/client';
-import { JWTPayload } from '@libs/jwt';
+import { Role } from '@prisma/client';
+import { JWTPayload } from '@/libs/jwt/jwt.service';
 
 @Controller('order')
 export class OrderController {
