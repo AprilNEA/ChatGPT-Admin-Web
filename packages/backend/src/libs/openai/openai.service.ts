@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { openaiChatComplete, OpenAIChatCompletionParams } from 'src/openai';
+import { openaiChatComplete, OpenAIChatCompletionParams } from './openai';
 import { ConfigService } from '@nestjs/config';
 import { ConfigType } from 'shared';
 

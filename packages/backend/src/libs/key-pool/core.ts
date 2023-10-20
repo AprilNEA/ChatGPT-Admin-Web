@@ -1,4 +1,4 @@
-import type { MaybePromise } from 'src/utils';
+import type { MaybePromise } from './utils';
 
 export type KeyPoolSelector = (
   keys: string[],

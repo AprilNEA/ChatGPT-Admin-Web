@@ -1,4 +1,4 @@
-import { KeyPoolSelector, KeyPoolSelectorSync } from 'src/core';
+import { KeyPoolSelector, KeyPoolSelectorSync } from './core';
 import type { MaybePromise } from './utils';
 
 export const randomSelector: KeyPoolSelectorSync = (keys) => {

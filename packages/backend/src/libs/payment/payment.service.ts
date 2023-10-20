@@ -1,7 +1,7 @@
 import md5 from 'spark-md5';
 import { Injectable } from '@nestjs/common';
-import { PaymentArgs, PaymentResponse, CallbackBody } from 'src/xunhu';
-import { ConfigType } from '@caw/types';
+import { PaymentArgs, PaymentResponse, CallbackBody } from './xunhu';
+import { ConfigType } from 'shared';
 import { ConfigService } from '@nestjs/config';
 
 function urlEncodedStringToJson(encodedString: string): Record<string, string> {

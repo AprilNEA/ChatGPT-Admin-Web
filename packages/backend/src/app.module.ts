@@ -9,7 +9,7 @@ import { AuthModule } from '@/modules/auth/auth.module';
 import { UserModule } from '@/modules/user/user.module';
 import { ChatModule } from '@/modules/chat/chat.module';
 import { OrderModule } from '@/modules/order/order.module';
-import { JwtModule } from '@libs/jwt';
+import { JwtModule } from '@/libs/jwt/jwt.module';
 import { AuthGuard } from '@/common/guards/auth.guard';
 import { DashboardModule } from '@/modules/dashboard/dashboard.module';
 import { ProductModule } from '@/modules/product/product.module';

@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from 'packages/backend/src/processors/database/prisma.service';
-import { makeKeyGetter } from 'src/core';
-import { makeWeightedSelector } from 'src/selectors';
+import { DatabaseService } from '@/processors/database/database.service';
+import { makeKeyGetter } from './core';
+import { makeWeightedSelector } from './selectors';
 
 @Injectable()
 export class KeyPoolService {
-  constructor(private prisma: PrismaService) {
+  constructor(private prisma: DatabaseService) {
     if (!prisma) throw new Error('prisma is undefined');
   }
 
