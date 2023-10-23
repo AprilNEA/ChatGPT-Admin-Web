@@ -1,11 +1,17 @@
+export interface identityDto {
+  identity: string;
+}
+
 export interface requestCodeDto {
   identity: string;
 }
 
-export interface loginByCodeDto extends requestCodeDto {
+export interface validateCodeDto {
+  identity: string;
   code: string;
 }
 
-export interface byPasswordDto extends requestCodeDto {
+export interface byPasswordDto {
+  identity: string;
   password: string;
 }

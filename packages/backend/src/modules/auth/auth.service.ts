@@ -35,25 +35,43 @@ const getPhoneOrEmail = (identity: string) => {
 @Injectable()
 export class AuthService {
   constructor(
-    private prisma: DatabaseService,
     private jwt: JwtService,
+    private prisma: DatabaseService,
     private redisService: RedisService,
     private emailService: EmailService,
   ) {}
 
-  async requestCode(identity: string) {
+  /* 添加验证码 */
+  async newValidateCode(identity: string) {
     const { email, phone } = getPhoneOrEmail(identity);
+    if (!email && !phone) {
+      return {
+        success: false,
+      };
+    }
+
+    /* 10分钟内仅可发送一次 */
     const code = await this.redisService.authCode.new(identity);
 
-    if (!email) {
+    if (code.success) {
+      if (email) {
+        await this.emailService.sendCode(identity, code.code);
+      } else if (phone) {
+      }
       return {
-        success: await this.emailService.sendCode(identity, code),
+        success: true,
+        ttl: code.ttl,
       };
     } else {
+      return {
+        success: false,
+        ttl: code.ttl,
+      };
     }
   }
 
-  async loginByCode(identity: string, code: string) {
+  /* 通过验证码登录 */
+  async WithValidateCode(identity: string, code: string) {
     const { email, phone } = getPhoneOrEmail(identity);
 
     const isValid = await this.redisService.authCode.valid(identity, code);
@@ -81,7 +99,8 @@ export class AuthService {
     return this.jwt.sign({ id: user.id, role: user.role });
   }
 
-  async loginByPassword({ identity, password }: ByPassword) {
+  /* 通过密码登录 */
+  async loginPassword({ identity, password }: ByPassword) {
     const { email, phone } = getPhoneOrEmail(identity);
 
     const user = await this.prisma.user.findMany({
@@ -99,34 +118,26 @@ export class AuthService {
     return this.jwt.sign({ id: user[0].id, role: user[0].role });
   }
 
-  /**
-   * 注册
-   */
-  async registerByPassword(code: string, { identity, password }: ByPassword) {
-    const { email, phone } = getPhoneOrEmail(identity);
-
-    const isValid = await this.redisService.authCode.valid(
-      email || phone,
-      code,
-    );
-    if (!isValid) {
-      throw Error('Invalid code');
-    }
-    const existUser = await this.prisma.user.findMany({
+  /* 添加密码 */
+  async bindPassword(userId: number, password: string) {
+    const user = await this.prisma.user.findUnique({
       where: {
-        OR: [{ email }, { phone }],
+        id: userId,
       },
     });
-    if (existUser.length > 0) {
-      throw Error('User already exists');
+    if (user.password) {
+      throw Error('Password already exists');
     }
-    const userInput: Prisma.UserCreateInput = {
-      name: `user-${Math.random().toString(36).slice(2)}`,
-      email: email,
-      password: await hashSync(password, SALT_ROUNDS),
-      role: Role.User,
-    };
-    const user = await this.prisma.user.create({ data: userInput });
-    return this.jwt.sign({ id: user.id, role: user.role });
+    this.prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        password: hashSync(password, SALT_ROUNDS),
+      },
+    });
   }
+
+  /* 绑定用户身份 */
+  async bindIdentity(userId: number, identity: string) {}
 }

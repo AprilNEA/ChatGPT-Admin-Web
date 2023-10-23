@@ -1,12 +1,29 @@
-import { Body, Controller, Get, Post, Query, UsePipes } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Put,
+  Query,
+  UsePipes,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { JoiValidationPipe } from '@/common/pipes/joi';
-import { identitySchema, loginByCodeSchema } from './auth.dto';
-import { loginByCodeDto, byPasswordDto, requestCodeDto } from 'shared';
-import { Public } from '@/common/guards/auth.guard';
+import {
+  passwordSchema,
+  identitySchema,
+  validateCodeSchema,
+  bindPasswordSchema,
+} from './auth.dto';
+import {
+  validateCodeDto,
+  byPasswordDto,
+  requestCodeDto,
+  identityDto,
+} from 'shared';
+import { Payload, Public } from '@/common/guards/auth.guard';
 import { WechatService } from '@/modules/auth/wechat.service';
 
-@Public()
 @Controller('auth')
 export class AuthController {
   constructor(
@@ -14,49 +31,42 @@ export class AuthController {
     private wechatService: WechatService,
   ) {}
 
-  /* 获取验证码，自动识别邮箱或手机号 */
-  @UsePipes(new JoiValidationPipe(identitySchema))
-  @Post('code')
-  async requestCode(@Body() data: requestCodeDto) {
-    return {
-      success: await this.authService.requestCode(data.identity),
-    };
-  }
-
-  /* 通过验证码登录，自动识别邮箱或手机号 */
-  @UsePipes(new JoiValidationPipe(loginByCodeSchema))
-  @Post('login/code')
-  async loginByCode(@Body() data: loginByCodeDto) {
+  /* 方法一：密码登录 */
+  @Public()
+  @UsePipes(new JoiValidationPipe(passwordSchema))
+  @Post('password')
+  async password(@Body() data: byPasswordDto) {
     return {
       success: true,
-      token: await this.authService.loginByCode(data.identity, data.code),
+      token: await this.authService.loginPassword(data),
     };
   }
 
-  // @UsePipes(new JoiValidationPipe(byPasswordSchema))
-  /* 通过验证码注册，自动识别邮箱或手机号 */
-  @Post('register')
-  async registerByPassword(
-    @Query('code') code: string,
-    @Body() data: byPasswordDto,
+  /* 方法二：验证码登录/注册 */
+  /** 1. 获取验证码 **/
+  @Public()
+  @Get('validateCode')
+  async newValidateCode(
+    @Query(new JoiValidationPipe(identitySchema)) query: identityDto,
   ) {
+    return await this.authService.newValidateCode(query.identity);
+  }
+
+  /** 2.通过验证码登录，自动识别邮箱或手机号 */
+  @Public()
+  @UsePipes(new JoiValidationPipe(validateCodeSchema))
+  @Post('validateCode')
+  async loginByCode(@Body() data: validateCodeDto) {
+    // token: await this.authService.registerByPassword(code, data),
     return {
       success: true,
-      token: await this.authService.registerByPassword(code, data),
+      token: await this.authService.WithValidateCode(data.identity, data.code),
     };
   }
 
-  // @UsePipes(new JoiValidationPipe(byPasswordSchema))
-  @Post('login/password')
-  async loginByPassword(@Body() data: byPasswordDto) {
-    return {
-      success: true,
-      token: await this.authService.loginByPassword(data),
-    };
-  }
-
-  /* 微信一键注册/登录 */
-  @Get('login/wechat/oauth')
+  /* 方法三：微信登录/注册 */
+  @Public()
+  @Get('wechatCode')
   async wechatOauth(@Query() code: string) {
     const tokenData = await this.wechatService.wechatOauth(code);
     const jwt = this.wechatService.loginByWeChat(tokenData);
@@ -74,4 +84,21 @@ export class AuthController {
       };
     }
   }
+
+  /* 设置密码 */
+  @Put('bindPassword')
+  @UsePipes(new JoiValidationPipe(bindPasswordSchema))
+  async bindPassword(
+    @Payload('id') userId: number,
+    @Body('password') password: string,
+  ) {
+    await this.authService.bindPassword(userId, password);
+    return {
+      success: true,
+    };
+  }
+
+  /* 绑定账户 */
+  @Put('bindIdentity')
+  async bindIdentity() {}
 }
