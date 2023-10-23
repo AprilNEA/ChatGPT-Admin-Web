@@ -1,4 +1,5 @@
 export interface ConfigType {
+  debug: boolean;
   port: {
     frontend: number;
     backend: number;
@@ -21,7 +22,12 @@ export interface ConfigType {
     keys: string[];
     keyPath: string;
   };
-  email: {};
+  email: {
+    use: "resend";
+    resend?: {
+      apiKey: string;
+    };
+  };
   wechat: {
     oauth: {
       appId: string;

@@ -1,10 +1,7 @@
-import {
-  PipeTransform,
-  Injectable,
-  ArgumentMetadata,
-  BadRequestException,
-} from '@nestjs/common';
+import { ArgumentMetadata, Injectable, PipeTransform } from '@nestjs/common';
 import { ObjectSchema } from 'joi';
+import { BizException } from '@/common/exceptions/biz.exception';
+import { ErrorCodeEnum } from 'shared/dist/error-code';
 
 @Injectable()
 export class JoiValidationPipe implements PipeTransform {
@@ -13,7 +10,7 @@ export class JoiValidationPipe implements PipeTransform {
   transform(value: any, metadata: ArgumentMetadata) {
     const { error } = this.schema.validate(value);
     if (error) {
-      throw new BadRequestException('Validation failed');
+      throw new BizException(ErrorCodeEnum.ValidationError);
     }
     return value;
   }
