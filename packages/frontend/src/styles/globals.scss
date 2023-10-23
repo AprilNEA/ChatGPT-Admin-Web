@@ -3,14 +3,17 @@
   --white: white;
   --black: rgb(48, 48, 48);
   --gray: rgb(250, 250, 250);
-  --primary: rgb(29, 147, 171);
-  --second: rgb(231, 248, 255);
-  --hover-color: #f3f3f3;
+  --primary: #009688;
+  --secondary: #f3f3f3;
+  --inactive: #BDBDBD;
+  --hover-color: #4DB6AC;
   --bar-color: rgba(0, 0, 0, 0.1);
+  --shadow: #BDBDBD 0 0 10px;
 
   /* shadow */
   --shadow: 50px 50px 100px 10px rgb(0, 0, 0, 0.1);
-  --card-shadow: 0px 2px 4px 0px rgb(0, 0, 0, 0.05);
+  --card-shadow: #BDBDBD 0 0 10px;
+  --card-shadow-hover: #9E9E9E 0 0 10px;
 
   /* stroke */
   --border-in-light: 1px solid rgb(222, 222, 222);
@@ -22,7 +25,7 @@
   --black: rgb(187, 187, 187);
   --gray: rgb(21, 21, 21);
   --primary: rgb(29, 147, 171);
-  --second: rgb(27 38 42);
+  --secondary: rgb(27 38 42);
   --hover-color: #323232;
 
   --bar-color: rgba(255, 255, 255, 0.1);
@@ -88,7 +91,7 @@ body {
   justify-content: center;
   align-items: center;
   user-select: none;
-  font-family: "Noto Sans SC", "SF Pro SC", "SF Pro Text", "SF Pro Icons",
+  font-family: "Poppins" "Noto Sans SC", "SF Pro SC", "SF Pro Text", "SF Pro Icons",
     "PingFang SC", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
 }
 
@@ -178,6 +181,7 @@ input[type="range"]::-webkit-slider-thumb:hover {
 }
 
 input[type="number"],
+input[type="password"],
 input[type="text"] {
   appearance: none;
   border-radius: 10px;

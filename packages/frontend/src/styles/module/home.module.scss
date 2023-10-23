@@ -43,7 +43,7 @@
   width: var(--sidebar-width);
   box-sizing: border-box;
   padding: 20px;
-  background-color: var(--second);
+  background-color: var(--secondary);
   display: flex;
   flex-direction: column;
   box-shadow: inset -2px 0px 2px 0px rgb(0, 0, 0, 0.05);
@@ -348,7 +348,7 @@
 }
 
 .chat-message-user > .chat-message-container > .chat-message-item {
-  background-color: var(--second);
+  background-color: var(--secondary);
 }
 
 .chat-message-actions {

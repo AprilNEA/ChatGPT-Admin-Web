@@ -18,8 +18,8 @@ export default function ChatLayout({
 }) {
   return (
     // @ts-ignore
-    <AuthProvider>
+    //<AuthProvider>
       <Sidebar>{children}</Sidebar>
-    </AuthProvider>
+    //</AuthProvider>
   );
 }

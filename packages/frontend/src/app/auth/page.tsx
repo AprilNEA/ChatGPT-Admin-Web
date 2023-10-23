@@ -14,7 +14,9 @@ import Locales from "@/locales";
 import styles from "./auth.module.scss";
 import BotIcon from "@/icons/bot.svg";
 import LeftArrow from "@/icons/left.svg";
-import WechatLogo from "@/icons/wechat-logo.png";
+import WechatLogo from "@/icons/wechat-logo.svg";
+import KeyIcon from "@/icons/key.svg";
+import VerificationCodeIcon from "@/icons/verification-code.svg";
 
 const weChatOauthAppId = process.env.NEXT_PUBLIC_WECHAT_OAUTH_APP_ID!;
 const weChatOauthRedirectUrl =
@@ -35,15 +37,17 @@ const CaptchaLogin: React.FC = () => {
 
   return (
     <div className={styles["form-container"]}>
-      <input
-        type="text"
-        id="phone"
-        value={register}
-        className={styles["auth-input"]}
-        onChange={(e) => setRegister(e.target.value)}
-        placeholder={`${Locales.User.Phone} / ${Locales.User.Email}`}
-        required
-      />
+      <div className={styles["row"]}>
+        <input
+          type="text"
+          id="phone"
+          value={register}
+          className={styles["auth-input"]}
+          onChange={(e) => setRegister(e.target.value)}
+          placeholder={`${Locales.User.Phone} / ${Locales.User.Email}`}
+          required
+        />
+      </div>
 
       <div className={styles["row"]}>
         <input
@@ -113,6 +117,7 @@ const EmailLogin: React.FC = () => {
         <IconButton
           onClick={() => loginByPassword(router, { identity, password })}
           text={Locales.User.Submit}
+          className={styles["auth-submit-btn"]}
           type="primary"
         />
       </div>
@@ -158,70 +163,8 @@ const WeChatLogin: React.FC = () => {
 
 export default function AuthPage() {
   const [tab, setTab] = useState<"email" | "phone" | "wechat">("phone");
-
-  let content = null;
-  switch (tab) {
-    case "wechat":
-      content = (
-        <div className={styles["wechat-part"]}>
-          <div className={styles["wechat-part-title"]}>
-            {Locales.User.WeChatLogin}
-          </div>
-          <div className={styles["wechat-login-container"]}>
-            <WeChatLogin />
-          </div>
-          <div
-            className={styles["wechat-part-go-back"]}
-            onClick={() => {
-              setTab("phone");
-            }}
-          >
-            <LeftArrow />
-          </div>
-        </div>
-      );
-      break;
-    case "email":
-    case "phone":
-      content = (
-        <div className={styles["password-part"]}>
-          <div className={styles["tab-container"]}>
-            <button
-              className={`${styles["tab-button"]} ${
-                tab === "phone" ? styles.active : ""
-              }`}
-              onClick={() => setTab("phone")}
-            >
-              {Locales.User.CodeLogin}
-            </button>
-            <button
-              className={`${styles["tab-button"]} ${
-                tab === "email" ? styles.active : ""
-              }`}
-              onClick={() => setTab("email")}
-            >
-              {Locales.User.PasswordLogin}
-            </button>
-          </div>
-          {tab === "phone" ? <CaptchaLogin /> : <EmailLogin />}
-
-          <div className={styles["divider"]}>
-            <div className={styles["divider-line"]} />
-            <div className={styles["divider-text"]}>or</div>
-            <div className={styles["divider-line"]} />
-          </div>
-          <div className={styles["third-part-login-options"]}>
-            <img
-              src={WechatLogo.src}
-              className={styles["third-part-option"]}
-              onClick={() => {
-                setTab("wechat");
-              }}
-            />
-          </div>
-        </div>
-      );
-      break;
+  {
+    tab === "phone" ? <CaptchaLogin /> : <EmailLogin />;
   }
 
   return (
@@ -233,7 +176,42 @@ export default function AuthPage() {
         {process.env.NEXT_PUBLIC_TITLE}
       </div>
       <div className={styles["auth-tips"]}></div>
-      <div className={styles["auth-container"]}>{content}</div>
+      <div className={styles["auth-container"]}>
+        {tab === "phone" ? <CaptchaLogin /> : tab === "email" ? <EmailLogin /> : <WeChatLogin />}
+        <div className={styles["divider"]}>
+          <div className={styles["divider-line"]} />
+          <div className={styles["divider-text"]}>OR</div>
+          <div className={styles["divider-line"]} />
+        </div>
+        <div className={styles["third-part-login-options"]}>
+          <div
+            className={styles["third-part-option"]}
+            onClick={() => {
+              setTab(() => {
+                if (tab != "wechat") return "wechat";
+                else return "phone";
+              });
+            }}
+          >
+            {tab == "wechat" ? <VerificationCodeIcon /> : <WechatLogo />}
+            <div>使用{tab == "wechat" ? "验证码" : "微信"}登陆</div>
+          </div>
+        </div>
+        <div className={styles["third-part-login-options"]}>
+          <div
+            className={styles["third-part-option"]}
+            onClick={() => {
+              setTab(() => {
+                if (tab == "email") return "phone";
+                else return "email";
+              });
+            }}
+          >
+            {tab == "email" ? <VerificationCodeIcon /> : <KeyIcon />}
+            <div>使用{tab == "email" ? "验证码" : "密码"}登陆</div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

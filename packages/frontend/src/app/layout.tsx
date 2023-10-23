@@ -25,7 +25,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com"></link>
         <link rel="preconnect" href="https://fonts.gstatic.com"></link>
         <link
-          href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;700;900&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@500&family=Poppins&display=swap"
           rel="stylesheet"
         ></link>
       </head>
