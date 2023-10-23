@@ -2,7 +2,7 @@ import { Body, Controller, Get, Param, Post, Sse } from '@nestjs/common';
 import { ChatService } from './chat.service';
 import { Payload, Public } from '@/common/guards/auth.guard';
 import { NewMessageDto } from 'shared';
-import { ErrorCode, ServerException } from '@/error.filter';
+import { ErrorCode, appException } from '@/common/filters/all-execption.filter';
 import { KeyPoolService } from '@/libs/key-pool';
 
 @Controller('chat')
@@ -58,7 +58,7 @@ export class ChatController {
   ) {
     const isValid = await this.chatService.limitCheck(uid, data.mid);
     if (!isValid) {
-      throw new ServerException(ErrorCode.LimitExceeded, '超过当前计划用量');
+      throw new appException(ErrorCode.LimitExceeded, '超过当前计划用量');
     }
     const chatSession = await this.chatService.getOrNewChatSession(
       sid,

@@ -5,7 +5,7 @@ import { type ChatMessage, ChatMessageRole } from '@prisma/client';
 import { Message, OpenAIChatModel, Role } from '@/libs/openai/typing';
 import { ConfigService } from '@nestjs/config';
 import { Observable } from 'rxjs';
-import { ErrorCode, ServerException } from '@/error.filter';
+import { ErrorCode, appException } from '@/common/filters/all-execption.filter';
 
 @Injectable()
 export class ChatService {
@@ -109,7 +109,7 @@ export class ChatService {
         },
       });
       if (chatSession.userId !== uid) {
-        throw new ServerException(ErrorCode.Forbidden, '该会话不属于你');
+        throw new appException(ErrorCode.Forbidden, '该会话不属于你');
       }
       return chatSession;
     });

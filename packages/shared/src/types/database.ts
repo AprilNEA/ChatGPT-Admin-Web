@@ -1,6 +1,6 @@
 /* T is list */
-export interface PaginationResultList<T> {
-  data: T;
+export interface PaginationResult<T> {
+  data: T[];
   pagination: Paginator;
 }
 

@@ -6,6 +6,7 @@ export * from "./product";
 export * from "./types/database";
 
 export enum ErrorCode {
+  ValidationError = "ValidationError",
   Forbidden = "Forbidden",
   LimitExceeded = "LimitExceeded",
 }
