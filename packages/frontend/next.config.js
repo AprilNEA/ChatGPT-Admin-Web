@@ -2,6 +2,7 @@ const fs = require("fs");
 const yaml = require("js-yaml");
 
 const config = yaml.load(fs.readFileSync("../../config.yaml", "utf8"));
+const BACKEND_BASE = config?.url?.backend ?? "http://localhost:3001";
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -25,11 +26,19 @@ const nextConfig = {
 
     return config;
   },
+  rewrites: () => {
+    return [
+      {
+        source: "/api/:slug*",
+        destination: `${BACKEND_BASE}/api/:slug*`,
+      },
+    ];
+  },
   images: {
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: 'mp.weixin.qq.com',
+        protocol: "https",
+        hostname: "mp.weixin.qq.com",
       },
     ],
   },
