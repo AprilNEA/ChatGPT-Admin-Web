@@ -56,18 +56,22 @@ export class ChatController {
   async newMessageStream(
     @Payload('id') userId: number,
     @Body() data: NewMessageDto,
-    @Param('sid') sessionId: string,
+    @Param('sessionId') sessionId: string,
   ) {
+    /* 用量限制 */
     // const isValid = await this.chatService.limitCheck(uid, data.mid);
     // if (!isValid) {
     //   // throw new appException(ErrorCode.LimitExceeded, '超过当前计划用量');
     // }
+    /* */
     const chatSession = await this.chatService.getOrNewChatSession(
       sessionId,
       userId,
       data.memoryPrompt,
     );
+    /* 从 Key Pool 中挑选合适的 Key */
     const key = await this.keyPool.select();
+
     return await this.chatService.newMessageStream({
       userId: userId,
       sessionId: chatSession.id,

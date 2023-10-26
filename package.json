@@ -17,7 +17,8 @@
     "dev": "turbo run dev --parallel",
     "lint": "turbo run lint",
     "prettier": "prettier --write .",
-    "init-db": "prisma db push --schema=prisma/schema.prisma"
+    "init-db": "prisma db push --schema=prisma/schema.prisma",
+    "generate": "prisma generate --schema=prisma/schema.prisma"
   },
   "devDependencies": {
     "@types/node": "latest",

@@ -4,12 +4,9 @@ import { useRouter } from "next/navigation";
 import {
   ChatSession,
   ChatMessage,
-  loginByCodeDto,
-  byPasswordDto,
-  requestCodeDto,
   NewMessageDto,
   ChatMessageRole,
-} from "@caw/types";
+} from "shared";
 import { TextLineStream } from "@/utils/text_line_stream";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL!;
@@ -70,14 +67,7 @@ type StoreType = {
 
   // auth
   sessionToken?: string;
-  loginByCode: (data: loginByCodeDto) => void;
-  loginByPassword: (
-    router: ReturnType<typeof useRouter>,
-    data: byPasswordDto,
-  ) => void;
-  loginByWeChat: (router: ReturnType<typeof useRouter>, code?: string) => void;
-  requestCode: (data: requestCodeDto) => void;
-  register: (code: string, data: byPasswordDto) => void;
+  setSessionToken: (token: string) => void;
   validateSession: () => Promise<boolean>;
 
   // layout
@@ -268,65 +258,8 @@ export const useStore = create<StoreType>()(
         );
       },
 
-      // Auth
-      async loginByCode(data: loginByCodeDto) {
-        fetch(`${BASE_URL}/auth/login`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data),
-        }).then((res) => {});
-      },
-
-      async loginByPassword(
-        router: ReturnType<typeof useRouter>,
-        data: byPasswordDto,
-      ) {
-        fetch(`${BASE_URL}/auth/login/password`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data),
-        })
-          .then((res) => res.json())
-          .then((res) => {
-            if (res.success) {
-              set((state) => ({
-                sessionToken: res.token,
-              }));
-              router.push("/");
-            } else {
-              router.refresh();
-            }
-          });
-      },
-
-      async loginByWeChat(router, code?: string) {
-        if (!code) router.refresh();
-        fetch(`${BASE_URL}/auth/login/wechat?code=${code}`)
-          .then((res) => res.json())
-          .then((res) => {
-            if (res.success) {
-              set((state) => ({
-                sessionToken: res.token,
-              }));
-              router.push("/");
-            } else {
-              router.refresh();
-            }
-          });
-      },
-
-      async requestCode(data: requestCodeDto) {
-        fetch(`${BASE_URL}/auth/request-code`, {
-          method: "POST",
-          body: JSON.stringify(data),
-        }).then((res) => {});
-      },
-
-      async register(code: string, data: byPasswordDto) {
-        fetch(`${BASE_URL}/auth/register?code=${code}`, {
-          method: "POST",
-          body: JSON.stringify(data),
-        }).then((res) => {});
+      setSessionToken(token: string) {
+        set({ sessionToken: token });
       },
 
       async validateSession() {
@@ -342,7 +275,7 @@ export const useStore = create<StoreType>()(
 
       // utils
       fetcher(url: string, init?: RequestInit) {
-        return fetch(`${BASE_URL}${url}`, {
+        return fetch(`${BASE_URL}/api${url}`, {
           ...init,
           headers: {
             ...init?.headers,

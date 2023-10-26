@@ -7,8 +7,14 @@ import { useStore } from "@/store";
 import { Loading } from "@/components/loading";
 import { SWRConfig } from "swr";
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const validateSession = useStore((state) => state.validateSession);
+export function AuthProvider({
+  children,
+  admin = false,
+}: {
+  children: React.ReactNode;
+  admin?: boolean;
+}) {
+  const { validateSession } = useStore();
 
   const pathname = usePathname();
   const router = useRouter();
@@ -35,7 +41,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return <Loading />;
   }
 
-  return children;
+  return <>{children}</>;
 }
 
 export function SWRProvider({ children }: { children: React.ReactNode }) {

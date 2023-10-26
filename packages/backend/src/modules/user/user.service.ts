@@ -5,6 +5,7 @@ import { DatabaseService } from '@/processors/database/database.service';
 export class UserService {
   constructor(private prisma: DatabaseService) {}
 
+  async getInfo(userId: number) {}
   async getSettings(userId: number) {
     return this.prisma.chatSetting.findUnique({
       where: {

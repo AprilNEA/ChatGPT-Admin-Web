@@ -17,9 +17,8 @@ export default function ChatLayout({
   children: React.ReactNode;
 }) {
   return (
-    // @ts-ignore
-    //<AuthProvider>
+    <AuthProvider>
       <Sidebar>{children}</Sidebar>
-    //</AuthProvider>
+    </AuthProvider>
   );
 }
