@@ -14,21 +14,40 @@ export function AuthProvider({
   children: React.ReactNode;
   admin?: boolean;
 }) {
-  const { validateSession } = useStore();
+  const { sessionToken } = useStore();
 
   const pathname = usePathname();
   const router = useRouter();
 
   const [isValidating, setIsValidating] = useState(true);
 
-  const validate = useCallback(async () => {
-    const isValid = await validateSession();
+  function validateSession() {
+    if (!sessionToken) return false;
+
+    try {
+      if (admin) {
+        const payload = JSON.parse(atob(sessionToken.split(".")[1]));
+        if (payload.role !== "Admin") {
+          return false;
+        }
+      }
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  const validate = useCallback(() => {
+    const isValid = validateSession();
     if (!isValid) {
-      router.push("/auth");
+      if (admin) {
+        return router.push("/");
+      }
+      return router.push("/auth");
     } else {
       setIsValidating(false);
       if (pathname.startsWith("/auth")) {
-        router.push("/");
+        return router.push("/");
       }
     }
   }, [pathname, validateSession, router]);
