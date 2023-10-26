@@ -36,7 +36,7 @@ const cn = {
     Email: "邮箱",
     Phone: "手机号",
     Code: "验证码",
-    Sent: "已发送",
+    Sent: (ttl: number) => `已发送(${ttl}s)`,
     GetCode: "获取验证码",
     NoneData: "请确保邮箱、密码和验证码输入完整",
     EmailNonExistent: "邮箱不存在，请重新输入",

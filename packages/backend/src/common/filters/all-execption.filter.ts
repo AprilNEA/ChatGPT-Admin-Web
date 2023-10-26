@@ -7,12 +7,8 @@ import {
 } from '@nestjs/common';
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { ErrorCode } from 'shared';
-export { ErrorCode };
 
-type appError = {
-  readonly code: number;
-  readonly message?: string;
-};
+export { ErrorCode };
 
 @Catch()
 export class AllExceptionFilter implements ExceptionFilter {
@@ -26,14 +22,9 @@ export class AllExceptionFilter implements ExceptionFilter {
     }
 
     const code =
-      exception instanceof HttpException
-        ? exception.getStatus()
-        : (exception as appError)?.code || HttpStatus.INTERNAL_SERVER_ERROR;
+      (exception as any)?.response?.code || HttpStatus.INTERNAL_SERVER_ERROR;
 
-    const message =
-      (exception as any)?.response?.message ||
-      (exception as appError)?.message ||
-      'Unknown Error';
+    const message = (exception as any)?.response?.message || 'Unknown Error';
 
     response.status(200).type('application/json').send({
       success: false,

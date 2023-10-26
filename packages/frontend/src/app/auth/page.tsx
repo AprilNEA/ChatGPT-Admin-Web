@@ -19,6 +19,7 @@ import LeftArrow from "@/icons/left.svg";
 import WechatLogo from "@/icons/wechat-logo.svg";
 import KeyIcon from "@/icons/key.svg";
 import VerificationCodeIcon from "@/icons/verification-code.svg";
+import { showToast } from "@/components/ui-lib";
 
 const weChatOauthAppId = process.env.NEXT_PUBLIC_WECHAT_OAUTH_APP_ID!;
 const weChatOauthRedirectUrl =
@@ -29,19 +30,23 @@ function ValidateCodeLogin() {
   const router = useRouter();
   const { fetcher, setSessionToken } = useStore();
   const [identity, setIdentity] = useState("");
+  const [ifCodeSent, setIfCodeSent] = useState(false);
   const [validateCode, setValidateCode] = useState("");
-
+  const [validateCodeTtl, setValidateCodeTtl] = useState(60);
+  const validateCodeTtlRef = React.useRef<null | number>(null);
   const [isSubmitting, handleSubmit] = usePreventFormSubmit();
-  const [isCodeSubmitting, handleCodeSubmitting] = usePreventFormSubmit();
+  const [_, handleCodeSubmitting] = usePreventFormSubmit();
 
   async function requestValidateCode() {
     fetcher(`/auth/validateCode?identity=${encodeURIComponent(identity)}`)
       .then((res) => res.json())
       .then((res) => {
         if (res.success) {
-          setSessionToken(res.token);
-          router.push("/");
+          setIfCodeSent(true);
+          /* 60秒内将不再重发 */
+          setValidateCodeTtl(res.ttl - 540);
         } else {
+          showToast(res.message);
           router.refresh();
         }
       });
@@ -59,10 +64,36 @@ function ValidateCodeLogin() {
           setSessionToken(res.token);
           return router.push("/");
         } else {
-          return router.refresh();
+          showToast(res.message);
+          setValidateCode("");
         }
       });
   }
+
+  useEffect(() => {
+    if (validateCodeTtl <= 0) {
+      if (!ifCodeSent) {
+        return;
+      } else {
+        setIfCodeSent(false);
+      }
+    }
+
+    if (validateCodeTtlRef.current !== null) {
+      return;
+    }
+
+    validateCodeTtlRef.current = window.setTimeout(() => {
+      setValidateCodeTtl((prevCount) => prevCount - 1);
+    }, 1000);
+
+    return () => {
+      if (validateCodeTtlRef.current !== null) {
+        clearTimeout(validateCodeTtlRef.current);
+        validateCodeTtlRef.current = null;
+      }
+    };
+  }, [validateCodeTtl, ifCodeSent]);
 
   return (
     <div className={styles["form-container"]}>
@@ -89,8 +120,12 @@ function ValidateCodeLogin() {
           required
         />
         <IconButton
-          text={isCodeSubmitting ? Locales.User.Sent : Locales.User.GetCode}
-          disabled={isCodeSubmitting}
+          text={
+            ifCodeSent
+              ? Locales.User.Sent(validateCodeTtl)
+              : Locales.User.GetCode
+          }
+          disabled={ifCodeSent}
           className={styles["auth-get-code-btn"]}
           type="primary"
           onClick={() => handleCodeSubmitting(undefined, requestValidateCode)}
@@ -122,7 +157,7 @@ const PasswordLogin: React.FC = () => {
   const [isSubmitting, handleSubmit] = usePreventFormSubmit();
 
   async function login() {
-    fetch("/auth/login/password", {
+    fetcher("/auth/login/password", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ identity, password }),

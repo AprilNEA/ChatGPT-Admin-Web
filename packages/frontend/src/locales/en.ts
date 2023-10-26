@@ -39,7 +39,7 @@ const en: LocaleType = {
     Email: "Email",
     Phone: "Phone",
     Code: "Verification Code",
-    Sent: "Sent",
+    Sent: (ttl: number) => `Sent(${ttl}s)`,
     GetCode: "Get Code",
     NoneData:
       "Please make sure to input your email, password and verification code completely.",
