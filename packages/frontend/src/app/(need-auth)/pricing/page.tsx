@@ -4,7 +4,7 @@ import useSWR from "swr";
 
 import { useStore } from "@/store";
 import { IconButton } from "@/components/button";
-import { ProductType, CategoryType } from "@caw/types";
+import { ProductType, CategoryType } from "shared";
 
 import Locale from "@/locales";
 import styles from "./pricing.module.scss";

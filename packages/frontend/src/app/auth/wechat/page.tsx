@@ -6,14 +6,14 @@ import { useStore } from "@/store";
 import { useEffect } from "react";
 
 export default function Page() {
-  const router = useRouter();
-
-  const code = useSearchParams().get("code") ?? undefined;
-  const loginByWeChat = useStore((state) => state.loginByWeChat);
-
-  useEffect(() => {
-    loginByWeChat(router, code);
-  });
+  // const router = useRouter();
+  //
+  // const code = useSearchParams().get("code") ?? undefined;
+  // const loginByWeChat = useStore((state) => state.loginByWeChat);
+  //
+  // useEffect(() => {
+  //   loginByWeChat(router, code);
+  // });
 
   return <Loading />;
 }

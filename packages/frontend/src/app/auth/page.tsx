@@ -1,9 +1,11 @@
 "use client";
 
+import { validateCodeDto } from "shared";
+
 import Image from "next/image";
 import Iframe from "react-iframe";
 import { useRouter } from "next/navigation";
-import React, { FormEvent, useCallback, useState } from "react";
+import React, { FormEvent, useCallback, useEffect, useState } from "react";
 
 import useIntervalAsync from "@/hooks/use-interval-async";
 import usePreventFormSubmit from "@/hooks/use-prevent-form";
@@ -22,18 +24,45 @@ const weChatOauthAppId = process.env.NEXT_PUBLIC_WECHAT_OAUTH_APP_ID!;
 const weChatOauthRedirectUrl =
   process.env.NEXT_PUBLIC_WECHAT_OAUTH_REDIRECT_URL!;
 
-const CaptchaLogin: React.FC = () => {
+/* 验证码登录/注册 */
+function ValidateCodeLogin() {
   const router = useRouter();
-  const [register, setRegister] = useState("");
-  const [code, setCode] = useState("");
+  const { fetcher, setSessionToken } = useStore();
+  const [identity, setIdentity] = useState("");
+  const [validateCode, setValidateCode] = useState("");
 
   const [isSubmitting, handleSubmit] = usePreventFormSubmit();
-  const [isCodeSubmitting, handleCodeSubmit] = usePreventFormSubmit();
+  const [isCodeSubmitting, handleCodeSubmitting] = usePreventFormSubmit();
 
-  const [loginByCode, requestCode] = useStore((state) => [
-    state.loginByCode,
-    state.requestCode,
-  ]);
+  async function requestValidateCode() {
+    fetcher(`/auth/validateCode?identity=${encodeURIComponent(identity)}`)
+      .then((res) => res.json())
+      .then((res) => {
+        if (res.success) {
+          setSessionToken(res.token);
+          router.push("/");
+        } else {
+          router.refresh();
+        }
+      });
+  }
+
+  async function login(data: validateCodeDto) {
+    fetcher("/auth/validateCode", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        if (res.success) {
+          setSessionToken(res.token);
+          return router.push("/");
+        } else {
+          return router.refresh();
+        }
+      });
+  }
 
   return (
     <div className={styles["form-container"]}>
@@ -41,9 +70,9 @@ const CaptchaLogin: React.FC = () => {
         <input
           type="text"
           id="phone"
-          value={register}
+          value={identity}
           className={styles["auth-input"]}
-          onChange={(e) => setRegister(e.target.value)}
+          onChange={(e) => setIdentity(e.target.value)}
           placeholder={`${Locales.User.Phone} / ${Locales.User.Email}`}
           required
         />
@@ -53,22 +82,28 @@ const CaptchaLogin: React.FC = () => {
         <input
           type="text"
           id="code"
-          value={code}
+          value={validateCode}
           className={styles["auth-input"]}
-          onChange={(e) => setCode(e.target.value)}
+          onChange={(e) => setValidateCode(e.target.value)}
           placeholder={Locales.User.Code}
           required
         />
         <IconButton
           text={isCodeSubmitting ? Locales.User.Sent : Locales.User.GetCode}
+          disabled={isCodeSubmitting}
           className={styles["auth-get-code-btn"]}
           type="primary"
-          onClick={() => requestCode({ identity: register })}
+          onClick={() => handleCodeSubmitting(undefined, requestValidateCode)}
         />
       </div>
       <div className={styles["auth-actions"]}>
         <IconButton
-          onClick={() => loginByCode({ identity: register, code })}
+          disabled={isSubmitting}
+          onClick={() =>
+            handleSubmit(undefined, () =>
+              login({ identity, code: validateCode }),
+            )
+          }
           text={`${Locales.User.Login} / ${Locales.User.Register}`}
           className={styles["auth-submit-btn"]}
           type="primary"
@@ -76,16 +111,32 @@ const CaptchaLogin: React.FC = () => {
       </div>
     </div>
   );
-};
+}
 
-const EmailLogin: React.FC = () => {
+/* 密码登录 */
+const PasswordLogin: React.FC = () => {
   const router = useRouter();
+  const { fetcher, setSessionToken } = useStore();
   const [identity, setIdentity] = useState("");
   const [password, setPassword] = useState("");
   const [isSubmitting, handleSubmit] = usePreventFormSubmit();
 
-  /* Prevent duplicate form submissions */
-  const loginByPassword = useStore((state) => state.loginByPassword);
+  async function login() {
+    fetch("/auth/login/password", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ identity, password }),
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        if (res.success) {
+          setSessionToken(res.token);
+          router.push("/");
+        } else {
+          router.refresh();
+        }
+      });
+  }
 
   return (
     <div className={styles["form-container"]}>
@@ -115,7 +166,8 @@ const EmailLogin: React.FC = () => {
 
       <div className={styles["auth-actions"]}>
         <IconButton
-          onClick={() => loginByPassword(router, { identity, password })}
+          disabled={isSubmitting}
+          onClick={() => handleSubmit(undefined, login)}
           text={Locales.User.Submit}
           className={styles["auth-submit-btn"]}
           type="primary"
@@ -125,11 +177,27 @@ const EmailLogin: React.FC = () => {
   );
 };
 
+/* 微信二维码登录 */
 const WeChatLogin: React.FC = () => {
   const router = useRouter();
   // const [ticket, setTicket] = useState("");
 
   // if (!ticket) return <Loading noLogo={true} />;
+  // async function loginByWeChat(router, code?: string) {
+  //   if (!code) router.refresh();
+  //   fetch(`${BASE_URL}/auth/login/wechat?code=${code}`)
+  //     .then((res) => res.json())
+  //     .then((res) => {
+  //       if (res.success) {
+  //         set((state) => ({
+  //           sessionToken: res.token,
+  //         }));
+  //         router.push("/");
+  //       } else {
+  //         router.refresh();
+  //       }
+  //     });
+  // },
 
   return (
     <div className={styles["form-container"]}>
@@ -163,9 +231,6 @@ const WeChatLogin: React.FC = () => {
 
 export default function AuthPage() {
   const [tab, setTab] = useState<"email" | "phone" | "wechat">("phone");
-  {
-    tab === "phone" ? <CaptchaLogin /> : <EmailLogin />;
-  }
 
   return (
     <div className={styles["auth-page"]}>
@@ -177,7 +242,13 @@ export default function AuthPage() {
       </div>
       <div className={styles["auth-tips"]}></div>
       <div className={styles["auth-container"]}>
-        {tab === "phone" ? <CaptchaLogin /> : tab === "email" ? <EmailLogin /> : <WeChatLogin />}
+        {tab === "phone" ? (
+          <ValidateCodeLogin />
+        ) : tab === "email" ? (
+          <PasswordLogin />
+        ) : (
+          <WeChatLogin />
+        )}
         <div className={styles["divider"]}>
           <div className={styles["divider-line"]} />
           <div className={styles["divider-text"]}>OR</div>
