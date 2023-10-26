@@ -52,7 +52,7 @@ function ProductItem({ product }: { product: ProductType }) {
 export default function PricingPage() {
   const [fetcher] = useStore((state) => [state.fetcher]);
   const { data: categories, isLoading } = useSWR<CategoryType[]>(
-    "/product",
+    "/product/all",
     (url) => fetcher(url).then((res) => res.json()),
   );
 

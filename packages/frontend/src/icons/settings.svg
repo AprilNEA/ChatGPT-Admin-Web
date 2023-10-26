@@ -1,21 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16"
-  height="16" viewBox="0 0 16 16" fill="none">
-  <defs>
-    <rect id="path_0" x="0" y="0" width="16" height="16" />
-  </defs>
-  <g opacity="1" transform="translate(0 0)  rotate(0 8 8)">
-    <mask id="bg-mask-0" fill="white">
-      <use xlink:href="#path_0"></use>
-    </mask>
-    <g mask="url(#bg-mask-0)">
-      <path id="路径 1"
-        style="stroke:#333333; stroke-width:1.3333333333333333; stroke-opacity:1; stroke-dasharray:0 0"
-        transform="translate(1.3333333333333333 2.333333333333333)  rotate(0 6.666666666666666 5.666666666666666)"
-        d="M13.33,5.67L10,0L3.33,0L0,5.67L3.33,11.33L10,11.33L13.33,5.67Z " />
-      <path id="路径 2"
-        style="stroke:#333333; stroke-width:1.3333333333333333; stroke-opacity:1; stroke-dasharray:0 0"
-        transform="translate(6.333333333333333 6.333333333333333)  rotate(0 1.6666666666666665 1.6666666666666665)"
-        d="M3.33,1.67C3.33,0.75 2.59,0 1.67,0C0.75,0 0,0.75 0,1.67C0,2.59 0.75,3.33 1.67,3.33C2.59,3.33 3.33,2.59 3.33,1.67Z " />
-    </g>
-  </g>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24" height="24" viewBox="0 0 48 48" fill="none"
+  xmlns="http://www.w3.org/2000/svg">
+  <path d="M34.0003 41L44 24L34.0003 7H14.0002L4 24L14.0002 41H34.0003Z" fill="none" stroke="#333" stroke-width="4"
+    stroke-linejoin="round" />
+  <path
+    d="M24 29C26.7614 29 29 26.7614 29 24C29 21.2386 26.7614 19 24 19C21.2386 19 19 21.2386 19 24C19 26.7614 21.2386 29 24 29Z"
+    fill="none" stroke="#333" stroke-width="4" stroke-linejoin="round" />
 </svg>

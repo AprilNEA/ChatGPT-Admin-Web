@@ -17,6 +17,7 @@ import AnnouncementIcon from "@/icons/announcement.svg";
 import CloseIcon from "@/icons/close.svg";
 import ChatGptIcon from "@/icons/chatgpt.svg";
 import SettingsIcon from "@/icons/settings.svg";
+import PremiumIcon from "@/icons/premium.svg";
 
 import { isMobileScreen } from "@/utils/client-utils";
 
@@ -86,23 +87,6 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
           </div>
         </div>
 
-        <div className={styles["sidebar-header-bar"]}>
-          <IconButton
-            icon={<ChatGptIcon />}
-            text={"Profile"}
-            className={styles["sidebar-bar-button"]}
-            onClick={() => router.push("/profile")}
-            shadow
-          />
-          <IconButton
-            icon={<ChatGptIcon />}
-            text={"Purchase"}
-            className={styles["sidebar-bar-button"]}
-            onClick={() => router.push("/pricing")}
-            shadow
-          />
-        </div>
-
         <div
           className={styles["sidebar-body"]}
           onClick={() => {
@@ -113,47 +97,33 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
         </div>
 
         <div className={styles["sidebar-tail"]}>
-          <div className={styles["sidebar-actions"]}>
-            <div className={styles["sidebar-action"] + " " + styles.mobile}>
-              <IconButton
-                icon={<CloseIcon />}
-                onClick={() => {
-                  if (confirm(Locale.Home.DeleteChat) && currentIndex) {
-                    removeSession(currentIndex);
-                  }
-                }}
-              />
+          <div className={styles["sidebar-premium"]}>
+            <div className={styles["icon"]}>
+              <PremiumIcon />
             </div>
-            <div className={styles["sidebar-action"]}>
-              <IconButton
-                icon={<SettingsIcon />}
-                onClick={() => {
-                  router.push("/settings");
-                  setShowSideBar(false);
-                }}
-              />
-            </div>
-            {/*TODO add about us*/}
-            <div className={styles["sidebar-action"]}>
-              <IconButton
-                icon={<AnnouncementIcon />}
-                onClick={showAnnouncement}
-              />
-            </div>
+            <div className={styles["text"]}></div>
           </div>
-          <div>
-            <IconButton
-              icon={<AddIcon />}
-              text={Locale.Home.NewChat}
+          <div className={styles["sidebar-accountbtn"]}>
+            <div className={styles["sidebar-account"]}>
+              <div className={styles["avatar"]}>
+                
+              </div>
+              <div className={styles["account-name"]}>
+
+              </div>
+            </div>
+            <div
               onClick={() => {
-                createNewSession(router);
+                router.push("/settings");
                 setShowSideBar(false);
               }}
-            />
+              className={styles["account-settingbtn"]}
+            >
+              <SettingsIcon />
+            </div>
           </div>
         </div>
       </div>
-
       <div className={styles["window-content"]}>{children}</div>
     </div>
   );
