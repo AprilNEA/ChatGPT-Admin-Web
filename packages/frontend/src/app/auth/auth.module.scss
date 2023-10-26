@@ -7,14 +7,20 @@
   flex-direction: column;
 
   .auth-container {
-    box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
+    box-shadow: var(--card-shadow);
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    border-radius: 12px;
-    width: 250px;
-    padding: 24px;
+    border-radius: 2rem;
+    width: 400px;
+    padding: 40px;
     margin-top: 16px;
+    transition: box-shadow ease 0.25s;
+  }
+
+  .auth-container:hover {
+    box-shadow: var(--card-shadow-hover);
   }
 
   .auth-logo {
@@ -29,13 +35,6 @@
 
   .auth-tips {
     font-size: 14px;
-  }
-
-  .auth-input {
-    border-radius: 10px !important;
-    height: 20px;
-    margin: 1vh 0;
-    width: 100%;
   }
 
   .auth-actions {
@@ -64,7 +63,7 @@
     font-weight: bold;
   }
   .wechat-login-container {
-    border-radius: 10px;
+    border-radius: 2rem;
     width: 200px;
     height: 200px;
     display: flex;
@@ -81,77 +80,93 @@
   }
 }
 
-.password-part {
+.divider {
   width: 100%;
-  .divider {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 50px;
+  margin-bottom: 30px;
+  .divider-line {
+    border-radius: 1px;
+    width: 100%;
+    height: 2px;
+    background: #bababa;
+  }
+
+  .divider-text {
     display: flex;
-    justify-content: center;
     align-items: center;
-    margin-top: 12px;
-    .divider-line {
-      border-radius: 1px;
-      width: 35%;
-      height: 1px;
-      background: #bababa;
+    color: #bababa;
+    padding: 0 6px 0 6px;
+  }
+}
+.third-part-login-options {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+
+  .third-part-option {
+    width: 100%;
+    height: 54px;
+    background-color: #ececec;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all ease 0.3s;
+    margin-top: 10px;
+
+    svg {
+      height: 25px;
     }
 
-    .divider-text {
-      color: #bababa;
-      padding: 0 6px;
+    div {
+      font-size: 1rem;
+      margin-left: 10px;
     }
   }
-  .third-part-login-options {
-    margin-top: 12px;
-    display: flex;
-    width: 100%;
-    justify-content: center;
-
-    .third-part-option {
-      width: 30px;
-      height: 30px;
-      padding: 5px;
-      box-sizing: border-box;
-      background-color: #ececec;
-      border-radius: 100%;
-    }
-    .third-part-option:active {
-      opacity: 0.9;
-
-    }
-    .third-part-option:hover {
-      background-color: #e7e7e7;
-    }
+  .third-part-option:active {
+    opacity: 0.9;
+  }
+  .third-part-option:hover {
+    background-color: #e7e7e7;
   }
 }
 
-
 .tab-container {
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
 
   .tab-button {
     border: none;
+    color: var(--inactive);
     background-color: transparent;
     padding: 10px;
     cursor: pointer;
+    transition: all ease 0.3s;
   }
 
   .tab-button.active {
-    font-weight: bold;
+    color: var(--primary);
+  }
+
+  .tab-button:hover {
+    color: var(--hover);
   }
 }
 
 .form-container {
+  width: 100%;
   display: flex;
   align-items: center;
   flex-direction: column;
-  margin-top: 12px;
 
   .row {
     display: flex;
     align-items: center;
     justify-content: center;
-
+    margin-bottom: 20px;
     flex-direction: row;
     width: 100%;
   }
@@ -174,20 +189,54 @@
   }
 
   .auth-input {
-    flex-grow: 1;
-    max-height: 20px;
-    max-width: none;
+    padding: 25px 15px 25px 15px;
+    font-size: 1rem;
+    text-align: start;
+    height: 54px;
     width: 100%;
+    flex-grow: 1;
+    max-width: none;
+    transition: border ease 0.3s;
+    border: 2px solid var(--inactive);
+  }
+
+  .auth-input:focus {
+    border-color: var(--primary);
+    outline: 0px;
+  }
+
+  .auth-input:hover {
+    border-color: var(--hover-color);
   }
 
   .auth-get-code-btn {
     margin-left: 12px;
     width: 150px;
+    height: 54px;
+    background-color: var(--primary);
+
+    div {
+      font-size: 0.9rem;
+      margin-left: 0px;
+    }
+  }
+
+  .auth-get-code-btn:hover {
+    background-color: var(--hover-color);
   }
 
   .auth-submit-btn {
     display: block;
     width: 100%;
     max-width: none;
+    height: 54px;
+
+    div {
+      font-size: 1rem;
+    }
+  }
+
+  .auth-submit-btn:hover {
+    background-color: var(--hover-color);
   }
 }

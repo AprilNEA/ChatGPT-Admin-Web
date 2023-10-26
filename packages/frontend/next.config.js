@@ -25,6 +25,14 @@ const nextConfig = {
 
     return config;
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'mp.weixin.qq.com',
+      },
+    ],
+  },
 };
 
 module.exports = nextConfig;
