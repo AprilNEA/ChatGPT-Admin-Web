@@ -63,14 +63,15 @@ export class AuthGuard implements CanActivate {
     ]);
     if (!roles) return true;
 
-    return this.matchRoles(roles, request['payload']?.roles);
+    return this.matchRoles(roles, request['payload']?.role);
   }
 
   /* Check if there are elements in the payload array that are also in the roles array. */
-  private matchRoles(roles: Role[], payload: Role[]): boolean {
-    return payload.some((role) =>
-      roles.map((role) => role.toLowerCase()).includes(role.toLowerCase()),
-    );
+  private matchRoles(roles: Role[], payload: Role): boolean {
+    return roles.includes(payload);
+    // return payload.some((role) =>
+    //   roles.map((role) => role.toLowerCase()).includes(role.toLowerCase()),
+    // );
   }
 
   private extractTokenFromHeader(request: Request): string | undefined {

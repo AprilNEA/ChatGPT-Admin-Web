@@ -27,6 +27,7 @@ import {
 } from 'shared';
 import { Payload, Public } from '@/common/guards/auth.guard';
 import { WechatService } from '@/modules/auth/wechat.service';
+import { Role } from '@prisma/client';
 
 @Controller('auth')
 export class AuthController {
@@ -138,6 +139,14 @@ export class AuthController {
     await this.authService.bindIdentity(userId, data.identity, data.password);
     return {
       success: true,
+    };
+  }
+
+  @Get('roles')
+  async getRoles(@Payload('role') roles: Role[]) {
+    return {
+      success: true,
+      data: roles,
     };
   }
 }
