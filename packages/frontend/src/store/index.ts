@@ -114,7 +114,7 @@ export const useStore = create<StoreType>()(
       },
 
       // Sidebar
-      showSideBar: true,
+      showSideBar: false,
 
       async setShowSideBar(open: boolean) {
         set({ showSideBar: open });
