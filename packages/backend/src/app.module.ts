@@ -13,6 +13,7 @@ import { JwtModule } from '@/libs/jwt/jwt.module';
 import { AuthGuard } from '@/common/guards/auth.guard';
 import { DashboardModule } from '@/modules/dashboard/dashboard.module';
 import { ProductModule } from '@/modules/product/product.module';
+import { DatabaseService } from '@/processors/database/database.service';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { ProductModule } from '@/modules/product/product.module';
   controllers: [AppController],
   providers: [
     AppService,
+    DatabaseService,
     {
       provide: APP_GUARD,
       useClass: AuthGuard,

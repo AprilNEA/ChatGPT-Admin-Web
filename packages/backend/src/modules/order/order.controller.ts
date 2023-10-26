@@ -23,6 +23,7 @@ export class OrderController {
     private paymentService: PaymentService,
   ) {}
 
+  /* 获取某一用户的订单 */
   @Roles('admin', 'user')
   @Get('find/:id')
   async findOrder(@Payload() payload: JWTPayload, @Param('id') oid: string) {
@@ -34,22 +35,26 @@ export class OrderController {
     }
   }
 
+  /* 获取自己的订单 */
   @Get('list/my')
   async listOrder(@Payload('id') uid: number) {
     return this.orderService.listOrder(uid);
   }
 
+  /* 获取所有订单 */
   @Roles('admin')
   @Get('list/all')
   async listAllOrder(@Query('uid') uid?: number) {
     return this.orderService.listOrder(uid);
   }
 
+  /* 新建订单 */
   @Post('new')
   async newOrder(@Payload('id') uid: number, @Body() data: newOrderDto) {
     return await this.orderService.createOrder(uid, data.pid);
   }
 
+  /* 支付回调：虎皮椒 */
   @Public()
   @Post('callback/xunhu')
   async finishOrder(@Req() req: RawBodyRequest<Request>) {

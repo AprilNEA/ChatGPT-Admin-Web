@@ -1,8 +1,8 @@
 import { Body, Controller, Get, Param, Post, Sse } from '@nestjs/common';
 import { ChatService } from './chat.service';
-import { Payload, Public } from '@/common/guards/auth.guard';
+import { Payload } from '@/common/guards/auth.guard';
 import { NewMessageDto } from 'shared';
-import { ErrorCode, appException } from '@/common/filters/all-execption.filter';
+import { ErrorCode } from '@/common/filters/all-execption.filter';
 import { KeyPoolService } from '@/libs/key-pool';
 
 @Controller('chat')
@@ -12,15 +12,17 @@ export class ChatController {
     private readonly keyPool: KeyPoolService,
   ) {}
 
+  /* 获取最近的 session 列表 */
   @Get('sessions')
   getChatSession(@Payload('id') userId: number) {
     return this.chatService.getRecentChatSession(userId);
   }
 
-  @Get('messages/:sid')
+  /* 获取具体 session 的消息历史 */
+  @Get('messages/:sessionId')
   async getChatMessages(
     @Payload('id') userId: number,
-    @Param('sid') sessionId: string,
+    @Param('sessionId') sessionId: string,
   ) {
     const data = await this.chatService.getChatMessages(userId, sessionId);
     if (!data) {
@@ -49,25 +51,25 @@ export class ChatController {
   }
 
   /* 新建用户流式传输的对话 */
-  @Post('messages/:sid?')
+  @Post('messages/:sessionId?')
   @Sse()
   async newMessageStream(
-    @Payload('id') uid: number,
+    @Payload('id') userId: number,
     @Body() data: NewMessageDto,
-    @Param('sid') sid: string,
+    @Param('sid') sessionId: string,
   ) {
-    const isValid = await this.chatService.limitCheck(uid, data.mid);
-    if (!isValid) {
-      throw new appException(ErrorCode.LimitExceeded, '超过当前计划用量');
-    }
+    // const isValid = await this.chatService.limitCheck(uid, data.mid);
+    // if (!isValid) {
+    //   // throw new appException(ErrorCode.LimitExceeded, '超过当前计划用量');
+    // }
     const chatSession = await this.chatService.getOrNewChatSession(
-      sid,
-      uid,
+      sessionId,
+      userId,
       data.memoryPrompt,
     );
     const key = await this.keyPool.select();
     return await this.chatService.newMessageStream({
-      userId: uid,
+      userId: userId,
       sessionId: chatSession.id,
       modelId: data.mid,
       content: data.content,

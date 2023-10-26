@@ -1,3 +1,11 @@
+// Menu
+// Website
+// User
+// Product
+// Order
+// OpenAI API
+// Chat Message
+
 generator client {
   provider = "prisma-client-js"
   output   = "./client"
@@ -6,6 +14,29 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+// =======
+// ｜WebSite｜
+// =======
+model Announcement {
+  id      Int    @id @default(autoincrement())
+  title   String
+  content String
+
+  // metadata
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
+model Setting {
+  id    Int    @id @default(autoincrement())
+  key   String @unique
+  value String
+
+  // metadata
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  updatedAt DateTime @default(now()) @updatedAt
 }
 
 // =======

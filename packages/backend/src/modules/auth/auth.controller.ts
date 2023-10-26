@@ -10,16 +10,20 @@ import {
 import { AuthService } from './auth.service';
 import { JoiValidationPipe } from '@/common/pipes/joi';
 import {
-  passwordSchema,
+  withPasswordSchema,
   identitySchema,
   validateCodeSchema,
-  bindPasswordSchema,
+  passwordSchema,
+  bindIdentitySchema,
+  forgetPasswordSchema,
 } from './auth.dto';
 import {
   validateCodeDto,
   byPasswordDto,
   requestCodeDto,
   identityDto,
+  bindIdentityDto,
+  forgetPasswordDto,
 } from 'shared';
 import { Payload, Public } from '@/common/guards/auth.guard';
 import { WechatService } from '@/modules/auth/wechat.service';
@@ -33,12 +37,12 @@ export class AuthController {
 
   /* 方法一：密码登录 */
   @Public()
-  @UsePipes(new JoiValidationPipe(passwordSchema))
+  @UsePipes(new JoiValidationPipe(withPasswordSchema))
   @Post('password')
   async password(@Body() data: byPasswordDto) {
     return {
       success: true,
-      token: await this.authService.loginPassword(data),
+      ...(await this.authService.loginPassword(data)),
     };
   }
 
@@ -52,15 +56,14 @@ export class AuthController {
     return await this.authService.newValidateCode(query.identity);
   }
 
-  /** 2.通过验证码登录，自动识别邮箱或手机号 */
+  /** 2.通过验证码登录/注册，自动识别邮箱或手机号 */
   @Public()
   @UsePipes(new JoiValidationPipe(validateCodeSchema))
   @Post('validateCode')
   async loginByCode(@Body() data: validateCodeDto) {
-    // token: await this.authService.registerByPassword(code, data),
     return {
       success: true,
-      token: await this.authService.WithValidateCode(data.identity, data.code),
+      ...(await this.authService.WithValidateCode(data.identity, data.code)),
     };
   }
 
@@ -85,12 +88,39 @@ export class AuthController {
     }
   }
 
+  /* 忘记密码 */
+  @Public()
+  @Post('forgetPassword')
+  @UsePipes(new JoiValidationPipe(forgetPasswordSchema))
+  async forgetPassword(@Body() data: forgetPasswordDto) {
+    await this.authService.forgetPassword(
+      data.identity,
+      data.code,
+      data.newPassword,
+    );
+    return {
+      success: true,
+    };
+  }
+
+  /* 修改密码 */
+  @Put('changePassword')
+  async changePassword(
+    @Payload('id') userId: number,
+    @Body('password', new JoiValidationPipe(passwordSchema)) password: string,
+  ) {
+    await this.authService.changePassword(userId, password);
+    return {
+      success: true,
+    };
+  }
+
   /* 设置密码 */
   @Put('bindPassword')
-  @UsePipes(new JoiValidationPipe(bindPasswordSchema))
   async bindPassword(
     @Payload('id') userId: number,
-    @Body('password') password: string,
+    @Body('password', new JoiValidationPipe(passwordSchema))
+    password: string,
   ) {
     await this.authService.bindPassword(userId, password);
     return {
@@ -100,5 +130,14 @@ export class AuthController {
 
   /* 绑定账户 */
   @Put('bindIdentity')
-  async bindIdentity() {}
+  @UsePipes(new JoiValidationPipe(bindIdentitySchema))
+  async bindIdentity(
+    @Payload('id') userId: number,
+    @Body() data: bindIdentityDto,
+  ) {
+    await this.authService.bindIdentity(userId, data.identity, data.password);
+    return {
+      success: true,
+    };
+  }
 }

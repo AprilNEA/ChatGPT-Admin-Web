@@ -1,6 +1,7 @@
+// import * as Joi from "Joi";
 import { Controller, Get, Post } from '@nestjs/common';
 import { AppService } from './app.service';
-import { Public } from '@/common/guards/auth.guard';
+import { Public, Roles } from '@/common/guards/auth.guard';
 
 @Public()
 @Controller()
@@ -19,5 +20,14 @@ export class AppController {
   @Post('/install')
   getHello(): string {
     return this.appService.getHello();
+  }
+
+  /* 获取最近的网站公告 */
+  @Get('/announcement')
+  async getRecentAnnouncement() {
+    return {
+      success: true,
+      data: await this.appService.getRecentAnnouncement(),
+    };
   }
 }

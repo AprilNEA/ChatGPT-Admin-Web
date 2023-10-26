@@ -4,28 +4,29 @@ import {
   ArgumentsHost,
   HttpException,
 } from '@nestjs/common';
-import { Request, Response } from 'express';
+import { FastifyReply, FastifyRequest } from 'fastify';
 import { Prisma } from '@prisma/client';
 
 @Catch(Prisma.PrismaClientKnownRequestError)
 export class PrismaExceptionFilter implements ExceptionFilter {
   catch(exception: Prisma.PrismaClientKnownRequestError, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
-    const response = ctx.getResponse<Response>();
-    // const request = ctx.getRequest<Request>();
+    const response = ctx.getResponse<FastifyReply>();
+    // const request = ctx.getRequest<FastifyRequest>();
+
+    let message = 'unknown database error';
     switch (exception.code) {
       case 'P2001':
       case 'P2002':
-        response.status(404).json({
-          success: false,
-          message: 'Not found',
-        });
+        message = 'Not found';
         break;
       default:
-        response.status(500).json({
-          success: false,
-          message: 'Database error',
-        });
+        message = 'database error';
     }
+
+    response.status(200).type('application/json').send({
+      success: false,
+      message,
+    });
   }
 }

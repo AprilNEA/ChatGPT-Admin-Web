@@ -1,11 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '@/processors/database/database.service';
-import { Prisma, Role } from '@prisma/client';
+import { Role } from '@prisma/client';
 import { compare, hashSync } from 'bcrypt';
 import { JwtService } from '@/libs/jwt/jwt.service';
 import { RedisService } from '@/processors/redis/redis.service';
 import { EmailService } from '@/libs/email/email.service';
 import * as Joi from 'joi';
+import { IAccountStatus } from 'shared';
+import { BizException } from '@/common/exceptions/biz.exception';
+import { ErrorCodeEnum } from 'shared/dist/error-code';
 
 type ByPassword = {
   identity: string;
@@ -24,9 +27,9 @@ const getPhoneOrEmail = (identity: string) => {
   const phoneValidation = phoneSchema.validate(identity);
 
   if (!emailValidation.error) {
-    return { email: identity, phone: undefined };
+    return { email: identity.trim().toLowerCase(), phone: undefined };
   } else if (!phoneValidation.error) {
-    return { email: undefined, phone: identity };
+    return { email: undefined, phone: identity.trim() };
   } else {
     throw Error('Invalid identity');
   }
@@ -40,6 +43,26 @@ export class AuthService {
     private redisService: RedisService,
     private emailService: EmailService,
   ) {}
+
+  /* 通常来说是最后一步：
+   * 1. 检查是否绑定账户
+   * 2. 检查是否设置密码
+   */
+  async _signWithCheck(user: any): Promise<{
+    token: string;
+    status: IAccountStatus;
+  }> {
+    let status: IAccountStatus = 'ok';
+    if (!user.email && !user.phone) {
+      status = 'bind';
+    } else if (!user.password) {
+      status = 'password';
+    }
+    return {
+      token: await this.jwt.sign({ id: user.id, role: user.role }),
+      status,
+    };
+  }
 
   /* 添加验证码 */
   async newValidateCode(identity: string) {
@@ -70,21 +93,24 @@ export class AuthService {
     }
   }
 
-  /* 通过验证码登录 */
+  /* 通过验证码登录/注册 */
   async WithValidateCode(identity: string, code: string) {
     const { email, phone } = getPhoneOrEmail(identity);
 
     const isValid = await this.redisService.authCode.valid(identity, code);
     if (!isValid) {
-      throw Error('Invalid code');
+      throw new BizException(ErrorCodeEnum.CodeValidationError);
     }
+
     const existUser = await this.prisma.user.findMany({
       where: {
         OR: [{ email }, { phone }],
       },
     });
+
     let user;
     if (existUser.length != 1) {
+      // 注册用户
       user = await this.prisma.user.create({
         data: {
           name: `user${Math.random().toString(36).slice(2)}`,
@@ -96,7 +122,7 @@ export class AuthService {
     } else {
       user = existUser[0];
     }
-    return this.jwt.sign({ id: user.id, role: user.role });
+    return this._signWithCheck(user);
   }
 
   /* 通过密码登录 */
@@ -115,12 +141,12 @@ export class AuthService {
     if (!isPasswordCorrect) {
       throw Error('Password is incorrect');
     }
-    return this.jwt.sign({ id: user[0].id, role: user[0].role });
+    return this._signWithCheck(user);
   }
 
   /* 添加密码 */
   async bindPassword(userId: number, password: string) {
-    const user = await this.prisma.user.findUnique({
+    const user = await this.prisma.user.findUniqueOrThrow({
       where: {
         id: userId,
       },
@@ -128,7 +154,7 @@ export class AuthService {
     if (user.password) {
       throw Error('Password already exists');
     }
-    this.prisma.user.update({
+    await this.prisma.user.update({
       where: {
         id: userId,
       },
@@ -138,6 +164,92 @@ export class AuthService {
     });
   }
 
+  /* 修改密码 */
+  async changePassword(userId: number, password: string) {
+    await this.prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        password: hashSync(password, SALT_ROUNDS),
+      },
+    });
+  }
+
+  /* 找回密码 */
+  async forgetPassword(identity: string, code: string, password: string) {
+    const { email, phone } = getPhoneOrEmail(identity);
+
+    const isValid = await this.redisService.authCode.valid(identity, code);
+
+    if (!isValid) {
+      throw new BizException(ErrorCodeEnum.CodeValidationError);
+    }
+
+    const existUser = await this.prisma.user.findMany({
+      where: {
+        OR: [{ email }, { phone }],
+      },
+    });
+
+    let user;
+    if (existUser.length != 1) {
+      throw new BizException(ErrorCodeEnum.UserNotExist);
+    } else {
+      user = existUser[0];
+    }
+    await this.changePassword(user.id, password);
+
+    return this._signWithCheck(user);
+  }
+
   /* 绑定用户身份 */
-  async bindIdentity(userId: number, identity: string) {}
+  async bindIdentity(userId: number, identity: string, password?: string) {
+    const { email, phone } = getPhoneOrEmail(identity);
+
+    const user = await this.prisma.user.findUniqueOrThrow({
+      where: {
+        id: userId,
+      },
+    });
+
+    if (email) {
+      if (user.email) {
+        throw new BizException(ErrorCodeEnum.BindEmailExist);
+      }
+      await this.prisma.user.update({
+        where: {
+          id: userId,
+        },
+        data: {
+          email: email,
+        },
+      });
+    }
+
+    if (phone) {
+      if (user.phone) {
+        throw new BizException(ErrorCodeEnum.BindPhoneExist);
+      }
+      await this.prisma.user.update({
+        where: {
+          id: userId,
+        },
+        data: {
+          phone: phone,
+        },
+      });
+    }
+
+    if (password) {
+      await this.prisma.user.update({
+        where: {
+          id: userId,
+        },
+        data: {
+          password: hashSync(password, SALT_ROUNDS),
+        },
+      });
+    }
+  }
 }

@@ -5,7 +5,8 @@ import { type ChatMessage, ChatMessageRole } from '@prisma/client';
 import { Message, OpenAIChatModel, Role } from '@/libs/openai/typing';
 import { ConfigService } from '@nestjs/config';
 import { Observable } from 'rxjs';
-import { ErrorCode, appException } from '@/common/filters/all-execption.filter';
+import { BizException } from '@/common/exceptions/biz.exception';
+import { ErrorCodeEnum } from 'shared/dist/error-code';
 
 @Injectable()
 export class ChatService {
@@ -19,8 +20,9 @@ export class ChatService {
     this.openaiConfig = config.get('openai');
   }
 
+  /* 获取指定用户最近时间内消息的总计，用于limit */
   async getRecentMessageCount(
-    uid: number,
+    userId: number,
     duration: number,
     currentTime?: Date,
   ) {
@@ -29,7 +31,7 @@ export class ChatService {
 
     return this.prisma.chatMessage.count({
       where: {
-        userId: uid,
+        userId: userId,
         createdAt: {
           gte: startTime,
           lte: currentTime,
@@ -38,9 +40,10 @@ export class ChatService {
     });
   }
 
-  async limitCheck(uid: number, mid: number) {
+  /* 用量限制 */
+  async limitCheck(userId: number, mid: number) {
     const user = await this.prisma.user.findUniqueOrThrow({
-      where: { id: uid },
+      where: { id: userId },
     });
     const currentTime = new Date();
     const orders = await this.prisma.order.findMany({
@@ -70,7 +73,7 @@ export class ChatService {
       },
     });
     const messageCount = await this.getRecentMessageCount(
-      uid,
+      userId,
       limit.duration,
       currentTime,
     );
@@ -80,24 +83,25 @@ export class ChatService {
     return false;
   }
 
+  /* */
   async getOrNewChatSession(
-    sid: string,
-    uid: number,
+    sessionId: string,
+    userId: number,
     memoryPrompt?: string,
     limit = 10,
   ) {
     return this.prisma.$transaction(async (prisma) => {
       const chatSession = await this.prisma.chatSession.upsert({
         where: {
-          id: sid,
+          id: sessionId,
         },
         update: {
           memoryPrompt,
         },
         create: {
-          id: sid,
+          id: sessionId,
           memoryPrompt,
-          user: { connect: { id: uid } },
+          user: { connect: { id: userId } },
         },
         include: {
           messages: {
@@ -108,13 +112,14 @@ export class ChatService {
           },
         },
       });
-      if (chatSession.userId !== uid) {
-        throw new appException(ErrorCode.Forbidden, '该会话不属于你');
+      if (chatSession.userId !== userId) {
+        throw new BizException(ErrorCodeEnum.ValidationError);
       }
       return chatSession;
     });
   }
 
+  /* 获取消息 */
   async getChatMessages(uid: number, sid: string, limit = 10) {
     return this.prisma.chatSession.findUnique({
       where: {
@@ -132,6 +137,7 @@ export class ChatService {
     });
   }
 
+  /* 获取最近对话 */
   async getRecentChatSession(uid: number, limit = 10) {
     return this.prisma.chatSession.findMany({
       take: limit,
@@ -148,7 +154,7 @@ export class ChatService {
     });
   }
 
-  /* The user creates a new Message by Stream */
+  /* 指定对话中创建新消息 */
   async newMessageStream({
     userId,
     sessionId,

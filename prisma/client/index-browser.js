@@ -17,11 +17,11 @@ exports.$Enums = {}
 
 /**
  * Prisma Client JS version: 5.3.1
- * Query Engine version: 61e140623197a131c2a6189271ffee05a7aa9a59
+ * Query Engine version: 2f302df92bd8945e20ad4595a73def5b96afa54f
  */
 Prisma.prismaVersion = {
   client: "5.3.1",
-  engine: "61e140623197a131c2a6189271ffee05a7aa9a59"
+  engine: "2f302df92bd8945e20ad4595a73def5b96afa54f"
 }
 
 Prisma.PrismaClientKnownRequestError = () => {
@@ -106,6 +106,22 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   RepeatableRead: 'RepeatableRead',
   Serializable: 'Serializable'
 });
+
+exports.Prisma.AnnouncementScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  content: 'content',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.SettingScalarFieldEnum = {
+  id: 'id',
+  key: 'key',
+  value: 'value',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
 
 exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
@@ -276,6 +292,8 @@ exports.ChatMessageRole = exports.$Enums.ChatMessageRole = {
 };
 
 exports.Prisma.ModelName = {
+  Announcement: 'Announcement',
+  Setting: 'Setting',
   User: 'User',
   OAuth: 'OAuth',
   Model: 'Model',

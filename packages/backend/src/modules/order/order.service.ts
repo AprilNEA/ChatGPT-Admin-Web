@@ -11,6 +11,7 @@ import {
 export class OrderService {
   constructor(private prisma: DatabaseService) {}
 
+  /* 获取订单Id */
   getNextId(): string {
     const timestamp: string = new Date().getTime().toString();
     const randomDigits: string = (Math.random() * 1e6)
@@ -19,13 +20,15 @@ export class OrderService {
     return `${timestamp}${randomDigits}`;
   }
 
-  async findOrder(oid: string, uid?: number) {
+  /* 获取指定订单，可选userId过滤 */
+  async findOrder(orderId: string, userId?: number) {
     return this.prisma.order.findUnique({
-      where: { id: oid, userId: uid },
+      where: { id: orderId, userId: userId },
       include: { product: true },
     });
   }
 
+  /* 获取指定用户订单列表 */
   async listOrder(uid?: number) {
     return this.prisma.order.findMany({
       where: { userId: uid },
@@ -33,6 +36,7 @@ export class OrderService {
     });
   }
 
+  /* 创建订单 */
   async createOrder(uid: number, pid: number) {
     const product = await this.prisma.product.findUniqueOrThrow({
       where: { id: pid },
@@ -50,6 +54,7 @@ export class OrderService {
     });
   }
 
+  /* 订单完成 */
   async finishOrder(oid: string) {
     const order = await this.prisma.order.findUnique({
       where: { id: oid },

@@ -5,6 +5,7 @@ import { DatabaseService } from '@/processors/database/database.service';
 export class ProductService {
   constructor(private prisma: DatabaseService) {}
 
+  /* 获取产品 */
   async listProduct() {
     return this.prisma.category.findMany({
       include: {

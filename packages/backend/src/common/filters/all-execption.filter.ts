@@ -4,12 +4,9 @@ import {
   ArgumentsHost,
   HttpStatus,
   HttpException,
-  Inject,
 } from '@nestjs/common';
 import { FastifyReply, FastifyRequest } from 'fastify';
-import { Request, Response } from 'express';
 import { ErrorCode } from 'shared';
-
 export { ErrorCode };
 
 type appError = {

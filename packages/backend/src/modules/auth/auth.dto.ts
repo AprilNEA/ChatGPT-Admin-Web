@@ -2,24 +2,33 @@ import * as Joi from 'joi';
 
 const email = Joi.string().email();
 const phone = Joi.string().pattern(/^[0-9]{11}$/);
-const password = Joi.string().min(8).max(20).required();
+export const passwordSchema = Joi.string().min(8).max(20).required();
 
 export const identitySchema = Joi.object({
   identity: Joi.alternatives().try(email, phone).required(),
 });
 
 export const validateCodeSchema = Joi.object({
-  identity: identitySchema,
+  identity: Joi.alternatives().try(email, phone).required(),
   code: Joi.string()
     .pattern(/^[0-9]{6}$/)
     .required(),
 });
 
-export const passwordSchema = Joi.object({
+export const forgetPasswordSchema = Joi.object({
   identity: Joi.alternatives().try(email, phone).required(),
-  password: password.required(),
+  code: Joi.string()
+    .pattern(/^[0-9]{6}$/)
+    .required(),
+  newPassword: passwordSchema.required(),
 });
 
-export const bindPasswordSchema = Joi.object({
-  password: password.required(),
+export const withPasswordSchema = Joi.object({
+  identity: Joi.alternatives().try(email, phone).required(),
+  password: passwordSchema.required(),
+});
+
+export const bindIdentitySchema = Joi.object({
+  identity: Joi.alternatives().try(email, phone).required(),
+  password: passwordSchema.optional(),
 });
