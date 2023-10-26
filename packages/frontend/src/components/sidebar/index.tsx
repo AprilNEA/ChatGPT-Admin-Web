@@ -91,14 +91,14 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
             icon={<ChatGptIcon />}
             text={"Profile"}
             className={styles["sidebar-bar-button"]}
-            onClick={() => {}}
+            onClick={() => router.push("/profile")}
             shadow
           />
           <IconButton
             icon={<ChatGptIcon />}
             text={"Purchase"}
             className={styles["sidebar-bar-button"]}
-            onClick={() => {}}
+            onClick={() => router.push("/pricing")}
             shadow
           />
         </div>
