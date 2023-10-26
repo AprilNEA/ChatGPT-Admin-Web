@@ -3,13 +3,11 @@
 @mixin container {
   background-color: var(--white);
   border: var(--border-in-light);
-  border-radius: 20px;
   box-shadow: var(--shadow);
   color: var(--black);
   background-color: var(--white);
   min-width: 600px;
   min-height: 480px;
-  max-width: 900px;
 
   display: flex;
   overflow: hidden;
@@ -49,21 +47,7 @@
   box-shadow: inset -2px 0px 2px 0px rgb(0, 0, 0, 0.05);
   position: relative;
   transition: width ease 0.05s;
-
-  .sidebar-header-bar {
-    display: flex;
-    margin-bottom: 20px;
-
-    .sidebar-bar-button {
-      flex-grow: 1;
-
-      &:not(:last-child) {
-        margin-right: 10px;
-      }
-    }
-  }
 }
-
 
 .window-content {
   width: var(--window-content-width);
@@ -179,7 +163,7 @@
 }
 
 .chat-item:hover {
-  background-color: var(--hover-color);
+  background-color: var(--primary-hover-color);
 }
 
 .chat-item-selected {
@@ -228,17 +212,101 @@
 }
 
 .sidebar-tail {
+  animation: slide-in ease 0.3s;
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   padding-top: 20px;
+
+  .sidebar-premium {
+    margin: 10px -10px 0 -10px;
+    height: 30px;
+    display: flex;
+    padding: 10px;
+    transition: background-color ease 0.3s;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+
+    &:hover {
+      background-color: var(--hover-color);
+    }
+
+    .icon {
+      width: 40px;
+      display: flex;
+      justify-content: center;
+      margin-right: 10px;
+
+      svg {
+        height: 20px;
+        width: 20px;
+      }
+    }
+
+    .text {
+      font-size: 15px;
+      text-align: center;
+    }
+  }
+
+  .sidebar-accountbtn {
+    margin-top: 20px;
+    margin: 0 -10px -10px -10px;
+    width: 100%;
+    border-radius: 10px;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    height: 40px;
+    transition: background-color ease 0.3s;
+    justify-content: space-between;
+
+    &:hover {
+      background-color: var(--hover-color);
+    }
+
+    .sidebar-account {
+      display: flex;
+      align-items: center;
+    }
+
+    .avatar {
+      height: 40px;
+      width: 40px;
+
+      img {
+        height: 100%;
+        width: 100%;
+        border-radius: 50%;
+      }
+    }
+
+    .account-name {
+      display: block;
+      text-align: center;
+      margin-left: 10px;
+      font-size: 15px;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+      max-width: 160px;
+    }
+  }
 }
 
-.sidebar-actions {
-  display: inline-flex;
-}
+.account-settingbtn {
+  border-radius: 10px;
+  margin-left: 10px;
+  height: 40px;
+  width: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-.sidebar-action:not(:last-child) {
-  margin-right: 15px;
+  svg {
+    height: 20px;
+    width: 20px;
+  }
 }
 
 .chat {

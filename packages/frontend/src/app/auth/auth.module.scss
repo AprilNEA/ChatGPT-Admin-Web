@@ -206,7 +206,7 @@
   }
 
   .auth-input:hover {
-    border-color: var(--hover-color);
+    border-color: var(--primary-hover-color);
   }
 
   .auth-get-code-btn {
@@ -222,7 +222,7 @@
   }
 
   .auth-get-code-btn:hover {
-    background-color: var(--hover-color);
+    background-color: var(--primary-hover-color);
   }
 
   .auth-submit-btn {
@@ -237,6 +237,6 @@
   }
 
   .auth-submit-btn:hover {
-    background-color: var(--hover-color);
+    background-color: var(--primary-hover-color);
   }
 }

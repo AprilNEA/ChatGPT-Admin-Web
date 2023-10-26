@@ -6,12 +6,13 @@
   --primary: #009688;
   --secondary: #f3f3f3;
   --inactive: #BDBDBD;
-  --hover-color: #4DB6AC;
+  --primary-hover-color: #4DB6AC;
   --bar-color: rgba(0, 0, 0, 0.1);
   --shadow: #BDBDBD 0 0 10px;
+  --hover-color: #E0E0E0;
+
 
   /* shadow */
-  --shadow: 50px 50px 100px 10px rgb(0, 0, 0, 0.1);
   --card-shadow: #BDBDBD 0 0 10px;
   --card-shadow-hover: #9E9E9E 0 0 10px;
 
@@ -26,7 +27,13 @@
   --gray: rgb(21, 21, 21);
   --primary: rgb(29, 147, 171);
   --secondary: rgb(27 38 42);
-  --hover-color: #323232;
+  --primary-hover-color: #323232;
+  --inactive: #BDBDBD;
+  --hover-color: #424242;
+
+  --shadow: #BDBDBD 0 0 10px;
+  --card-shadow: #BDBDBD 0 0 10px;
+  --card-shadow-hover: #9E9E9E 0 0 10px;
 
   --bar-color: rgba(255, 255, 255, 0.1);
 
@@ -48,8 +55,8 @@
 :root {
   @include light;
 
-  --window-width: 90vw;
-  --window-height: 90vh;
+  --window-width: 100%;
+  --window-height: 100%;
   --sidebar-width: 300px;
   --window-content-width: calc(100% - var(--sidebar-width));
   --message-max-width: 80%;

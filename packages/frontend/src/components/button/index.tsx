@@ -1,4 +1,5 @@
 import * as React from "react";
+import clsx from "clsx";
 
 import styles from "@/styles/module/button.module.scss";
 
@@ -15,12 +16,14 @@ export function IconButton(props: {
 }) {
   return (
     <button
-      className={
-        styles["icon-button"] +
-        ` ${props.bordered && styles.border} ${props.shadow && styles.shadow} ${
-          props.className ?? ""
-        } clickable ${styles[props.type ?? ""]}`
-      }
+      className={clsx(
+        styles["icon-button"],
+        props.bordered && styles.border,
+        props.shadow && styles.shadow,
+        props.className,
+        "clickable",
+        styles[props.type ?? ""]
+      )}
       onClick={props.onClick}
       title={props.title}
       disabled={props.disabled}

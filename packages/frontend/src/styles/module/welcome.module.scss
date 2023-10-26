@@ -1,0 +1,10 @@
+.welcome-container {
+    display: flex;
+    height: 100%;
+    width: 100%;
+    justify-content: center;
+    .main-view{
+        height: 100%;
+        max-width: 800px;
+    }
+}
