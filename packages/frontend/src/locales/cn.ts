@@ -18,6 +18,9 @@ const cn = {
     DuplicateRegistration: "该邮箱已被注册",
     CodeError: "验证码错误",
     PasswordError: "密码错误",
+    Premium: "升级到高级版",
+    WelcomeTitle: "欢迎使用ChatGPT-Admin-Web",
+    WelcomeMessage: "你好，我是ChatGPT，一个基于GPT-3.5架构的人工智能助手。我被设计用来回答各种问题、提供信息、提供建议和与您进行对话。我在各种主题上有一定的知识，并且可以用多种语言与您交流。如果您有任何问题或需要帮助，随时问我，我会尽力为您提供所需的信息和支持。",
   },
   User: {
     Submit: "提交",

@@ -29,7 +29,7 @@ import UserIcon from "@/icons/user.svg";
 import ShoppingIcon from "@/icons/shopping.svg";
 import styles from "@/styles/module/home.module.scss";
 
-import { ChatSession, ChatMessage, ChatSessionWithMessage } from "@caw/types";
+import { ChatSession, ChatMessage, ChatSessionWithMessage } from "shared";
 
 function useSubmitHandler() {
   const config = useStore((state) => state.config);

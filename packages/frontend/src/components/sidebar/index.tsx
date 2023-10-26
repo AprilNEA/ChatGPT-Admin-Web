@@ -18,6 +18,7 @@ import CloseIcon from "@/icons/close.svg";
 import ChatGptIcon from "@/icons/chatgpt.svg";
 import SettingsIcon from "@/icons/settings.svg";
 import PremiumIcon from "@/icons/premium.svg";
+import UserIcon from "@/icons/user.svg";
 
 import { isMobileScreen } from "@/utils/client-utils";
 
@@ -101,15 +102,15 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
             <div className={styles["icon"]}>
               <PremiumIcon />
             </div>
-            <div className={styles["text"]}></div>
+            <div className={styles["text"]}>{Locale.Index.Premium}</div>
           </div>
           <div className={styles["sidebar-accountbtn"]}>
             <div className={styles["sidebar-account"]}>
               <div className={styles["avatar"]}>
-                
+                <UserIcon />
               </div>
               <div className={styles["account-name"]}>
-
+                Username
               </div>
             </div>
             <div
