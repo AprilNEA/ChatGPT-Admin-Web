@@ -12,7 +12,7 @@ import { showAnnouncement } from "@/hooks/use-notice";
 
 import styles from "@/styles/module/home.module.scss";
 import Locale from "@/locales";
-import AddIcon from "@/icons/add.svg";
+import AddIcon from "@/icons/add-std.svg";
 import AnnouncementIcon from "@/icons/announcement.svg";
 import CloseIcon from "@/icons/close.svg";
 import ChatGptIcon from "@/icons/chatgpt.svg";
@@ -78,7 +78,7 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
         <div className={styles["sidebar-header"]}>
           <div className={styles["sidebar-title"]}>{Locale.Index.Title}</div>
           <div className={styles["sidebar-sub-title"]}>
-            {Locale.Index.SubTitle}{" "}
+            {Locale.Index.SubTitle}
             <span className={styles["sidebar-ad"]}>
               {process.env.NEXT_PUBLIC_OA}
             </span>
@@ -87,6 +87,14 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
             <ChatGptIcon />
           </div>
         </div>
+        <button className={styles["sidebar-newbtn"]}>
+          <div>
+            <div className={styles["icon"]}>
+              <AddIcon />
+            </div>
+            <div className={styles["text"]}>{Locale.Home.NewChat}</div>
+          </div>
+        </button>
 
         <div
           className={styles["sidebar-body"]}
@@ -98,20 +106,26 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
         </div>
 
         <div className={styles["sidebar-tail"]}>
-          <div className={styles["sidebar-premium"]}>
-            <div className={styles["icon"]}>
-              <PremiumIcon />
+          <button className={styles["sidebar-premium"]}>
+            <div>
+              <div className={styles["icon"]}>
+                <PremiumIcon />
+              </div>
+              <div className={styles["text"]}>{Locale.Index.Premium}</div>
             </div>
-            <div className={styles["text"]}>{Locale.Index.Premium}</div>
-          </div>
+          </button>
           <div className={styles["sidebar-accountbtn"]}>
-            <div className={styles["sidebar-account"]}>
+            <div
+              className={styles["sidebar-account"]}
+              onClick={() => {
+                router.push("/profile");
+                setShowSideBar(false);
+              }}
+            >
               <div className={styles["avatar"]}>
                 <UserIcon />
               </div>
-              <div className={styles["account-name"]}>
-                Username
-              </div>
+              <div className={styles["account-name"]}>Username</div>
             </div>
             <div
               onClick={() => {

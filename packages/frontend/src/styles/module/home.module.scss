@@ -91,7 +91,7 @@
 .sidebar-header {
   position: relative;
   padding-top: 20px;
-  padding-bottom: 20px;
+  padding-bottom: 5px;
 }
 
 .sidebar-logo {
@@ -110,6 +110,57 @@
   font-size: 12px;
   font-weight: 400;
   animation: slide-in ease 0.3s;
+}
+
+.sidebar-newbtn {
+  overflow: hidden;
+  user-select: none;
+  outline: none;
+  border: none;
+  margin: 0 -10px -10px -10px;
+  transition: 0.3s;
+  animation: slide-in ease 0.3s;
+  border-radius: 10px;
+  transform: scale(1);
+  padding: 10px;
+  background-color: transparent;
+
+  &:active {
+    transform: scale(0.95);
+    transition: 0;
+  }
+
+  div {
+    height: 30px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+
+  }
+
+  &:hover {
+    background-color: var(--hover-color);
+    cursor: pointer;
+  }
+
+  .icon {
+    width: 40px;
+    display: flex;
+    justify-content: center;
+    margin-right: 10px;
+
+    svg {
+      height: 20px;
+      width: 20px;
+    }
+  }
+
+  .text {
+    font-size: 15px;
+    text-align: center;
+  }
+
+  animation: buttonClick 0.4s; /* 使用动画效果 */
 }
 
 .sidebar-body {
@@ -159,6 +210,18 @@
   to {
     opacity: 1;
     transform: translateY(0px);
+  }
+}
+
+@keyframes buttonClick {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.95);
+  }
+  100% {
+    transform: scale(1);
   }
 }
 
@@ -218,38 +281,57 @@
   padding-top: 20px;
 
   .sidebar-premium {
+    overflow: hidden;
+    user-select: none;
+    outline: none;
+    border: none;
     margin: 10px -10px 0 -10px;
-    height: 30px;
-    display: flex;
     padding: 10px;
-    transition: background-color ease 0.3s;
     border-radius: 10px;
-    display: flex;
-    align-items: center;
+    transform: scale(1);
+    transition: 0.3s;
+    background-color: transparent;
 
-    &:hover {
-      background-color: var(--hover-color);
+    &:active {
+      transform: scale(0.95);
+      transition: 0;
     }
 
-    .icon {
-      width: 40px;
+    div {
+      height: 30px;
       display: flex;
-      justify-content: center;
-      margin-right: 10px;
+      display: flex;
+      align-items: center;
 
-      svg {
-        height: 20px;
-        width: 20px;
+      .icon {
+        width: 40px;
+        display: flex;
+        justify-content: center;
+        margin-right: 10px;
+
+        svg {
+          height: 20px;
+          width: 20px;
+        }
+      }
+
+      .text {
+        font-size: 15px;
+        text-align: center;
       }
     }
 
-    .text {
-      font-size: 15px;
-      text-align: center;
+    &:hover {
+      background-color: var(--hover-color);
+      cursor: pointer;
     }
   }
 
   .sidebar-accountbtn {
+    overflow: hidden;
+    user-select: none;
+    outline: none;
+    border: none;
     margin-top: 20px;
     margin: 0 -10px -10px -10px;
     width: 100%;
@@ -263,6 +345,7 @@
 
     &:hover {
       background-color: var(--hover-color);
+      cursor: pointer;
     }
 
     .sidebar-account {

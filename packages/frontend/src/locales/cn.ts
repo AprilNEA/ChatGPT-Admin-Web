@@ -21,6 +21,8 @@ const cn = {
     Premium: "升级到高级版",
     WelcomeTitle: "欢迎使用ChatGPT-Admin-Web",
     WelcomeMessage: "你好，我是ChatGPT，一个基于GPT-3.5架构的人工智能助手。我被设计用来回答各种问题、提供信息、提供建议和与您进行对话。我在各种主题上有一定的知识，并且可以用多种语言与您交流。如果您有任何问题或需要帮助，随时问我，我会尽力为您提供所需的信息和支持。",
+    Return: "返回",
+    WelcomeCaption: "点击下面的按钮开始聊天吧！",
   },
   User: {
     Submit: "提交",
@@ -76,6 +78,11 @@ const cn = {
   },
   Profile: {
     Title: "用户信息",
+    SubTitle: "查看和修改用户信息",
+    Username: "用户名",
+    Email: "邮箱",
+    Phone: "手机号",
+    Avatar: "修改头像",
     Plan: {
       Title: "计划",
     },

@@ -1,10 +1,12 @@
 .icon-button {
+  transform: scale(1);
   background-color: var(--white);
   border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 10px;
+  transition: transform 0.3s;
 
   cursor: pointer;
   transition: all 0.3s ease;
@@ -26,6 +28,11 @@
     path {
       fill: white !important;
     }
+  }
+
+  &:active {
+    transform: scale(0.95);
+    transition: 0;
   }
 }
 

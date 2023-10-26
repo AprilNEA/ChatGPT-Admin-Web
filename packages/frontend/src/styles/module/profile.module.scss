@@ -1,24 +1,32 @@
 @import "../window";
 
-.settings {
+.profile {
   padding: 20px;
   overflow: auto;
   width: 800px;
   margin: 0 auto;
+
+  input {
+    height: 32px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-sizing: border-box;
+}
 }
 
 @media only screen and (max-width: 1140px) {
-  .settings {
+  .profile {
     width: calc(100% - 40px);
   }
 }
 
-.settings-title {
+.profile-title {
   font-size: 14px;
   font-weight: bolder;
 }
 
-.settings-sub-title {
+.profile-sub-title {
   font-size: 12px;
   font-weight: normal;
 }
