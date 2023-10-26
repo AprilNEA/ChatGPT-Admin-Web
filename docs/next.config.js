@@ -3,4 +3,9 @@ const withNextra = require("nextra")({
   themeConfig: "./theme.config.jsx",
 });
 
-module.exports = withNextra();
+module.exports = withNextra({
+  // i18n: {
+  //   locales: ["en-US", "zh-CN"],
+  //   defaultLocale: "en-US",
+  // },
+});
