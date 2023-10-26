@@ -1,5 +1,7 @@
 config.yaml
 
+prisma/client/
+
 .env
 apps/server/.env
 
