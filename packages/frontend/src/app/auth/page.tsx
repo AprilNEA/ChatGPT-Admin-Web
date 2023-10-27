@@ -1,25 +1,24 @@
 "use client";
 
-import { validateCodeDto } from "shared";
-
 import Image from "next/image";
-import Iframe from "react-iframe";
 import { useRouter } from "next/navigation";
 import React, { FormEvent, useCallback, useEffect, useState } from "react";
+import Iframe from "react-iframe";
+import { validateCodeDto } from "shared";
 
+import { IconButton } from "@/components/button";
+import { showToast } from "@/components/ui-lib";
 import useIntervalAsync from "@/hooks/use-interval-async";
 import usePreventFormSubmit from "@/hooks/use-prevent-form";
-import { useStore } from "@/store";
-import { IconButton } from "@/components/button";
-
-import Locales from "@/locales";
-import styles from "./auth.module.scss";
 import BotIcon from "@/icons/bot.svg";
-import LeftArrow from "@/icons/left.svg";
-import WechatLogo from "@/icons/wechat-logo.svg";
 import KeyIcon from "@/icons/key.svg";
+import LeftArrow from "@/icons/left.svg";
 import VerificationCodeIcon from "@/icons/verification-code.svg";
-import { showToast } from "@/components/ui-lib";
+import WechatLogo from "@/icons/wechat-logo.svg";
+import Locales from "@/locales";
+import { useStore } from "@/store";
+
+import styles from "./auth.module.scss";
 
 const weChatOauthAppId = process.env.NEXT_PUBLIC_WECHAT_OAUTH_APP_ID!;
 const weChatOauthRedirectUrl =
@@ -104,7 +103,7 @@ function ValidateCodeLogin() {
           value={identity}
           className={styles["auth-input"]}
           onChange={(e) => setIdentity(e.target.value)}
-          placeholder={`${Locales.User.Phone} / ${Locales.User.Email}`}
+          placeholder={`${Locales.Auth.Phone} / ${Locales.Auth.Email}`}
           required
         />
       </div>
@@ -116,14 +115,14 @@ function ValidateCodeLogin() {
           value={validateCode}
           className={styles["auth-input"]}
           onChange={(e) => setValidateCode(e.target.value)}
-          placeholder={Locales.User.Code}
+          placeholder={Locales.Auth.Code}
           required
         />
         <IconButton
           text={
             ifCodeSent
-              ? Locales.User.Sent(validateCodeTtl)
-              : Locales.User.GetCode
+              ? Locales.Auth.Sent(validateCodeTtl)
+              : Locales.Auth.GetCode
           }
           disabled={ifCodeSent}
           className={styles["auth-get-code-btn"]}
@@ -139,7 +138,7 @@ function ValidateCodeLogin() {
               login({ identity, code: validateCode }),
             )
           }
-          text={`${Locales.User.Login} / ${Locales.User.Register}`}
+          text={`${Locales.Auth.Login()} / ${Locales.Auth.Register()}`}
           className={styles["auth-submit-btn"]}
           type="primary"
         />
@@ -182,7 +181,7 @@ const PasswordLogin: React.FC = () => {
           value={identity}
           className={styles["auth-input"]}
           onChange={(e) => setIdentity(e.target.value)}
-          placeholder={Locales.User.Email}
+          placeholder={`${Locales.Auth.Phone} / ${Locales.Auth.Email}`}
           required
         />
       </div>
@@ -194,7 +193,7 @@ const PasswordLogin: React.FC = () => {
           value={password}
           className={styles["auth-input"]}
           onChange={(e) => setPassword(e.target.value)}
-          placeholder={Locales.User.Password}
+          placeholder={Locales.Auth.Password}
           required
         />
       </div>
@@ -203,7 +202,7 @@ const PasswordLogin: React.FC = () => {
         <IconButton
           disabled={isSubmitting}
           onClick={() => handleSubmit(undefined, login)}
-          text={Locales.User.Submit}
+          text={`${Locales.Auth.Login()}`}
           className={styles["auth-submit-btn"]}
           type="primary"
         />

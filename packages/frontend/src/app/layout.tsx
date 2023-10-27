@@ -2,10 +2,11 @@
 import "@/styles/globals.scss";
 import "@/styles/markdown.scss";
 import "@/styles/prism.scss";
+
 import { SWRProvider } from "@/app/provider";
 
 export const metadata = {
-  title: "ChatGPT",
+  title: process.env.NEXT_PUBLIC_TITLE || "ChatGPT Admin Web",
   description: "Your personal ChatGPT Bot.",
 };
 

@@ -6,9 +6,12 @@ const BACKEND_BASE = config?.url?.backend ?? "http://localhost:3001";
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  eslint: {
+    dirs: ["src"],
+  },
   output: "standalone",
   env: {
-    NEXT_PUBLIC_TITLE: config?.site?.title ?? "ChatGPT-Admin-Web",
+    NEXT_PUBLIC_TITLE: config?.site?.title ?? "ChatGPT Admin Web",
     NEXT_PUBLIC_OA: config?.site?.oa ?? "",
     NEXT_PUBLIC_BASE_URL: config?.url?.backend ?? "http://localhost:3001",
     NEXT_PUBLIC_WECHAT_MP_APP_ID: config?.wechat?.mp?.appId,

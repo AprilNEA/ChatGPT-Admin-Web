@@ -2,16 +2,14 @@
 
 import { useRouter } from "next/navigation";
 
-import { SubmitKey, Theme, useStore } from "@/store";
-
 import { IconButton } from "@/components/button";
 import { List, ListItem } from "@/components/ui-lib";
-
-import Locale, { changeLang, getLang } from "@/locales";
-import styles from "@/styles/module/profile.module.scss";
-import ResetIcon from "@/icons/reload.svg";
-import CloseIcon from "@/icons/close.svg";
 import ClearIcon from "@/icons/clear.svg";
+import CloseIcon from "@/icons/close.svg";
+import ResetIcon from "@/icons/reload.svg";
+import Locale, { changeLang, getLang } from "@/locales";
+import { SubmitKey, Theme, useStore } from "@/store";
+import styles from "@/styles/module/profile.module.scss";
 
 function SettingItem(props: {
   title: string;

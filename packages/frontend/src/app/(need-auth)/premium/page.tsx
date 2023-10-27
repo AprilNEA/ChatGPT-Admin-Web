@@ -1,16 +1,16 @@
 "use client";
 
+import { CategoryType,ProductType } from "shared";
 import useSWR from "swr";
 
-import { useStore } from "@/store";
 import { IconButton } from "@/components/button";
-import { ProductType, CategoryType } from "shared";
-
-import Locale from "@/locales";
-import styles from "./pricing.module.scss";
-import TickIcon from "@/icons/tick.svg";
 import CloseIcon from "@/icons/close.svg";
 import ShoppingIcon from "@/icons/shopping.svg";
+import TickIcon from "@/icons/tick.svg";
+import Locale from "@/locales";
+import { useStore } from "@/store";
+
+import styles from "./pricing.module.scss";
 
 function ProductItem({ product }: { product: ProductType }) {
   return (

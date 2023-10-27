@@ -1,30 +1,26 @@
 "use client";
+
 import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
-import { useStore } from "@/store";
 import { IconButton } from "@/components/button";
-
-import { Loading } from "@/components/loading";
 import { ChatList } from "@/components/chat/chat-list";
+import { Loading } from "@/components/loading";
 import { useSwitchTheme } from "@/hooks/switch-theme";
 import { showAnnouncement } from "@/hooks/use-notice";
-
-import styles from "@/styles/module/home.module.scss";
-import Locale from "@/locales";
 import AddIcon from "@/icons/add-std.svg";
 import AnnouncementIcon from "@/icons/announcement.svg";
-import CloseIcon from "@/icons/close.svg";
 import ChatGptIcon from "@/icons/chatgpt.svg";
-import SettingsIcon from "@/icons/settings.svg";
+import CloseIcon from "@/icons/close.svg";
 import PremiumIcon from "@/icons/premium.svg";
+import SettingsIcon from "@/icons/settings.svg";
 import UserIcon from "@/icons/user.svg";
-
+import Locale from "@/locales";
+import { useStore } from "@/store";
+import styles from "@/styles/module/home.module.scss";
 import { isMobileScreen } from "@/utils/client-utils";
 
-/**
- * 修复水合错误
- */
+/* 修复水合错误 */
 const useHasHydrated = () => {
   const [hasHydrated, setHasHydrated] = useState<boolean>(false);
 
@@ -60,6 +56,18 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
   // 暗色模式切换
   useSwitchTheme();
 
+  const routerPremium = () => {
+    router.push("/premium");
+    setShowSideBar(false);
+  };
+  const routerProfile = () => {
+    router.push("/profile");
+    setShowSideBar(false);
+  };
+  const routerSetting = () => {
+    router.push("/setting");
+    setShowSideBar(false);
+  };
   if (loading) {
     return <Loading />;
   }
@@ -77,19 +85,21 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
       >
         <div className={styles["sidebar-header"]}>
           <div className={styles["sidebar-title"]}>{Locale.Index.Title}</div>
-          <div className={styles["sidebar-sub-title"]}>
-            {Locale.Index.SubTitle}
-            <span className={styles["sidebar-ad"]}>
-              {process.env.NEXT_PUBLIC_OA}
-            </span>
-          </div>
+          {!!process.env.NEXT_PUBLIC_OA && (
+            <div className={styles["sidebar-sub-title"]}>
+              {Locale.Index.SubTitle}
+              <span className={styles["sidebar-wechat-oa"]}>
+                {process.env.NEXT_PUBLIC_OA}
+              </span>
+            </div>
+          )}
           <div className={styles["sidebar-logo"]}>
             <ChatGptIcon />
           </div>
         </div>
         <button className={styles["sidebar-newbtn"]}>
           <div>
-            <div className={styles["icon"]}>
+            <div className={styles["icon"]} onClick={() => {}}>
               <AddIcon />
             </div>
             <div className={styles["text"]}>{Locale.Home.NewChat}</div>
@@ -106,7 +116,7 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
         </div>
 
         <div className={styles["sidebar-tail"]}>
-          <button className={styles["sidebar-premium"]}>
+          <button className={styles["sidebar-premium"]} onClick={routerPremium}>
             <div>
               <div className={styles["icon"]}>
                 <PremiumIcon />
@@ -115,23 +125,14 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
             </div>
           </button>
           <div className={styles["sidebar-accountbtn"]}>
-            <div
-              className={styles["sidebar-account"]}
-              onClick={() => {
-                router.push("/profile");
-                setShowSideBar(false);
-              }}
-            >
+            <div className={styles["sidebar-account"]} onClick={routerProfile}>
               <div className={styles["avatar"]}>
                 <UserIcon />
               </div>
               <div className={styles["account-name"]}>Username</div>
             </div>
             <div
-              onClick={() => {
-                router.push("/settings");
-                setShowSideBar(false);
-              }}
+              onClick={routerSetting}
               className={styles["account-settingbtn"]}
             >
               <SettingsIcon />

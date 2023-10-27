@@ -1,5 +1,5 @@
-import { tencentTextSecurity } from "@/lib/content/tencent";
 import { baiduTextSecurity } from "@/lib/content/baidu";
+import { tencentTextSecurity } from "@/lib/content/tencent";
 
 const service = process.env.TextSecurity ?? "baidu";
 

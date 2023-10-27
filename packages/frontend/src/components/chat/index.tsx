@@ -1,35 +1,33 @@
 "use client";
 
-import useSWR from "swr";
-import Link from "next/link";
 import dynamic from "next/dynamic";
+import Link from "next/link";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { useStore, SubmitKey, Theme } from "@/store";
+import { ChatMessage, ChatSession, ChatSessionWithMessage } from "shared";
+import useSWR from "swr";
+
+import { Avatar } from "@/components/avatar";
+import { IconButton } from "@/components/button";
+import { Loading } from "@/components/loading";
+import { showModal } from "@/components/ui-lib";
+import BrainIcon from "@/icons/brain.svg";
+import CopyIcon from "@/icons/copy.svg";
+import DownloadIcon from "@/icons/download.svg";
+import ExportIcon from "@/icons/export.svg";
+import MenuIcon from "@/icons/menu.svg";
+import SendWhiteIcon from "@/icons/send-white.svg";
+import ShoppingIcon from "@/icons/shopping.svg";
+import LoadingIcon from "@/icons/three-dots.svg";
+import UserIcon from "@/icons/user.svg";
+import Locale from "@/locales";
+import { SubmitKey, Theme,useStore } from "@/store";
+import styles from "@/styles/module/home.module.scss";
 import {
   copyToClipboard,
   downloadAs,
   isIOS,
   selectOrCopy,
 } from "@/utils/client-utils";
-
-import { Avatar } from "@/components/avatar";
-import { IconButton } from "@/components/button";
-import { showModal } from "@/components/ui-lib";
-import { Loading } from "@/components/loading";
-
-import Locale from "@/locales";
-import MenuIcon from "@/icons/menu.svg";
-import BrainIcon from "@/icons/brain.svg";
-import ExportIcon from "@/icons/export.svg";
-import LoadingIcon from "@/icons/three-dots.svg";
-import SendWhiteIcon from "@/icons/send-white.svg";
-import CopyIcon from "@/icons/copy.svg";
-import DownloadIcon from "@/icons/download.svg";
-import UserIcon from "@/icons/user.svg";
-import ShoppingIcon from "@/icons/shopping.svg";
-import styles from "@/styles/module/home.module.scss";
-
-import { ChatSession, ChatMessage, ChatSessionWithMessage } from "shared";
 
 function useSubmitHandler() {
   const config = useStore((state) => state.config);

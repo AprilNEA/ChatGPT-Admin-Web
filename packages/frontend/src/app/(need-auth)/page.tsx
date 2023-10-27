@@ -1,12 +1,12 @@
 "use client";
 
+import { IconButton } from "@/components/button";
 import Chat from "@/components/chat";
-import styles from "@/styles/module/welcome.module.scss";
+import AddIcon from "@/icons/add.svg";
+import ReturnIcon from "@/icons/return.svg";
 import Locale from "@/locales";
 import { useStore } from "@/store";
-import { IconButton } from "@/components/button";
-import ReturnIcon from "@/icons/return.svg";
-import AddIcon from "@/icons/add.svg";
+import styles from "@/styles/module/welcome.module.scss";
 
 export default function ChatPage() {
   const [setSideBarOpen] = useStore((state) => [state.setShowSideBar]);

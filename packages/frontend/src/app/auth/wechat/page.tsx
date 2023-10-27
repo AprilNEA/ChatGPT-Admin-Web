@@ -1,9 +1,10 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect } from "react";
+
 import { Loading } from "@/components/loading";
 import { useStore } from "@/store";
-import { useEffect } from "react";
 
 export default function Page() {
   // const router = useRouter();

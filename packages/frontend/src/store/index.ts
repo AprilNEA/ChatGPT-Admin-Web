@@ -1,12 +1,13 @@
-import { create } from "zustand";
-import { persist } from "zustand/middleware";
 import { useRouter } from "next/navigation";
 import {
-  ChatSession,
   ChatMessage,
-  NewMessageDto,
   ChatMessageRole,
+  ChatSession,
+  NewMessageDto,
 } from "shared";
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+
 import { TextLineStream } from "@/utils/text_line_stream";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL!;
@@ -68,7 +69,6 @@ type StoreType = {
   // auth
   sessionToken?: string;
   setSessionToken: (token: string) => void;
-  validateSession: () => Promise<boolean>;
 
   // layout
   showSideBar: boolean;
@@ -206,7 +206,7 @@ export const useStore = create<StoreType>()(
 
         const body: NewMessageDto = {
           content,
-          mid: modelId,
+          modelId,
         };
 
         const res = await fetcher(`/chat/messages/${currentChatSessionId}`, {
@@ -231,13 +231,13 @@ export const useStore = create<StoreType>()(
               reader.releaseLock();
               break;
             }
-
             if (!line?.startsWith("data:")) continue;
             const data = line?.slice("data:".length).trim();
             if (!data) continue;
             console.log("[streaming]", data);
 
-            const token: string = JSON.parse(data);
+            // const token: string = JSON.parse(data);
+            const token = data;
             modifyLastMessage(({ content }) => ({ content: content + token }));
           } catch (e) {
             reader.releaseLock();
@@ -260,17 +260,6 @@ export const useStore = create<StoreType>()(
 
       setSessionToken(token: string) {
         set({ sessionToken: token });
-      },
-
-      async validateSession() {
-        const session = get().sessionToken;
-        if (!session) return false;
-        try {
-          // await verify(session);
-          return true;
-        } catch (e) {
-          return false;
-        }
       },
 
       // utils

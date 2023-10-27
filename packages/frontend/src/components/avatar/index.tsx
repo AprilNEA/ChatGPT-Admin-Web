@@ -1,9 +1,10 @@
-import { useStore } from "@/store";
-import BotIcon from "@/icons/bot.svg";
-import styles from "@/styles/module/home.module.scss";
-import dynamic from "next/dynamic";
-import LoadingIcon from "@/icons/three-dots.svg";
 import { ChatMessage } from "@caw/types";
+import dynamic from "next/dynamic";
+
+import BotIcon from "@/icons/bot.svg";
+import LoadingIcon from "@/icons/three-dots.svg";
+import { useStore } from "@/store";
+import styles from "@/styles/module/home.module.scss";
 
 const Emoji = dynamic(async () => (await import("emoji-picker-react")).Emoji, {
   loading: () => <LoadingIcon />,

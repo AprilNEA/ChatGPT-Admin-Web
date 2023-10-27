@@ -1,13 +1,13 @@
 "use client";
 
-import useSWR from "swr";
-import styles from "@/styles/module/home.module.scss";
-import Locale from "@/locales";
-import DeleteIcon from "@/icons/delete.svg";
-import { useStore } from "@/store";
-
-import { ChatSession } from "shared";
 import { useRouter } from "next/navigation";
+import { ChatSession } from "shared";
+import useSWR from "swr";
+
+import DeleteIcon from "@/icons/delete.svg";
+import Locale from "@/locales";
+import { useStore } from "@/store";
+import styles from "@/styles/module/home.module.scss";
 
 export function ChatItem(props: {
   onClick?: () => void;
@@ -30,6 +30,7 @@ export function ChatItem(props: {
           {Locale.ChatItem.ChatItemCount(props.count)}
         </div>
         <div className={styles["chat-item-date"]}>
+          {/* TODO Fix Time show*/}
           {props.time.toLocaleString()}
         </div>
       </div>

@@ -4,10 +4,10 @@ export const metadata = {
   title: "CAW Dashboard",
 };
 
-export default function RootLayout({
+export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  return <AuthProvider>{children}</AuthProvider>;
+  return <AuthProvider admin={true}>{children}</AuthProvider>;
 }

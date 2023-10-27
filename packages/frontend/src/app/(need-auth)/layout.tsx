@@ -3,11 +3,11 @@ import "@/styles/globals.scss";
 import "@/styles/markdown.scss";
 import "@/styles/prism.scss";
 
-import { Sidebar } from "@/components/sidebar";
 import { AuthProvider } from "@/app/provider";
+import { Sidebar } from "@/components/sidebar";
 
 export const metadata = {
-  title: "ChatGPT",
+  title: process.env.NEXT_PUBLIC_TITLE || "ChatGPT Admin Web",
   description: "Your personal ChatGPT Bot.",
 };
 
