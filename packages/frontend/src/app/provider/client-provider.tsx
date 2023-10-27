@@ -1,11 +1,11 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { useStore } from "@/store";
+import { useCallback, useEffect, useState } from "react";
+import { SWRConfig } from "swr";
 
 import { Loading } from "@/components/loading";
-import { SWRConfig } from "swr";
+import { useStore } from "@/store";
 
 export function AuthProvider({
   children,
