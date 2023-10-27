@@ -65,7 +65,7 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
     setShowSideBar(false);
   };
   const routerSetting = () => {
-    router.push("/setting");
+    router.push("/settings");
     setShowSideBar(false);
   };
   if (loading) {
