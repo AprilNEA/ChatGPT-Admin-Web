@@ -9,6 +9,7 @@ import Locale from "@/locales";
 import { useStore } from "@/store";
 import styles from "@/styles/module/home.module.scss";
 
+/* 左侧对话栏中最小对话单元 */
 export function ChatItem(props: {
   onClick?: () => void;
   onDelete?: () => void;
@@ -17,6 +18,8 @@ export function ChatItem(props: {
   time: Date;
   selected: boolean;
 }) {
+  const date = new Date(props.time);
+
   return (
     <div
       className={`${styles["chat-item"]} ${
@@ -29,10 +32,7 @@ export function ChatItem(props: {
         <div className={styles["chat-item-count"]}>
           {Locale.ChatItem.ChatItemCount(props.count)}
         </div>
-        <div className={styles["chat-item-date"]}>
-          {/* TODO Fix Time show*/}
-          {props.time.toLocaleString()}
-        </div>
+        <div className={styles["chat-item-date"]}>{date.toLocaleString()}</div>
       </div>
       <div className={styles["chat-item-delete"]} onClick={props.onDelete}>
         <DeleteIcon />
