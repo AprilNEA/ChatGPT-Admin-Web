@@ -243,6 +243,7 @@ model ChatMessage {
 
   role    ChatMessageRole
   content String
+  token   Int?
 
   deleted Boolean @default(false)
 

@@ -31,7 +31,7 @@ export class OrderService {
   /* 获取指定用户订单列表 */
   async listOrder(uid?: number) {
     return this.prisma.order.findMany({
-      where: { userId: uid },
+      // where: { userId: uid },
       include: { product: true },
     });
   }

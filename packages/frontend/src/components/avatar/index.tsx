@@ -1,4 +1,4 @@
-import { ChatMessage } from "@caw/types";
+import { ChatMessage } from "shared";
 import dynamic from "next/dynamic";
 
 import BotIcon from "@/icons/bot.svg";
