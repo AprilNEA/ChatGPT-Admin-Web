@@ -1,20 +1,21 @@
+import OpenAI from 'openai';
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '@/processors/database/database.service';
-import { OpenaiService } from '@/libs/openai/openai.service';
 import { type ChatMessage, ChatMessageRole } from '@prisma/client';
-import { Message, OpenAIChatModel, Role } from '@/libs/openai/typing';
 import { ConfigService } from '@nestjs/config';
 import { Observable } from 'rxjs';
 import { BizException } from '@/common/exceptions/biz.exception';
 import { ErrorCodeEnum } from 'shared/dist/error-code';
+import { encode as gpt4Encode } from 'gpt-tokenizer/esm/model/gpt-4';
+import { encode as gpt435Encode } from 'gpt-tokenizer/esm/model/gpt-3.5-turbo';
 
 @Injectable()
 export class ChatService {
   private openaiConfig;
+  private openai: OpenAI;
 
   constructor(
     private prisma: DatabaseService,
-    private openaiService: OpenaiService,
     config: ConfigService,
   ) {
     this.openaiConfig = config.get('openai');
@@ -83,7 +84,7 @@ export class ChatService {
     return false;
   }
 
-  /* */
+  /* 获取或者新建一个对话，通常用于初始化 */
   async getOrNewChatSession(
     sessionId: string,
     userId: number,
@@ -91,13 +92,11 @@ export class ChatService {
     limit = 10,
   ) {
     return this.prisma.$transaction(async (prisma) => {
-      const chatSession = await this.prisma.chatSession.upsert({
+      const chatSession = await prisma.chatSession.upsert({
         where: {
           id: sessionId,
         },
-        update: {
-          memoryPrompt,
-        },
+        update: {},
         create: {
           id: sessionId,
           memoryPrompt,
@@ -154,74 +153,115 @@ export class ChatService {
     });
   }
 
+  async #streamChat({
+    input,
+    model,
+    histories = [],
+  }: {
+    input: string;
+    model: OpenAI.Chat.ChatCompletionCreateParams['model'];
+    histories?: OpenAI.Chat.CreateChatCompletionRequestMessage[];
+  }) {
+    const openai = new OpenAI({
+      baseURL: this.openaiConfig.baseUrl,
+      apiKey: this.openaiConfig.keys[0],
+    });
+    return openai.chat.completions.create({
+      model,
+      messages: [
+        ...histories,
+        {
+          role: 'user',
+          content: input,
+        },
+      ],
+      stream: true,
+    });
+  }
+
   /* 指定对话中创建新消息 */
   async newMessageStream({
     userId,
     sessionId,
-    content,
+    input,
     modelId,
-    messages,
-    key,
+    messages, // key,
   }: {
     userId: number;
     sessionId: string;
     modelId: number;
-    content: string;
+    /* User input */
+    input: string;
+    /* Messages in database */
     messages: ChatMessage[];
     /* Request API Key */
-    key: string;
-  }): Promise<Observable<{ data: string }>> {
+    // key: string;
+  }) {
     const { name: model } = await this.prisma.model.findUniqueOrThrow({
       where: { id: modelId },
     });
 
-    const history: Message[] = messages.map(({ role, content }) => ({
-      role: role.toLowerCase() as Role,
-      content,
-    }));
-
-    const tokenStream = this.openaiService.requestStream(
-      {
-        apiKey: key,
-        messages: [...history, { role: 'user', content }],
-        model: model as OpenAIChatModel,
-      },
-      async (generated) => {
-        const time = Date.now();
-        await this.prisma.$transaction([
-          // save both messages
-          this.prisma.chatMessage.create({
-            data: {
-              role: ChatMessageRole.User,
-              content,
-              userId: userId,
-              chatSessionId: sessionId,
-              createdAt: new Date(time),
-            },
-          }),
-          this.prisma.chatMessage.create({
-            data: {
-              role: ChatMessageRole.Assistant,
-              content: generated,
-              userId: userId,
-              modelId: modelId,
-              chatSessionId: sessionId,
-              createdAt: new Date(time + 1),
-            },
-          }),
-        ]);
-      },
+    const histories: OpenAI.ChatCompletionMessage[] = messages.map(
+      ({ role, content }) => ({
+        role: role.toLowerCase() as OpenAI.ChatCompletionRole,
+        content,
+      }),
     );
+
+    const stream = await this.#streamChat({
+      model: model,
+      input: input,
+      histories: histories,
+    });
+
+    const tokens: string[] = [];
+    const time = Date.now();
 
     return new Observable((subscriber) => {
       (async () => {
         try {
-          for await (const token of tokenStream) {
-            subscriber.next({ data: JSON.stringify(token) });
+          for await (const part of stream) {
+            const {
+              choices: [
+                {
+                  delta: { content },
+                },
+              ],
+            } = part;
+            console.log(part);
+            if (content) {
+              tokens.push(content);
+            }
+            subscriber.next(content ?? '');
           }
         } catch (e) {
           console.warn('[Caught Error]', e);
         } finally {
+          const generated = tokens.join('');
+          // const token = gpt435Encode(generated);
+          /* 保存消息 Record messages */
+          await this.prisma.$transaction([
+            this.prisma.chatMessage.create({
+              data: {
+                role: ChatMessageRole.User,
+                content: input,
+                userId: userId,
+                chatSessionId: sessionId,
+                createdAt: new Date(time),
+              },
+            }),
+            this.prisma.chatMessage.create({
+              data: {
+                role: ChatMessageRole.Assistant,
+                content: generated,
+                userId: userId,
+                modelId: modelId,
+                chatSessionId: sessionId,
+                createdAt: new Date(time + 1),
+              },
+            }),
+          ]);
+          subscriber.next('[DONE]');
           subscriber.complete();
         }
       })();

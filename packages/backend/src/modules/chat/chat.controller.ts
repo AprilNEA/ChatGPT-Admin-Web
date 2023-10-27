@@ -5,6 +5,15 @@ import { NewMessageDto } from 'shared';
 import { ErrorCode } from '@/common/filters/all-execption.filter';
 import { KeyPoolService } from '@/libs/key-pool';
 
+import * as Joi from 'joi';
+import { JoiValidationPipe } from '@/common/pipes/joi';
+
+const newMessageSchema = Joi.object({
+  modelId: Joi.number().required(),
+  content: Joi.string().required(),
+  memoryPrompt: Joi.string().optional(),
+});
+
 @Controller('chat')
 export class ChatController {
   constructor(
@@ -55,7 +64,7 @@ export class ChatController {
   @Sse()
   async newMessageStream(
     @Payload('id') userId: number,
-    @Body() data: NewMessageDto,
+    @Body(new JoiValidationPipe(newMessageSchema)) data: NewMessageDto,
     @Param('sessionId') sessionId: string,
   ) {
     /* 用量限制 */
@@ -64,21 +73,23 @@ export class ChatController {
     //   // throw new appException(ErrorCode.LimitExceeded, '超过当前计划用量');
     // }
     /* */
+
     const chatSession = await this.chatService.getOrNewChatSession(
       sessionId,
       userId,
       data.memoryPrompt,
     );
+
     /* 从 Key Pool 中挑选合适的 Key */
     const key = await this.keyPool.select();
 
     return await this.chatService.newMessageStream({
       userId: userId,
       sessionId: chatSession.id,
-      modelId: data.mid,
-      content: data.content,
+      modelId: data.modelId,
+      input: data.content,
       messages: chatSession.messages,
-      key,
+      // key,
     });
   }
 }
