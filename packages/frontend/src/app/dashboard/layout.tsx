@@ -1,6 +1,6 @@
 import { AuthProvider } from "@/app/provider";
-import { Sidebar } from "@/components/sidebar";
-import "@/styles/globals.scss";
+import '@radix-ui/themes/styles.css';
+import { Theme } from "@radix-ui/themes";
 
 export const metadata = {
   title: "CAW Dashboard",
@@ -11,5 +11,5 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <AuthProvider admin={false}><Sidebar>{children}</Sidebar></AuthProvider>;
+  return <AuthProvider admin={false}><Theme>{children}</Theme></AuthProvider>;
 }
