@@ -10,6 +10,7 @@
   "dependencies": {
     "@edge-runtime/ponyfill": "^2.1.2",
     "@edge-runtime/types": "^2.0.8",
+    "@radix-ui/themes": "^2.0.0",
     "@svgr/webpack": "^6.5.1",
     "@upstash/redis": "^1.20.2",
     "array.prototype.at": "^1.1.1",

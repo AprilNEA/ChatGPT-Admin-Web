@@ -3,15 +3,11 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-import { IconButton } from "@/components/button";
 import { ChatList } from "@/components/chat/chat-list";
 import { Loading } from "@/components/loading";
 import { useSwitchTheme } from "@/hooks/switch-theme";
-import { showAnnouncement } from "@/hooks/use-notice";
 import AddIcon from "@/icons/add-std.svg";
-import AnnouncementIcon from "@/icons/announcement.svg";
 import ChatGptIcon from "@/icons/chatgpt.svg";
-import CloseIcon from "@/icons/close.svg";
 import PremiumIcon from "@/icons/premium.svg";
 import SettingsIcon from "@/icons/settings.svg";
 import UserIcon from "@/icons/user.svg";
@@ -19,6 +15,7 @@ import Locale from "@/locales";
 import { useStore } from "@/store";
 import styles from "@/styles/module/home.module.scss";
 import { isMobileScreen } from "@/utils/client-utils";
+import useUserInfo from "@/hooks/use-userinfo";
 
 /* 修复水合错误 */
 const useHasHydrated = () => {
@@ -55,6 +52,8 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
 
   // 暗色模式切换
   useSwitchTheme();
+
+  const userInfo = useUserInfo();
 
   const routerPremium = () => {
     router.push("/premium");
@@ -129,7 +128,7 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
               <div className={styles["avatar"]}>
                 <UserIcon />
               </div>
-              <div className={styles["account-name"]}>Username</div>
+              <div className={styles["account-name"]}>{userInfo.}</div>
             </div>
             <div
               onClick={routerSetting}
