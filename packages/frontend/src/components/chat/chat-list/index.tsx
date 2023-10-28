@@ -1,6 +1,8 @@
 'use client';
 
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useEffect, useRef, useState } from 'react';
 import useSWR from 'swr';
 
 import DeleteIcon from '@/icons/delete.svg';
@@ -14,43 +16,48 @@ import { ChatSession } from 'shared';
 export function ChatItem(props: {
   onClick?: () => void;
   onDelete?: () => void;
+  id: string;
   title: string;
   count: number;
   time: Date;
   selected: boolean;
 }) {
+  // TODO text is too long may overflow
   const date = new Date(props.time);
 
   return (
-    <div
-      className={`${styles['chat-item']} ${
-        props.selected && styles['chat-item-selected']
-      }`}
-      onClick={props.onClick}
+    <Link
+      href={`/chat/${props.id}`}
+      style={{ color: 'inherit', textDecoration: 'inherit' }}
+      prefetch={true}
     >
-      <div className={styles['chat-item-title']}>{props.title}</div>
-      <div className={styles['chat-item-info']}>
-        <div className={styles['chat-item-count']}>
-          {Locale.ChatItem.ChatItemCount(props.count)}
+      <div
+        className={`${styles['chat-item']} ${
+          props.selected && styles['chat-item-selected']
+        }`}
+        onClick={props.onClick}
+      >
+        <div className={styles['chat-item-title']}>{props.title}</div>
+        <div className={styles['chat-item-info']}>
+          <div className={styles['chat-item-count']}>
+            {Locale.ChatItem.ChatItemCount(props.count)}
+          </div>
+          <div className={styles['chat-item-date']}>
+            {date.toLocaleString()}
+          </div>
         </div>
-        <div className={styles['chat-item-date']}>{date.toLocaleString()}</div>
+        <div className={styles['chat-item-delete']} onClick={props.onDelete}>
+          <DeleteIcon />
+        </div>
       </div>
-      <div className={styles['chat-item-delete']} onClick={props.onDelete}>
-        <DeleteIcon />
-      </div>
-    </div>
+    </Link>
   );
 }
 
 /* 左侧边栏对话列表 */
 export function ChatList() {
-  const router = useRouter();
+  const { fetcher, currentChatSessionId } = useStore();
 
-  const [fetcher, session, selectSession] = useStore((state) => [
-    state.fetcher,
-    state.currentChatSessionId,
-    state.updateSessionId,
-  ]);
   const { data: sessions } = useSWR<ChatSession[]>('/chat/sessions', (url) => {
     return fetcher(url)
       .then((res) => res.json())
@@ -69,11 +76,11 @@ export function ChatList() {
         sessions.map((item, i) => (
           <ChatItem
             key={i}
+            id={item.id}
             title={item.topic ?? '新的对话'}
             time={item.updatedAt}
             count={item.messagesCount}
-            selected={session === item.id}
-            onClick={() => selectSession(item.id, router)}
+            selected={currentChatSessionId === item.id}
             onDelete={() => {}}
           />
         ))}

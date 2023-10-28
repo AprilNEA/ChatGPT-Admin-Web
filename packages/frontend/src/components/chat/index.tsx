@@ -214,12 +214,12 @@ export default function Chat() {
             />
           </div>
           <div className={styles['window-action-button']}>
-            <Link href="/pricing">
+            <Link href="/premium" prefetch={true}>
               <IconButton icon={<ShoppingIcon />} bordered />
             </Link>
           </div>
           <div className={styles['window-action-button']}>
-            <Link href="/profile">
+            <Link href="/profile" prefetch={true}>
               <IconButton
                 icon={<UserIcon />}
                 bordered
@@ -227,26 +227,26 @@ export default function Chat() {
               />
             </Link>
           </div>
-          <div className={styles['window-action-button']}>
-            <IconButton
-              icon={<BrainIcon />}
-              bordered
-              title={Locale.Chat.Actions.CompressedHistory}
-              onClick={() => {
-                // showMemoryPrompt(session);
-              }}
-            />
-          </div>
-          <div className={styles['window-action-button']}>
-            <IconButton
-              icon={<ExportIcon />}
-              bordered
-              title={Locale.Chat.Actions.Export}
-              onClick={() => {
-                // exportMessages(session.messages, session.topic);
-              }}
-            />
-          </div>
+          {/*<div className={styles['window-action-button']}>*/}
+          {/*  <IconButton*/}
+          {/*    icon={<BrainIcon />}*/}
+          {/*    bordered*/}
+          {/*    title={Locale.Chat.Actions.CompressedHistory}*/}
+          {/*    onClick={() => {*/}
+          {/*      // showMemoryPrompt(session);*/}
+          {/*    }}*/}
+          {/*  />*/}
+          {/*</div>*/}
+          {/*<div className={styles['window-action-button']}>*/}
+          {/*  <IconButton*/}
+          {/*    icon={<ExportIcon />}*/}
+          {/*    bordered*/}
+          {/*    title={Locale.Chat.Actions.Export}*/}
+          {/*    onClick={() => {*/}
+          {/*      // exportMessages(session.messages, session.topic);*/}
+          {/*    }}*/}
+          {/*  />*/}
+          {/*</div>*/}
         </div>
       </div>
 

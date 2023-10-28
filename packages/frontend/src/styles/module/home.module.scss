@@ -175,12 +175,12 @@
   font-weight: bold;
   -webkit-text-fill-color: transparent;
   background: linear-gradient(
-    94.75deg,
-    rgb(60, 172, 247) 0%,
-    rgb(131, 101, 253) 43.66%,
-    rgb(255, 141, 112) 64.23%,
-    rgb(247, 201, 102) 83.76%,
-    rgb(172, 143, 100) 100%
+                  94.75deg,
+                  rgb(60, 172, 247) 0%,
+                  rgb(131, 101, 253) 43.66%,
+                  rgb(255, 141, 112) 64.23%,
+                  rgb(247, 201, 102) 83.76%,
+                  rgb(172, 143, 100) 100%
   );
   -webkit-background-clip: text;
 }
@@ -194,7 +194,6 @@
   padding: 10px 14px;
   background-color: var(--white);
   border-radius: 10px;
-  margin-bottom: 10px;
   box-shadow: var(--card-shadow);
   transition: all 0.3s ease;
   cursor: pointer;
@@ -269,6 +268,9 @@
   color: rgb(166, 166, 166);
   font-size: 12px;
   margin-top: 8px;
+  overflow: hidden; /* 隐藏溢出的文本 */
+  white-space: nowrap; /* 防止文本换行 */
+  text-overflow: ellipsis; /* 在溢出时显示省略号 */
 }
 
 .chat-item-count {
@@ -572,6 +574,7 @@
 
       @include single-line();
     }
+
     .hint-content {
       font-size: 12px;
 

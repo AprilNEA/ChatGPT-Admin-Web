@@ -113,6 +113,7 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
             onClick={() => {
               setShowSideBar(false);
             }}
+            prefetch={true}
           >
             <button className={styles['sidebar-premium']}>
               <div>
@@ -128,6 +129,8 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
             onClick={() => {
               setShowSideBar(false);
             }}
+            style={{ color: 'inherit', textDecoration: 'inherit' }}
+            prefetch={true}
           >
             <div className={styles['sidebar-accountbtn']}>
               <div
