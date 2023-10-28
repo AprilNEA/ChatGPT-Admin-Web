@@ -83,7 +83,7 @@ const Markdown = dynamic(
   },
 );
 
-export default function Chat(props: { sid?: string }) {
+export default function Chat() {
   // 侧边栏
   const [sidebarOpen, setSideBarOpen] = useStore((state) => [
     state.showSideBar,
@@ -165,11 +165,11 @@ export default function Chat(props: { sid?: string }) {
   const [autoScroll, setAutoScroll] = useState(false);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
-  useEffect(() => {
-    if (props.sid !== sessionId) {
-      updateSessionId(props.sid);
-    }
-  }, [props.sid, sessionId, updateSessionId]);
+  // useEffect(() => {
+  //   if (props.sid !== sessionId) {
+  //     updateSessionId(props.sid);
+  //   }
+  // }, [props.sid, sessionId, updateSessionId]);
 
   // auto scroll
   useLayoutEffect(() => {

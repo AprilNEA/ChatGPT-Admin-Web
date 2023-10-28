@@ -1,15 +1,14 @@
-"use client";
+'use client';
 
-import { useRouter } from "next/navigation";
-
-import { IconButton } from "@/components/button";
-import { List, ListItem } from "@/components/ui-lib";
-import ClearIcon from "@/icons/clear.svg";
-import CloseIcon from "@/icons/close.svg";
-import ResetIcon from "@/icons/reload.svg";
-import Locale, { changeLang, getLang } from "@/locales";
-import { SubmitKey, Theme, useStore } from "@/store";
-import styles from "@/styles/module/profile.module.scss";
+import { IconButton } from '@/components/button';
+import { List, ListItem } from '@/components/ui-lib';
+import ClearIcon from '@/icons/clear.svg';
+import CloseIcon from '@/icons/close.svg';
+import ResetIcon from '@/icons/reload.svg';
+import Locale, { changeLang, getLang } from '@/locales';
+import { SubmitKey, Theme, useStore } from '@/store';
+import styles from '@/styles/module/profile.module.scss';
+import { useRouter } from 'next/navigation';
 
 function SettingItem(props: {
   title: string;
@@ -18,10 +17,10 @@ function SettingItem(props: {
 }) {
   return (
     <ListItem>
-      <div className={styles["settings-title"]}>
+      <div className={styles['settings-title']}>
         <div>{props.title}</div>
         {props.subTitle && (
-          <div className={styles["settings-sub-title"]}>{props.subTitle}</div>
+          <div className={styles['settings-sub-title']}>{props.subTitle}</div>
         )}
       </div>
       {props.children}
@@ -39,17 +38,17 @@ export default function Settings() {
 
   return (
     <>
-      <div className={styles["window-header"]}>
-        <div className={styles["window-header-title"]}>
-          <div className={styles["window-header-main-title"]}>
+      <div className={styles['window-header']}>
+        <div className={styles['window-header-title']}>
+          <div className={styles['window-header-main-title']}>
             {Locale.Profile.Title}
           </div>
-          <div className={styles["window-header-sub-title"]}>
+          <div className={styles['window-header-sub-title']}>
             {Locale.Profile.SubTitle}
           </div>
         </div>
-        <div className={styles["window-actions"]}>
-          <div className={styles["window-action-button"]}>
+        <div className={styles['window-actions']}>
+          <div className={styles['window-action-button']}>
             <IconButton
               icon={<CloseIcon />}
               onClick={() => router.back()}
@@ -59,18 +58,14 @@ export default function Settings() {
           </div>
         </div>
       </div>
-      <div className={styles["profile"]}>
+      <div className={styles['profile']}>
         <List>
           <SettingItem title={Locale.Profile.Username}>
-            <input
-              value={config.submitKey}
-              onChange={(e) => {
-              }}
-            />
+            <input value={config.submitKey} onChange={(e) => {}} />
           </SettingItem>
 
           <ListItem>
-            <div className={styles["profile-title"]}>
+            <div className={styles['profile-title']}>
               {Locale.Settings.Theme}
             </div>
             <select

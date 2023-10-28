@@ -1,21 +1,24 @@
-"use client";
+'use client';
 
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-
-import { ChatList } from "@/components/chat/chat-list";
-import { Loading } from "@/components/loading";
-import { useSwitchTheme } from "@/hooks/switch-theme";
-import AddIcon from "@/icons/add-std.svg";
-import ChatGptIcon from "@/icons/chatgpt.svg";
-import PremiumIcon from "@/icons/premium.svg";
-import SettingsIcon from "@/icons/settings.svg";
-import UserIcon from "@/icons/user.svg";
-import Locale from "@/locales";
-import { useStore } from "@/store";
-import styles from "@/styles/module/home.module.scss";
-import { isMobileScreen } from "@/utils/client-utils";
-import useUserInfo from "@/hooks/use-userinfo";
+import { IconButton } from '@/components/button';
+import { ChatList } from '@/components/chat/chat-list';
+import { Loading } from '@/components/loading';
+import { useSwitchTheme } from '@/hooks/switch-theme';
+import { showAnnouncement } from '@/hooks/use-notice';
+import AddIcon from '@/icons/add-std.svg';
+import AnnouncementIcon from '@/icons/announcement.svg';
+import ChatGptIcon from '@/icons/chatgpt.svg';
+import CloseIcon from '@/icons/close.svg';
+import PremiumIcon from '@/icons/premium.svg';
+import SettingsIcon from '@/icons/settings.svg';
+import UserIcon from '@/icons/user.svg';
+import Locale from '@/locales';
+import { useStore } from '@/store';
+import styles from '@/styles/module/home.module.scss';
+import { isMobileScreen } from '@/utils/client-utils';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 /* 修复水合错误 */
 const useHasHydrated = () => {
@@ -38,11 +41,11 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
   ]);
 
   // 对话
-  const [createNewSession, currentIndex, removeSession] = useStore((state) => [
-    state.newSession,
-    state.currentChatSessionId,
-    state.removeSession,
-  ]);
+  // const [createNewSession, currentIndex, removeSession] = useStore((state) => [
+  //   state.newSession,
+  //   state.currentChatSessionId,
+  //   state.removeSession,
+  // ]);
 
   // 是否加载中
   const loading = !useHasHydrated();
@@ -53,20 +56,8 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
   // 暗色模式切换
   useSwitchTheme();
 
-  const userInfo = useUserInfo();
+  // const userInfo = useUserInfo();
 
-  const routerPremium = () => {
-    router.push("/premium");
-    setShowSideBar(false);
-  };
-  const routerProfile = () => {
-    router.push("/profile");
-    setShowSideBar(false);
-  };
-  const routerSetting = () => {
-    router.push("/settings");
-    setShowSideBar(false);
-  };
   if (loading) {
     return <Loading />;
   }
@@ -75,38 +66,39 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
     <div
       className={`${
         config.tightBorder && !isMobileScreen()
-          ? styles["tight-container"]
+          ? styles['tight-container']
           : styles.container
       }`}
     >
       <div
-        className={styles.sidebar + ` ${showSideBar && styles["sidebar-show"]}`}
+        className={styles.sidebar + ` ${showSideBar && styles['sidebar-show']}`}
       >
-        <div className={styles["sidebar-header"]}>
-          <div className={styles["sidebar-title"]}>{Locale.Index.Title}</div>
+        <div className={styles['sidebar-header']}>
+          <div className={styles['sidebar-title']}>{Locale.Index.Title}</div>
           {!!process.env.NEXT_PUBLIC_OA && (
-            <div className={styles["sidebar-sub-title"]}>
+            <div className={styles['sidebar-sub-title']}>
               {Locale.Index.SubTitle}
-              <span className={styles["sidebar-wechat-oa"]}>
+              <span className={styles['sidebar-wechat-oa']}>
                 {process.env.NEXT_PUBLIC_OA}
               </span>
             </div>
           )}
-          <div className={styles["sidebar-logo"]}>
+          <div className={styles['sidebar-logo']}>
             <ChatGptIcon />
           </div>
         </div>
-        <button className={styles["sidebar-newbtn"]}>
-          <div>
-            <div className={styles["icon"]} onClick={() => {}}>
-              <AddIcon />
+        <Link href="/chat/new" onClick={() => setShowSideBar(false)}>
+          <button className={styles['sidebar-newbtn']}>
+            <div>
+              <div className={styles['icon']}>
+                <AddIcon />
+              </div>
+              <div className={styles['text']}>{Locale.Home.NewChat}</div>
             </div>
-            <div className={styles["text"]}>{Locale.Home.NewChat}</div>
-          </div>
-        </button>
-
+          </button>
+        </Link>
         <div
-          className={styles["sidebar-body"]}
+          className={styles['sidebar-body']}
           onClick={() => {
             setShowSideBar(false);
           }}
@@ -114,32 +106,55 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
           <ChatList />
         </div>
 
-        <div className={styles["sidebar-tail"]}>
-          <button className={styles["sidebar-premium"]} onClick={routerPremium}>
-            <div>
-              <div className={styles["icon"]}>
-                <PremiumIcon />
+        <div className={styles['sidebar-tail']}>
+          <Link
+            href="/premium"
+            onClick={() => {
+              setShowSideBar(false);
+            }}
+          >
+            <button className={styles['sidebar-premium']}>
+              <div>
+                <div className={styles['icon']}>
+                  <PremiumIcon />
+                </div>
+                <div className={styles['text']}>{Locale.Index.Premium}</div>
               </div>
-              <div className={styles["text"]}>{Locale.Index.Premium}</div>
-            </div>
-          </button>
-          <div className={styles["sidebar-accountbtn"]}>
-            <div className={styles["sidebar-account"]} onClick={routerProfile}>
-              <div className={styles["avatar"]}>
-                <UserIcon />
+            </button>
+          </Link>
+          <Link
+            href="/profile"
+            onClick={() => {
+              setShowSideBar(false);
+            }}
+          >
+            <div className={styles['sidebar-accountbtn']}>
+              <div
+                className={styles['sidebar-account']}
+                onClick={() => {
+                  setShowSideBar(false);
+                }}
+              >
+                <div className={styles['avatar']}>
+                  <UserIcon />
+                </div>
+                <div className={styles['account-name']}>Username</div>
               </div>
-              <div className={styles["account-name"]}>{userInfo.}</div>
+              <Link
+                href="/settings"
+                onClick={() => {
+                  setShowSideBar(false);
+                }}
+              >
+                <div className={styles['account-settingbtn']}>
+                  <SettingsIcon />
+                </div>
+              </Link>
             </div>
-            <div
-              onClick={routerSetting}
-              className={styles["account-settingbtn"]}
-            >
-              <SettingsIcon />
-            </div>
-          </div>
+          </Link>
         </div>
       </div>
-      <div className={styles["window-content"]}>{children}</div>
+      <div className={styles['window-content']}>{children}</div>
     </div>
   );
 }

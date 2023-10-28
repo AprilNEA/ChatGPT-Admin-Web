@@ -41,6 +41,7 @@ export function ChatItem(props: {
   );
 }
 
+/* 左侧边栏对话列表 */
 export function ChatList() {
   const router = useRouter();
 

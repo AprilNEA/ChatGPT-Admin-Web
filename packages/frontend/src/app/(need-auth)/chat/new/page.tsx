@@ -1,12 +1,6 @@
-"use client";
-
-import { useRouter } from "next/navigation";
-import { v4 as uuidv4 } from "uuid";
-
-import Chat from "@/components/chat";
+import { redirect } from 'next/navigation';
 
 export default function NewChatPage() {
-  const router = useRouter();
-  const newSessionId = uuidv4();
-  router.push(`/chat/${newSessionId}`);
+  const newSessionId = crypto.randomUUID();
+  redirect(`/chat/${newSessionId}?new=true`);
 }

@@ -1,29 +1,28 @@
-import { useRouter } from "next/navigation";
+import { TextLineStream } from '@/utils/text_line_stream';
+import { useRouter } from 'next/navigation';
 import {
   ChatMessage,
   ChatMessageRole,
   ChatSession,
   NewMessageDto,
-} from "shared";
-import { create } from "zustand";
-import { persist } from "zustand/middleware";
-
-import { TextLineStream } from "@/utils/text_line_stream";
+} from 'shared';
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL!;
 
 export enum SubmitKey {
-  Enter = "Enter",
-  CtrlEnter = "Ctrl + Enter",
-  ShiftEnter = "Shift + Enter",
-  AltEnter = "Alt + Enter",
-  MetaEnter = "Meta + Enter",
+  Enter = 'Enter',
+  CtrlEnter = 'Ctrl + Enter',
+  ShiftEnter = 'Shift + Enter',
+  AltEnter = 'Alt + Enter',
+  MetaEnter = 'Meta + Enter',
 }
 
 export enum Theme {
-  Auto = "auto",
-  Dark = "dark",
-  Light = "light",
+  Auto = 'auto',
+  Dark = 'dark',
+  Light = 'light',
 }
 
 type LocalConfig = {
@@ -47,6 +46,7 @@ type StoreType = {
   currentChatSession?: ChatSession;
   currentChatSessionMessages?: ChatMessage[];
 
+  sessionId?: string;
   addMessage: (
     message: { role: ChatMessageRole; content: string } & Partial<ChatMessage>,
   ) => void;
@@ -57,11 +57,7 @@ type StoreType = {
   ) => void;
 
   requestChat: (content: string, signal?: AbortSignal) => Promise<void>;
-  updateSessionId: (
-    sid?: string,
-    router?: ReturnType<typeof useRouter>,
-  ) => void;
-  newSession: (router: ReturnType<typeof useRouter>) => void;
+  updateSessionId: (sessionId: string, isNew?: boolean) => void;
   removeSession: (sid: string) => void;
 
   chatStreamingController?: AbortController;
@@ -160,18 +156,35 @@ export const useStore = create<StoreType>()(
         });
       },
 
-      async newSession(router) {
-        get().updateSessionId(crypto.randomUUID(), router);
-      },
-
-      async updateSessionId(sid, router) {
-        if (router) router.push(`/chat/${sid}`);
+      /* isNew won't fetch server */
+      async updateSessionId(sessionId, isNew = false) {
+        if (isNew) {
+          set({
+            currentChatSessionId: sessionId,
+            currentChatSession: {
+              id: sessionId,
+              topic: '',
+              updatedAt: new Date(),
+              messagesCount: 1,
+            },
+            currentChatSessionMessages: [
+              {
+                role: 'system',
+                content: '你好，请问有什么可以帮助您？',
+                modelId: 1,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+              },
+            ],
+          });
+          return;
+        }
         const { messages, ...session } = await get()
-          .fetcher(`/chat/messages/${sid}`)
+          .fetcher(`/chat/messages/${sessionId}`)
           .then((res) => res.json());
         console.log(messages, session);
         set({
-          currentChatSessionId: sid,
+          currentChatSessionId: sessionId,
           currentChatSession: session,
           currentChatSessionMessages: messages,
         });
@@ -192,8 +205,8 @@ export const useStore = create<StoreType>()(
 
         if (isStreaming()) {
           console.warn(
-            "[request chat]",
-            "unable to request chat while streaming",
+            '[request chat]',
+            'unable to request chat while streaming',
           );
           return;
         }
@@ -201,8 +214,8 @@ export const useStore = create<StoreType>()(
         const chatStreamingController = new AbortController();
         set({ chatStreamingController });
 
-        addMessage({ role: "user", content });
-        addMessage({ role: "assistant", content: "", isStreaming: true });
+        addMessage({ role: 'user', content });
+        addMessage({ role: 'assistant', content: '', isStreaming: true });
 
         const body: NewMessageDto = {
           content,
@@ -210,8 +223,8 @@ export const useStore = create<StoreType>()(
         };
 
         const res = await fetcher(`/chat/messages/${currentChatSessionId}`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(body),
           signal: chatStreamingController.signal,
         });
@@ -231,18 +244,18 @@ export const useStore = create<StoreType>()(
               reader.releaseLock();
               break;
             }
-            if (!line?.startsWith("data:")) continue;
-            const data = line?.slice("data:".length).trim();
+            if (!line?.startsWith('data:')) continue;
+            const data = line?.slice('data:'.length).trim();
             if (!data) continue;
-            console.log("[streaming]", data);
+            console.log('[streaming]', data);
 
             // const token: string = JSON.parse(data);
             const token = data;
             modifyLastMessage(({ content }) => ({ content: content + token }));
           } catch (e) {
             reader.releaseLock();
-            if (e instanceof DOMException && e.name === "AbortError") {
-              console.log("[streaming]", "aborting...");
+            if (e instanceof DOMException && e.name === 'AbortError') {
+              console.log('[streaming]', 'aborting...');
               break;
             } else throw e;
           }
@@ -252,8 +265,8 @@ export const useStore = create<StoreType>()(
         set({ chatStreamingController: undefined });
 
         console.log(
-          "[request chat]",
-          "streaming finished. current messages are",
+          '[request chat]',
+          'streaming finished. current messages are',
           get().currentChatSessionMessages,
         );
       },
@@ -268,7 +281,7 @@ export const useStore = create<StoreType>()(
           ...init,
           headers: {
             ...init?.headers,
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
             Authorization: `Bearer ${get().sessionToken}`,
           },
         });
@@ -282,7 +295,7 @@ export const useStore = create<StoreType>()(
       },
     }),
     {
-      name: "caw",
+      name: 'caw',
       partialize: (state) => ({
         sessionToken: state.sessionToken,
         config: state.config,
