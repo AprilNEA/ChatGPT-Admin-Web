@@ -1,8 +1,8 @@
-import { showToast } from "@/components/ui-lib";
-import Locale from "@/locales";
+import { showToast } from '@/components/ui-lib';
+import Locale from '@/locales';
 
 export function trimTopic(topic: string) {
-  return topic.replace(/[，。！？、,.!?]*$/, "");
+  return topic.replace(/[，。！？、,.!?]*$/, '');
 }
 
 export function copyToClipboard(text: string) {
@@ -17,14 +17,14 @@ export function copyToClipboard(text: string) {
 }
 
 export function downloadAs(text: string, filename: string) {
-  const element = document.createElement("a");
+  const element = document.createElement('a');
   element.setAttribute(
-    "href",
-    "data:text/plain;charset=utf-8," + encodeURIComponent(text),
+    'href',
+    'data:text/plain;charset=utf-8,' + encodeURIComponent(text),
   );
-  element.setAttribute("download", filename);
+  element.setAttribute('download', filename);
 
-  element.style.display = "none";
+  element.style.display = 'none';
   document.body.appendChild(element);
 
   element.click();
@@ -44,7 +44,7 @@ export function isMobileScreen() {
 export function selectOrCopy(el: HTMLElement, content: string) {
   const currentSelection = window.getSelection();
 
-  if (currentSelection?.type === "Range") {
+  if (currentSelection?.type === 'Range') {
     return false;
   }
 
@@ -59,9 +59,9 @@ export function queryMeta(key: string, defaultValue?: string): string {
     const meta = document.head.querySelector(
       `meta[name='${key}']`,
     ) as HTMLMetaElement;
-    ret = meta?.content ?? "";
+    ret = meta?.content ?? '';
   } else {
-    ret = defaultValue ?? "";
+    ret = defaultValue ?? '';
   }
 
   return ret;

@@ -1,11 +1,11 @@
-import CN from "./cn";
-import EN from "./en";
+import CN from './cn';
+import EN from './en';
 
-export type { LocaleType } from "./cn";
+export type { LocaleType } from './cn';
 
-type Lang = "en" | "cn";
+type Lang = 'en' | 'cn';
 
-const LANG_KEY = "lang";
+const LANG_KEY = 'lang';
 
 function getItem(key: string) {
   try {
@@ -25,23 +25,23 @@ function getLanguage() {
   try {
     return navigator.language.toLowerCase();
   } catch {
-    return "cn";
+    return 'cn';
   }
 }
 
 export function getLang(): Lang {
   const savedLang = getItem(LANG_KEY);
 
-  if (["en", "cn"].includes(savedLang ?? "")) {
+  if (['en', 'cn'].includes(savedLang ?? '')) {
     return savedLang as Lang;
   }
 
   const lang = getLanguage();
 
-  if (lang.includes("zh") || lang.includes("cn")) {
-    return "cn";
+  if (lang.includes('zh') || lang.includes('cn')) {
+    return 'cn';
   } else {
-    return "en";
+    return 'en';
   }
 }
 

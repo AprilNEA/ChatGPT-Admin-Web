@@ -1,9 +1,10 @@
+import { PrismaClient } from '@prisma/client';
+
 import {
   monthDuration,
   quarterDuration,
   yearDuration,
 } from '@/processors/database/database.service';
-import { PrismaClient } from '@prisma/client';
 
 export async function initDatabase(prisma: PrismaClient) {
   prisma.$transaction(async (prisma) => {

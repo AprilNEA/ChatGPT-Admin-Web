@@ -1,14 +1,13 @@
-import "katex/dist/katex.min.css";
+import 'katex/dist/katex.min.css';
+import { useRef } from 'react';
+import ReactMarkdown from 'react-markdown';
+import RehypeKatex from 'rehype-katex';
+import RehypePrsim from 'rehype-prism-plus';
+import RemarkBreaks from 'remark-breaks';
+import RemarkGfm from 'remark-gfm';
+import RemarkMath from 'remark-math';
 
-import { useRef } from "react";
-import ReactMarkdown from "react-markdown";
-import RehypeKatex from "rehype-katex";
-import RehypePrsim from "rehype-prism-plus";
-import RemarkBreaks from "remark-breaks";
-import RemarkGfm from "remark-gfm";
-import RemarkMath from "remark-math";
-
-import { copyToClipboard } from "@/utils/client-utils";
+import { copyToClipboard } from '@/utils/client-utils';
 
 export function PreCode(props: { children: any }) {
   const ref = useRef<HTMLPreElement>(null);

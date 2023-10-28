@@ -1,5 +1,9 @@
 'use client';
 
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+
 import { IconButton } from '@/components/button';
 import { ChatList } from '@/components/chat/chat-list';
 import { Loading } from '@/components/loading';
@@ -16,9 +20,6 @@ import Locale from '@/locales';
 import { useStore } from '@/store';
 import styles from '@/styles/module/home.module.scss';
 import { isMobileScreen } from '@/utils/client-utils';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
 
 /* 修复水合错误 */
 const useHasHydrated = () => {

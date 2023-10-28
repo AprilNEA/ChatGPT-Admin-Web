@@ -1,27 +1,27 @@
 export type RecordedMessage = {
-  author: "user" | "bot";
+  author: 'user' | 'bot';
   text: string;
 };
 
 export type BingGeneratorEvent =
   | {
-      type: "DONE";
+      type: 'DONE';
       text: string;
     }
   | {
-      type: "ANSWER";
+      type: 'ANSWER';
       answer: string;
     }
   | {
-      type: "ERROR";
+      type: 'ERROR';
       error: unknown;
     }
   | {
-      type: "RESET";
+      type: 'RESET';
       text: string;
     }
   | {
-      type: "QUERY";
+      type: 'QUERY';
       query: string;
     };
 

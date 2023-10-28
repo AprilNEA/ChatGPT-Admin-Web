@@ -1,5 +1,7 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
+
 import { IconButton } from '@/components/button';
 import { List, ListItem } from '@/components/ui-lib';
 import ClearIcon from '@/icons/clear.svg';
@@ -8,7 +10,6 @@ import ResetIcon from '@/icons/reload.svg';
 import Locale, { changeLang, getLang } from '@/locales';
 import { SubmitKey, Theme, useStore } from '@/store';
 import styles from '@/styles/module/profile.module.scss';
-import { useRouter } from 'next/navigation';
 
 function SettingItem(props: {
   title: string;

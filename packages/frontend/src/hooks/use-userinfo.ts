@@ -1,5 +1,6 @@
-import { useStore } from "@/store";
-import useSWR from "swr";
+import useSWR from 'swr';
+
+import { useStore } from '@/store';
 
 interface UserInfo {
   name: string;
@@ -9,7 +10,7 @@ interface UserInfo {
 
 const useUserInfo = () => {
   const { fetcher } = useStore();
-  const { data: userInfo } = useSWR("/user/info", (url: string) => {
+  const { data: userInfo } = useSWR('/user/info', (url: string) => {
     fetcher(url)
       .then((res) => res.json())
       .then((res) => {

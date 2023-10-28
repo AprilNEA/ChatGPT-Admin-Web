@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { DatabaseService } from '@/processors/database/database.service';
 import { OrderStatus, OrderType } from '@prisma/client';
+
+import { DatabaseService } from '@/processors/database/database.service';
 import {
   monthDuration,
   quarterDuration,

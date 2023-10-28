@@ -1,7 +1,8 @@
-import { showModal } from "@/components/ui-lib";
+import { showModal } from '@/components/ui-lib';
+
 export function showAnnouncement() {
   showModal({
-    title: "Announcement 公告",
+    title: 'Announcement 公告',
     children: (
       <div>
         <p>邀请制度已经推出，成功邀请一人可获得一次重置次数。</p>
@@ -38,10 +39,10 @@ export function showAnnouncement() {
 
 export function Announcement(
   versionId: string,
-  updateVersionId: (versionId: string) => void
+  updateVersionId: (versionId: string) => void,
 ) {
   // return fetch(`/api/announcement?versionId=${versionId}`).then((res) =>
-  const versionIdNow = "20230410";
+  const versionIdNow = '20230410';
   if (versionIdNow !== versionId) {
     updateVersionId(versionIdNow);
     showAnnouncement();

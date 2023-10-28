@@ -1,7 +1,9 @@
-import { Module } from '@nestjs/common';
-import { RedisService } from './redis.service';
-import { ConfigModule } from '@nestjs/config';
 import { Config } from 'prettier';
+
+import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+
+import { RedisService } from './redis.service';
 
 @Module({
   imports: [ConfigModule],

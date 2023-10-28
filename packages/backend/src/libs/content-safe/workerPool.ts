@@ -1,6 +1,6 @@
-import { Worker } from 'worker_threads';
 import os from 'os';
 import path from 'path';
+import { Worker } from 'worker_threads';
 
 const numCPUs = os.cpus().length;
 

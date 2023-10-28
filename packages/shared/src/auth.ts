@@ -1,4 +1,4 @@
-export type IAccountStatus = "bind" | "password" | "block" | "ok";
+export type IAccountStatus = 'bind' | 'password' | 'block' | 'ok';
 
 export interface identityDto {
   identity: string;

@@ -1,3 +1,3 @@
-import { Loading } from "@/components/loading";
+import { Loading } from '@/components/loading';
 
 export default Loading;

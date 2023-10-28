@@ -1,13 +1,14 @@
-"use client";
+'use client';
 
-import { useRouter } from "next/navigation";
-import { ChatSession } from "shared";
-import useSWR from "swr";
+import { useRouter } from 'next/navigation';
+import useSWR from 'swr';
 
-import DeleteIcon from "@/icons/delete.svg";
-import Locale from "@/locales";
-import { useStore } from "@/store";
-import styles from "@/styles/module/home.module.scss";
+import DeleteIcon from '@/icons/delete.svg';
+import Locale from '@/locales';
+import { useStore } from '@/store';
+import styles from '@/styles/module/home.module.scss';
+
+import { ChatSession } from 'shared';
 
 /* 左侧对话栏中最小对话单元 */
 export function ChatItem(props: {
@@ -22,19 +23,19 @@ export function ChatItem(props: {
 
   return (
     <div
-      className={`${styles["chat-item"]} ${
-        props.selected && styles["chat-item-selected"]
+      className={`${styles['chat-item']} ${
+        props.selected && styles['chat-item-selected']
       }`}
       onClick={props.onClick}
     >
-      <div className={styles["chat-item-title"]}>{props.title}</div>
-      <div className={styles["chat-item-info"]}>
-        <div className={styles["chat-item-count"]}>
+      <div className={styles['chat-item-title']}>{props.title}</div>
+      <div className={styles['chat-item-info']}>
+        <div className={styles['chat-item-count']}>
           {Locale.ChatItem.ChatItemCount(props.count)}
         </div>
-        <div className={styles["chat-item-date"]}>{date.toLocaleString()}</div>
+        <div className={styles['chat-item-date']}>{date.toLocaleString()}</div>
       </div>
-      <div className={styles["chat-item-delete"]} onClick={props.onDelete}>
+      <div className={styles['chat-item-delete']} onClick={props.onDelete}>
         <DeleteIcon />
       </div>
     </div>
@@ -50,7 +51,7 @@ export function ChatList() {
     state.currentChatSessionId,
     state.updateSessionId,
   ]);
-  const { data: sessions } = useSWR<ChatSession[]>("/chat/sessions", (url) => {
+  const { data: sessions } = useSWR<ChatSession[]>('/chat/sessions', (url) => {
     return fetcher(url)
       .then((res) => res.json())
       .then((res) =>
@@ -63,12 +64,12 @@ export function ChatList() {
   });
 
   return (
-    <div className={styles["chat-list"]}>
+    <div className={styles['chat-list']}>
       {sessions &&
         sessions.map((item, i) => (
           <ChatItem
             key={i}
-            title={item.topic ?? "新的对话"}
+            title={item.topic ?? '新的对话'}
             time={item.updatedAt}
             count={item.messagesCount}
             selected={session === item.id}

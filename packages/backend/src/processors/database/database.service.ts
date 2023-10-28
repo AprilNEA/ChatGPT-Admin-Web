@@ -1,12 +1,12 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
-import { PrismaClient, Prisma } from '@prisma/client';
-
 import { ConfigService } from '@nestjs/config';
+import { Prisma, PrismaClient } from '@prisma/client';
+
 import { ConfigType } from 'shared';
 
-export type * from '@prisma/client';
-
 import { initDatabase } from './init';
+
+export type * from '@prisma/client';
 
 export const monthDuration = 2592000;
 export const quarterDuration = 7776000;

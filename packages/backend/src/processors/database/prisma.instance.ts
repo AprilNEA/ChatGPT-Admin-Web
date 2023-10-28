@@ -1,4 +1,5 @@
 import { Prisma, PrismaClient } from '@prisma/client';
+
 import { PaginationResult } from 'shared';
 
 export const createExtendedPrismaClient = ({ url }: { url?: string } = {}) => {

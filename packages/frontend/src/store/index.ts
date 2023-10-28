@@ -1,13 +1,15 @@
-import { TextLineStream } from '@/utils/text_line_stream';
 import { useRouter } from 'next/navigation';
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
+
+import { TextLineStream } from '@/utils/text_line_stream';
+
 import {
   ChatMessage,
   ChatMessageRole,
   ChatSession,
   NewMessageDto,
 } from 'shared';
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL!;
 

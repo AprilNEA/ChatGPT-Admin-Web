@@ -1,12 +1,13 @@
-import { Injectable } from '@nestjs/common';
 import {
-  jwtVerify,
-  importJWK,
-  SignJWT,
   type JWTPayload as JWTPayloadDefault,
+  SignJWT,
+  importJWK,
+  jwtVerify,
 } from 'jose';
-import { Role } from '@prisma/client';
+
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { Role } from '@prisma/client';
 
 export type JWTPayload = JWTPayloadDefault & {
   id: number;

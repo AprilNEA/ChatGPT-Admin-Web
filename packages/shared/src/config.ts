@@ -23,7 +23,7 @@ export interface ConfigType {
     keyPath: string;
   };
   email: {
-    use: "resend";
+    use: 'resend';
     resend?: {
       apiKey: string;
     };

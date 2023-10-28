@@ -1,11 +1,11 @@
-import { createRoot } from "react-dom/client";
+import { createRoot } from 'react-dom/client';
 
-import { IconButton } from "@/components/button";
-import CloseIcon from "@/icons/close.svg";
-import ReturnIcon from "@/icons/return.svg";
-import LoadingIcon from "@/icons/three-dots.svg";
-import Locale from "@/locales";
-import styles from "@/styles/module/ui-lib.module.scss";
+import { IconButton } from '@/components/button';
+import CloseIcon from '@/icons/close.svg';
+import ReturnIcon from '@/icons/return.svg';
+import LoadingIcon from '@/icons/three-dots.svg';
+import Locale from '@/locales';
+import styles from '@/styles/module/ui-lib.module.scss';
 
 export function Popover(props: {
   children: JSX.Element;
@@ -17,8 +17,8 @@ export function Popover(props: {
     <div className={styles.popover}>
       {props.children}
       {props.open && (
-        <div className={styles["popover-content"]}>
-          <div className={styles["popover-mask"]} onClick={props.onClose}></div>
+        <div className={styles['popover-content']}>
+          <div className={styles['popover-mask']} onClick={props.onClose}></div>
           {props.content}
         </div>
       )}
@@ -28,16 +28,16 @@ export function Popover(props: {
 
 export function Card(props: { children: JSX.Element[]; className?: string }) {
   return (
-    <div className={styles.card + " " + props.className}>{props.children}</div>
+    <div className={styles.card + ' ' + props.className}>{props.children}</div>
   );
 }
 
 export function ListItem(props: { children: JSX.Element[] }) {
   if (props.children.length > 2) {
-    throw Error("Only Support Two Children");
+    throw Error('Only Support Two Children');
   }
 
-  return <div className={styles["list-item"]}>{props.children}</div>;
+  return <div className={styles['list-item']}>{props.children}</div>;
 }
 
 export function List(props: { children: JSX.Element[] }) {
@@ -48,11 +48,11 @@ export function Loading() {
   return (
     <div
       style={{
-        height: "100vh",
-        width: "100vw",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
+        height: '100vh',
+        width: '100vw',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
       }}
     >
       <LoadingIcon />
@@ -69,21 +69,21 @@ interface ModalProps {
 
 export function Modal(props: ModalProps) {
   return (
-    <div className={styles["modal-container"]}>
-      <div className={styles["modal-header"]}>
-        <div className={styles["modal-title"]}>{props.title}</div>
+    <div className={styles['modal-container']}>
+      <div className={styles['modal-header']}>
+        <div className={styles['modal-title']}>{props.title}</div>
 
-        <div className={styles["modal-close-btn"]} onClick={props.onClose}>
+        <div className={styles['modal-close-btn']} onClick={props.onClose}>
           <CloseIcon />
         </div>
       </div>
 
-      <div className={styles["modal-content"]}>{props.children}</div>
+      <div className={styles['modal-content']}>{props.children}</div>
 
-      <div className={styles["modal-footer"]}>
-        <div className={styles["modal-actions"]}>
+      <div className={styles['modal-footer']}>
+        <div className={styles['modal-actions']}>
           {props.actions?.map((action, i) => (
-            <div key={i} className={styles["modal-action"]}>
+            <div key={i} className={styles['modal-action']}>
               {action}
             </div>
           ))}
@@ -94,8 +94,8 @@ export function Modal(props: ModalProps) {
 }
 
 export function showModal(props: ModalProps) {
-  const div = document.createElement("div");
-  div.className = "modal-mask";
+  const div = document.createElement('div');
+  div.className = 'modal-mask';
   document.body.appendChild(div);
 
   const root = createRoot(div);
@@ -118,14 +118,14 @@ export type ToastProps = { content: string };
 
 export function Toast(props: ToastProps) {
   return (
-    <div className={styles["toast-container"]}>
-      <div className={styles["toast-content"]}>{props.content}</div>
+    <div className={styles['toast-container']}>
+      <div className={styles['toast-content']}>{props.content}</div>
     </div>
   );
 }
 
 export function showToast(content: string, delay = 3000) {
-  const div = document.createElement("div");
+  const div = document.createElement('div');
   div.className = styles.show;
   document.body.appendChild(div);
 
@@ -148,8 +148,8 @@ export function showToast(content: string, delay = 3000) {
 
 export function ReturnButton(props: { onClick: () => void }) {
   return (
-    <div className={styles["return-button-wrapper"]}>
-      <div className={styles["return-button"]}>
+    <div className={styles['return-button-wrapper']}>
+      <div className={styles['return-button']}>
         <IconButton
           icon={<ReturnIcon />}
           onClick={props.onClick}

@@ -1,15 +1,15 @@
 import {
   CanActivate,
-  createParamDecorator,
   ExecutionContext,
   Injectable,
   SetMetadata,
   UnauthorizedException,
+  createParamDecorator,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-
 import { Role } from '@prisma/client';
-import { JwtService, JWTPayload } from '@/libs/jwt/jwt.service';
+
+import { JWTPayload, JwtService } from '@/libs/jwt/jwt.service';
 
 export const ROLES_KEY = 'roles';
 export const IS_PUBLIC_KEY = 'isPublic';

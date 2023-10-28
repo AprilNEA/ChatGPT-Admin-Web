@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+
 import { ContentSafeService } from './content-safe.service';
 
 @Module({

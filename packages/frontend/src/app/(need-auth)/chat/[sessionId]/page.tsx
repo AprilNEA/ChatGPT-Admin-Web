@@ -1,9 +1,10 @@
 'use client';
 
-import Chat from '@/components/chat';
-import { useStore } from '@/store';
 import { useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
+
+import Chat from '@/components/chat';
+import { useStore } from '@/store';
 
 export default function ChatPage({
   params,

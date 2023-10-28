@@ -8,13 +8,16 @@ import {
   RawBodyRequest,
   Req,
 } from '@nestjs/common';
-import { OrderService } from './order.service';
-import { newOrderDto } from 'shared';
-import { Payload, Roles } from '@/common/guards/auth.guard';
-import { PaymentService } from '@/libs/payment/payment.service';
-import { Public } from '@/common/guards/auth.guard';
 import { Role } from '@prisma/client';
+
+import { Payload, Roles } from '@/common/guards/auth.guard';
+import { Public } from '@/common/guards/auth.guard';
 import { JWTPayload } from '@/libs/jwt/jwt.service';
+import { PaymentService } from '@/libs/payment/payment.service';
+
+import { newOrderDto } from 'shared';
+
+import { OrderService } from './order.service';
 
 @Controller('order')
 export class OrderController {

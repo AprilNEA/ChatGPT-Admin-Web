@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
+
 import { DatabaseService } from '@/processors/database/database.service';
+
 import { makeKeyGetter } from './core';
 import { makeWeightedSelector } from './selectors';
 

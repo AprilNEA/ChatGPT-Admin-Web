@@ -1,6 +1,7 @@
-import { parentPort } from 'worker_threads';
-import type { MintWorkerInput, MintWorkerOutput } from './types';
 import { Mint } from 'mint-filter';
+import { parentPort } from 'worker_threads';
+
+import type { MintWorkerInput, MintWorkerOutput } from './types';
 
 if (parentPort) {
   let mint = new Mint([]);

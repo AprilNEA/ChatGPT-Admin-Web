@@ -1,4 +1,4 @@
-import { FormEvent,useState } from "react";
+import { FormEvent, useState } from 'react';
 
 const usePreventFormSubmit = (): [
   boolean,
@@ -20,7 +20,7 @@ const usePreventFormSubmit = (): [
     try {
       await onSubmit(event); /* Perform the actual form submission operation */
     } catch (error) {
-      console.error("Error when submitting form:", error);
+      console.error('Error when submitting form:', error);
     } finally {
       setIsSubmitting(false);
     }

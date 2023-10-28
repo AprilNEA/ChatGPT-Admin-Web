@@ -1,7 +1,9 @@
 // import * as Joi from "Joi";
 import { Controller, Get, Post } from '@nestjs/common';
-import { AppService } from './app.service';
+
 import { Public, Roles } from '@/common/guards/auth.guard';
+
+import { AppService } from './app.service';
 
 @Public()
 @Controller()

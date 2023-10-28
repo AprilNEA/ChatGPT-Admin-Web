@@ -19,14 +19,14 @@ interface TextLineStreamOptions {
  */
 export class TextLineStream extends TransformStream<string, string> {
   readonly #allowCR: boolean;
-  #buf = "";
+  #buf = '';
 
   constructor(options?: TextLineStreamOptions) {
     super({
       transform: (chunk, controller) => this.#handle(chunk, controller),
       flush: (controller) => {
         if (this.#buf.length > 0) {
-          if (this.#allowCR && this.#buf[this.#buf.length - 1] === "\r")
+          if (this.#allowCR && this.#buf[this.#buf.length - 1] === '\r')
             controller.enqueue(this.#buf.slice(0, -1));
           else controller.enqueue(this.#buf);
         }
@@ -39,10 +39,10 @@ export class TextLineStream extends TransformStream<string, string> {
     chunk = this.#buf + chunk;
 
     for (;;) {
-      const lfIndex = chunk.indexOf("\n");
+      const lfIndex = chunk.indexOf('\n');
 
       if (this.#allowCR) {
-        const crIndex = chunk.indexOf("\r");
+        const crIndex = chunk.indexOf('\r');
 
         if (
           crIndex !== -1 &&
@@ -57,7 +57,7 @@ export class TextLineStream extends TransformStream<string, string> {
 
       if (lfIndex !== -1) {
         let crOrLfIndex = lfIndex;
-        if (chunk[lfIndex - 1] === "\r") {
+        if (chunk[lfIndex - 1] === '\r') {
           crOrLfIndex--;
         }
         controller.enqueue(chunk.slice(0, crOrLfIndex));
@@ -76,7 +76,7 @@ export class TextDecoderStreamPolyfill {
   private readonly decoder: TextDecoder;
   private readonly transformStream: TransformStream<Uint8Array, string>;
 
-  constructor(encoding = "utf-8", options?: TextDecoderOptions) {
+  constructor(encoding = 'utf-8', options?: TextDecoderOptions) {
     this.decoder = new TextDecoder(encoding, options);
     this.transformStream = new TransformStream<Uint8Array, string>({
       transform: async (chunk, controller) => {

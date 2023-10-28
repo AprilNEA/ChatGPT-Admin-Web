@@ -1,40 +1,41 @@
-"use client";
+'use client';
 
-import dynamic from "next/dynamic";
-import Link from "next/link";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { ChatMessage, ChatSession, ChatSessionWithMessage } from "shared";
-import useSWR from "swr";
+import dynamic from 'next/dynamic';
+import Link from 'next/link';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import useSWR from 'swr';
 
-import { Avatar } from "@/components/avatar";
-import { IconButton } from "@/components/button";
-import { Loading } from "@/components/loading";
-import { showModal } from "@/components/ui-lib";
-import BrainIcon from "@/icons/brain.svg";
-import CopyIcon from "@/icons/copy.svg";
-import DownloadIcon from "@/icons/download.svg";
-import ExportIcon from "@/icons/export.svg";
-import MenuIcon from "@/icons/menu.svg";
-import SendWhiteIcon from "@/icons/send-white.svg";
-import ShoppingIcon from "@/icons/shopping.svg";
-import LoadingIcon from "@/icons/three-dots.svg";
-import UserIcon from "@/icons/user.svg";
-import Locale from "@/locales";
-import { SubmitKey, Theme,useStore } from "@/store";
-import styles from "@/styles/module/home.module.scss";
+import { Avatar } from '@/components/avatar';
+import { IconButton } from '@/components/button';
+import { Loading } from '@/components/loading';
+import { showModal } from '@/components/ui-lib';
+import BrainIcon from '@/icons/brain.svg';
+import CopyIcon from '@/icons/copy.svg';
+import DownloadIcon from '@/icons/download.svg';
+import ExportIcon from '@/icons/export.svg';
+import MenuIcon from '@/icons/menu.svg';
+import SendWhiteIcon from '@/icons/send-white.svg';
+import ShoppingIcon from '@/icons/shopping.svg';
+import LoadingIcon from '@/icons/three-dots.svg';
+import UserIcon from '@/icons/user.svg';
+import Locale from '@/locales';
+import { SubmitKey, Theme, useStore } from '@/store';
+import styles from '@/styles/module/home.module.scss';
 import {
   copyToClipboard,
   downloadAs,
   isIOS,
   selectOrCopy,
-} from "@/utils/client-utils";
+} from '@/utils/client-utils';
+
+import { ChatMessage, ChatSession, ChatSessionWithMessage } from 'shared';
 
 function useSubmitHandler() {
   const config = useStore((state) => state.config);
   const submitKey = config.submitKey;
 
   const shouldSubmit = (e: KeyboardEvent) => {
-    if (e.key !== "Enter") return false;
+    if (e.key !== 'Enter') return false;
 
     return (
       (config.submitKey === SubmitKey.AltEnter && e.altKey) ||
@@ -77,7 +78,7 @@ function useSubmitHandler() {
 // }
 
 const Markdown = dynamic(
-  async () => (await import("@/components/markdown")).Markdown,
+  async () => (await import('@/components/markdown')).Markdown,
   {
     loading: () => <LoadingIcon />,
   },
@@ -109,7 +110,7 @@ export default function Chat() {
     state.stopStreaming,
   ]);
 
-  const [userInput, setUserInput] = useState("");
+  const [userInput, setUserInput] = useState('');
   const isStreaming = getIsStreaming();
 
   const { submitKey, shouldSubmit } = useSubmitHandler();
@@ -119,7 +120,7 @@ export default function Chat() {
     if (userInput.length <= 0) return;
 
     requestChat(userInput);
-    setUserInput("");
+    setUserInput('');
     inputRef.current?.focus();
   };
 
@@ -134,7 +135,7 @@ export default function Chat() {
 
   const onRightClick = (e: any, message: ChatMessage) => {
     // auto fill user input
-    if (message.role === "user") {
+    if (message.role === 'user') {
       setUserInput(message.content);
     }
 
@@ -177,8 +178,8 @@ export default function Chat() {
       const dom = latestMessageRef.current;
       if (dom && !isIOS() && autoScroll) {
         dom.scrollIntoView({
-          behavior: "smooth",
-          block: "end",
+          behavior: 'smooth',
+          block: 'end',
         });
       }
     }, 500);
@@ -190,21 +191,21 @@ export default function Chat() {
 
   return (
     <div className={styles.chat}>
-      <div className={styles["window-header"]}>
+      <div className={styles['window-header']}>
         <div
-          className={styles["window-header-title"]}
+          className={styles['window-header-title']}
           onClick={() => setSideBarOpen(true)}
         >
-          <div className={styles["window-header-main-title"]}>
-            {session?.topic ?? "新的对话"}
+          <div className={styles['window-header-main-title']}>
+            {session?.topic ?? '新的对话'}
           </div>
-          <div className={styles["window-header-sub-title"]}>
+          <div className={styles['window-header-sub-title']}>
             {Locale.Chat.SubTitle(messages?.length ?? 0)}
           </div>
         </div>
 
-        <div className={styles["window-actions"]}>
-          <div className={styles["window-action-button"] + " " + styles.mobile}>
+        <div className={styles['window-actions']}>
+          <div className={styles['window-action-button'] + ' ' + styles.mobile}>
             <IconButton
               icon={<MenuIcon />}
               bordered
@@ -212,12 +213,12 @@ export default function Chat() {
               onClick={() => setSideBarOpen(true)}
             />
           </div>
-          <div className={styles["window-action-button"]}>
+          <div className={styles['window-action-button']}>
             <Link href="/pricing">
               <IconButton icon={<ShoppingIcon />} bordered />
             </Link>
           </div>
-          <div className={styles["window-action-button"]}>
+          <div className={styles['window-action-button']}>
             <Link href="/profile">
               <IconButton
                 icon={<UserIcon />}
@@ -226,7 +227,7 @@ export default function Chat() {
               />
             </Link>
           </div>
-          <div className={styles["window-action-button"]}>
+          <div className={styles['window-action-button']}>
             <IconButton
               icon={<BrainIcon />}
               bordered
@@ -236,7 +237,7 @@ export default function Chat() {
               }}
             />
           </div>
-          <div className={styles["window-action-button"]}>
+          <div className={styles['window-action-button']}>
             <IconButton
               icon={<ExportIcon />}
               bordered
@@ -249,39 +250,39 @@ export default function Chat() {
         </div>
       </div>
 
-      <div className={styles["chat-body"]}>
+      <div className={styles['chat-body']}>
         {messages.map((message, i) => {
-          const isUser = message.role === "user";
+          const isUser = message.role === 'user';
 
           return (
             <div
               key={i}
               className={
-                isUser ? styles["chat-message-user"] : styles["chat-message"]
+                isUser ? styles['chat-message-user'] : styles['chat-message']
               }
             >
-              <div className={styles["chat-message-container"]}>
-                <div className={styles["chat-message-avatar"]}>
+              <div className={styles['chat-message-container']}>
+                <div className={styles['chat-message-avatar']}>
                   <Avatar role={message.role} />
                 </div>
                 {message.isStreaming && (
-                  <div className={styles["chat-message-status"]}>
+                  <div className={styles['chat-message-status']}>
                     {Locale.Chat.Typing}
                   </div>
                 )}
-                <div className={styles["chat-message-item"]}>
+                <div className={styles['chat-message-item']}>
                   {!isUser && (
-                    <div className={styles["chat-message-top-actions"]}>
+                    <div className={styles['chat-message-top-actions']}>
                       {message.isStreaming ? (
                         <div
-                          className={styles["chat-message-top-action"]}
+                          className={styles['chat-message-top-action']}
                           onClick={() => onUserStop()}
                         >
                           {Locale.Chat.Actions.Stop}
                         </div>
                       ) : (
                         <div
-                          className={styles["chat-message-top-action"]}
+                          className={styles['chat-message-top-action']}
                           // onClick={() => onResend(i)}
                         >
                           {Locale.Chat.Actions.Retry}
@@ -289,7 +290,7 @@ export default function Chat() {
                       )}
 
                       <div
-                        className={styles["chat-message-top-action"]}
+                        className={styles['chat-message-top-action']}
                         onClick={() => copyToClipboard(message.content)}
                       >
                         {Locale.Chat.Actions.Copy}
@@ -308,13 +309,13 @@ export default function Chat() {
                   )}
                 </div>
                 {!isUser && (
-                  <div className={styles["chat-message-actions"]}>
-                    <div className={styles["chat-message-action-date"]}>
+                  <div className={styles['chat-message-actions']}>
+                    <div className={styles['chat-message-action-date']}>
                       时间
                       {/*{message..toLocaleString()}*/}
                     </div>
                     {message.modelId && (
-                      <div className={styles["chat-message-action-date"]}>
+                      <div className={styles['chat-message-action-date']}>
                         {message.modelId}
                         {/*{message.model.toUpperCase()}*/}
                       </div>
@@ -325,16 +326,16 @@ export default function Chat() {
             </div>
           );
         })}
-        <div ref={latestMessageRef} style={{ opacity: 0, height: "2em" }}>
+        <div ref={latestMessageRef} style={{ opacity: 0, height: '2em' }}>
           -
         </div>
       </div>
 
-      <div className={styles["chat-input-panel"]}>
-        <div className={styles["chat-input-panel-inner"]}>
+      <div className={styles['chat-input-panel']}>
+        <div className={styles['chat-input-panel-inner']}>
           <textarea
             ref={inputRef}
-            className={styles["chat-input"]}
+            className={styles['chat-input']}
             placeholder={Locale.Chat.Input(submitKey)}
             rows={3}
             onInput={(e) => setUserInput(e.currentTarget.value)}
@@ -347,7 +348,7 @@ export default function Chat() {
           <IconButton
             icon={<SendWhiteIcon />}
             text={Locale.Chat.Send}
-            className={styles["chat-input-send"] + " no-dark"}
+            className={styles['chat-input-send'] + ' no-dark'}
             onClick={onUserSubmit}
           />
         </div>

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react';
 
-const useIntervalAsync = <R = unknown>(fn: () => Promise<R>, ms: number) => {
+const useIntervalAsync = <R = unknown,>(fn: () => Promise<R>, ms: number) => {
   const runningCount = useRef(0);
   const timeout = useRef<number>();
   const mountedRef = useRef(false);

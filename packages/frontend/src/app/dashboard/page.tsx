@@ -1,16 +1,16 @@
 /* 管理员面板 */
-"use client";
+'use client';
 
-import { Box, Container } from "@radix-ui/themes";
+import { Box, Container } from '@radix-ui/themes';
+
+/* 管理员面板 */
 
 export default function DashboardIndex() {
   return (
     <Box
-      style={{ background: "var(--gray-a2)", borderRadius: "var(--radius-3)" }}
+      style={{ background: 'var(--gray-a2)', borderRadius: 'var(--radius-3)' }}
     >
-      <Container size="4">
-        HI
-      </Container>
+      <Container size="4">HI</Container>
     </Box>
   );
 }

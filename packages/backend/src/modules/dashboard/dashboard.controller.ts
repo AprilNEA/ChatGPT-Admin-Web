@@ -1,6 +1,8 @@
 import { Controller, Delete, Get, Post } from '@nestjs/common';
-import { DashboardService } from './dashboard.service';
+
 import { Roles } from '@/common/guards/auth.guard';
+
+import { DashboardService } from './dashboard.service';
 
 @Roles('admin')
 @Controller('dashboard')
@@ -11,6 +13,7 @@ export class DashboardController {
   async listOpenaiKeys() {
     return this.dashboardService.listOpenaiKeys();
   }
+
   @Post('openai/keys')
   async addOpenaiKey() {}
 

@@ -1,17 +1,17 @@
-import { baiduTextSecurity } from "@/lib/content/baidu";
-import { tencentTextSecurity } from "@/lib/content/tencent";
+import { baiduTextSecurity } from '@/lib/content/baidu';
+import { tencentTextSecurity } from '@/lib/content/tencent';
 
-const service = process.env.TextSecurity ?? "baidu";
+const service = process.env.TextSecurity ?? 'baidu';
 
 export async function textSecurity(conversation: any) {
   switch (service) {
-    case "baidu":
+    case 'baidu':
       return await baiduTextSecurity(JSON.stringify(conversation));
-    case "tencent":
+    case 'tencent':
       const suggestion = await tencentTextSecurity(
-        JSON.stringify(conversation)
+        JSON.stringify(conversation),
       );
-      return suggestion.toLowerCase() === "pass";
+      return suggestion.toLowerCase() === 'pass';
     default:
       return true;
   }

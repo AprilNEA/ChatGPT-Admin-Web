@@ -1,13 +1,16 @@
-import { Injectable } from '@nestjs/common';
-import { DatabaseService } from '@/processors/database/database.service';
-import { Role } from '@prisma/client';
 import { compare, hashSync } from 'bcrypt';
-import { JwtService } from '@/libs/jwt/jwt.service';
-import { RedisService } from '@/processors/redis/redis.service';
-import { EmailService } from '@/libs/email/email.service';
 import * as Joi from 'joi';
-import { IAccountStatus } from 'shared';
+
+import { Injectable } from '@nestjs/common';
+import { Role } from '@prisma/client';
+
 import { BizException } from '@/common/exceptions/biz.exception';
+import { EmailService } from '@/libs/email/email.service';
+import { JwtService } from '@/libs/jwt/jwt.service';
+import { DatabaseService } from '@/processors/database/database.service';
+import { RedisService } from '@/processors/redis/redis.service';
+
+import { IAccountStatus } from 'shared';
 import { ErrorCodeEnum } from 'shared/dist/error-code';
 
 type ByPassword = {

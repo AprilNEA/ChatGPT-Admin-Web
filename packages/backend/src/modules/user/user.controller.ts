@@ -1,8 +1,11 @@
+import * as Joi from 'joi';
+
 import { Body, Controller, Get, Put } from '@nestjs/common';
-import { UserService } from './user.service';
+
 import { Payload } from '@/common/guards/auth.guard';
 import { JoiValidationPipe } from '@/common/pipes/joi';
-import * as Joi from 'joi';
+
+import { UserService } from './user.service';
 
 const nameSchema = Joi.string().min(4).max(20).required();
 

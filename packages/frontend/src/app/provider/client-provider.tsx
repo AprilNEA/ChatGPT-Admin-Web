@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { usePathname, useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
-import { SWRConfig } from "swr";
+import { usePathname, useRouter } from 'next/navigation';
+import { useCallback, useEffect, useState } from 'react';
+import { SWRConfig } from 'swr';
 
-import { Loading } from "@/components/loading";
-import { useStore } from "@/store";
+import { Loading } from '@/components/loading';
+import { useStore } from '@/store';
 
 export function AuthProvider({
   children,
@@ -26,8 +26,8 @@ export function AuthProvider({
 
     try {
       if (admin) {
-        const payload = JSON.parse(atob(sessionToken.split(".")[1]));
-        if (payload.role !== "Admin") {
+        const payload = JSON.parse(atob(sessionToken.split('.')[1]));
+        if (payload.role !== 'Admin') {
           return false;
         }
       }
@@ -41,13 +41,13 @@ export function AuthProvider({
     const isValid = validateSession();
     if (!isValid) {
       if (admin) {
-        return router.push("/");
+        return router.push('/');
       }
-      return router.push("/auth");
+      return router.push('/auth');
     } else {
       setIsValidating(false);
-      if (pathname.startsWith("/auth")) {
-        return router.push("/");
+      if (pathname.startsWith('/auth')) {
+        return router.push('/');
       }
     }
   }, [pathname, validateSession, router]);

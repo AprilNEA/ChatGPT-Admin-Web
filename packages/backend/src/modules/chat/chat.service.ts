@@ -1,13 +1,16 @@
-import OpenAI from 'openai';
-import { Injectable } from '@nestjs/common';
-import { DatabaseService } from '@/processors/database/database.service';
-import { type ChatMessage, ChatMessageRole } from '@prisma/client';
-import { ConfigService } from '@nestjs/config';
-import { Observable } from 'rxjs';
-import { BizException } from '@/common/exceptions/biz.exception';
-import { ErrorCodeEnum } from 'shared/dist/error-code';
-import { encode as gpt4Encode } from 'gpt-tokenizer/esm/model/gpt-4';
 import { encode as gpt435Encode } from 'gpt-tokenizer/esm/model/gpt-3.5-turbo';
+import { encode as gpt4Encode } from 'gpt-tokenizer/esm/model/gpt-4';
+import OpenAI from 'openai';
+import { Observable } from 'rxjs';
+
+import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { type ChatMessage, ChatMessageRole } from '@prisma/client';
+
+import { BizException } from '@/common/exceptions/biz.exception';
+import { DatabaseService } from '@/processors/database/database.service';
+
+import { ErrorCodeEnum } from 'shared/dist/error-code';
 
 @Injectable()
 export class ChatService {

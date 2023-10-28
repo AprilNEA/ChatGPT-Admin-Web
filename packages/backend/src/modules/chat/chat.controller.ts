@@ -1,12 +1,15 @@
+import * as Joi from 'joi';
+
 import { Body, Controller, Get, Param, Post, Sse } from '@nestjs/common';
-import { ChatService } from './chat.service';
-import { Payload } from '@/common/guards/auth.guard';
-import { NewMessageDto } from 'shared';
+
 import { ErrorCode } from '@/common/filters/all-execption.filter';
+import { Payload } from '@/common/guards/auth.guard';
+import { JoiValidationPipe } from '@/common/pipes/joi';
 import { KeyPoolService } from '@/libs/key-pool';
 
-import * as Joi from 'joi';
-import { JoiValidationPipe } from '@/common/pipes/joi';
+import { NewMessageDto } from 'shared';
+
+import { ChatService } from './chat.service';
 
 const newMessageSchema = Joi.object({
   modelId: Joi.number().required(),
@@ -81,7 +84,7 @@ export class ChatController {
     );
 
     /* 从 Key Pool 中挑选合适的 Key */
-    const key = await this.keyPool.select();
+    // const key = await this.keyPool.select();
 
     return await this.chatService.newMessageStream({
       userId: userId,

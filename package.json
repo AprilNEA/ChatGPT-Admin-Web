@@ -21,10 +21,11 @@
     "generate": "prisma generate --schema=prisma/schema.prisma"
   },
   "devDependencies": {
+    "@trivago/prettier-plugin-sort-imports": "latest",
     "@types/node": "latest",
+    "prettier": "latest",
     "ts-node": "latest",
     "turbo": "latest",
-    "prettier": "latest",
     "typescript": "latest"
   },
   "packageManager": "pnpm@8.6.3"

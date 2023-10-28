@@ -1,9 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { ConfigType } from 'shared';
 import { ConfigService } from '@nestjs/config';
 import { OAuthProvider } from '@prisma/client';
-import { DatabaseService } from '@/processors/database/database.service';
+
 import { JwtService } from '@/libs/jwt/jwt.service';
+import { DatabaseService } from '@/processors/database/database.service';
+
+import { ConfigType } from 'shared';
 
 @Injectable()
 export class WechatService {

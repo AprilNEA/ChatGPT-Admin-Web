@@ -1,10 +1,11 @@
-import { NestFactory } from '@nestjs/core';
 import { ConfigService } from '@nestjs/config';
+import { NestFactory } from '@nestjs/core';
 import { NestFastifyApplication } from '@nestjs/platform-fastify';
 
-import { AllExceptionFilter } from '@/common/filters/all-execption.filter';
 import { fastifyApp } from '@/common/adapter/fastify.adapter';
+import { AllExceptionFilter } from '@/common/filters/all-execption.filter';
 import { PrismaExceptionFilter } from '@/common/filters/prisma-client-execption';
+
 import { AppModule } from './app.module';
 
 async function bootstrap() {

@@ -49,6 +49,8 @@
     "@types/spark-md5": "^3.0.2",
     "@types/uuid": "^9.0.6",
     "eslint-plugin-simple-import-sort": "^10.0.0",
+    "prettier": "*",
+    "@trivago/prettier-plugin-sort-imports": "*",
     "typescript": "*",
     "zod": "^3.21.4"
   },

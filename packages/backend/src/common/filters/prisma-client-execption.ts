@@ -1,10 +1,11 @@
+import { FastifyReply, FastifyRequest } from 'fastify';
+
 import {
-  ExceptionFilter,
-  Catch,
   ArgumentsHost,
+  Catch,
+  ExceptionFilter,
   HttpException,
 } from '@nestjs/common';
-import { FastifyReply, FastifyRequest } from 'fastify';
 import { Prisma } from '@prisma/client';
 
 @Catch(Prisma.PrismaClientKnownRequestError)

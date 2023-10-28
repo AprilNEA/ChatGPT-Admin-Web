@@ -1,19 +1,20 @@
-import { APP_GUARD } from '@nestjs/core';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import configuration from './configuration';
+import { APP_GUARD } from '@nestjs/core';
+
+import { AuthGuard } from '@/common/guards/auth.guard';
+import { JwtModule } from '@/libs/jwt/jwt.module';
+import { AuthModule } from '@/modules/auth/auth.module';
+import { ChatModule } from '@/modules/chat/chat.module';
+import { DashboardModule } from '@/modules/dashboard/dashboard.module';
+import { OrderModule } from '@/modules/order/order.module';
+import { ProductModule } from '@/modules/product/product.module';
+import { UserModule } from '@/modules/user/user.module';
+import { DatabaseService } from '@/processors/database/database.service';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { AuthModule } from '@/modules/auth/auth.module';
-import { UserModule } from '@/modules/user/user.module';
-import { ChatModule } from '@/modules/chat/chat.module';
-import { OrderModule } from '@/modules/order/order.module';
-import { JwtModule } from '@/libs/jwt/jwt.module';
-import { AuthGuard } from '@/common/guards/auth.guard';
-import { DashboardModule } from '@/modules/dashboard/dashboard.module';
-import { ProductModule } from '@/modules/product/product.module';
-import { DatabaseService } from '@/processors/database/database.service';
+import configuration from './configuration';
 
 @Module({
   imports: [

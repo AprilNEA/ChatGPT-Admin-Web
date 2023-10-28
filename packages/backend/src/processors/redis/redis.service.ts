@@ -1,6 +1,8 @@
-import { createClient, RedisClientType } from 'redis';
+import { RedisClientType, createClient } from 'redis';
+
 import { INestApplication, Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+
 import { AuthCode } from './auth-code';
 
 @Injectable()

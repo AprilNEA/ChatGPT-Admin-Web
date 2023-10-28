@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import WorkerPool from './workerPool';
+
 import type { FilterData, MintWorkerInput, MintWorkerOutput } from './types';
+import WorkerPool from './workerPool';
 
 @Injectable()
 export class ContentSafeService {

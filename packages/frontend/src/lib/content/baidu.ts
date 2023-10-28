@@ -8,19 +8,19 @@ const clientSecret = process.env.BAIDU_SECRETKEY!;
 export async function getAccessToken() {
   const data = await (
     await fetch(
-      "https://aip.baidubce.com/oauth/2.0/token?" +
+      'https://aip.baidubce.com/oauth/2.0/token?' +
         new URLSearchParams({
-          grant_type: "client_credentials",
+          grant_type: 'client_credentials',
           client_id: clientId,
           client_secret: clientSecret,
         }),
       {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
         },
-      }
+      },
     )
   ).json();
   const { access_token, expires_in } = data;
@@ -30,7 +30,7 @@ export async function getAccessToken() {
 
 interface returnType {
   log_id: number;
-  conclusion: "合规" | "不合规";
+  conclusion: '合规' | '不合规';
   conclusionType: number;
   data: any;
 
@@ -51,16 +51,16 @@ export async function baiduTextSecurity(text: string) {
     await fetch(
       `https://aip.baidubce.com/rest/2.0/solution/v1/text_censor/v2/user_defined?access_token=${await getAccessToken()}`,
       {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
+          'Content-Type': 'application/x-www-form-urlencoded',
         },
         body: `text=${text}`,
-      }
+      },
     )
   ).json()) as returnType;
   // if (data.error_code === 18) // error_msg : "Open api qps request limit reached"
   //   return
   // return data
-  return data.conclusion === "合规";
+  return data.conclusion === '合规';
 }

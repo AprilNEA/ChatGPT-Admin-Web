@@ -7,27 +7,30 @@ import {
   Query,
   UsePipes,
 } from '@nestjs/common';
-import { AuthService } from './auth.service';
+import { Role } from '@prisma/client';
+
+import { Payload, Public } from '@/common/guards/auth.guard';
 import { JoiValidationPipe } from '@/common/pipes/joi';
+import { WechatService } from '@/modules/auth/wechat.service';
+
 import {
-  withPasswordSchema,
-  identitySchema,
-  validateCodeSchema,
-  passwordSchema,
+  bindIdentityDto,
+  byPasswordDto,
+  forgetPasswordDto,
+  identityDto,
+  requestCodeDto,
+  validateCodeDto,
+} from 'shared';
+
+import {
   bindIdentitySchema,
   forgetPasswordSchema,
+  identitySchema,
+  passwordSchema,
+  validateCodeSchema,
+  withPasswordSchema,
 } from './auth.dto';
-import {
-  validateCodeDto,
-  byPasswordDto,
-  requestCodeDto,
-  identityDto,
-  bindIdentityDto,
-  forgetPasswordDto,
-} from 'shared';
-import { Payload, Public } from '@/common/guards/auth.guard';
-import { WechatService } from '@/modules/auth/wechat.service';
-import { Role } from '@prisma/client';
+import { AuthService } from './auth.service';
 
 @Controller('auth')
 export class AuthController {
