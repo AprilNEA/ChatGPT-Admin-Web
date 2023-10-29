@@ -116,9 +116,15 @@ model Product {
 
   isHidden Boolean @default(false) // 是否隐藏
 
-  price    Int // 单位为分
-  stock    Int @default(-1) // 库存
-  duration Int // 产品的持续时间
+  price Int // 单位为分，产品单价
+  stock Int @default(-1) // 库存
+
+  // 产品的持续时间
+  // -1 表示一次性商品
+  // 2592000 严格表示一个月，非固定 30 天，可能为 28/29/30/31 天
+  // 7776000 严格表示一个季度，同上
+  // 31104000 严格表示一年，即 365 或 366 天
+  duration Int
 
   models ModelInProduct[]
 
@@ -128,6 +134,7 @@ model Product {
   categoryId Int?
 }
 
+// 套餐次数上线
 model ModelInProduct {
   // 在duration时间内限制使用times次
   times    Int // 限制次数
@@ -144,10 +151,12 @@ model ModelInProduct {
   @@id([modelId, productId])
 }
 
-// 产品分类
+// 产品分类，用于标签化管理产品
 model Category {
   id   Int    @id @default(autoincrement())
   name String @unique
+
+  isHidden Boolean @default(false) // 是否隐藏
 
   products Product[]
 }
@@ -217,6 +226,8 @@ model RateLimit {
 model ChatSession {
   id String @id @default(uuid())
 
+  // 主题，使用模型总结
+  // TODO 当用户手动重命名后，不再使用模型总结
   topic              String?
   lastSummarizeIndex Int?
 
@@ -243,8 +254,11 @@ model ChatMessage {
 
   role    ChatMessageRole
   content String
+  // Tokenizer number
   token   Int?
 
+  // usually deleted by user
+  // TODO block by admin should set another field
   deleted Boolean @default(false)
 
   // relation
