@@ -1,6 +1,12 @@
 import { encode as gpt435Encode } from 'gpt-tokenizer/esm/model/gpt-3.5-turbo';
 import { encode as gpt4Encode } from 'gpt-tokenizer/esm/model/gpt-4';
 import OpenAI from 'openai';
+import { APIPromise } from 'openai/src/core';
+import {
+  ChatCompletion,
+  ChatCompletionChunk,
+} from 'openai/src/resources/chat/completions';
+import { Stream } from 'openai/src/streaming';
 import { Observable } from 'rxjs';
 
 import { Injectable } from '@nestjs/common';
@@ -156,7 +162,33 @@ export class ChatService {
     });
   }
 
-  async #streamChat({
+  #chat({
+    input,
+    model,
+    histories = [],
+  }: {
+    input: string;
+    model: OpenAI.Chat.ChatCompletionCreateParams['model'];
+    histories?: OpenAI.Chat.CreateChatCompletionRequestMessage[];
+    stream?: boolean;
+  }) {
+    const openai = new OpenAI({
+      baseURL: this.openaiConfig.baseUrl,
+      apiKey: this.openaiConfig.keys[0],
+    });
+    return openai.chat.completions.create({
+      model,
+      messages: [
+        ...histories,
+        {
+          role: 'user',
+          content: input,
+        },
+      ],
+    });
+  }
+
+  #streamChat({
     input,
     model,
     histories = [],
@@ -180,6 +212,30 @@ export class ChatService {
       ],
       stream: true,
     });
+  }
+
+  async summarizeTopic(message: string, sessionId: string) {
+    const result = (await this.#chat({
+      input: `Give me the topic title about the following text by use as few words as possible.
+Text: """
+${message}
+"""`,
+      model: 'gpt-3.5-turbo',
+      histories: [
+        {
+          role: 'system',
+          content:
+            'You are an assistant who uses a few words to summarize conversations',
+        },
+      ],
+      stream: false,
+    })) as ChatCompletion;
+    const topic = result.choices[0].message.content;
+    await this.prisma.chatSession.update({
+      where: { id: sessionId },
+      data: { topic },
+    });
+    return topic;
   }
 
   /* 指定对话中创建新消息 */

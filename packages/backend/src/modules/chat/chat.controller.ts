@@ -2,12 +2,13 @@ import * as Joi from 'joi';
 
 import { Body, Controller, Get, Param, Post, Sse } from '@nestjs/common';
 
-import { ErrorCode } from '@/common/filters/all-execption.filter';
+import { BizException } from '@/common/exceptions/biz.exception';
 import { Payload } from '@/common/guards/auth.guard';
 import { JoiValidationPipe } from '@/common/pipes/joi';
 import { KeyPoolService } from '@/libs/key-pool';
 
 import { NewMessageDto } from 'shared';
+import { ErrorCodeEnum } from 'shared/dist/error-code';
 
 import { ChatService } from './chat.service';
 
@@ -62,6 +63,44 @@ export class ChatController {
     };
   }
 
+  /* 获取对话的总结，每一个对话的总结仅会发生一次 */
+  @Post('summary/:sessionId')
+  async getSummary(
+    @Payload('id') userId: number,
+    @Param('sessionId') sessionId: string,
+  ) {
+    const data = await this.chatService.getChatMessages(userId, sessionId);
+    if (!data) {
+      throw new BizException(ErrorCodeEnum.SessionNotFound);
+    }
+    if (data.topic) {
+      return {
+        success: true,
+        data: {
+          topic: data.topic,
+        },
+      };
+    }
+    if (data.messages.length > 1) {
+      const topic = await this.chatService.summarizeTopic(
+        data.messages[1].content,
+        sessionId,
+      );
+      return {
+        success: true,
+        data: {
+          topic,
+        },
+      };
+    }
+    return {
+      success: true,
+      data: {
+        topic: undefined,
+      },
+    };
+  }
+
   /* 新建用户流式传输的对话 */
   @Post('messages/:sessionId?')
   @Sse()
@@ -85,7 +124,6 @@ export class ChatController {
 
     /* 从 Key Pool 中挑选合适的 Key */
     // const key = await this.keyPool.select();
-
     return await this.chatService.newMessageStream({
       userId: userId,
       sessionId: chatSession.id,
