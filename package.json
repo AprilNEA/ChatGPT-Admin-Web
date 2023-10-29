@@ -28,5 +28,8 @@
     "turbo": "latest",
     "typescript": "latest"
   },
+  "prisma": {
+    "schema": "prisma/schema.prisma"
+  },
   "packageManager": "pnpm@8.6.3"
 }

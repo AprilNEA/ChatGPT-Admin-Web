@@ -11,6 +11,10 @@ export enum ErrorCodeEnum {
 
   /* 404 */
   NotFound = 40400,
+  SessionNotFound = 40401,
+
+  /* 429 */
+  TooManyRequests = 42900,
 
   /* 406 */
   ValidationError = 40600,

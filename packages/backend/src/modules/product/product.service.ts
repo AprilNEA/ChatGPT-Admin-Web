@@ -9,6 +9,9 @@ export class ProductService {
   /* 获取产品 */
   async listProduct() {
     return this.prisma.category.findMany({
+      where: {
+        isHidden: false,
+      },
       include: {
         products: {
           where: {

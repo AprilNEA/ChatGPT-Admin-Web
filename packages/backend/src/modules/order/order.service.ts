@@ -38,9 +38,9 @@ export class OrderService {
   }
 
   /* 创建订单 */
-  async createOrder(uid: number, pid: number) {
+  async createOrder(userId: number, productId: number) {
     const product = await this.prisma.product.findUniqueOrThrow({
-      where: { id: pid },
+      where: { id: productId },
     });
     const type =
       product.duration === -1 ? OrderType.OneTime : OrderType.Subscription;
@@ -48,17 +48,17 @@ export class OrderService {
       data: {
         id: this.getNextId(),
         type,
-        amount: product.price,
-        product: { connect: { id: pid } },
-        user: { connect: { id: uid } },
+        amount: product.price / 100,
+        product: { connect: { id: productId } },
+        user: { connect: { id: userId } },
       },
     });
   }
 
   /* 订单完成 */
-  async finishOrder(oid: string) {
+  async finishOrder(orderId: string) {
     const order = await this.prisma.order.findUnique({
-      where: { id: oid },
+      where: { id: orderId },
       include: { product: true },
     });
     const currentTime = new Date();
@@ -78,7 +78,7 @@ export class OrderService {
     }
 
     return this.prisma.order.update({
-      where: { id: oid },
+      where: { id: orderId },
       data: {
         status: OrderStatus.Paid,
         startAt: currentTime,

@@ -28,21 +28,33 @@ export class OrderController {
 
   /* 新建订单 */
   @Post('new')
-  async newOrder(@Payload('id') uid: number, @Body() data: newOrderDto) {
-    return await this.orderService.createOrder(uid, data.pid);
+  async newOrder(@Payload('id') userId: number, @Body() data: newOrderDto) {
+    const order = await this.orderService.createOrder(userId, data.productId);
+    const result = await this.paymentService.xhStartPay({
+      orderId: order.id,
+      price: order.amount,
+      attach: '',
+      title: 'AI产品',
+    });
+    return {
+      success: true,
+      data: {
+        url: result.url_qrcode,
+      },
+    };
   }
 
   /* 获取自己的订单 */
   @Get('my')
-  async listOrder(@Payload('id') uid: number) {
-    return this.orderService.listOrder(uid);
+  async listOrder(@Payload('id') userId: number) {
+    return this.orderService.listOrder(userId);
   }
 
   /* 获取所有订单 */
   @Roles(Role.Admin)
   @Get('all')
-  async listAllOrder(@Query('uid') uid?: number) {
-    return this.orderService.listOrder(uid);
+  async listAllOrder(@Query('userId') userId?: number) {
+    return this.orderService.listOrder(userId);
   }
 
   /* 支付回调：虎皮椒 */

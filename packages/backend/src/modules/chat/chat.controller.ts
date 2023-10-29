@@ -1,10 +1,12 @@
 import * as Joi from 'joi';
 
-import { Body, Controller, Get, Param, Post, Sse } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Sse } from '@nestjs/common';
+import { Role } from '@prisma/client';
 
 import { BizException } from '@/common/exceptions/biz.exception';
 import { Payload } from '@/common/guards/auth.guard';
 import { JoiValidationPipe } from '@/common/pipes/joi';
+import { JWTPayload } from '@/libs/jwt/jwt.service';
 import { KeyPoolService } from '@/libs/key-pool';
 
 import { NewMessageDto } from 'shared';
@@ -29,6 +31,11 @@ export class ChatController {
   @Get('sessions')
   getChatSession(@Payload('id') userId: number) {
     return this.chatService.getRecentChatSession(userId);
+  }
+
+  @Delete('sessions/:sessionId')
+  async deleteChatSession(){
+
   }
 
   /* 获取具体 session 的消息历史 */
@@ -105,17 +112,20 @@ export class ChatController {
   @Post('messages/:sessionId?')
   @Sse()
   async newMessageStream(
-    @Payload('id') userId: number,
+    @Payload() payload: JWTPayload,
     @Body(new JoiValidationPipe(newMessageSchema)) data: NewMessageDto,
     @Param('sessionId') sessionId: string,
   ) {
+    const { id: userId, role: userRole } = payload;
     /* 用量限制 */
-    // const isValid = await this.chatService.limitCheck(uid, data.mid);
-    // if (!isValid) {
-    //   // throw new appException(ErrorCode.LimitExceeded, '超过当前计划用量');
-    // }
-    /* */
+    if (userRole !== Role.Admin) {
+      const isValid = await this.chatService.limitCheck(userId, data.modelId);
+      if (isValid <= 0) {
+        throw new BizException(ErrorCodeEnum.TooManyRequests);
+      }
+    }
 
+    // 检查数据库中是否存在该 session，不存在则新建
     const chatSession = await this.chatService.getOrNewChatSession(
       sessionId,
       userId,

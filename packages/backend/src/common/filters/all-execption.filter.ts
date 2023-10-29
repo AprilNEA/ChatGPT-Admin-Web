@@ -8,10 +8,6 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 
-import { ErrorCode } from 'shared';
-
-export { ErrorCode };
-
 @Catch()
 export class AllExceptionFilter implements ExceptionFilter {
   catch(exception: unknown, host: ArgumentsHost) {

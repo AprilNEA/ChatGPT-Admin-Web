@@ -1,4 +1,4 @@
-import md5 from 'spark-md5';
+import * as md5 from 'spark-md5';
 
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -60,9 +60,9 @@ export class PaymentService {
       appid: this.xhConfig.appId,
       trade_order_id: orderId,
       total_fee: price,
-      title: title ?? 'ChatGPT-Admin-Web',
+      title: title ?? 'ChatGPT Admin Web',
       time: Math.floor(Date.now() / 1000),
-      notify_url: this.xhConfig.notifyUrl,
+      notify_url: `${this.xhConfig.notifyUrl}/api/order/callback/xunhu`,
       return_url: this.xhConfig.returnUrl, // After the user has successfully made the payment, we will automatically redirect the user's browser to this URL.
       callback_url: this.xhConfig.returnUrl, // After the user cancels the payment, we may guide the user to redirect to this URL to make the payment again.
       // plugins: string;

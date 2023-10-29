@@ -1,12 +1,10 @@
 import { encode as gpt435Encode } from 'gpt-tokenizer/esm/model/gpt-3.5-turbo';
 import { encode as gpt4Encode } from 'gpt-tokenizer/esm/model/gpt-4';
 import OpenAI from 'openai';
-import { APIPromise } from 'openai/src/core';
 import {
   ChatCompletion,
   ChatCompletionChunk,
 } from 'openai/src/resources/chat/completions';
-import { Stream } from 'openai/src/streaming';
 import { Observable } from 'rxjs';
 
 import { Injectable } from '@nestjs/common';
@@ -50,13 +48,17 @@ export class ChatService {
     });
   }
 
-  /* 用量限制 */
-  async limitCheck(userId: number, mid: number) {
+  /* 用量限制检查，用于判断某一个模型的用量是否超过限制 */
+
+  // TODO Redis 缓存优化
+  async limitCheck(userId: number, modelId: number) {
     const user = await this.prisma.user.findUniqueOrThrow({
       where: { id: userId },
     });
     const currentTime = new Date();
-    const orders = await this.prisma.order.findMany({
+
+    // 首先判断用户是否有包年包月套餐，检查套餐次数上线
+    const activatedOrders = await this.prisma.order.findMany({
       where: {
         AND: [
           {
@@ -71,13 +73,19 @@ export class ChatService {
           },
         ],
       },
+      orderBy: {
+        createdAt: 'desc', // 最近的排在前面
+      },
     });
-    const productId = orders.length !== 0 ? orders[0].productId : 1;
+    // 选择时间范围内的第一个套餐
+    // productId 1 为免费套餐
+    const productId =
+      activatedOrders.length !== 0 ? activatedOrders[0].productId : 1;
 
     const limit = await this.prisma.modelInProduct.findUniqueOrThrow({
       where: {
         modelId_productId: {
-          modelId: mid,
+          modelId: modelId,
           productId: productId,
         },
       },
@@ -87,10 +95,7 @@ export class ChatService {
       limit.duration,
       currentTime,
     );
-    if (limit.times - messageCount > 0) {
-      return true;
-    }
-    return false;
+    return limit.times - messageCount;
   }
 
   /* 获取或者新建一个对话，通常用于初始化 */

@@ -33,6 +33,10 @@ export const ErrorCode = Object.freeze<Record<ErrorCodeEnum, [string, string]>>(
     ],
     /* 404 */
     [ErrorCodeEnum.NotFound]: ['Not found', '未找到'],
+    [ErrorCodeEnum.SessionNotFound]: ['Session not found', '会话未找到'],
+
+    /* 429 */
+    [ErrorCodeEnum.TooManyRequests]: ['Too many requests', '请求过多'],
 
     /* 406 */
     [ErrorCodeEnum.ValidationError]: [

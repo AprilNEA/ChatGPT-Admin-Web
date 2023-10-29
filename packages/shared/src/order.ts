@@ -1,4 +1,4 @@
 export interface newOrderDto {
   /* Product ID */
-  pid: number;
+  productId: number;
 }
