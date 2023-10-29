@@ -24,6 +24,10 @@ const cn = {
     Return: '返回',
     WelcomeCaption: '点击下面的按钮开始聊天吧！',
   },
+  Premium: {
+    Title: "升级到高级版",
+    SubTitle: "高级版可以获取提升使用次数并获取GPT-4访问权限",
+  },
   UnknownError: '未知错误，请联系管理员',
   WIP: '该功能仍在开发中……',
   Error: {

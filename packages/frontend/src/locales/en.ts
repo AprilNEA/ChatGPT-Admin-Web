@@ -26,6 +26,10 @@ const en: LocaleType = {
     Return: 'Return',
     WelcomeCaption: 'Click the button below to start chatting!',
   },
+  Premium: {
+    Title: "升级到高级版",
+    SubTitle: "高级版可以获取提升使用次数并获取GPT-4访问权限",
+  },
   UnknownError: 'Unknown error, please contact the administrator',
   WIP: 'This feature is still under development...',
   Error: {
