@@ -7,6 +7,8 @@ import { useEffect, useState } from 'react';
 import { IconButton } from '@/components/button';
 import { ChatList } from '@/components/chat/chat-list';
 import { Loading } from '@/components/loading';
+import { usePremiumData } from '@/hooks/data/use-premium';
+import { useUserData } from '@/hooks/data/use-user';
 import { useSwitchTheme } from '@/hooks/switch-theme';
 import { showAnnouncement } from '@/hooks/use-notice';
 import AddIcon from '@/icons/add.svg';
@@ -21,6 +23,8 @@ import { useStore } from '@/store';
 import styles from '@/styles/module/home.module.scss';
 import { isMobileScreen } from '@/utils/client-utils';
 
+import { IUserData } from 'shared';
+
 /* 修复水合错误 */
 const useHasHydrated = () => {
   const [hasHydrated, setHasHydrated] = useState<boolean>(false);
@@ -32,9 +36,41 @@ const useHasHydrated = () => {
   return hasHydrated;
 };
 
-export function Sidebar({ children }: { children: React.ReactNode }) {
-  const router = useRouter();
+function Premium({ userData }: { userData: IUserData }) {
+  const { setShowSideBar } = useStore();
+  const { isPremium } = userData;
+  const { limitData } = usePremiumData();
 
+  return (
+    <Link
+      href="/premium"
+      onClick={() => {
+        setShowSideBar(false);
+      }}
+      prefetch={true}
+      className={styles['link-full']}
+    >
+      <button className={styles['sidebar-premium']}>
+        <div>
+          <div className={styles['icon']}>
+            <PremiumIcon />
+          </div>
+          {isPremium ? (
+            limitData && (
+              <div className={styles['text']}>
+                {Locale.Index.PremiumLimit(limitData.times)}
+              </div>
+            )
+          ) : (
+            <div className={styles['text']}>{Locale.Index.UpgradePremium}</div>
+          )}
+        </div>
+      </button>
+    </Link>
+  );
+}
+
+export function Sidebar({ children }: { children: React.ReactNode }) {
   // 侧边栏是否展开
   const [showSideBar, setShowSideBar] = useStore((state) => [
     state.showSideBar,
@@ -57,7 +93,7 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
   // 暗色模式切换
   useSwitchTheme();
 
-  // const userInfo = useUserInfo();
+  const { userData } = useUserData();
 
   if (loading) {
     return <Loading />;
@@ -88,7 +124,11 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
             <ChatGptIcon />
           </div>
         </div>
-        <Link href="/chat/new" onClick={() => setShowSideBar(false)} className={styles["link-full"]}>
+        <Link
+          href="/chat/new"
+          onClick={() => setShowSideBar(false)}
+          className={styles['link-full']}
+        >
           <button className={styles['sidebar-newbtn']}>
             <div>
               <div className={styles['icon']}>
@@ -108,23 +148,7 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
         </div>
 
         <div className={styles['sidebar-tail']}>
-          <Link
-            href="/premium"
-            onClick={() => {
-              setShowSideBar(false);
-            }}
-            prefetch={true}
-            className={styles["link-full"]}
-          >
-            <button className={styles['sidebar-premium']}>
-              <div>
-                <div className={styles['icon']}>
-                  <PremiumIcon />
-                </div>
-                <div className={styles['text']}>{Locale.Index.Premium}</div>
-              </div>
-            </button>
-          </Link>
+          {userData && <Premium userData={userData} />}
           <Link
             href="/profile"
             onClick={() => {
@@ -132,7 +156,7 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
             }}
             style={{ color: 'inherit', textDecoration: 'inherit' }}
             prefetch={true}
-            className={styles["link-full"]}
+            className={styles['link-full']}
           >
             <div className={styles['sidebar-accountbtn']}>
               <div
@@ -144,7 +168,9 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
                 <div className={styles['avatar']}>
                   <UserIcon />
                 </div>
-                <div className={styles['account-name']}>Username</div>
+                <div className={styles['account-name']}>
+                  {userData?.name ?? 'Username'}
+                </div>
               </div>
               <Link
                 href="/settings"

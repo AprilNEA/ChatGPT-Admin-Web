@@ -7,17 +7,42 @@ export class UserService {
   constructor(private prisma: DatabaseService) {}
 
   async getInfo(userId: number) {
-    const user = this.prisma.user.findUnique({
+    const user = await this.prisma.user.findUnique({
       where: {
         id: userId,
       },
       select: {
         name: true,
+        role: true,
         email: true,
         phone: true,
       },
     });
-    return user;
+    const currentTime = new Date();
+    const activatedOrders = await this.prisma.order.findMany({
+      where: {
+        AND: [
+          {
+            startAt: {
+              lte: currentTime,
+            },
+          },
+          {
+            endAt: {
+              gte: currentTime,
+            },
+          },
+        ],
+      },
+      orderBy: {
+        createdAt: 'desc', // 最近的排在前面
+      },
+    });
+    console.log(activatedOrders.length > 0);
+    return {
+      ...user,
+      isPremium: activatedOrders.length > 0,
+    };
   }
 
   async updateName(userId: number, name: string) {

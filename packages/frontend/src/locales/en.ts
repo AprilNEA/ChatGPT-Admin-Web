@@ -19,7 +19,8 @@ const en: LocaleType = {
   Index: {
     Title: process.env.NEXT_PUBLIC_TITLE || 'ChatGPT Admin Web',
     SubTitle: 'Welcome to follow WeChat official account:',
-    Premium: 'Upgrade to Premium',
+    PremiumLimit: (count: number) => `Currently available: ${count} items`,
+    UpgradePremium: 'Upgrade to Premium',
     WelcomeTitle: 'Welcome to ChatGPT Admin Web',
     WelcomeMessage:
       'Hello, I am ChatGPT, an artificial intelligence assistant based on the GPT-3.5 architecture. I am designed to answer various questions, provide information, offer suggestions, and engage in conversation with you. I have knowledge on a variety of topics and can communicate with you in multiple languages. If you have any questions or need assistance, feel free to ask me, and I will do my best to provide you with the required information and support.',

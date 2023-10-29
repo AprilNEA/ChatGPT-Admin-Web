@@ -18,6 +18,10 @@ export const useModelData = () => {
       fetcher(url)
         .then((res) => res.json())
         .then((res) => res.data),
+    {
+      keepPreviousData: true,
+      revalidateOnFocus: false,
+    },
   );
 
   const getModelName = useCallback(
