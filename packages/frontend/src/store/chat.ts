@@ -134,13 +134,13 @@ export const createChatStore: StateCreator<StoreType, [], [], ChatSlice> = (
           reader.releaseLock();
           break;
         }
-        if (!line?.startsWith('data:')) continue;
-        const data = line?.slice('data:'.length).trim();
-        if (!data) continue;
-        console.log('[streaming]', data);
 
-        // const token: string = JSON.parse(data);
-        const token = data;
+        if (!line?.startsWith('data:')) continue;
+        const data = line?.slice('data:'.length);
+        if (!data) continue;
+
+        const token: string = JSON.parse(data);
+
         modifyLastMessage(({ content }) => ({ content: content + token }));
       } catch (e) {
         reader.releaseLock();

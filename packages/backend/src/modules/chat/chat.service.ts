@@ -287,11 +287,12 @@ ${message}
                 },
               ],
             } = part;
-            console.log(part);
+
             if (content) {
               tokens.push(content);
             }
-            subscriber.next(content ?? '');
+
+            subscriber.next({ data: JSON.stringify(content) });
           }
         } catch (e) {
           console.warn('[Caught Error]', e);
@@ -320,7 +321,6 @@ ${message}
               },
             }),
           ]);
-          subscriber.next('[DONE]');
           subscriber.complete();
         }
       })();
