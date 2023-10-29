@@ -16,11 +16,6 @@
     width: 400px;
     padding: 40px;
     margin-top: 16px;
-    transition: box-shadow ease 0.25s;
-  }
-
-  .auth-container:hover {
-    box-shadow: var(--card-shadow-hover);
   }
 
   .auth-logo {
@@ -109,7 +104,7 @@
   .third-part-option {
     width: 100%;
     height: 54px;
-    background-color: #ececec;
+    background-color: var(--secondary);
     border-radius: 10px;
     display: flex;
     align-items: center;
@@ -119,6 +114,7 @@
 
     svg {
       height: 25px;
+      fill: var(--black);
     }
 
     div {
@@ -130,29 +126,7 @@
     opacity: 0.9;
   }
   .third-part-option:hover {
-    background-color: #e7e7e7;
-  }
-}
-
-.tab-container {
-  display: flex;
-  justify-content: space-between;
-
-  .tab-button {
-    border: none;
-    color: var(--inactive);
-    background-color: transparent;
-    padding: 10px;
-    cursor: pointer;
-    transition: all ease 0.3s;
-  }
-
-  .tab-button.active {
-    color: var(--primary);
-  }
-
-  .tab-button:hover {
-    color: var(--hover);
+    background-color: var(--secondary-hover-color);
   }
 }
 

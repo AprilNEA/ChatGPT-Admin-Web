@@ -9,7 +9,7 @@ import { ChatList } from '@/components/chat/chat-list';
 import { Loading } from '@/components/loading';
 import { useSwitchTheme } from '@/hooks/switch-theme';
 import { showAnnouncement } from '@/hooks/use-notice';
-import AddIcon from '@/icons/add-std.svg';
+import AddIcon from '@/icons/add.svg';
 import AnnouncementIcon from '@/icons/announcement.svg';
 import ChatGptIcon from '@/icons/chatgpt.svg';
 import CloseIcon from '@/icons/close.svg';
@@ -88,7 +88,7 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
             <ChatGptIcon />
           </div>
         </div>
-        <Link href="/chat/new" onClick={() => setShowSideBar(false)}>
+        <Link href="/chat/new" onClick={() => setShowSideBar(false)} className={styles["link-full"]}>
           <button className={styles['sidebar-newbtn']}>
             <div>
               <div className={styles['icon']}>
@@ -114,6 +114,7 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
               setShowSideBar(false);
             }}
             prefetch={true}
+            className={styles["link-full"]}
           >
             <button className={styles['sidebar-premium']}>
               <div>
@@ -131,6 +132,7 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
             }}
             style={{ color: 'inherit', textDecoration: 'inherit' }}
             prefetch={true}
+            className={styles["link-full"]}
           >
             <div className={styles['sidebar-accountbtn']}>
               <div

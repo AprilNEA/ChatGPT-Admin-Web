@@ -113,18 +113,23 @@
   animation: slide-in ease 0.3s;
 }
 
+.link-full {
+  width: 100%;
+}
+
 .sidebar-newbtn {
   overflow: hidden;
   user-select: none;
   outline: none;
   border: none;
-  margin-bottom: 10px;
+  margin: 0 10px 10px 10px;
   transition: 0.3s;
   animation: slide-in ease 0.3s;
   border-radius: 10px;
   transform: scale(1);
   padding: 10px;
   background-color: transparent;
+  width: calc(100% - 20px);
 
   &:active {
     transform: scale(0.95);
@@ -140,7 +145,7 @@
   }
 
   &:hover {
-    background-color: var(--hover-color);
+    background-color: var(--secondary-hover-color);
     cursor: pointer;
   }
 
@@ -151,6 +156,7 @@
     margin-right: 10px;
 
     svg {
+      fill: var(--black);
       height: 20px;
       width: 20px;
     }
@@ -290,12 +296,13 @@
     user-select: none;
     outline: none;
     border: none;
-    margin-top: 10px;
+    margin: 10px 10px 0 10px;
     padding: 10px;
     border-radius: 10px;
     transform: scale(1);
     transition: 0.3s;
     background-color: transparent;
+    width: calc(100% - 20px);
 
     &:active {
       transform: scale(0.95);
@@ -315,6 +322,7 @@
         margin-right: 10px;
 
         svg {
+          fill: var(--black);
           height: 20px;
           width: 20px;
         }
@@ -327,7 +335,7 @@
     }
 
     &:hover {
-      background-color: var(--hover-color);
+      background-color: var(--secondary-hover-color);
       cursor: pointer;
     }
   }
@@ -344,9 +352,10 @@
     height: 40px;
     transition: background-color ease 0.3s;
     justify-content: space-between;
+    margin: 0 10px 0 10px;
 
     &:hover {
-      background-color: var(--hover-color);
+      background-color: var(--secondary-hover-color);
       cursor: pointer;
     }
 
@@ -368,6 +377,7 @@
         }
 
         svg {
+          fill: var(--black);
           height: 20px;
           width: 20px;
         }
@@ -397,6 +407,7 @@
   justify-content: center;
 
   svg {
+    fill: var(--black);
     height: 20px;
     width: 20px;
   }
@@ -637,4 +648,8 @@
   align-items: center;
   height: 100%;
   width: 100%;
+}
+
+.text {
+  color: var(--black);
 }

@@ -54,6 +54,10 @@
   display: flex;
   justify-content: center;
   align-items: center;
+
+  svg {
+    fill: var(--black);
+  }
 }
 
 @media only screen and (max-width: 600px) {
