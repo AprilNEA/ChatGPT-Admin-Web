@@ -8,7 +8,8 @@ import ClearIcon from '@/icons/clear.svg';
 import CloseIcon from '@/icons/close.svg';
 import ResetIcon from '@/icons/reload.svg';
 import Locale, { changeLang, getLang } from '@/locales';
-import { SubmitKey, Theme, useStore } from '@/store';
+import { useStore } from '@/store';
+import { SubmitKey, Theme } from '@/store/shared';
 import styles from '@/styles/module/settings.module.scss';
 
 function SettingItem(props: {
