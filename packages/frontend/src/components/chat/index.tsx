@@ -9,6 +9,7 @@ import { Avatar } from '@/components/avatar';
 import { IconButton } from '@/components/button';
 import { Loading } from '@/components/loading';
 import { showModal } from '@/components/ui-lib';
+import { useModelData } from '@/hooks/data/use-model';
 import BrainIcon from '@/icons/brain.svg';
 import CopyIcon from '@/icons/copy.svg';
 import DownloadIcon from '@/icons/download.svg';
@@ -19,7 +20,8 @@ import ShoppingIcon from '@/icons/shopping.svg';
 import LoadingIcon from '@/icons/three-dots.svg';
 import UserIcon from '@/icons/user.svg';
 import Locale from '@/locales';
-import { SubmitKey, Theme, useStore } from '@/store';
+import { useStore } from '@/store';
+import { SubmitKey, Theme } from '@/store/shared';
 import styles from '@/styles/module/home.module.scss';
 import {
   copyToClipboard,
@@ -85,6 +87,7 @@ const Markdown = dynamic(
 );
 
 export default function Chat() {
+  const { getModelName } = useModelData();
   // 侧边栏
   const [sidebarOpen, setSideBarOpen] = useStore((state) => [
     state.showSideBar,
@@ -311,13 +314,11 @@ export default function Chat() {
                 {!isUser && (
                   <div className={styles['chat-message-actions']}>
                     <div className={styles['chat-message-action-date']}>
-                      时间
-                      {/*{message..toLocaleString()}*/}
+                      {new Date(message.createdAt).toLocaleString()}
                     </div>
                     {message.modelId && (
                       <div className={styles['chat-message-action-date']}>
-                        {message.modelId}
-                        {/*{message.model.toUpperCase()}*/}
+                        {getModelName(message.modelId)?.toUpperCase()}
                       </div>
                     )}
                   </div>

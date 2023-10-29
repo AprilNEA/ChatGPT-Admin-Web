@@ -13,4 +13,13 @@ export class ProductController {
   listProduct() {
     return this.productService.listProduct();
   }
+
+  @Public()
+  @Get('models')
+  async listModel() {
+    return {
+      success: true,
+      data: await this.productService.listModel(),
+    };
+  }
 }

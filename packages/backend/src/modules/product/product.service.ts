@@ -18,4 +18,14 @@ export class ProductService {
       },
     });
   }
+
+  /* 获取模型 */
+  async listModel() {
+    return this.prisma.model.findMany({
+      select: {
+        id: true,
+        name: true,
+      },
+    });
+  }
 }
