@@ -1,0 +1,27 @@
+{
+  "name": "@nest-http/prisma",
+  "description": "",
+  "private": true,
+  "main": "./client/index.js",
+  "exports": {
+    ".": "./client/index.js"
+  },
+  "scripts": {
+    "migrate:dev": "prisma migrate dev",
+    "migrate:dev:create": "prisma migrate dev --create-only",
+    "prisma:migrate:deploy": "prisma migrate deploy",
+    "prisma:migrate:status": "prisma migrate status --preview-feature",
+    "prisma:migrate:resolve": "prisma migrate resolve --preview-feature",
+    "migrate:deploy": "prisma migrate deploy",
+    "prisma:generate": "prisma generate",
+    "prisma:studio": "prisma studio",
+    "prisma:seed": "prisma db seed",
+    "build": "prisma generate && tsc && cp -r client dist/client"
+  },
+  "dependencies": {
+    "@prisma/client": "5.3.1"
+  },
+  "devDependencies": {
+    "prisma": "5.3.1"
+  }
+}

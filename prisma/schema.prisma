@@ -1,0 +1,291 @@
+// Menu
+// Website
+// User
+// Product
+// Order
+// OpenAI API
+// Chat Message
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "./client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// =======
+// ｜WebSite｜
+// =======
+model Announcement {
+  id      Int    @id @default(autoincrement())
+  title   String
+  content String
+
+  // metadata
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
+model Setting {
+  id    Int    @id @default(autoincrement())
+  key   String @unique
+  value String
+
+  // metadata
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
+// =======
+// ｜User｜
+// =======
+
+enum Role {
+  Admin
+  User
+}
+
+model User {
+  id       Int     @id @default(autoincrement())
+  role     Role    @default(User)
+  name     String? @unique // 用户名
+  email    String? @unique // 邮箱
+  phone    String? @unique // 手机 +86
+  password String? @db.Text // 密码
+
+  // relation
+  oauths       OAuth[]
+  orders       Order[]
+  chatSessions ChatSession[]
+  chatMessages ChatMessage[]
+
+  createdAt DateTime @default(now()) @db.Timestamp(6) // 注册时间
+  updatedAt DateTime @default(now()) @updatedAt
+  isBlocked Boolean  @default(false) // 是否被封禁
+}
+
+enum OAuthProvider {
+  Github
+  Wechat
+}
+
+model OAuth {
+  id           Int           @id @default(autoincrement())
+  provider     OAuthProvider
+  providerId   String
+  accessToken  String
+  refreshToken String
+  expiredAt    DateTime
+
+  data Json? // 自定义数据
+
+  // relation
+  user   User @relation(fields: [userId], references: [id])
+  userId Int
+
+  // metadata
+  createdAt DateTime @default(now()) @db.Timestamp(6) // 注册时间
+  updatedAt DateTime @default(now()) @updatedAt
+
+  @@unique([provider, providerId])
+}
+
+// ==========
+// ｜Product｜
+// ==========
+model Model {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+
+  price Int // 单位为分
+
+  // relation
+  products ModelInProduct[]
+  messages ChatMessage[]
+
+  @@unique([id, name])
+}
+
+model Product {
+  id       Int      @id @default(autoincrement())
+  name     String   @unique
+  features String[]
+
+  isHidden Boolean @default(false) // 是否隐藏
+
+  price Int // 单位为分，产品单价
+  stock Int @default(-1) // 库存
+
+  // 产品的持续时间
+  // -1 表示一次性商品
+  // 2592000 严格表示一个月，非固定 30 天，可能为 28/29/30/31 天
+  // 7776000 严格表示一个季度，同上
+  // 31104000 严格表示一年，即 365 或 366 天
+  duration Int
+
+  models ModelInProduct[]
+
+  // relation
+  order      Order[]
+  category   Category? @relation(fields: [categoryId], references: [id])
+  categoryId Int?
+}
+
+// 套餐次数上线
+model ModelInProduct {
+  // 在duration时间内限制使用times次
+  times    Int // 限制次数
+  duration Int // 单位为秒，限制持续时间 若为 0 则不限制 如每三小时小时
+
+  // 对应的 Model
+  model   Model @relation(fields: [modelId], references: [id])
+  modelId Int
+
+  // 对应的 Product
+  product   Product @relation(fields: [productId], references: [id])
+  productId Int
+
+  @@id([modelId, productId])
+}
+
+// 产品分类，用于标签化管理产品
+model Category {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+
+  isHidden Boolean @default(false) // 是否隐藏
+
+  products Product[]
+}
+
+enum OrderStatus {
+  Pending // 待支付
+  Paid // 已支付
+  Failed // 支付失败
+  Refunded // 已退款
+}
+
+enum OrderType {
+  Subscription // 订阅
+  OneTime // 一次性
+}
+
+// 订单
+model Order {
+  id     String      @id @unique
+  type   OrderType
+  status OrderStatus @default(Pending)
+
+  count  Int @default(1) // 数量
+  amount Int // 订单金额，单位为分
+
+  startAt DateTime?
+  endAt   DateTime?
+
+  isCurrent Boolean @default(false) // 是否为当前订单
+
+  // relation
+
+  user   User @relation(fields: [userId], references: [id])
+  userId Int
+
+  product   Product @relation(fields: [productId], references: [id])
+  productId Int
+
+  // metadata
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  rawData Json? // 支付的原始数据
+}
+
+// =============
+// ｜OpenAI API｜
+// =============
+model OpenAIKey {
+  key    String @id
+  weight Int    @default(1)
+
+  // metadata
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
+model RateLimit {
+  key   String @id
+  value Int[]
+}
+
+// ===============
+// ｜Chat Message｜
+// ===============
+
+model ChatSession {
+  id String @id @default(uuid())
+
+  // 主题，使用模型总结
+  // TODO 当用户手动重命名后，不再使用模型总结
+  topic              String?
+  lastSummarizeIndex Int?
+
+  memoryPrompt String?
+  messages     ChatMessage[]
+
+  // relation
+  user   User @relation(fields: [userId], references: [id])
+  userId Int
+
+  // metadata
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
+enum ChatMessageRole {
+  System
+  User
+  Assistant
+}
+
+model ChatMessage {
+  id String @id @default(uuid())
+
+  role    ChatMessageRole
+  content String
+  // Tokenizer number
+  token   Int?
+
+  // usually deleted by user
+  // TODO block by admin should set another field
+  deleted Boolean @default(false)
+
+  // relation
+  chatSession   ChatSession? @relation(fields: [chatSessionId], references: [id])
+  chatSessionId String?
+
+  model   Model? @relation(fields: [modelId], references: [id])
+  modelId Int?
+
+  user   User @relation(fields: [userId], references: [id])
+  userId Int
+
+  // metadata
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
+// 用户设置
+model ChatSetting {
+  userId              Int  @id
+  historyMessageCount Int?
+
+  submitKey   String? // 提交键
+  tightBorder Boolean @default(false) // 紧凑模式
+
+  defalutModelId  Int?
+  temperature     Float?
+  maxTokens       Int?
+  presencePenalty Float?
+}

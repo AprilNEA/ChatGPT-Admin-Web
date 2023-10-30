@@ -1,0 +1,35 @@
+.sel-group {
+    display: flex;
+    border-radius: 10px;
+    border: solid 1px #ccc;
+    overflow: hidden;
+  
+    button {
+      border: none;
+      background-color: var(--white);
+      outline: none;
+      transition:all ease 0.3s;
+      color: var(--black);
+      padding: 10px;
+  
+      &:hover {
+        background-color: var(--hover-color);
+      }
+  
+      &:disabled {
+        background-color: var(--hover-color);
+      }
+  
+      svg {
+        height: 100%;
+        width: 100%;
+        margin-right: 5px;
+      }
+
+      @media only screen and (max-width: 600px) {
+        & {
+          padding: 16px;
+        }
+      }
+    }
+  }

@@ -1,6 +1,10 @@
-#config.yaml
+config.yaml
+
+prisma/client/
+
 .env
 apps/server/.env
+
 # IDE
 .vscode/
 .idea/

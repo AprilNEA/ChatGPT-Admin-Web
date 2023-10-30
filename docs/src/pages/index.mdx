@@ -1,0 +1,72 @@
+import {useSSG} from 'nextra/ssg'
+
+export const getStaticProps = async ({params}) => {
+    const githubRepo = await fetch(`https://api.github.com/repos/AprilNEA/ChatGPT-Admin-Web`)
+        .then(res => res.json())
+    const afdianPage = await fetch(`https://afdian.net/api/creator/get-top-sponsors?user_id=612f691e0f1611ee97c152540025c377`)
+        .then(res => res.json())
+    return {
+        props: {
+            // We add an `ssg` field to the page props,
+            // which will be provided to the Nextra `useSSG` hook.
+            ssg: {
+                stars: githubRepo?.stargazers_count ?? 0,
+                sponsors: afdianPage.data.list
+            }
+        },
+        // The page will be considered as stale and regenerated every 60 seconds.
+        revalidate: 60
+    }
+}
+
+export const Sponsors = () => {
+    const {sponsors} = useSSG()
+    return <div style={{padding: "20px", display: "flex"}}>{sponsors.map((sponsor) => (
+        <img
+            key={sponsor.name}
+            src={sponsor.avatar}
+            alt={sponsor.name}
+            style={{
+                margin: "10px",
+                borderRadius: "50%",
+                width: "50px",
+                height: "50px"
+            }}/>
+    ))}</div>
+}
+
+export const Stars = () => {
+    // Get the data from SSG, and render it as a component.
+    const {stars} = useSSG()
+    return <strong>{stars}</strong>
+}
+
+
+
+# ChatGPT-Admin-Web
+
+这是一个由 [ChatGPT-Next-Web](https://github.com/Yidadaa/ChatGPT-Next-Web) 二次开发的项目。
+
+本项目分为前台和后台，前台目前完全可用，而**后台面板仍然处于开发当中**。
+
+前台意味着用户可以注册、登录、问答、付费，你可以限制用户的对话次数直到他购买了会员也可以进行推广营销。
+
+后台意味着你可以可视化的管理所有用户，而不是在数据库中搜寻用户主键。
+
+由于后台正在开发中，所以你不得不在安装项目期间设置好一切。
+
+## 捐赠
+
+无论是无私地开源此项目还是撰写该文档以供各位部署自己的项目，开发者作为一个大一的学生都花费了大量的个人精力。
+
+同时该项目自开源以来完全免费，我们慷慨地公布了一切，您最好的回报方式是在 Github 上点一个 Star.
+
+如果您愿意以在金钱上支持我们，我们也提供以下方式（*部分捐赠等级提供部署指导*）。感谢您的鼓励，能让该项目持续发展。
+
+[GitHub Sponsor](https://github.com/sponsors/AprilNEA) | [爱发电](https://afdian.net/a/aprilnea)
+
+ChatGPT-Admin-Web has <Stars /> stars on GitHub!
+
+## 致谢
+
+<Sponsors/>

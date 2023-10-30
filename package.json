@@ -16,14 +16,20 @@
     "build": "turbo run build",
     "dev": "turbo run dev --parallel",
     "lint": "turbo run lint",
-    "prettier": "prettier --write ."
+    "prettier": "prettier --write .",
+    "init-db": "prisma db push --schema=prisma/schema.prisma",
+    "generate": "prisma generate --schema=prisma/schema.prisma"
   },
   "devDependencies": {
+    "@trivago/prettier-plugin-sort-imports": "latest",
     "@types/node": "latest",
+    "prettier": "latest",
     "ts-node": "latest",
     "turbo": "latest",
-    "prettier": "latest",
     "typescript": "latest"
+  },
+  "prisma": {
+    "schema": "prisma/schema.prisma"
   },
   "packageManager": "pnpm@8.6.3"
 }

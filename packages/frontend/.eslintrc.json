@@ -1,0 +1,20 @@
+{
+  "extends": "next/core-web-vitals",
+  "settings": {
+    "next": {
+      "rootDir": "./src"
+    }
+  },
+  "plugins": [
+    "simple-import-sort"
+  ],
+  "rules": {
+    "@next/next/no-html-link-for-pages": [
+      "erorr",
+      "packages/frontend/src/app"
+    ],
+    "simple-import-sort/imports": "error",
+    "simple-import-sort/exports": "error"
+  }
+}
+
