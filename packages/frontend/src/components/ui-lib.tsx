@@ -33,9 +33,9 @@ export function Card(props: { children: JSX.Element[]; className?: string }) {
 }
 
 export function ListItem(props: { children: JSX.Element[] }) {
-  if (props.children.length > 2) {
+  /*if (props.children.length > 2) {
     throw Error('Only Support Two Children');
-  }
+  }*/
 
   return <div className={styles['list-item']}>{props.children}</div>;
 }

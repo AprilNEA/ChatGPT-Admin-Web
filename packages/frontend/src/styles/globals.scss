@@ -8,12 +8,13 @@
   --inactive: #BDBDBD;
   --primary-hover-color: #4DB6AC;
   --bar-color: rgba(0, 0, 0, 0.1);
-  --shadow: #BDBDBD 0 0 10px;
   --hover-color: #E0E0E0;
   --secondary-hover-color: #E0E0E0;
 
   /* shadow */
+  --shadow: #BDBDBD 0 0 10px;
   --card-shadow: #BDBDBD 0 0 10px;
+  --emoji-shadow: #FFCC80 0 0 30px;
 
   /* stroke */
   --border-in-light: 1px solid rgb(222, 222, 222);
@@ -33,6 +34,7 @@
 
   --shadow: #424242 0 0 10px;
   --card-shadow: #424242 0 0 10px;
+  --emoji-shadow: #E65100 0 0 15px;
 
   --bar-color: rgba(255, 255, 255, 0.1);
 

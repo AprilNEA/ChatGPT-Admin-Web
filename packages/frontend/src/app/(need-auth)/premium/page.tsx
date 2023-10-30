@@ -1,7 +1,6 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
 import useSWR from 'swr';
 
 import { IconButton } from '@/components/button';
@@ -18,6 +17,7 @@ import { useStore } from '@/store';
 import { CategoryType, ProductType } from 'shared';
 
 import styles from './pricing.module.scss';
+import { useEffect, useState } from 'react';
 
 function ProductItem({ product }: { product: ProductType }) {
   return (
@@ -89,7 +89,7 @@ export default function PricingPage() {
   }
 
   if (isLoading) {
-    return <div>loading...</div>;
+    return <Loading />;
   }
 
   return (
