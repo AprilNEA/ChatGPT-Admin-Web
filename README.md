@@ -27,30 +27,29 @@ English</a></h4>
 - 💰 付费方案配置，一键对接支付接口
 - 🔐 关键词过滤、替换保证文本安全
 
-## 开始 Start
+## 开始
 
-请查看[文档](https://caw.sku.moe)
+配置及安装请查看[文档](https://caw.sku.moe)
 
-Please see [documentation](https://caw.sku.moe)
+## 版本
 
-## 版本 Version
+| 版本                                                            | 状态   | 备注              |
+|---------------------------------------------------------------|------|-----------------|
+| [V3](https://github.com/AprilNEA/ChatGPT-Admin-Web/tree/v3)   | 长期支持 | 使用全新的技术栈重构      |
+| [V2](https://github.com/AprilNEA/ChatGPT-Admin-Web/tree/v2)   | 弃用   | 存在设计缺陷          |
+| [V1](https://github.com/AprilNEA/ChatGPT-Admin-Web/tree/main) | 不再更新 | Redis数据库，可拓展性较差 |
 
-| Version                                                       | Status            | Description                 |
-|---------------------------------------------------------------|-------------------|-----------------------------|
-| [V3](https://github.com/AprilNEA/ChatGPT-Admin-Web/tree/v3)   | Long-term support | Use Nestjs & Nextjs, Prisma |
-| [V2](https://github.com/AprilNEA/ChatGPT-Admin-Web/tree/v2)   | Deprecated        | Use Nextjs, Primsa          |
-| [V1](https://github.com/AprilNEA/ChatGPT-Admin-Web/tree/main) | No longer updated | Use Redis 作为数据库             |
+## 项目动态
+
+![Alt](https://repobeats.axiom.co/api/embed/67fc3464887e0956a6225b4c5c6579c2699d8363.svg "Repobeats analytics image")
 
 ## 贡献者
+
 <a href="https://github.com/AprilNEA/ChatGPT-Admin-Web/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=AprilNEA/ChatGPT-Admin-Web" />
 </a>
 
-## 动态
-
-![Alt](https://repobeats.axiom.co/api/embed/67fc3464887e0956a6225b4c5c6579c2699d8363.svg "Repobeats analytics image")
-
-## 捐赠 Donate
+## 捐赠
 
 感谢您的激励，能让该项目持续发展。
 
