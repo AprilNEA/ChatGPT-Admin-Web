@@ -12,7 +12,7 @@ import { useStore } from '@/store';
 import { SubmitKey, Theme } from '@/store/shared';
 import styles from '@/styles/module/profile.module.scss';
 
-function SettingItem(props: {
+function ProfileItem(props: {
   title: string;
   subTitle?: string;
   children: JSX.Element;
@@ -30,7 +30,7 @@ function SettingItem(props: {
   );
 }
 
-export default function Settings() {
+export default function Profile() {
   const router = useRouter();
 
   const [config, updateConfig] = useStore((state) => [
@@ -62,9 +62,9 @@ export default function Settings() {
       </div>
       <div className={styles['profile']}>
         <List>
-          <SettingItem title={Locale.Profile.Username}>
+          <ProfileItem title={Locale.Profile.Username}>
             <input value={config.submitKey} onChange={(e) => {}} />
-          </SettingItem>
+          </ProfileItem>
 
           <ListItem>
             <div className={styles['profile-title']}>
@@ -86,7 +86,7 @@ export default function Settings() {
             </select>
           </ListItem>
 
-          <SettingItem title={Locale.Settings.Lang.Name}>
+          <ProfileItem title={Locale.Settings.Lang.Name}>
             <div className="">
               <select
                 value={getLang()}
@@ -103,9 +103,9 @@ export default function Settings() {
                 </option>
               </select>
             </div>
-          </SettingItem>
+          </ProfileItem>
 
-          <SettingItem title={Locale.Settings.TightBorder}>
+          <ProfileItem title={Locale.Settings.TightBorder}>
             <input
               type="checkbox"
               checked={config.tightBorder}
@@ -115,7 +115,7 @@ export default function Settings() {
                 );
               }}
             ></input>
-          </SettingItem>
+          </ProfileItem>
         </List>
       </div>
     </>
