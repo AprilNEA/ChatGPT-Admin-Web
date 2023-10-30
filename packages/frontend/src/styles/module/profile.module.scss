@@ -7,12 +7,81 @@
   margin: 0 auto;
 
   input {
-    height: 32px;
+    height: 100%;
     padding: 10px;
-    border: 1px solid #ccc;
+    border: var(--border-in-light);
     border-radius: 10px;
     box-sizing: border-box;
+    transition: all 0.3s;
+    background-color: transparent;
+  }
+
+  input:not(:last-child) {
+    margin-right: 10px;
+  }
+
+  input:hover {
+    border: 1px solid var(--primary);
+  }
+
+  input:active {
+    border: 1px solid var(--primary);
+    box-shadow: 0 0 0 1px var(--primary);
+  }
+
+  input:focus {
+    border: 1px solid var(--primary);
+    outline: none;
+  }
 }
+
+.info-overview {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: flex;
+  align-items: center;
+  margin: 20px;
+  max-width: 800px;
+
+  .avatar {
+    cursor: pointer;
+    height: 100px;
+    width: 100px;
+    margin-right: 20px;
+
+    img {
+      height: 100px;
+      width: 100px;
+      border-radius: 50%;
+    }
+
+    div {
+      height: 100px;
+      width: 100px;
+      border-radius: 50%;
+      background-color: var(--secondary);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 2.5rem;
+      text-shadow: var(--emoji-shadow);
+    }
+  }
+
+  .info {
+    display: flex;
+    flex-direction: column;
+
+    .username {
+      font-size: 2rem;
+      font-weight: 700;
+      text-wrap: nowrap;
+    }
+
+    .premium {
+      margin-top: -5px;
+    }
+  }
 }
 
 @media only screen and (max-width: 1140px) {
@@ -31,6 +100,117 @@
   font-weight: normal;
 }
 
-.avatar {
-  cursor: pointer;
+.set-group {
+  display: flex;
+
+
+}
+
+.order-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.order-info {
+  display: flex;
+  font-size: 0.8rem;
+  justify-content: space-between;
+  width: 100%;
+  align-items: center;
+
+  div {
+    display: flex;
+
+    .order-type{
+      margin-right: 5px;
+      font-weight: bold;
+    }
+  }
+
+  .order-status {
+    div{
+      padding: 2.5px 5px 2.5px 5px;
+      border-radius: 5px;
+      color: var(--white);
+    }
+
+    div:not(:last-child) {
+      margin-right: 5px;
+    }
+
+    .Paid {
+      background-color: #4CAF50;
+    }
+
+    .Failed {
+      background-color: #F44336;
+    }
+
+    .Pending {
+      background-color: #607D8B;
+    }
+
+    .Refunded {
+      background-color: #FFC107;
+    }
+
+    .current {
+      background-color: #2196F3;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .Paid {
+        background-color: #2E7D32;
+      }
+
+      .Failed {
+        background-color: #E65100;
+      }
+
+      .Pending {
+        background-color: #546E7A;
+      }
+
+      .Refunded {
+        background-color: #FFA000;
+      }
+
+      .current {
+        background-color: #1565C0;
+      }
+    }
+
+  }
+}
+
+.order-details {
+  font-size: 0.8rem;
+  display: flex;
+  flex-direction: column;
+
+  .order-product {
+    display: flex;
+    align-items: baseline;
+    font-size: 1.3rem;
+    
+    .order-product-name {
+      margin-right: 10px;
+      font-weight: bold;
+    }
+
+    .order-qty {
+      font-weight: 200;
+      font-size: 1rem;
+    }
+  }
+
+  .order-price {
+    font-weight: 200;
+    font-size: 1rem;
+    margin-bottom: 10px;
+  }
+  .order-date-info {
+    font-size: 0.6rem;
+  }
 }

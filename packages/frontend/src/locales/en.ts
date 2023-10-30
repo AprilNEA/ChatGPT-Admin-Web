@@ -25,13 +25,15 @@ const en: LocaleType = {
     UpgradePremium: 'Upgrade to Premium',
     WelcomeTitle: `Welcome to ${TITLE}`,
     WelcomeMessage:
-      'Hello, I am ChatGPT, an artificial intelligence assistant based on the GPT-3.5 architecture. I am designed to answer various questions, provide information, offer suggestions, and engage in conversation with you. I have knowledge on a variety of topics and can communicate with you in multiple languages. If you have any questions or need assistance, feel free to ask me, and I will do my best to provide you with the required information and support.',
+      'Hello, I am ChatGPT, an artificial intelligence assistant based on GPT. I am designed to answer various questions, provide information, offer suggestions, and engage in conversation with you. I have knowledge on a variety of topics and can communicate with you in multiple languages. If you have any questions or need assistance, feel free to ask me, and I will do my best to provide you with the required information and support.',
     Return: 'Return',
     WelcomeCaption: 'Click the button below to start chatting!',
   },
   Premium: {
-    Title: '升级到高级版',
-    SubTitle: '高级版可以获取提升使用次数并获取GPT-4访问权限',
+    Title: 'Upgrade to Premium',
+    SubTitle: 'Premium users can get increased usage and access to GPT-4',
+    PremiumUser: 'Premium User',
+    NormalUser: 'Normal User',
   },
   UnknownError: 'Unknown error, please contact the administrator',
   WIP: 'This feature is still under development...',
@@ -61,6 +63,9 @@ const en: LocaleType = {
     Input: (submitKey: string) => `Type a message, ${submitKey} to send`,
     Send: 'Send',
   },
+  OrderHistory: {
+    Title: 'Order History',
+  },
   Profile: {
     Title: 'User Information',
     SubTitle: 'View and edit user information',
@@ -68,6 +73,9 @@ const en: LocaleType = {
     Email: 'Email',
     Phone: 'Phone Number',
     Avatar: 'Change Avatar',
+    OrderHistory: 'Order History',
+    ChangeUsernameSuccess: 'Username updated successfully',
+    ChangeUsernameFail: 'Failed to update username',
     Plan: {
       Title: 'Plan',
     },

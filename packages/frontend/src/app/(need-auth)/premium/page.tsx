@@ -14,6 +14,7 @@ import { CategoryType, ProductType } from 'shared';
 import { SelectionGroup, SelectionGroupButton } from '@/components/selection-group';
 import styles from './pricing.module.scss';
 import { useEffect, useState } from 'react';
+import { Loading } from '@/components/loading';
 
 function ProductItem({ product }: { product: ProductType }) {
   return (
@@ -77,7 +78,7 @@ export default function PricingPage() {
     },[categories,isLoading])
 
   if (isLoading) {
-    return <div>loading...</div>;
+    return <Loading />;
   }
 
   return (

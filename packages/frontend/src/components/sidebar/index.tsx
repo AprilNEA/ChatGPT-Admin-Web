@@ -14,7 +14,6 @@ import { showAnnouncement } from '@/hooks/use-notice';
 import AddIcon from '@/icons/add.svg';
 import AnnouncementIcon from '@/icons/announcement.svg';
 import ChatGptIcon from '@/icons/chatgpt.svg';
-import CloseIcon from '@/icons/close.svg';
 import PremiumIcon from '@/icons/premium.svg';
 import SettingsIcon from '@/icons/settings.svg';
 import UserIcon from '@/icons/user.svg';
@@ -22,6 +21,7 @@ import Locale from '@/locales';
 import { useStore } from '@/store';
 import styles from '@/styles/module/home.module.scss';
 import { isMobileScreen } from '@/utils/client-utils';
+import CheckMarkIcon from '@/icons/checkmark.svg';
 
 import { IUserData } from 'shared';
 
@@ -53,7 +53,7 @@ function Premium({ userData }: { userData: IUserData }) {
       <button className={styles['sidebar-premium']}>
         <div>
           <div className={styles['icon']}>
-            <PremiumIcon />
+              {isPremium ? <CheckMarkIcon /> : <PremiumIcon />}
           </div>
           {isPremium ? (
             limitData && (
