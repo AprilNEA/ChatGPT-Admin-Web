@@ -316,11 +316,11 @@ export default function Chat() {
                     <div className={styles['chat-message-action-date']}>
                       {new Date(message.createdAt).toLocaleString()}
                     </div>
-                    {message.modelId && (
-                      <div className={styles['chat-message-action-date']}>
-                        {getModelName(message.modelId)?.toUpperCase()}
-                      </div>
-                    )}
+                    {/*{message.modelId && (*/}
+                    {/*  <div className={styles['chat-message-action-date']}>*/}
+                    {/*    {getModelName(message.modelId)?.toUpperCase()}*/}
+                    {/*  </div>*/}
+                    {/*)}*/}
                   </div>
                 )}
               </div>

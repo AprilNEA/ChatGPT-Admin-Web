@@ -15,8 +15,5 @@ declare namespace NodeJS {
     NEXT_PUBLIC_TITLE: string;
     NEXT_PUBLIC_OA: string;
     NEXT_PUBLIC_BASE_URL: string;
-    NEXT_PUBLIC_WECHAT_MP_APP_ID: string;
-    NEXT_PUBLIC_WECHAT_OAUTH_APP_ID: string;
-    NEXT_PUBLIC_WECHAT_OAUTH_REDIRECT_URL: string;
   }
 }

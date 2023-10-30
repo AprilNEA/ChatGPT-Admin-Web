@@ -7,6 +7,7 @@ import { Role } from '@prisma/client';
 import { BizException } from '@/common/exceptions/biz.exception';
 import { EmailService } from '@/libs/email/email.service';
 import { JwtService } from '@/libs/jwt/jwt.service';
+import { SmsService } from '@/libs/sms/sms.service';
 import { DatabaseService } from '@/processors/database/database.service';
 import { RedisService } from '@/processors/redis/redis.service';
 
@@ -45,6 +46,7 @@ export class AuthService {
     private prisma: DatabaseService,
     private redisService: RedisService,
     private emailService: EmailService,
+    private smsService: SmsService,
   ) {}
 
   /* 通常来说是最后一步：
@@ -83,6 +85,7 @@ export class AuthService {
       if (email) {
         await this.emailService.sendCode(identity, code.code);
       } else if (phone) {
+        await this.smsService.sendCode(identity, code.code);
       }
       return {
         success: true,
