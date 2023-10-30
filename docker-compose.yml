@@ -1,7 +1,7 @@
 version: "3"
 
 services:
-  chat:
+  frontend:
     build:
       context: .
       dockerfile: packages/frontend/Dockerfile
@@ -11,7 +11,7 @@ services:
       - "3000:3000"
     volumes:
       - ./config.yaml:/packages/config.yaml
-  server:
+  backend:
     build:
       context: .
       dockerfile: packages/backend/Dockerfile
@@ -23,7 +23,7 @@ services:
       - ./config.yaml:/app/config.yaml
     environment:
       DATABASE_URL: postgresql://postgres:postgres@postgres:5432/postgres
-  postgres:
+  database:
     image: postgres:latest
     networks:
       - caw
@@ -32,10 +32,10 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - database:/var/lib/postgresql/data
     ports:
       - "5432:5432"
-  redis:
+  cache:
     image: redis:latest
     networks:
       - caw
@@ -43,7 +43,7 @@ services:
       - "6379:6379"
 
 volumes:
-  postgres_data:
+  database:
 
 
 networks:
