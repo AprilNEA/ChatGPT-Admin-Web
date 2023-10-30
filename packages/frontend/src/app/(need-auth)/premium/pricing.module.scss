@@ -3,19 +3,30 @@
 .container {
   padding: 20px;
   overflow: auto;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  place-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
 }
 
 @media (max-width: 1000px) {
   .container {
     padding: 20px;
     overflow: auto;
-    display: grid;
-    grid-template-columns: 1fr;
-    place-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
   }
+}
+
+.sel-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 20px;
 }
 
 .title {
@@ -34,13 +45,20 @@
   box-shadow: var(--card-shadow);
   margin-bottom: 20px;
   animation: slide-in ease 0.3s;
-  width: 80%;
+  width: 250px;
   display: flex;
   flex-direction: column;
-  padding: 10px 20px;
+  padding: 10px 20px 0px 20px;
   background-image: url("../../../icons/chatgpt.png");
   background-repeat: no-repeat;
   background-position: top -20px right -15px;
+  margin-right: 20px;
+
+  @media (max-width: 1000px) {
+    &{
+      margin-bottom: 20px;
+    }
+  }
 
   &-inner {
     display: flex;
@@ -89,7 +107,7 @@
 
 .switch button {
   padding: 10px 20px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--border-in-light);
   background-color: #f1f1f1;
   cursor: pointer;
   transition: background-color 0.3s, border-color 0.3s;
@@ -124,6 +142,8 @@
 }
 
 .purchase-wrapper {
+  margin-left: -20px;
+  margin-right: -20px;
   position: relative;
   display: flex;
   justify-content: center;
@@ -131,8 +151,19 @@
 }
 
 .purchase {
-  background-color: #10bbe7 !important;
+  background-color: var(--primary);
   color: white;
   width: 100%;
   margin-left: none;
+  border-radius: 0 0 10px 10px;
+  transition: background-color 0.3s;
+  transform: scale(1);
+
+  &:hover {
+    background-color: var(--primary-hover-color);
+  }
+
+  &:active {
+    transform: scale(1);
+  }
 }
