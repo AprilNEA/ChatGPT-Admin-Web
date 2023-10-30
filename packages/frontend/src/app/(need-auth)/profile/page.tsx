@@ -1,16 +1,20 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 import { IconButton } from '@/components/button';
 import { List, ListItem } from '@/components/ui-lib';
-import ClearIcon from '@/icons/clear.svg';
 import CloseIcon from '@/icons/close.svg';
-import ResetIcon from '@/icons/reload.svg';
 import Locale, { changeLang, getLang } from '@/locales';
 import { useStore } from '@/store';
-import { SubmitKey, Theme } from '@/store/shared';
+import { usePremiumData } from '@/hooks/data/use-premium';
+import { useUserData } from '@/hooks/data/use-user';
 import styles from '@/styles/module/profile.module.scss';
+import OpenIcon from '@/icons/open.svg';
+import CheckmarkIcon from '@/icons/checkmark.svg';
+import { showToast } from '@/components/ui-lib';
+import useSWR, { useSWRConfig } from 'swr';
 
 function SettingItem(props: {
   title: string;
@@ -32,11 +36,27 @@ function SettingItem(props: {
 
 export default function Settings() {
   const router = useRouter();
+  const { userData } = useUserData();
+  const [localUsername, setLocalUsername] = useState<string | null>(null);
+  const { fetcher } = useStore();
+  const { mutate } = useSWRConfig();
 
-  const [config, updateConfig] = useStore((state) => [
-    state.config,
-    state.updateConfig,
-  ]);
+  async function submitChangeUsername() {
+    let success = false;
+    await fetcher('/user/name', { method: "PUT", body: JSON.stringify({ name: localUsername })})
+      .then(res => res.json()).then(res => {
+        if (res.success) {
+          success = true;
+          showToast(Locale.Profile.ChangeUsernameSuccess);
+          
+        }
+        else{
+          showToast(Locale.Profile.ChangeUsernameFail);
+        }
+      })
+    await mutate('/user/info');
+    if(success) setLocalUsername(null);
+  }
 
   return (
     <>
@@ -61,60 +81,29 @@ export default function Settings() {
         </div>
       </div>
       <div className={styles['profile']}>
+        <div className={styles['info-overview']}>
+          <div className={styles['avatar']}>
+            {userData?.avatar ? <img src={userData?.avatar} /> : <div>
+              😺
+            </div> }
+          </div>
+          <div className={styles['info']}>
+            <div className={styles['username']}>{userData?.name ?? 'Username'}</div>
+            <div className={styles['premium']}>{userData?.isPremium ? Locale.Premium.PremiumUser : Locale.Premium.NormalUser}</div>
+          </div>
+        </div>
         <List>
           <SettingItem title={Locale.Profile.Username}>
-            <input value={config.submitKey} onChange={(e) => {}} />
-          </SettingItem>
-
-          <ListItem>
-            <div className={styles['profile-title']}>
-              {Locale.Settings.Theme}
-            </div>
-            <select
-              value={config.theme}
-              onChange={(e) => {
-                updateConfig(
-                  (config) => (config.theme = e.target.value as any as Theme),
-                );
-              }}
-            >
-              {Object.values(Theme).map((v) => (
-                <option value={v} key={v}>
-                  {v}
-                </option>
-              ))}
-            </select>
-          </ListItem>
-
-          <SettingItem title={Locale.Settings.Lang.Name}>
-            <div className="">
-              <select
-                value={getLang()}
-                onChange={(e) => {
-                  changeLang(e.target.value as any);
-                }}
-              >
-                <option value="en" key="en">
-                  {Locale.Settings.Lang.Options.en}
-                </option>
-
-                <option value="cn" key="cn">
-                  {Locale.Settings.Lang.Options.cn}
-                </option>
-              </select>
+            <div className={styles['set-group']}>
+              <input value={localUsername ?? userData?.name} onChange={(e) => { setLocalUsername(e.target.value) }} />
+              {localUsername && localUsername != userData.name ? <IconButton icon={<CheckmarkIcon />} bordered onClick={submitChangeUsername}></IconButton> : ''}
             </div>
           </SettingItem>
 
-          <SettingItem title={Locale.Settings.TightBorder}>
-            <input
-              type="checkbox"
-              checked={config.tightBorder}
-              onChange={(e) => {
-                updateConfig(
-                  (config) => (config.tightBorder = e.currentTarget.checked),
-                );
-              }}
-            ></input>
+          <SettingItem title={Locale.Profile.OrderHistory}>
+            <IconButton icon={<OpenIcon />} bordered onClick={() => {
+              router.push('/order/history');
+            }}></IconButton>
           </SettingItem>
         </List>
       </div>

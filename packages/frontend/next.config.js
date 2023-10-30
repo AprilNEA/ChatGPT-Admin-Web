@@ -10,7 +10,6 @@ const nextConfig = {
   eslint: {
     dirs: ['src'],
   },
-  output: isProd ? 'export' : 'standalone',
   env: {
     NEXT_PUBLIC_TITLE: config?.site?.title ?? 'ChatGPT Admin Web',
     NEXT_PUBLIC_OA: config?.site?.oa,
@@ -26,7 +25,6 @@ const nextConfig = {
     });
     return config;
   },
-  ...(!isProd && {
     rewrites: () => {
       return [
         {
@@ -35,7 +33,6 @@ const nextConfig = {
         },
       ];
     },
-  }),
   images: {
     remotePatterns: [
       {

@@ -23,13 +23,15 @@ const cn = {
     UpgradePremium: '升级到高级版',
     WelcomeTitle: `欢迎使用${TITLE}`,
     WelcomeMessage:
-      '你好，我是ChatGPT，一个基于GPT-3.5架构的人工智能助手。我被设计用来回答各种问题、提供信息、提供建议和与您进行对话。我在各种主题上有一定的知识，并且可以用多种语言与您交流。如果您有任何问题或需要帮助，随时问我，我会尽力为您提供所需的信息和支持。',
+      '你好，我是ChatGPT，一个基于GPT架构的人工智能助手。我被设计用来回答各种问题、提供信息、提供建议和与您进行对话。我在各种主题上有一定的知识，并且可以用多种语言与您交流。如果您有任何问题或需要帮助，随时问我，我会尽力为您提供所需的信息和支持。',
     Return: '返回',
     WelcomeCaption: '点击下面的按钮开始聊天吧！',
   },
   Premium: {
     Title: '升级到高级版',
     SubTitle: '高级版可以获取提升使用次数并获取GPT-4访问权限',
+    PremiumUser: '高级用户',
+    NormalUser: '普通用户',
   },
   UnknownError: '未知错误，请联系管理员',
   WIP: '该功能仍在开发中……',
@@ -57,6 +59,25 @@ const cn = {
     Input: (submitKey: string) => `输入消息，${submitKey} 发送`,
     Send: '发送',
   },
+  OrderHistory: {
+    Title: '订单记录',
+    Type: {
+      Subscription: '订阅',
+      OneTime: '次数包',
+    },
+    Status: {
+      Paid: '已完成',
+      Failed: '未完成',
+      Pending: '待支付',
+      Refunded: '以退款',
+      Current: '当前套餐',
+    },
+    Paid: '实付',
+    ValidDate: '套餐有效时间：',
+    CreateTime: '订单创建时间：',
+    UpdateTime: '状态更新时间：',
+    NoEntry: '暂无订单记录',
+  },
   Profile: {
     Title: '用户信息',
     SubTitle: '查看和修改用户信息',
@@ -64,6 +85,9 @@ const cn = {
     Email: '邮箱',
     Phone: '手机号',
     Avatar: '修改头像',
+    OrderHistory: '订单记录',
+    ChangeUsernameSuccess: '用户名修改成功',
+    ChangeUsernameFail: '用户名修改失败',
     Plan: {
       Title: '计划',
     },
