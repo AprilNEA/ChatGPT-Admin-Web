@@ -1,3 +1,5 @@
+export const TITLE = process.env.NEXT_PUBLIC_TITLE || 'ChatGPT Admin Web';
+
 const cn = {
   // Auth Page
   Auth: {
@@ -19,15 +21,15 @@ const cn = {
     SubTitle: '欢迎关注微信公众号：',
     PremiumLimit: (count: number) => `当前可用：${count} 条`,
     UpgradePremium: '升级到高级版',
-    WelcomeTitle: '欢迎使用ChatGPT Admin Web',
+    WelcomeTitle: `欢迎使用${TITLE}`,
     WelcomeMessage:
       '你好，我是ChatGPT，一个基于GPT-3.5架构的人工智能助手。我被设计用来回答各种问题、提供信息、提供建议和与您进行对话。我在各种主题上有一定的知识，并且可以用多种语言与您交流。如果您有任何问题或需要帮助，随时问我，我会尽力为您提供所需的信息和支持。',
     Return: '返回',
     WelcomeCaption: '点击下面的按钮开始聊天吧！',
   },
   Premium: {
-    Title: "升级到高级版",
-    SubTitle: "高级版可以获取提升使用次数并获取GPT-4访问权限",
+    Title: '升级到高级版',
+    SubTitle: '高级版可以获取提升使用次数并获取GPT-4访问权限',
   },
   UnknownError: '未知错误，请联系管理员',
   WIP: '该功能仍在开发中……',
@@ -42,7 +44,7 @@ const cn = {
     ChatItemCount: (count: number) => `${count} 条对话`,
   },
   Chat: {
-    SubTitle: (count: number) => `与 ChatGPT 的 ${count} 条对话`,
+    SubTitle: (count: number) => `与 ${TITLE} 的 ${count} 条对话`,
     Actions: {
       ChatList: '查看消息列表',
       CompressedHistory: '查看压缩后的历史 Prompt',

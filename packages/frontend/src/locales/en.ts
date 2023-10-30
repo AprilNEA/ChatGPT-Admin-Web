@@ -1,3 +1,5 @@
+import { TITLE } from '@/locales/cn';
+
 import type { LocaleType } from './index';
 
 const en: LocaleType = {
@@ -17,19 +19,19 @@ const en: LocaleType = {
   },
   // Index Page
   Index: {
-    Title: process.env.NEXT_PUBLIC_TITLE || 'ChatGPT Admin Web',
+    Title: TITLE,
     SubTitle: 'Welcome to follow WeChat official account:',
     PremiumLimit: (count: number) => `Currently available: ${count} items`,
     UpgradePremium: 'Upgrade to Premium',
-    WelcomeTitle: 'Welcome to ChatGPT Admin Web',
+    WelcomeTitle: `Welcome to ${TITLE}`,
     WelcomeMessage:
       'Hello, I am ChatGPT, an artificial intelligence assistant based on the GPT-3.5 architecture. I am designed to answer various questions, provide information, offer suggestions, and engage in conversation with you. I have knowledge on a variety of topics and can communicate with you in multiple languages. If you have any questions or need assistance, feel free to ask me, and I will do my best to provide you with the required information and support.',
     Return: 'Return',
     WelcomeCaption: 'Click the button below to start chatting!',
   },
   Premium: {
-    Title: "升级到高级版",
-    SubTitle: "高级版可以获取提升使用次数并获取GPT-4访问权限",
+    Title: '升级到高级版',
+    SubTitle: '高级版可以获取提升使用次数并获取GPT-4访问权限',
   },
   UnknownError: 'Unknown error, please contact the administrator',
   WIP: 'This feature is still under development...',
@@ -46,7 +48,7 @@ const en: LocaleType = {
     ChatItemCount: (count: number) => `${count} conversations`,
   },
   Chat: {
-    SubTitle: (count: number) => `${count} conversations with ChatGPT`,
+    SubTitle: (count: number) => `${count} conversations with ${TITLE}`,
     Actions: {
       ChatList: 'View Message List',
       CompressedHistory: 'View Compressed History Prompt',

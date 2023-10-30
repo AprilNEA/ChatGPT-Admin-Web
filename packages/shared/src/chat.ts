@@ -14,7 +14,7 @@ export interface ChatMessage {
 
 export interface ChatSession {
   id: string;
-  topic: string;
+  topic?: string;
   updatedAt: Date;
   messagesCount: number;
 }

@@ -56,7 +56,7 @@ export const createChatStore: StateCreator<StoreType, [], [], ChatSlice> = (
         currentChatSessionId: sessionId,
         currentChatSession: {
           id: sessionId,
-          topic: '',
+          topic: undefined,
           updatedAt: new Date(),
           messagesCount: 1,
         },
@@ -89,6 +89,7 @@ export const createChatStore: StateCreator<StoreType, [], [], ChatSlice> = (
   async requestChat(content) {
     const {
       currentChatSessionId,
+      currentChatSession,
       fetcher,
       modelId,
       isStreaming,
@@ -148,6 +149,17 @@ export const createChatStore: StateCreator<StoreType, [], [], ChatSlice> = (
           console.log('[streaming]', 'aborting...');
           break;
         } else throw e;
+      } finally {
+        if (currentChatSession?.topic) {
+          const topic = await fetcher(`/chat/summary/${currentChatSessionId}`, {
+            method: 'POST',
+          })
+            .then((res) => res.json())
+            .then((res) => res.topic);
+          if (topic !== currentChatSession.topic) {
+            set({ currentChatSession: { ...currentChatSession, topic } });
+          }
+        }
       }
     }
 

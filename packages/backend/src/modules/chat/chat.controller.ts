@@ -1,6 +1,14 @@
 import * as Joi from 'joi';
 
-import { Body, Controller, Delete, Get, Param, Post, Sse } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Sse,
+} from '@nestjs/common';
 import { Role } from '@prisma/client';
 
 import { BizException } from '@/common/exceptions/biz.exception';
@@ -34,9 +42,7 @@ export class ChatController {
   }
 
   @Delete('sessions/:sessionId')
-  async deleteChatSession(){
-
-  }
+  async deleteChatSession() {}
 
   /* 获取具体 session 的消息历史 */
   @Get('messages/:sessionId')
@@ -90,7 +96,7 @@ export class ChatController {
     }
     if (data.messages.length > 1) {
       const topic = await this.chatService.summarizeTopic(
-        data.messages[1].content,
+        data.messages.map((m) => `${m.role}: ${m.content}`).join('\n'),
         sessionId,
       );
       return {
