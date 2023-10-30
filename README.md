@@ -1,4 +1,4 @@
-<h4 align="right"><strong>简体中文</strong> | <a href="https://github.com/tw93/Pake/blob/master/README_CN.md">
+<h4 align="right"><strong>简体中文</strong> | <a href="./README_EN.md">
 English</a></h4>
 <p align="center">
     <img src=https://s2.loli.net/2023/10/23/MLfhA2owPCacmyU.png width=138/>
