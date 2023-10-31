@@ -1,17 +1,9 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
-
-import Loading from '@/app/loading';
+/* 此处的 use client 不能被移除，即使本页面看上去没有客户端组件
+   移除将会导致在客户端未刷新的情况下 randomUUID 永远相同 */
+import { RedirectType, redirect } from 'next/navigation';
 
 export default function NewChatPage() {
-  const router = useRouter();
-
-  useEffect(() => {
-    const newSessionId = crypto.randomUUID();
-    router.replace(`/chat/${newSessionId}?new=true`);
-  });
-
-  return <Loading />;
+  redirect(`/chat/${crypto.randomUUID()}?new=true`, RedirectType.replace);
 }
