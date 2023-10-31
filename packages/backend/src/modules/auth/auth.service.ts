@@ -104,6 +104,7 @@ export class AuthService {
     const { email, phone } = getPhoneOrEmail(identity);
 
     const isValid = await this.redisService.authCode.valid(identity, code);
+
     if (!isValid) {
       throw new BizException(ErrorCodeEnum.CodeValidationError);
     }
@@ -119,7 +120,6 @@ export class AuthService {
       // 注册用户
       user = await this.prisma.user.create({
         data: {
-          name: `user${Math.random().toString(36).slice(2)}`,
           email: email,
           phone: phone,
           role: Role.User,

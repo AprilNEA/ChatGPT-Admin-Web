@@ -19,7 +19,7 @@ export class PrismaExceptionFilter implements ExceptionFilter {
     switch (exception.code) {
       case 'P2001':
       case 'P2002':
-        message = 'Not found';
+        message = 'Not found (P2002)';
         break;
       default:
         message = 'database error';
