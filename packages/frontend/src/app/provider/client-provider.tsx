@@ -50,7 +50,7 @@ export function AuthProvider({
         return router.push('/');
       }
     }
-  }, [pathname, validateSession, router]);
+  }, [pathname, validateSession, router, admin]);
 
   useEffect(() => {
     validate();

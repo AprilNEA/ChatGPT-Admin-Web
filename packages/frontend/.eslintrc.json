@@ -5,16 +5,11 @@
       "rootDir": "./src"
     }
   },
-  "plugins": [
-    "simple-import-sort"
-  ],
   "rules": {
     "@next/next/no-html-link-for-pages": [
-      "erorr",
+      "error",
       "packages/frontend/src/app"
-    ],
-    "simple-import-sort/imports": "error",
-    "simple-import-sort/exports": "error"
+    ]
   }
 }
 

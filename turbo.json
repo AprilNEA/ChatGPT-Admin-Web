@@ -13,6 +13,7 @@
       ],
       "outputs": [
         "dist/**",
+        "client/**",
         ".next/**",
         "!.next/cache/**"
       ]

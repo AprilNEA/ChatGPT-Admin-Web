@@ -93,7 +93,7 @@ export default function OrderHistory() {
         <List>
           {orderHistory ? (
             orderHistory.map((order) => (
-              <ListItem>
+              <ListItem key={order.id}>
                 <div className={styles['order-container']}>
                   <div className={styles['order-info']}>
                     <div>

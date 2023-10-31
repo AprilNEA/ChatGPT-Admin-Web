@@ -15,8 +15,10 @@
     "migrate:deploy": "prisma migrate deploy",
     "prisma:generate": "prisma generate",
     "prisma:studio": "prisma studio",
-    "prisma:seed": "prisma db seed",
-    "build": "prisma generate && tsc && cp -r client dist/client"
+    "prisma:seed": "prisma db seed"
+  },
+  "prisma": {
+    "schema": "./schema.prisma"
   },
   "dependencies": {
     "@prisma/client": "5.3.1"
