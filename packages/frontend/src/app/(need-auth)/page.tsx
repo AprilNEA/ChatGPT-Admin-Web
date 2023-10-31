@@ -1,5 +1,7 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
+
 import { IconButton } from '@/components/button';
 import Chat from '@/components/chat';
 import AddIcon from '@/icons/add.svg';
@@ -9,6 +11,7 @@ import { useStore } from '@/store';
 import styles from '@/styles/module/welcome.module.scss';
 
 export default function ChatPage() {
+  const router = useRouter();
   const [setSideBarOpen] = useStore((state) => [state.setShowSideBar]);
 
   return (
@@ -29,6 +32,7 @@ export default function ChatPage() {
           text={Locale.Home.NewChat}
           icon={<AddIcon />}
           bordered
+          onClick={() => router.push('/chat/new')}
         ></IconButton>
       </div>
     </>
