@@ -1,3 +1,5 @@
+import { FastifyRequest } from 'fastify';
+
 import {
   Body,
   Controller,
@@ -61,8 +63,9 @@ export class OrderController {
   /* 支付回调：虎皮椒 */
   @Public()
   @Post('callback/xunhu')
-  async finishOrder(@Req() req: RawBodyRequest<Request>) {
-    const oid = await this.paymentService.xhCallback(req.rawBody);
+  async finishOrder(@Req() req: RawBodyRequest<FastifyRequest>) {
+    const raw = req.rawBody;
+    const oid = await this.paymentService.xhCallback(raw);
     await this.orderService.finishOrder(oid);
     return 'success';
   }
