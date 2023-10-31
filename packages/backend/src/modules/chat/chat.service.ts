@@ -52,15 +52,18 @@ export class ChatService {
 
   // TODO Redis 缓存优化
   async limitCheck(userId: number, modelId: number) {
-    const user = await this.prisma.user.findUniqueOrThrow({
-      where: { id: userId },
-    });
+    // const user = await this.prisma.user.findUniqueOrThrow({
+    //   where: { id: userId },
+    // });
     const currentTime = new Date();
 
     // 首先判断用户是否有包年包月套餐，检查套餐次数上线
     const activatedOrders = await this.prisma.order.findMany({
       where: {
         AND: [
+          {
+            userId: userId,
+          },
           {
             startAt: {
               lte: currentTime,
@@ -82,7 +85,7 @@ export class ChatService {
     const productId =
       activatedOrders.length !== 0 ? activatedOrders[0].productId : 1;
 
-    const limit = await this.prisma.modelInProduct.findUniqueOrThrow({
+    const limit = await this.prisma.modelInProduct.findUnique({
       where: {
         modelId_productId: {
           modelId: modelId,
@@ -90,6 +93,10 @@ export class ChatService {
         },
       },
     });
+    if (!limit) {
+      return 0;
+      // throw new BizException(ErrorCodeEnum.ModelLimitNotFound);
+    }
     const messageCount = await this.getRecentMessageCount(
       userId,
       limit.duration,

@@ -23,6 +23,9 @@ export class UserService {
       where: {
         AND: [
           {
+            userId: userId,
+          },
+          {
             startAt: {
               lte: currentTime,
             },
