@@ -34,7 +34,7 @@ function ValidateCodeLogin() {
   const [validateCode, setValidateCode] = useState('');
   const [validateCodeTtl, setValidateCodeTtl] = useState(60);
   const validateCodeTtlRef = React.useRef<null | number>(null);
-  const [isSubmitting, handleSubmit] = usePreventFormSubmit();
+  const [isSubmitLogin, handleSubmitLogin] = usePreventFormSubmit();
   const [_, handleCodeSubmitting] = usePreventFormSubmit();
 
   async function requestValidateCode() {
@@ -52,11 +52,14 @@ function ValidateCodeLogin() {
       });
   }
 
-  async function login(data: validateCodeDto) {
+  async function login() {
     fetcher('/auth/validateCode', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
+      body: JSON.stringify({
+        identity,
+        code: validateCode,
+      }),
     })
       .then((res) => res.json())
       .then((res) => {
@@ -133,12 +136,8 @@ function ValidateCodeLogin() {
       </div>
       <div className={styles['auth-actions']}>
         <IconButton
-          disabled={isSubmitting}
-          onClick={() =>
-            handleSubmit(undefined, () =>
-              login({ identity, code: validateCode }),
-            )
-          }
+          disabled={isSubmitLogin}
+          onClick={() => handleSubmitLogin(undefined, login)}
           text={`${Locales.Auth.Login()} / ${Locales.Auth.Register()}`}
           className={styles['auth-submit-btn']}
           type="primary"
