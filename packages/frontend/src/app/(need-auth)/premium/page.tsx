@@ -1,8 +1,10 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import useSWR from 'swr';
 
+import Loading from '@/app/loading';
 import { IconButton } from '@/components/button';
 import {
   SelectionGroup,
@@ -14,12 +16,17 @@ import TickIcon from '@/icons/tick.svg';
 import Locale from '@/locales';
 import { useStore } from '@/store';
 
-import { CategoryType, ProductType } from 'shared';
+import { ICategory, IProduct } from 'shared';
 
 import styles from './pricing.module.scss';
-import { useEffect, useState } from 'react';
 
-function ProductItem({ product }: { product: ProductType }) {
+function ProductItem({
+  product,
+  onClick,
+}: {
+  product: IProduct;
+  onClick?: () => void;
+}) {
   return (
     <div className={styles['pricing-item']}>
       <div className={styles['pricing-item-inner']}>
@@ -51,7 +58,7 @@ function ProductItem({ product }: { product: ProductType }) {
           icon={<ShoppingIcon style={{ fill: 'white' }} />}
           text={'购买'}
           className={styles['purchase'] + ' no-dark'}
-          onClick={() => {}}
+          onClick={onClick}
         />
       </div>
     </div>
@@ -59,33 +66,24 @@ function ProductItem({ product }: { product: ProductType }) {
 }
 
 export default function PricingPage() {
-  const [page, setPage] = useState(1);
-  const [currentList, setCurrentList] = useState(null);
   const router = useRouter();
-  const { fetcher, setShowSideBar } = useStore();
 
-  const { data: categories, isLoading } = useSWR<CategoryType[]>(
+  const { fetcher, setShowSideBar } = useStore();
+  const [currentCategoryIndex, setCurrentCategoryIndex] = useState(0);
+
+  const { data: categories, isLoading } = useSWR<ICategory[]>(
     '/product/all',
     (url) => fetcher(url).then((res) => res.json()),
   );
 
-  useEffect(() => {
-    if (!isLoading) {
-      //@ts-ignore
-      let list = [];
-      //@ts-ignore
-      categories[0].products.map((item) => {
-        list.push(<ProductItem key={item.id} product={item} />);
-      });
-      //@ts-ignore
-      setPage(categories[0].id);
-      //@ts-ignore
-      setCurrentList(list);
-    }
-  }, [categories, isLoading]);
-
-  function handlePay() {
-    fetcher('/product/pay', {});
+  async function handlePay(productId: number) {
+    const result = await (
+      await fetcher('/order/new', {
+        method: 'POST',
+        body: JSON.stringify({ productId }),
+      })
+    ).json();
+    router.push(result.data.url);
   }
 
   if (isLoading) {
@@ -120,28 +118,28 @@ export default function PricingPage() {
 
       <div className={styles['sel-container']}>
         <SelectionGroup>
-          {categories?.map((item) => {
+          {categories?.map((category, index) => {
             return (
               <SelectionGroupButton
-                key={item.id}
-                content={item.name}
-                onClick={() => {
-                  //@ts-ignore
-                  let list = [];
-                  item.products.map((item) => {
-                    list.push(<ProductItem key={item.id} product={item} />);
-                  });
-                  setPage(item.id);
-                  //@ts-ignore
-                  setCurrentList(list);
-                }}
-                disabled={item.id === page}
+                key={category.id}
+                content={category.name}
+                onClick={() => setCurrentCategoryIndex(index)}
+                disabled={index === currentCategoryIndex}
               />
             );
           })}
         </SelectionGroup>
       </div>
-      <div className={styles['container']}>{currentList}</div>
+      <div className={styles['container']}>
+        {categories &&
+          categories[currentCategoryIndex].products.map((product) => (
+            <ProductItem
+              key={product.id}
+              product={product}
+              onClick={() => handlePay(product.id)}
+            />
+          ))}
+      </div>
     </>
   );
 }

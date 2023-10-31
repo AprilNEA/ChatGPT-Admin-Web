@@ -32,7 +32,7 @@ export function Card(props: { children: JSX.Element[]; className?: string }) {
   );
 }
 
-export function ListItem(props: { children: JSX.Element[] }) {
+export function ListItem(props: { children: JSX.Element | JSX.Element[] }) {
   /*if (props.children.length > 2) {
     throw Error('Only Support Two Children');
   }*/
@@ -40,7 +40,7 @@ export function ListItem(props: { children: JSX.Element[] }) {
   return <div className={styles['list-item']}>{props.children}</div>;
 }
 
-export function List(props: { children: JSX.Element[] }) {
+export function List(props: { children: JSX.Element | JSX.Element[] }) {
   return <div className={styles.list}>{props.children}</div>;
 }
 

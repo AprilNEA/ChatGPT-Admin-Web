@@ -5,5 +5,8 @@
   "scripts": {
     "dev": "tsc --watch",
     "build": "tsc --build"
+  },
+  "dependencies": {
+    "@prisma/client": "workspace:@nest-http/prisma@*"
   }
 }

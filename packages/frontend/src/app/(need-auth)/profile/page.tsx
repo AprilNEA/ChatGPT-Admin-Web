@@ -85,7 +85,8 @@ export default function Profile() {
       <div className={styles['profile']}>
         <div className={styles['info-overview']}>
           <div className={styles['avatar']}>
-            {userData?.avatar ? <img src={userData?.avatar} /> : <div>😺</div>}
+            <div>😺</div>
+            {/*{userData?.avatar ? <img src={userData?.avatar} /> : <div>😺</div>}*/}
           </div>
           <div className={styles['info']}>
             <div className={styles['username']}>
@@ -107,7 +108,7 @@ export default function Profile() {
                   setLocalUsername(e.target.value);
                 }}
               />
-              {localUsername && localUsername != userData.name ? (
+              {localUsername && localUsername !== userData?.name ? (
                 <IconButton
                   icon={<CheckmarkIcon />}
                   bordered

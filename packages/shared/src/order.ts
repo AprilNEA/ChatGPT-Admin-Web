@@ -1,4 +1,24 @@
+import { IProduct } from 'src/product';
+
+import { OrderStatus, OrderType } from '@prisma/client';
+
 export interface newOrderDto {
   /* Product ID */
   productId: number;
 }
+
+export type IOrder = {
+  id: number;
+  type: OrderType;
+  status: OrderStatus;
+  count: number;
+  amount: number;
+  startAt: string;
+  endAt: string;
+  isCurrent: boolean;
+  userId: number;
+  productId: number;
+  createdAt: string;
+  updatedAt: string;
+  product: IProduct;
+};

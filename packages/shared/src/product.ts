@@ -1,4 +1,4 @@
-export interface ProductType {
+export interface IProduct {
   id: number;
   name: string;
   features: string[];
@@ -7,8 +7,8 @@ export interface ProductType {
   duration: number;
 }
 
-export interface CategoryType {
+export interface ICategory {
   id: number;
   name: string;
-  products: ProductType[];
+  products: IProduct[];
 }
