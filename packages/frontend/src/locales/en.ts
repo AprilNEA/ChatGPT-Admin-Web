@@ -64,7 +64,23 @@ const en: LocaleType = {
     Send: 'Send',
   },
   OrderHistory: {
-    Title: 'Order History',
+    Title: '订单记录',
+    Type: {
+      Subscription: '订阅',
+      OneTime: '次数包',
+    },
+    Status: {
+      Paid: '已完成',
+      Failed: '未完成',
+      Pending: '待支付',
+      Refunded: '以退款',
+      Current: '当前套餐',
+    },
+    Paid: '实付',
+    ValidDate: '套餐有效时间：',
+    CreateTime: '订单创建时间：',
+    UpdateTime: '状态更新时间：',
+    NoEntry: '暂无订单记录',
   },
   Profile: {
     Title: 'User Information',
