@@ -38,7 +38,7 @@ export class UserService {
         createdAt: 'desc', // 最近的排在前面
       },
     });
-    console.log(activatedOrders.length > 0);
+
     return {
       ...user,
       isPremium: activatedOrders.length > 0,

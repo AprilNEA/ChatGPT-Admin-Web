@@ -39,7 +39,8 @@ export class OrderController {
     return {
       success: true,
       data: {
-        url: result.url_qrcode,
+        url: result.url,
+        qrcode: result.url_qrcode,
       },
     };
   }
