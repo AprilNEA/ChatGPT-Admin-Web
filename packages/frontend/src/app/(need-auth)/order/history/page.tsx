@@ -98,12 +98,14 @@ export default function OrderHistory() {
                   <div className={styles['order-info']}>
                     <div>
                       <div className={styles['order-type']}>
+                        {/*@ts-ignore*/}
                         {Locale.OrderHistory.Type[order.type]}
                       </div>
                       <div className={styles['order-id']}>{`#${order.id}`}</div>
                     </div>
                     <div className={styles['order-status']}>
                       <div className={styles[order.status]}>
+                        {/*@ts-ignore*/}
                         {Locale.OrderHistory.Status[order.status]}
                       </div>
                       {order.isCurrent && (
