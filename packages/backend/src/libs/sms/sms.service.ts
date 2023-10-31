@@ -13,6 +13,10 @@ export class SmsService {
   constructor(private configService: ConfigService) {}
 
   async uni(args: ISMSArgs) {
+    if (!this.smsConfig.uni.apiKey || !this.smsConfig.uni.signature) {
+      throw new Error('SMS API Key is not set');
+    }
+
     const result = await (
       await fetch(
         `https://uni.apistd.com/?action=sms.message.send&accessKeyId=${this.smsConfig.uni.apiKey}`,
