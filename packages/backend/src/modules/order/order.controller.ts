@@ -4,6 +4,7 @@ import {
   Body,
   Controller,
   Get,
+  HttpCode,
   Param,
   Post,
   Query,
@@ -63,6 +64,7 @@ export class OrderController {
   /* 支付回调：虎皮椒 */
   @Public()
   @Post('callback/xunhu')
+  @HttpCode(200)
   async finishOrder(@Req() req: RawBodyRequest<FastifyRequest>) {
     const raw = req.body;
     const orderId = await this.paymentService.xhCallback(raw);
