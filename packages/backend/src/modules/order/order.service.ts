@@ -57,7 +57,7 @@ export class OrderService {
 
   /* 订单完成 */
   async finishOrder(orderId: string) {
-    const order = await this.prisma.order.findUnique({
+    const order = await this.prisma.order.findUniqueOrThrow({
       where: { id: orderId },
       include: { product: true },
     });

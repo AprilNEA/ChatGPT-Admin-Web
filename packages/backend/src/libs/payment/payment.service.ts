@@ -103,7 +103,7 @@ export class PaymentService {
      Currently only the appId is being validated.
      In the future, attach will also need to be validated to improve security.
      */
-    if (body.appid !== this.xhConfig.appId) return null;
+    if (body.appid.toString() !== this.xhConfig.appId.toString()) return null;
 
     /* == Verify Signature == */
     // const trueHash = body.hash!

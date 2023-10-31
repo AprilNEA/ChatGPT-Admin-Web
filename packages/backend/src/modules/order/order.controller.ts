@@ -64,9 +64,9 @@ export class OrderController {
   @Public()
   @Post('callback/xunhu')
   async finishOrder(@Req() req: RawBodyRequest<FastifyRequest>) {
-    const raw = req.rawBody;
-    const oid = await this.paymentService.xhCallback(raw);
-    await this.orderService.finishOrder(oid);
+    const raw = req.body;
+    const orderId = await this.paymentService.xhCallback(raw);
+    await this.orderService.finishOrder(orderId);
     return 'success';
   }
 }
