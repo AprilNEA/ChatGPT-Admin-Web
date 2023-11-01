@@ -20,4 +20,12 @@ export class AppService {
       },
     });
   }
+
+  getAllAnnouncement() {
+    return this.prisma.announcement.findMany({
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+  }
 }

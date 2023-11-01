@@ -25,11 +25,19 @@ export class AppController {
   }
 
   /* 获取最近的网站公告 */
-  @Get('/announcement')
+  @Get('/announcement/recent')
   async getRecentAnnouncement() {
     return {
       success: true,
       data: await this.appService.getRecentAnnouncement(),
+    };
+  }
+
+  @Get('/announcement/all')
+  async getAllAnnouncement() {
+    return {
+      success: true,
+      data: await this.appService.getAllAnnouncement(),
     };
   }
 }
