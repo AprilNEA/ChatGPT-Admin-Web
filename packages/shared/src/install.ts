@@ -31,4 +31,5 @@ interface ItemsSettingSchema extends BaseSettingOptions {
 export type ISettingSchema =
   | TypeSettingSchema
   | ItemsSettingSchema
-  | SelectSettingSchema;
+  | SelectSettingSchema
+  | MultiInputSettingSchema;
