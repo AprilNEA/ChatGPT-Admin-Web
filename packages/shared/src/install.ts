@@ -1,16 +1,23 @@
 interface BaseSettingOptions {
-  key: string;
   label: string;
   description?: string;
   isOptional?: boolean;
 }
 
 interface TypeSettingSchema extends BaseSettingOptions {
-  type: 'switch' | 'input' | 'multi-input' | 'list';
+  key: string;
+  type: 'switch' | 'input' | 'list';
+  items?: never;
+}
+
+interface MultiInputSettingSchema extends BaseSettingOptions {
+  keys: string[];
+  type: 'multi-input';
   items?: never;
 }
 
 interface SelectSettingSchema extends BaseSettingOptions {
+  key: string;
   type: 'select';
   items?: never;
   selectOptions: string[];
