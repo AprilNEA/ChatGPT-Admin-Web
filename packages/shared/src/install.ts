@@ -11,6 +11,7 @@ interface TypeSettingSchema extends BaseSettingOptions {
 }
 
 interface MultiInputSettingSchema extends BaseSettingOptions {
+  key: string;
   keys: string[];
   type: 'multi-input';
   items?: never;
@@ -24,6 +25,7 @@ interface SelectSettingSchema extends BaseSettingOptions {
 }
 
 interface ItemsSettingSchema extends BaseSettingOptions {
+  key: string;
   type?: never;
   items: ISettingSchema[];
 }

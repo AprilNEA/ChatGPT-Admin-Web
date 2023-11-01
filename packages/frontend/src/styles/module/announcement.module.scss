@@ -1,0 +1,46 @@
+@import "../window";
+
+.announcement {
+    padding: 20px;
+    overflow: auto;
+    width: 800px;
+    margin: 0 auto;
+
+    .announcement-header {
+        display: flex;
+        font-size: 0.9rem;
+        margin-left: 30px;;
+        margin-bottom: 10px;
+    }
+
+    .announcement-date {
+        margin-left: 10px;
+    }
+
+    .announcement-coloum:not(:last-child) {
+        margin-bottom: 20px;
+    }
+
+    .announce-body {
+        display: flex;
+        flex-direction: column;
+        padding: 10px;
+        width: 100%;
+        
+        .title {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            font-weight: 500;
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+
+    }
+}
+
+@media only screen and (max-width: 1140px) {
+    .announcement {
+      width: calc(100% - 40px);
+    }
+}

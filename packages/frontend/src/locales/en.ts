@@ -35,6 +35,10 @@ const en: LocaleType = {
     PremiumUser: 'Premium User',
     NormalUser: 'Normal User',
   },
+  Announcement: {
+    Title: 'Announcement',
+    NoEntry: 'No announcement yet',
+  },
   UnknownError: 'Unknown error, please contact the administrator',
   WIP: 'This feature is still under development...',
   Error: {

@@ -1,5 +1,7 @@
 'use client';
 
+import '@/styles/globals.scss';
+import '@/styles/prism.scss';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import React, { FormEvent, useCallback, useEffect, useState } from 'react';

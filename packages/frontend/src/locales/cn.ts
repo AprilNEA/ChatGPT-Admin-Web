@@ -33,6 +33,10 @@ const cn = {
     PremiumUser: '高级用户',
     NormalUser: '普通用户',
   },
+  Announcement: {
+    Title: '公告',
+    NoEntry: '暂无公告',
+  },
   UnknownError: '未知错误，请联系管理员',
   WIP: '该功能仍在开发中……',
   Error: {

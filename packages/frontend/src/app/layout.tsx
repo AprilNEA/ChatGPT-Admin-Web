@@ -1,8 +1,5 @@
 /* eslint-disable @next/next/no-page-custom-font */
 import { SWRProvider } from '@/app/provider';
-import '@/styles/globals.scss';
-import '@/styles/markdown.scss';
-import '@/styles/prism.scss';
 
 export const metadata = {
   title: process.env.NEXT_PUBLIC_TITLE || 'ChatGPT Admin Web',
@@ -15,7 +12,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <meta
           name="viewport"

@@ -10,7 +10,6 @@ import { Loading } from '@/components/loading';
 import { usePremiumData } from '@/hooks/data/use-premium';
 import { useUserData } from '@/hooks/data/use-user';
 import { useSwitchTheme } from '@/hooks/switch-theme';
-import { showAnnouncement } from '@/hooks/use-notice';
 import AddIcon from '@/icons/add.svg';
 import AnnouncementIcon from '@/icons/announcement.svg';
 import ChatGptIcon from '@/icons/chatgpt.svg';
@@ -128,6 +127,7 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
           href="/chat/new"
           onClick={() => setShowSideBar(false)}
           className={styles['link-full']}
+          style={{ color: 'inherit', textDecoration: 'inherit' }}
         >
           <button className={styles['sidebar-newbtn']}>
             <div>
@@ -136,6 +136,16 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
               </div>
               <div className={styles['text']}>{Locale.Home.NewChat}</div>
             </div>
+            <Link
+                href="/announcement"
+                onClick={() => {
+                  setShowSideBar(false);
+                }}
+              >
+                <div className={styles['account-announcebtn']}>
+                  <AnnouncementIcon />
+                </div>
+              </Link>
           </button>
         </Link>
         <div

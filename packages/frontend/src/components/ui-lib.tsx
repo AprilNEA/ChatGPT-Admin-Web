@@ -60,6 +60,20 @@ export function Loading() {
   );
 }
 
+export function LoadingSmall() {
+  return (
+    <div
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      <LoadingIcon />
+    </div>
+  );
+}
+
 interface ModalProps {
   title: string;
   children?: JSX.Element;
