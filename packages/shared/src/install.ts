@@ -1,18 +1,27 @@
-/* 前端渲染界面 */
-export type ISettingSchema = {
+interface BaseSettingOptions {
   key: string;
-  items?: ISettingSchema[];
-  /* 单一的值或数组 */
-  type: 'switch' | 'input' | 'list' | 'select';
-  /* 标签 i18n */
   label: string;
   description?: string;
   isOptional?: boolean;
-  selectOptions?: string[];
-};
+}
 
-/* */
-export type ISetting = {
-  key: string;
-  value: string | ISetting | ISetting[];
-};
+interface TypeSettingSchema extends BaseSettingOptions {
+  type: 'switch' | 'input' | 'multi-input' | 'list';
+  items?: never;
+}
+
+interface SelectSettingSchema extends BaseSettingOptions {
+  type: 'select';
+  items?: never;
+  selectOptions: string[];
+}
+
+interface ItemsSettingSchema extends BaseSettingOptions {
+  type?: never;
+  items: ISettingSchema[];
+}
+
+export type ISettingSchema =
+  | TypeSettingSchema
+  | ItemsSettingSchema
+  | SelectSettingSchema;
