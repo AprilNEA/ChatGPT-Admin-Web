@@ -5,3 +5,4 @@ export * from './order';
 export * from './product';
 export * from './types/database';
 export * from './user';
+export * from './install';
