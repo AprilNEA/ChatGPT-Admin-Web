@@ -1,32 +1,31 @@
 import { create } from 'zustand'
-
-interface Item {
-    name: string;
-    value: string | object
-  }
+import ramda from 'ramda'
   
 interface InstallStoreState {
-    items: { [key: string]: Item };
-    addItem: (key: string, item: Item) => void;
-    updateItem: (key: string, updatedItem: Partial<Item>) => void;
-    findItem: (key: string) => Item | null;
-    getAll: () => object;
-
+    items: { [key: string]: string | boolean | number | object | object[] | string[] | null };
+    addItem: (key: string, item: string | boolean | number | object | object[] | string[] | number[] | null) => void;
+    updateItem: (key: string, updatedItem: Partial<string | boolean | number | object | object[] | string[] | number[]>) => void;
+    getItem: (key: string) => string | boolean | number | object | object[] | string[] | number[] | null;
+    updateItemRamda: (path: (string | number)[], key: string | boolean | number) => void;
+    getAll: () => { [key: string]: string | boolean | number | object | object[] | string[] | number[] | null};
 }
+  
   
 const useInstallStore = create<InstallStoreState>((set, get) => ({
     items: {},
-    addItem: (key: string, item: Item) =>
+    addItem: (key, item) =>
         set((state) => ({ items: { ...state.items, [key]: item } })),
-    updateItem: (key: string, updatedItem: Partial<Item>) =>
+    updateItem: (key, updatedItem) =>
         set((state) => ({
             items: {
                 ...state.items,
-                [key]: { ...state.items[key], ...updatedItem },
+                [key]: updatedItem,
             },
         })),
-    findItem: (key: string) => get().items[key] || null,
+    getItem: (key) => get().items[key] || null,
     getAll: () => get().items,
+    updateItemRamda: (path, key) => 
+        set(ramda.over(ramda.lensPath(path), () => key)),
 }));
   
 export default useInstallStore;
