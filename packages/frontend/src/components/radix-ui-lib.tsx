@@ -15,7 +15,6 @@ export function OptionListRoot(props: { children: JSX.Element | JSX.Element[] })
 
 export function OptionListItem(props: { schema: ISettingSchema, masterKeyTree?: string[]}){
     const installStore = useInstallStore();
-    installStore.addItem(props.schema.key, null);
     const [tableItems, setTableItems] = useState<JSX.Element[]>([]);
 
     function getKeyTree(){
