@@ -1,7 +1,5 @@
 'use client';
 
-import '@/styles/globals.scss';
-import '@/styles/prism.scss';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import React, { FormEvent, useCallback, useEffect, useState } from 'react';
@@ -18,6 +16,8 @@ import VerificationCodeIcon from '@/icons/verification-code.svg';
 import WechatLogo from '@/icons/wechat-logo.svg';
 import Locales from '@/locales';
 import { useStore } from '@/store';
+import '@/styles/globals.scss';
+import '@/styles/prism.scss';
 
 import { validateCodeDto } from 'shared';
 
@@ -158,7 +158,7 @@ const PasswordLogin: React.FC = () => {
   const [isSubmitting, handleSubmit] = usePreventFormSubmit();
 
   async function login() {
-    fetcher('/auth/login/password', {
+    fetcher('/auth/password', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ identity, password }),
