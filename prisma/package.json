@@ -13,6 +13,7 @@
     "migrate:status": "prisma migrate status --preview-feature",
     "migrate:resolve": "prisma migrate resolve --preview-feature",
     "generate": "prisma generate",
+    "db:generate": "prisma generate",
     "studio": "prisma studio",
     "seed": "prisma db seed"
   },
