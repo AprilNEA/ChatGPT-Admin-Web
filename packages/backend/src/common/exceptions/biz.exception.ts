@@ -4,6 +4,12 @@ import { ErrorCodeEnum } from 'shared/dist/error-code';
 
 export const ErrorCode = Object.freeze<Record<ErrorCodeEnum, [string, string]>>(
   {
+    /* Service Error */
+    [ErrorCodeEnum.OutOfQuota]: [
+      'You have exceeded your current planned usage',
+      '您已超出当前计划的用量',
+    ],
+
     /* 403 */
     [ErrorCodeEnum.AuthFail]: ['Auth failed', '认证失败'],
     [ErrorCodeEnum.PasswordError]: ['The password is incorrect', '密码错误'],
@@ -59,7 +65,7 @@ export class BizException extends HttpException {
     const [message, chMessage] = ErrorCode[code];
     super(
       HttpException.createBody({ success: false, code, message, chMessage }),
-      200,
+      400,
     );
   }
 }

@@ -22,9 +22,12 @@ export class AllExceptionFilter implements ExceptionFilter {
     const code =
       (exception as any)?.response?.code || HttpStatus.INTERNAL_SERVER_ERROR;
 
-    const message = (exception as any)?.response?.message || 'Unknown Error';
+    const message =
+      (exception as any)?.response?.message ||
+      (exception as any)?.message ||
+      'Unknown Error';
 
-    response.status(200).type('application/json').send({
+    response.status(400).type('application/json').send({
       success: false,
       code,
       message,

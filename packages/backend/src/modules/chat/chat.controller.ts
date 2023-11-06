@@ -127,10 +127,7 @@ export class ChatController {
     if (userRole !== Role.Admin) {
       const isValid = await this.chatService.limitCheck(userId, data.modelId);
       if (isValid <= 0) {
-        return {
-          success: false,
-          message: '您当日请求限制已达上线，请稍后再试。',
-        };
+        throw new BizException(ErrorCodeEnum.OutOfQuota);
       }
     }
 

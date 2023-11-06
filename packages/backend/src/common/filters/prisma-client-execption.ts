@@ -25,7 +25,7 @@ export class PrismaExceptionFilter implements ExceptionFilter {
         message = 'database error';
     }
 
-    response.status(200).type('application/json').send({
+    response.status(400).type('application/json').send({
       success: false,
       message,
     });

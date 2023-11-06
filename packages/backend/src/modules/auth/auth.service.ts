@@ -147,7 +147,7 @@ export class AuthService {
     if (!isPasswordCorrect) {
       throw Error('Password is incorrect');
     }
-    return this._signWithCheck(user);
+    return this._signWithCheck(user[0]);
   }
 
   /* 添加密码 */

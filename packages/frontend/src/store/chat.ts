@@ -121,11 +121,13 @@ export const createChatStore: StateCreator<StoreType, [], [], ChatSlice> = (
     });
 
     if (!res.ok) {
-      const data = await res.json();
+      const jsonData = await res.json();
       modifyLastMessage(() => ({
-        content: data.message ?? '对话出错',
+        content: jsonData.message ?? '对话出错',
       }));
-      throw new Error(data);
+      throw new Error(
+        `[request chat] code:${jsonData.code} message:${jsonData.message}`,
+      );
     }
 
     const reader = res

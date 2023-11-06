@@ -1,4 +1,7 @@
 export enum ErrorCodeEnum {
+  /* 200 */
+  OutOfQuota = 20001,
+
   /* 403 */
   AuthFail = 40300,
   PasswordError = 40301,
