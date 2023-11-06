@@ -120,7 +120,13 @@ export const createChatStore: StateCreator<StoreType, [], [], ChatSlice> = (
       signal: chatStreamingController.signal,
     });
 
-    if (!res.ok) throw new Error(await res.text());
+    if (!res.ok) {
+      const data = await res.json();
+      modifyLastMessage(() => ({
+        content: data.message ?? '对话出错',
+      }));
+      throw new Error(data);
+    }
 
     const reader = res
       .body!.pipeThrough(new TextDecoderStream())
@@ -148,7 +154,12 @@ export const createChatStore: StateCreator<StoreType, [], [], ChatSlice> = (
         if (e instanceof DOMException && e.name === 'AbortError') {
           console.log('[streaming]', 'aborting...');
           break;
-        } else throw e;
+        } else {
+          modifyLastMessage(({ content }) => ({
+            content: content + '对话中断',
+          }));
+          throw e;
+        }
       } finally {
         if (currentChatSession?.topic) {
           const topic = await fetcher(`/chat/summary/${currentChatSessionId}`, {

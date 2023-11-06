@@ -9,13 +9,12 @@
   "scripts": {
     "migrate:dev": "prisma migrate dev",
     "migrate:dev:create": "prisma migrate dev --create-only",
-    "prisma:migrate:deploy": "prisma migrate deploy",
-    "prisma:migrate:status": "prisma migrate status --preview-feature",
-    "prisma:migrate:resolve": "prisma migrate resolve --preview-feature",
     "migrate:deploy": "prisma migrate deploy",
-    "prisma:generate": "prisma generate",
-    "prisma:studio": "prisma studio",
-    "prisma:seed": "prisma db seed"
+    "migrate:status": "prisma migrate status --preview-feature",
+    "migrate:resolve": "prisma migrate resolve --preview-feature",
+    "generate": "prisma generate",
+    "studio": "prisma studio",
+    "seed": "prisma db seed"
   },
   "prisma": {
     "schema": "./schema.prisma"

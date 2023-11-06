@@ -26,7 +26,8 @@ export interface ChatSessionWithMessage extends ChatSession {
 export interface NewMessageDto {
   /* Model Id */
   modelId: number;
+  /* Main Content */
   content: string;
-  /* When no sid */
+  /* Prompt */
   memoryPrompt?: string;
 }

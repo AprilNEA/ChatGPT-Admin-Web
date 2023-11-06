@@ -18,7 +18,6 @@ import {
   byPasswordDto,
   forgetPasswordDto,
   identityDto,
-  requestCodeDto,
   validateCodeDto,
 } from 'shared';
 

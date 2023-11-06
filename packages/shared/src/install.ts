@@ -30,8 +30,14 @@ interface ItemsSettingSchema extends BaseSettingOptions {
   items: ISettingSchema[];
 }
 
+/* 渲染表单的结构 */
 export type ISettingSchema =
   | TypeSettingSchema
   | ItemsSettingSchema
   | SelectSettingSchema
   | MultiInputSettingSchema;
+
+/* 回传表单的数据 */
+export interface ISettingResult {
+  [key: string]: string | boolean | number | ISettingResult;
+}
