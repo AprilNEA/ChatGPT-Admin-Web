@@ -1,3 +1,4 @@
+import { RedisModule } from '@liaoliaots/nestjs-redis';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
@@ -21,6 +22,11 @@ import configuration from './configuration';
     ConfigModule.forRoot({
       load: [configuration],
       isGlobal: true,
+    }),
+    RedisModule.forRoot({
+      config: {
+        url: configuration().redis.url,
+      },
     }),
     AuthModule,
     UserModule,

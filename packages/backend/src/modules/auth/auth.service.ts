@@ -1,6 +1,8 @@
 import { compare, hashSync } from 'bcrypt';
+import { Redis } from 'ioredis';
 import * as Joi from 'joi';
 
+import { InjectRedis, RedisService } from '@liaoliaots/nestjs-redis';
 import { Injectable } from '@nestjs/common';
 import { Role } from '@prisma/client';
 
@@ -9,7 +11,6 @@ import { EmailService } from '@/libs/email/email.service';
 import { JwtService } from '@/libs/jwt/jwt.service';
 import { SmsService } from '@/libs/sms/sms.service';
 import { DatabaseService } from '@/processors/database/database.service';
-import { RedisService } from '@/processors/redis/redis.service';
 
 import { IAccountStatus } from 'shared';
 import { ErrorCodeEnum } from 'shared/dist/error-code';
@@ -39,9 +40,16 @@ const getPhoneOrEmail = (identity: string) => {
   }
 };
 
+function generateRandomSixDigitNumber() {
+  const min = 100000;
+  const max = 999999;
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 @Injectable()
 export class AuthService {
   constructor(
+    @InjectRedis() private readonly redis: Redis,
     private jwt: JwtService,
     private prisma: DatabaseService,
     private redisService: RedisService,
@@ -53,7 +61,7 @@ export class AuthService {
    * 1. 检查是否绑定账户
    * 2. 检查是否设置密码
    */
-  async _signWithCheck(user: any): Promise<{
+  async #signWithCheck(user: any): Promise<{
     token: string;
     status: IAccountStatus;
   }> {
@@ -69,6 +77,16 @@ export class AuthService {
     };
   }
 
+  async #verifyCode(identity: string, code: string) {
+    const isValid = (await this.redis.get(identity)) === code;
+
+    if (!isValid) {
+      throw new BizException(ErrorCodeEnum.CodeValidationError);
+    } else {
+      await this.redis.del(identity);
+    }
+  }
+
   /* 添加验证码 */
   async newValidateCode(identity: string) {
     const { email, phone } = getPhoneOrEmail(identity);
@@ -77,24 +95,26 @@ export class AuthService {
         success: false,
       };
     }
+    const ttl = await this.redis.ttl(identity);
+    /* if key not exist, ttl will be -2 */
+    if (600 - ttl < 60) {
+      return {
+        success: false,
+        ttl,
+      };
+    } else {
+      const newTtl = 10 * 60;
+      const code = generateRandomSixDigitNumber();
+      await this.redis.setex(identity, newTtl, code);
 
-    /* 10分钟内仅可发送一次 */
-    const code = await this.redisService.authCode.new(identity);
-
-    if (code.success) {
       if (email) {
-        await this.emailService.sendCode(identity, code.code);
+        await this.emailService.sendCode(identity, code);
       } else if (phone) {
-        await this.smsService.sendCode(identity, code.code);
+        await this.smsService.sendCode(identity, code);
       }
       return {
         success: true,
-        ttl: code.ttl,
-      };
-    } else {
-      return {
-        success: false,
-        ttl: code.ttl,
+        ttl: newTtl,
       };
     }
   }
@@ -103,11 +123,7 @@ export class AuthService {
   async WithValidateCode(identity: string, code: string) {
     const { email, phone } = getPhoneOrEmail(identity);
 
-    const isValid = await this.redisService.authCode.valid(identity, code);
-
-    if (!isValid) {
-      throw new BizException(ErrorCodeEnum.CodeValidationError);
-    }
+    await this.#verifyCode(identity, code);
 
     const existUser = await this.prisma.user.findMany({
       where: {
@@ -128,7 +144,7 @@ export class AuthService {
     } else {
       user = existUser[0];
     }
-    return this._signWithCheck(user);
+    return this.#signWithCheck(user);
   }
 
   /* 通过密码登录 */
@@ -147,7 +163,7 @@ export class AuthService {
     if (!isPasswordCorrect) {
       throw Error('Password is incorrect');
     }
-    return this._signWithCheck(user[0]);
+    return this.#signWithCheck(user[0]);
   }
 
   /* 添加密码 */
@@ -186,11 +202,7 @@ export class AuthService {
   async forgetPassword(identity: string, code: string, password: string) {
     const { email, phone } = getPhoneOrEmail(identity);
 
-    const isValid = await this.redisService.authCode.valid(identity, code);
-
-    if (!isValid) {
-      throw new BizException(ErrorCodeEnum.CodeValidationError);
-    }
+    await this.#verifyCode(identity, code);
 
     const existUser = await this.prisma.user.findMany({
       where: {
@@ -206,7 +218,7 @@ export class AuthService {
     }
     await this.changePassword(user.id, password);
 
-    return this._signWithCheck(user);
+    return this.#signWithCheck(user);
   }
 
   /* 绑定用户身份 */

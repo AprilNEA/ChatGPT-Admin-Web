@@ -31,5 +31,15 @@
   "prisma": {
     "schema": "prisma/schema.prisma"
   },
+  "engines": {
+    "node": ">=18"
+  },
+  "pnpm": {
+    "overrides": {
+      "@liaoliaots/nestjs-redis>@nestjs/common": "^10.0.0",
+      "@liaoliaots/nestjs-redis>@nestjs/core": "^10.0.0",
+      "@liaoliaots/nestjs-redis>@nestjs/terminus": "^10.0.0"
+    }
+  },
   "packageManager": "pnpm@8.6.3"
 }
