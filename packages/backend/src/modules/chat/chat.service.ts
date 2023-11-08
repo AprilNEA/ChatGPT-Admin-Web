@@ -145,6 +145,8 @@ export class ChatService {
       where: {
         id: sid,
         userId: uid,
+        isDeleted: false,
+        isBlocked: false,
       },
       include: {
         messages: {
@@ -163,6 +165,8 @@ export class ChatService {
       take: limit,
       where: {
         userId: uid,
+        isDeleted: false,
+        isBlocked: false,
       },
       include: {
         _count: {
@@ -336,6 +340,44 @@ ${message}
           subscriber.complete();
         }
       })();
+    });
+  }
+
+  deleteChatMessage(userId: number, messageId: string) {
+    return this.prisma.$transaction(async (prisma) => {
+      const message = await prisma.chatMessage.update({
+        where: {
+          id: messageId,
+        },
+        data: {
+          isDeleted: true,
+        },
+        select: {
+          userId: true,
+        },
+      });
+      if (message.userId !== userId) {
+        throw new BizException(ErrorCodeEnum.ValidationError);
+      }
+    });
+  }
+
+  deleteChatSession(userId: number, sessionId: string) {
+    return this.prisma.$transaction(async (prisma) => {
+      const session = await prisma.chatSession.update({
+        where: {
+          id: sessionId,
+        },
+        data: {
+          isDeleted: true,
+        },
+        select: {
+          userId: true,
+        },
+      });
+      if (session.userId !== userId) {
+        throw new BizException(ErrorCodeEnum.ValidationError);
+      }
     });
   }
 }

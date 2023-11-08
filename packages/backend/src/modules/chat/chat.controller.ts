@@ -41,8 +41,29 @@ export class ChatController {
     return this.chatService.getRecentChatSession(userId);
   }
 
+  /* 删除对话 */
   @Delete('sessions/:sessionId')
-  async deleteChatSession() {}
+  async deleteChatSession(
+    @Payload('id') userId: number,
+    @Param('sessionId') sessionId: string,
+  ) {
+    await this.chatService.deleteChatSession(userId, sessionId);
+    return {
+      success: true,
+    };
+  }
+
+  /* 删除消息 */
+  @Delete('messages/:messageId')
+  async deleteChatMessage(
+    @Payload('id') userId: number,
+    @Param('messageId') messageId: string,
+  ) {
+    await this.chatService.deleteChatMessage(userId, messageId);
+    return {
+      success: true,
+    };
+  }
 
   /* 获取具体 session 的消息历史 */
   @Get('messages/:sessionId')
@@ -123,6 +144,7 @@ export class ChatController {
     @Param('sessionId') sessionId: string,
   ) {
     const { id: userId, role: userRole } = payload;
+
     /* 用量限制 */
     if (userRole !== Role.Admin) {
       const isValid = await this.chatService.limitCheck(userId, data.modelId);
