@@ -4,6 +4,11 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+overrides:
+  '@liaoliaots/nestjs-redis>@nestjs/common': ^10.0.0
+  '@liaoliaots/nestjs-redis>@nestjs/core': ^10.0.0
+  '@liaoliaots/nestjs-redis>@nestjs/terminus': ^10.0.0
+
 importers:
 
   .:
@@ -307,9 +312,6 @@ importers:
       '@types/uuid':
         specifier: ^9.0.6
         version: 9.0.6
-      eslint-plugin-simple-import-sort:
-        specifier: ^10.0.0
-        version: 10.0.0(eslint@8.35.0)
       prettier:
         specifier: '*'
         version: 3.0.3
@@ -1762,6 +1764,7 @@ packages:
   /@eslint/js@8.35.0:
     resolution: {integrity: sha512-JXdzbRiWclLVoD8sNUjR443VVlYqiYmDVT6rGUEIEHU5YJW0gaVZwV2xgM7D4arkvASqD0IlLUVjHiFuxaftRw==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
+    dev: false
 
   /@eslint/js@8.42.0:
     resolution: {integrity: sha512-6SWlXpWU5AvId8Ac7zjzmIOqMOba/JWY8XZ4A7q7Gn1Vlfg/SFFIlrtHXt9nPn4op9ZPAkl91Jao+QQv3r/ukw==}
@@ -2145,8 +2148,8 @@ packages:
     resolution: {integrity: sha512-nPcGLj0zW4mEsYtQYfWx3o7PmrMjuzFk6+t/g2IRopAeWWUZZ/5nIJ4KTKiz/3DJEUkbX8PZqB+dOhklGF0SVA==}
     engines: {node: '>=12.22.0'}
     peerDependencies:
-      '@nestjs/common': ^9.0.0
-      '@nestjs/core': ^9.0.0
+      '@nestjs/common': ^10.0.0
+      '@nestjs/core': ^10.0.0
       ioredis: ^5.0.0
     dependencies:
       '@nestjs/common': 10.0.0(class-transformer@0.2.3)(class-validator@0.11.1)(reflect-metadata@0.1.13)(rxjs@7.8.1)
@@ -6044,14 +6047,6 @@ packages:
       string.prototype.matchall: 4.0.8
     dev: false
 
-  /eslint-plugin-simple-import-sort@10.0.0(eslint@8.35.0):
-    resolution: {integrity: sha512-AeTvO9UCMSNzIHRkg8S6c3RPy5YEwKWSQPx3DYghLedo2ZQxowPFLGDN1AZ2evfg6r6mjBSZSLxLFsWSu3acsw==}
-    peerDependencies:
-      eslint: '>=5.0.0'
-    dependencies:
-      eslint: 8.35.0
-    dev: true
-
   /eslint-plugin-simple-import-sort@10.0.0(eslint@8.42.0):
     resolution: {integrity: sha512-AeTvO9UCMSNzIHRkg8S6c3RPy5YEwKWSQPx3DYghLedo2ZQxowPFLGDN1AZ2evfg6r6mjBSZSLxLFsWSu3acsw==}
     peerDependencies:
@@ -6083,10 +6078,12 @@ packages:
     dependencies:
       eslint: 8.35.0
       eslint-visitor-keys: 2.1.0
+    dev: false
 
   /eslint-visitor-keys@2.1.0:
     resolution: {integrity: sha512-0rSmRBzXgDzIsD6mGdJgevzgezI534Cer5L/vyMX0kHzT/jiB43jRhd9YUlMGYLQy2zprNmoT8qasCGtY+QaKw==}
     engines: {node: '>=10'}
+    dev: false
 
   /eslint-visitor-keys@3.4.3:
     resolution: {integrity: sha512-wpc+LXeiyiisxPlEkUzU6svyS1frIO3Mgxj1fdy7Pm8Ygzguax2N3Fa/D/ag1WqbOprdI+uY6wMUl8/a2G+iag==}
@@ -6139,6 +6136,7 @@ packages:
       text-table: 0.2.0
     transitivePeerDependencies:
       - supports-color
+    dev: false
 
   /eslint@8.42.0:
     resolution: {integrity: sha512-ulg9Ms6E1WPf67PHaEY4/6E2tEn5/f7FXGzr3t9cBMugOmf1INYvuUwwh1aXQN4MfJ6a5K2iNwP3w4AColvI9A==}
@@ -7873,6 +7871,7 @@ packages:
 
   /js-sdsl@4.4.2:
     resolution: {integrity: sha512-dwXFwByc/ajSV6m5bcKAPwe4yDDF6D614pxmIi5odytzxRlwqF6nwoiCek80Ixc7Cvma5awClxrzFtxCQvcM8w==}
+    dev: false
 
   /js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
@@ -9549,6 +9548,7 @@ packages:
   /regexpp@3.2.0:
     resolution: {integrity: sha512-pq2bWo9mVD43nbts2wGv17XLiNLya+GklZ8kaDLV2Z08gDCsGpnKn9BFMepvWuHCbyVvY7J5o5+BVvoQbmlJLg==}
     engines: {node: '>=8'}
+    dev: false
 
   /regexpu-core@5.3.2:
     resolution: {integrity: sha512-RAM5FlZz+Lhmo7db9L298p2vHP5ZywrVXmVXpmAD9GuL5MPH6t9ROw1iA/wfHkQ76Qe7AaPF0nGuim96/IrQMQ==}

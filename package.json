@@ -10,7 +10,8 @@
   },
   "workspaces": [
     "apps/*",
-    "packages/*"
+    "packages/*",
+    "prisma"
   ],
   "scripts": {
     "build": "turbo run build",
