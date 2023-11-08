@@ -28,6 +28,8 @@ export interface SharedSlice {
   setSessionToken: (token: string) => void;
 
   // layout
+  latestAnnouncementId?: number;
+  setLatestAnnouncementId: (id: number) => void;
   showSideBar: boolean;
   setShowSideBar: (open: boolean) => void;
 

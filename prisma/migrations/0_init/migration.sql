@@ -1,8 +1,8 @@
 -- CreateEnum
-CREATE TYPE "Role" AS ENUM ('Admin', 'Mod', 'Sell', 'User');
+CREATE TYPE "Role" AS ENUM ('Admin', 'User');
 
 -- CreateEnum
-CREATE TYPE "OAuthProvider" AS ENUM ('Google', 'Github', 'Wechat');
+CREATE TYPE "OAuthProvider" AS ENUM ('Github', 'Wechat');
 
 -- CreateEnum
 CREATE TYPE "OrderStatus" AS ENUM ('Pending', 'Paid', 'Failed', 'Refunded');
@@ -14,10 +14,32 @@ CREATE TYPE "OrderType" AS ENUM ('Subscription', 'OneTime');
 CREATE TYPE "ChatMessageRole" AS ENUM ('System', 'User', 'Assistant');
 
 -- CreateTable
+CREATE TABLE "Announcement" (
+    "id" SERIAL NOT NULL,
+    "title" TEXT NOT NULL,
+    "content" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "Announcement_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Setting" (
+    "id" SERIAL NOT NULL,
+    "key" TEXT NOT NULL,
+    "value" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "Setting_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "User" (
     "id" SERIAL NOT NULL,
     "role" "Role" NOT NULL DEFAULT 'User',
-    "name" TEXT NOT NULL,
+    "name" TEXT,
     "email" TEXT,
     "phone" TEXT,
     "password" TEXT,
@@ -81,6 +103,7 @@ CREATE TABLE "ModelInProduct" (
 CREATE TABLE "Category" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
+    "isHidden" BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT "Category_pkey" PRIMARY KEY ("id")
 );
@@ -140,6 +163,7 @@ CREATE TABLE "ChatMessage" (
     "id" TEXT NOT NULL,
     "role" "ChatMessageRole" NOT NULL,
     "content" TEXT NOT NULL,
+    "token" INTEGER,
     "deleted" BOOLEAN NOT NULL DEFAULT false,
     "chatSessionId" TEXT,
     "modelId" INTEGER,
@@ -163,6 +187,9 @@ CREATE TABLE "ChatSetting" (
 
     CONSTRAINT "ChatSetting_pkey" PRIMARY KEY ("userId")
 );
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Setting_key_key" ON "Setting"("key");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_name_key" ON "User"("name");
@@ -220,3 +247,4 @@ ALTER TABLE "ChatMessage" ADD CONSTRAINT "ChatMessage_modelId_fkey" FOREIGN KEY 
 
 -- AddForeignKey
 ALTER TABLE "ChatMessage" ADD CONSTRAINT "ChatMessage_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+

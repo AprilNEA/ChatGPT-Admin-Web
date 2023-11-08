@@ -1,5 +1,13 @@
 // import * as Joi from "Joi";
-import { Controller, Get, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
 
 import { Public, Roles } from '@/common/guards/auth.guard';
 
@@ -24,7 +32,7 @@ export class AppController {
     return this.appService.getHello();
   }
 
-  /* 获取最近的网站公告 */
+  /* 获取最近一条的网站公告 */
   @Get('/announcement/recent')
   async getRecentAnnouncement() {
     return {
@@ -33,11 +41,34 @@ export class AppController {
     };
   }
 
+  /* 获取网站所有的公告 */
   @Get('/announcement/all')
   async getAllAnnouncement() {
     return {
       success: true,
       data: await this.appService.getAllAnnouncement(),
+    };
+  }
+
+  /* 添加或更新公告 */
+  @Post('/announcement')
+  async newAnnouncement(
+    @Body() data: { id?: number; title?: string; content?: string },
+  ) {
+    return {
+      success: true,
+      data: await this.appService.upsertAnnouncement({
+        ...data,
+      }),
+    };
+  }
+
+  /* 删除公告 */
+  @Delete('/announcement/:id')
+  async deleteAnnouncement(@Param('id') id: number) {
+    await this.appService.deleteAnnouncement(id);
+    return {
+      success: true,
     };
   }
 }

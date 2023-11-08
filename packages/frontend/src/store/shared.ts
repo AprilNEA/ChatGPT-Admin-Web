@@ -47,6 +47,10 @@ export const createSharedStore: StateCreator<StoreType, [], [], SharedSlice> = (
     set({ showSideBar: open });
   },
 
+  setLatestAnnouncementId(id: number) {
+    set({ latestAnnouncementId: id });
+  },
+
   // utils
   fetcher(url: string, init?: RequestInit) {
     return fetch(`${BASE_URL}/api${url}`, {

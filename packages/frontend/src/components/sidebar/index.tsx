@@ -1,18 +1,20 @@
 'use client';
 
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import useSWR from 'swr';
 
-import { IconButton } from '@/components/button';
 import { ChatList } from '@/components/chat/chat-list';
 import { Loading } from '@/components/loading';
+import { Markdown } from '@/components/markdown';
+import { showModal } from '@/components/ui-lib';
 import { usePremiumData } from '@/hooks/data/use-premium';
 import { useUserData } from '@/hooks/data/use-user';
 import { useSwitchTheme } from '@/hooks/switch-theme';
 import AddIcon from '@/icons/add.svg';
 import AnnouncementIcon from '@/icons/announcement.svg';
 import ChatGptIcon from '@/icons/chatgpt.svg';
+import CheckMarkIcon from '@/icons/checkmark.svg';
 import PremiumIcon from '@/icons/premium.svg';
 import SettingsIcon from '@/icons/settings.svg';
 import UserIcon from '@/icons/user.svg';
@@ -20,7 +22,6 @@ import Locale from '@/locales';
 import { useStore } from '@/store';
 import styles from '@/styles/module/home.module.scss';
 import { isMobileScreen } from '@/utils/client-utils';
-import CheckMarkIcon from '@/icons/checkmark.svg';
 
 import { IUserData } from 'shared';
 
@@ -52,7 +53,7 @@ function Premium({ userData }: { userData: IUserData }) {
       <button className={styles['sidebar-premium']}>
         <div>
           <div className={styles['icon']}>
-              {isPremium ? <CheckMarkIcon /> : <PremiumIcon />}
+            {isPremium ? <CheckMarkIcon /> : <PremiumIcon />}
           </div>
           {isPremium ? (
             limitData && (
@@ -70,29 +71,35 @@ function Premium({ userData }: { userData: IUserData }) {
 }
 
 export function Sidebar({ children }: { children: React.ReactNode }) {
-  // 侧边栏是否展开
-  const [showSideBar, setShowSideBar] = useStore((state) => [
-    state.showSideBar,
-    state.setShowSideBar,
-  ]);
+  const {
+    showSideBar,
+    setShowSideBar,
+    fetcher,
+    latestAnnouncementId,
+    setLatestAnnouncementId,
+    config,
+  } = useStore();
 
-  // 对话
-  // const [createNewSession, currentIndex, removeSession] = useStore((state) => [
-  //   state.newSession,
-  //   state.currentChatSessionId,
-  //   state.removeSession,
-  // ]);
-
-  // 是否加载中
-  const loading = !useHasHydrated();
-
-  // 设置
-  const config = useStore((state) => state.config);
-
-  // 暗色模式切换
-  useSwitchTheme();
+  useSWR('/announcement/recent', (url) =>
+    fetcher(url)
+      .then((res) => res.json())
+      .then((res) => res.data)
+      .then((latestAnnouncement) => {
+        if (latestAnnouncement.id !== latestAnnouncementId) {
+          showModal({
+            title: latestAnnouncement.title,
+            children: <Markdown content={latestAnnouncement.content} />,
+          });
+          setLatestAnnouncementId(latestAnnouncement.id as number);
+        }
+      }),
+  );
 
   const { userData } = useUserData();
+
+  const loading = !useHasHydrated();
+
+  useSwitchTheme();
 
   if (loading) {
     return <Loading />;
@@ -137,15 +144,16 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
               <div className={styles['text']}>{Locale.Home.NewChat}</div>
             </div>
             <Link
-                href="/announcement"
-                onClick={() => {
-                  setShowSideBar(false);
-                }}
-              >
-                <div className={styles['account-announcebtn']}>
-                  <AnnouncementIcon />
-                </div>
-              </Link>
+              href="/announcement"
+              prefetch={true}
+              onClick={() => {
+                setShowSideBar(false);
+              }}
+            >
+              <div className={styles['account-announcebtn']}>
+                <AnnouncementIcon />
+              </div>
+            </Link>
           </button>
         </Link>
         <div

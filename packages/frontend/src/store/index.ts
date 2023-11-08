@@ -14,6 +14,7 @@ export const useStore = create<StoreType>()(
     {
       name: 'caw',
       partialize: (state) => ({
+        latestAnnouncementId: state.latestAnnouncementId,
         sessionToken: state.sessionToken,
         config: state.config,
       }),

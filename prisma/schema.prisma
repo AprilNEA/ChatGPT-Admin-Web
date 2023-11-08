@@ -20,9 +20,11 @@ datasource db {
 // ｜WebSite｜
 // =======
 model Announcement {
-  id      Int    @id @default(autoincrement())
-  title   String
-  content String
+  id        Int     @id @default(autoincrement())
+  title     String
+  content   String
+  sortOrder Float?
+  isHidden  Boolean @default(false)
 
   // metadata
   createdAt DateTime @default(now()) @db.Timestamp(6)
@@ -30,13 +32,13 @@ model Announcement {
 }
 
 model Setting {
-  id    Int    @id @default(autoincrement())
-  key   String @unique
-  value String
+  key   String @id
+  value Json?
+}
 
-  // metadata
-  createdAt DateTime @default(now()) @db.Timestamp(6)
-  updatedAt DateTime @default(now()) @updatedAt
+model Cache {
+  key   String @id
+  value Json?
 }
 
 // =======
@@ -68,8 +70,11 @@ model User {
 }
 
 enum OAuthProvider {
+  Apple
   Github
+  Google
   Wechat
+  Microsofe
 }
 
 model OAuth {
@@ -97,10 +102,13 @@ model OAuth {
 // ｜Product｜
 // ==========
 model Model {
-  id   Int    @id @default(autoincrement())
-  name String @unique
+  id    Int     @id @default(autoincrement())
+  name  String  @unique // 模型实际的名称
+  label String? // 展示的名称，为空则使用实际名称
 
-  price Int // 单位为分
+  price      Int // 单位为分
+  isDisabled Boolean @default(false) // 是否启用
+  sortOrder  Float?
 
   // relation
   products ModelInProduct[]
@@ -116,8 +124,9 @@ model Product {
 
   isHidden Boolean @default(false) // 是否隐藏
 
-  price Int // 单位为分，产品单价
-  stock Int @default(-1) // 库存
+  price     Int // 单位为分，产品单价
+  stock     Int    @default(-1) // 库存
+  sortOrder Float?
 
   // 产品的持续时间
   // -1 表示一次性商品
@@ -156,7 +165,8 @@ model Category {
   id   Int    @id @default(autoincrement())
   name String @unique
 
-  isHidden Boolean @default(false) // 是否隐藏
+  isHidden  Boolean @default(false) // 是否隐藏
+  sortOrder Float?
 
   products Product[]
 }
@@ -205,18 +215,30 @@ model Order {
 // =============
 // ｜OpenAI API｜
 // =============
-model OpenAIKey {
-  key    String @id
-  weight Int    @default(1)
-
-  // metadata
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
+enum OpenAIKeyStatus {
+  Active
+  Disabled
+  Expired
 }
 
-model RateLimit {
-  key   String @id
-  value Int[]
+model OpenAIKey {
+  id     Int             @id @default(autoincrement())
+  key    String          @unique
+  url    String?
+  status OpenAIKeyStatus @default(Active)
+
+  weight     Int?
+  total      Float?
+  usage      Float?
+  tokenUsage Float?
+  priceRatio Float?
+  rateLimit  Int?
+  note       String? @db.Text
+
+  // metadata
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now()) @updatedAt
+  expiredAt DateTime?
 }
 
 // ===============
@@ -239,6 +261,8 @@ model ChatSession {
   userId Int
 
   // metadata
+  isDeleted Boolean  @default(false) // 用户删除
+  isBlocked Boolean  @default(false) // 封禁
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 }
@@ -257,10 +281,6 @@ model ChatMessage {
   // Tokenizer number
   token   Int?
 
-  // usually deleted by user
-  // TODO block by admin should set another field
-  deleted Boolean @default(false)
-
   // relation
   chatSession   ChatSession? @relation(fields: [chatSessionId], references: [id])
   chatSessionId String?
@@ -272,6 +292,8 @@ model ChatMessage {
   userId Int
 
   // metadata
+  isDeleted Boolean  @default(false) // usually deleted by user
+  isBlocked Boolean  @default(false) // usually blocked by admin or policy reasons
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 }
