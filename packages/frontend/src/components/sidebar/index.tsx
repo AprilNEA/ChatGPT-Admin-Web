@@ -18,6 +18,8 @@ import CheckMarkIcon from '@/icons/checkmark.svg';
 import PremiumIcon from '@/icons/premium.svg';
 import SettingsIcon from '@/icons/settings.svg';
 import UserIcon from '@/icons/user.svg';
+import FileChatIcon from '@/icons/file-chat.svg';
+import MaskIcon from '@/icons/mask.svg';
 import Locale from '@/locales';
 import { useStore } from '@/store';
 import styles from '@/styles/module/home.module.scss';
@@ -79,6 +81,7 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
     setLatestAnnouncementId,
     config,
   } = useStore();
+  const [newbtnExpanded, setNewbtnExpanded] = useState<boolean>(false);
 
   useSWR('/announcement/recent', (url) =>
     fetcher(url)
@@ -107,11 +110,10 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
 
   return (
     <div
-      className={`${
-        config.tightBorder && !isMobileScreen()
+      className={`${config.tightBorder && !isMobileScreen()
           ? styles['tight-container']
           : styles.container
-      }`}
+        }`}
     >
       <div
         className={styles.sidebar + ` ${showSideBar && styles['sidebar-show']}`}
@@ -130,32 +132,54 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
             <ChatGptIcon />
           </div>
         </div>
-        <Link
-          href="/chat/new"
-          onClick={() => setShowSideBar(false)}
-          className={styles['link-full']}
-          style={{ color: 'inherit', textDecoration: 'inherit' }}
-        >
-          <button className={styles['sidebar-newbtn']}>
-            <div>
-              <div className={styles['icon']}>
-                <AddIcon />
+        <div className={styles['sidebar-newbtn']}>
+          {!newbtnExpanded ? (
+            <button className={styles['sidebar-new']} onClick={() => setNewbtnExpanded(true)}>
+              <div>
+                <div className={styles['icon']}>
+                  <AddIcon />
+                </div>
+                <div className={styles['text']}>{Locale.Home.NewChat}</div>
               </div>
-              <div className={styles['text']}>{Locale.Home.NewChat}</div>
-            </div>
-            <Link
-              href="/announcement"
-              prefetch={true}
-              onClick={() => {
-                setShowSideBar(false);
-              }}
-            >
-              <div className={styles['account-announcebtn']}>
-                <AnnouncementIcon />
-              </div>
-            </Link>
-          </button>
-        </Link>
+            </button>
+          ) : (
+            <>
+              <Link
+                href="/chat/new"
+                onClick={() => {setShowSideBar(false);setNewbtnExpanded(false)}}
+                className={styles['link-full']}
+                style={{ color: 'inherit', textDecoration: 'inherit' }}
+              >
+                <button className={styles['sidebar-new']}>
+                  <div>
+                    <div className={styles['icon']}>
+                      <AddIcon />
+                    </div>
+                    <div className={styles['text']}>{Locale.Home.NewBlankChat}</div>
+                  </div>
+                </button>
+              </Link>
+              <button className={styles['sidebar-new']}>
+                <div>
+                  <div className={styles['icon']}>
+                    <FileChatIcon />
+                  </div>
+                  <div className={styles['text']}>{Locale.Home.FileChat}</div>
+                </div>
+              </button>
+              <button className={styles['sidebar-new']}>
+                <div>
+                  <div className={styles['icon']}>
+                    <MaskIcon />
+                  </div>
+                  <div className={styles['text']}>{Locale.Home.Mask}</div>
+                </div>
+              </button>
+            </>
+          )
+          }
+
+        </div>
         <div
           className={styles['sidebar-body']}
           onClick={() => {

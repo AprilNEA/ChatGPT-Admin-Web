@@ -128,8 +128,11 @@ const cn = {
     Copy: '全部复制',
   },
   Home: {
-    NewChat: '新的聊天',
+    NewChat: '新建对话',
+    NewBlankChat: '开始空白对话',
     DeleteChat: '确认删除选中的对话？',
+    FileChat: '开始文件对话',
+    Mask: '选择面具',
   },
   Settings: {
     Title: '设置',

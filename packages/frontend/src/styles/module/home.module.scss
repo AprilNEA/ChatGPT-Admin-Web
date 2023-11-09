@@ -90,9 +90,7 @@
 
 .sidebar-header {
   position: relative;
-  padding-left: 10px;
-  padding-top: 20px;
-  padding-bottom: 5px;
+  padding: 15px 10px 20px 12px;
 }
 
 .sidebar-logo {
@@ -118,54 +116,76 @@
 }
 
 .sidebar-newbtn {
-  overflow: hidden;
-  user-select: none;
-  outline: none;
-  border: none;
-  margin: 0 10px 10px 10px;
+
+  &:has(button:not(:only-child)) {
+    box-shadow: var(--card-shadow);
+    height: 120px;
+  }
+
+  height: 40px;
+  background-color: var(--white);
+  margin: 0 10px 0 10px;
   transition: 0.3s;
   animation: slide-in ease 0.3s;
   border-radius: 10px;
   transform: scale(1);
-  padding: 10px;
-  background-color: transparent;
-  width: calc(100% - 20px);
   display: flex;
-  justify-content: space-between;
+  border: 2px solid var(--inactive);
+  flex-direction: column;
+  overflow: hidden;
+
+  .sidebar-new {
+    padding: 0;
+    display: flex;
+    background-color: transparent;
+    width: 100%;
+    overflow: hidden;
+    user-select: none;
+    outline: none;
+    border: none;
+    padding: 5px 10px 5px 10px;
+    transition: background-color ease 0.3s;
+
+    &:hover {
+      background-color: var(--secondary-hover-color);
+      cursor: pointer;
+    }
+
+    div {
+      height: 30px;
+      display: flex;
+      align-items: center;
+      
+      .icon {
+        width: 40px;
+        display: flex;
+        justify-content: center;
+        margin-right: 10px;
+  
+        svg {
+          fill: var(--black);
+          height: 20px;
+          width: 20px;
+        }
+      }
+    
+      .text {
+        font-size: 14px;
+        text-align: center;
+        text-decoration: none;
+        font-weight: bolder;
+        font-family: "Poppins", "Noto Sans SC", "SF Pro SC", "SF Pro Text", "SF Pro Icons", "PingFang SC", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+      }
+    }
+  }
 
   &:active {
     transform: scale(0.95);
     transition: 0;
   }
 
-  div {
-    height: 30px;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    
-    .icon {
-      width: 40px;
-      display: flex;
-      justify-content: center;
-      margin-right: 10px;
-  
-      svg {
-        fill: var(--black);
-        height: 20px;
-        width: 20px;
-      }
-    }
-  
-    .text {
-      font-size: 15px;
-      text-align: center;
-      text-decoration: none;
-    }
-  }
-
   &:hover {
-    background-color: var(--secondary-hover-color);
+    box-shadow: var(--card-shadow);
     cursor: pointer;
   }
 
@@ -214,17 +234,31 @@
 }
 
 .chat-item {
+  display: flex;
   margin: 10px;
-  padding: 10px 14px;
+  padding: 10px;
   background-color: var(--white);
   border-radius: 10px;
-  box-shadow: var(--card-shadow);
   transition: all 0.3s ease;
   cursor: pointer;
   user-select: none;
-  border: 2px solid transparent;
+  border: 2px solid var(--inactive);
   position: relative;
   overflow: hidden;
+}
+
+.chat-item-icon {
+  width: 40px;
+  margin-right: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  svg {
+    fill: var(--black);
+    height: 20px;
+    width: 20px;
+  }
 }
 
 @keyframes slide-in {
@@ -252,18 +286,21 @@
 }
 
 .chat-item:hover {
-  background-color: var(--secondary-hover-color);
+  box-shadow: var(--card-shadow);
 }
 
 .chat-item-selected {
   border-color: var(--primary);
 }
 
+.chat-item-main{
+  flex: 1;
+}
+
 .chat-item-title {
   font-size: 14px;
   font-weight: bolder;
   display: block;
-  width: 200px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -314,7 +351,7 @@
     user-select: none;
     outline: none;
     border: none;
-    margin: 10px 10px 0 10px;
+    margin: 10px 12px 0 12px;
     padding: 10px;
     border-radius: 10px;
     transform: scale(1);
@@ -347,7 +384,8 @@
       }
 
       .text {
-        font-size: 15px;
+          font-family: "Poppins", "Noto Sans SC", "SF Pro SC", "SF Pro Text", "SF Pro Icons", "PingFang SC", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+        font-size: 14px;
         text-align: center;
       }
     }
@@ -370,7 +408,7 @@
     height: 40px;
     transition: background-color ease 0.3s;
     justify-content: space-between;
-    margin: 0 10px 0 10px;
+    margin: 0 12px 0 12px;
 
     &:hover {
       background-color: var(--secondary-hover-color);
@@ -405,7 +443,7 @@
         display: block;
         text-align: center;
         margin-left: 10px;
-        font-size: 15px;
+        font-size: 14px;
         text-overflow: ellipsis;
         overflow: hidden;
         white-space: nowrap;

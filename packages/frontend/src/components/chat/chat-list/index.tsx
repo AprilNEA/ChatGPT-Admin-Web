@@ -9,8 +9,10 @@ import DeleteIcon from '@/icons/delete.svg';
 import Locale from '@/locales';
 import { useStore } from '@/store';
 import styles from '@/styles/module/home.module.scss';
+import ChatIcon from '@/icons/chat.svg';
 
 import { ChatSession } from 'shared';
+import Chat from '..';
 
 /* 左侧对话栏中最小对话单元 */
 export function ChatItem(props: {
@@ -51,17 +53,20 @@ export function ChatItem(props: {
         }`}
         onClick={props.onClick}
       >
-        <div className={styles['chat-item-title']}>{props.title}</div>
-        <div className={styles['chat-item-info']}>
-          <div className={styles['chat-item-count']}>
-            {Locale.ChatItem.ChatItemCount(props.count)}
+        <div className={styles['chat-item-icon']}><ChatIcon /></div>
+        <div className={styles['chat-item-main']}>
+          <div className={styles['chat-item-title']}>{props.title}</div>
+          <div className={styles['chat-item-info']}>
+            <div className={styles['chat-item-count']}>
+              {Locale.ChatItem.ChatItemCount(props.count)}
+            </div>
+            <div className={styles['chat-item-date']}>
+              {date.toLocaleString()}
+            </div>
           </div>
-          <div className={styles['chat-item-date']}>
-            {date.toLocaleString()}
+          <div className={styles['chat-item-delete']} onClick={onDelete}>
+            <DeleteIcon />
           </div>
-        </div>
-        <div className={styles['chat-item-delete']} onClick={onDelete}>
-          <DeleteIcon />
         </div>
       </div>
     </Link>

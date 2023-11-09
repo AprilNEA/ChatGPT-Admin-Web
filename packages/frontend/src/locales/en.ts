@@ -136,6 +136,9 @@ const en: LocaleType = {
   Home: {
     NewChat: 'New Chat',
     DeleteChat: 'Confirm delete selected conversation?',
+    NewBlankChat: 'Start Blank Chat',
+    FileChat: 'Start File Chat',
+    Mask: 'Select Mask',
   },
   Settings: {
     Title: 'Settings',
