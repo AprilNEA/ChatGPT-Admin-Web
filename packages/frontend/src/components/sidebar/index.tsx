@@ -159,7 +159,7 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
                   </div>
                 </button>
               </Link>
-              <button className={styles['sidebar-new']}>
+              <button className={styles['sidebar-new']} style={{display:'none'}}>
                 <div>
                   <div className={styles['icon']}>
                     <FileChatIcon />
