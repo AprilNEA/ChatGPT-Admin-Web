@@ -27,6 +27,66 @@ const weChatOauthAppId = process.env.NEXT_PUBLIC_WECHAT_OAUTH_APP_ID!;
 const weChatOauthRedirectUrl =
   process.env.NEXT_PUBLIC_WECHAT_OAUTH_REDIRECT_URL!;
 
+export function SetUsernameAndPassword() {
+  const { fetcher } = useStore();
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [isSubmitting, handleSubmit] = usePreventFormSubmit();
+
+  async function setup() {
+    if (!password) return showToast('密码不能为空');
+    fetcher('/auth/bindPassword', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password }),
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        if (res.success) {
+        } else {
+        }
+      });
+  }
+
+  return (
+    <div className={styles['form-container']}>
+      <div className={styles['row']}>
+        <input
+          type="text"
+          id="username"
+          value={username}
+          className={styles['auth-input']}
+          onChange={(e) => setUsername(e.target.value)}
+          placeholder={`${Locales.Auth.Username}`}
+          required
+        />
+      </div>
+
+      <div className={styles['row']}>
+        <input
+          type="password"
+          id="password"
+          value={password}
+          className={styles['auth-input']}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder={Locales.Auth.Password}
+          required
+        />
+      </div>
+
+      <div className={styles['auth-actions']}>
+        <IconButton
+          disabled={isSubmitting}
+          onClick={() => handleSubmit(undefined, setup)}
+          text={Locales.Auth.Submit}
+          className={styles['auth-submit-btn']}
+          type="primary"
+        />
+      </div>
+    </div>
+  );
+}
+
 /* 验证码登录/注册 */
 function ValidateCodeLogin() {
   const router = useRouter();
@@ -266,7 +326,7 @@ const WeChatLogin: React.FC = () => {
 };
 
 export default function AuthPage() {
-  const [tab, setTab] = useState<'email' | 'phone' | 'wechat'>('phone');
+  const [tab, setTab] = useState<'password' | 'code' | 'wechat'>('password');
 
   return (
     <div className={styles['auth-page']}>
@@ -278,9 +338,9 @@ export default function AuthPage() {
       </div>
       <div className={styles['auth-tips']}></div>
       <div className={styles['auth-container']}>
-        {tab === 'phone' ? (
+        {tab === 'code' ? (
           <ValidateCodeLogin />
-        ) : tab === 'email' ? (
+        ) : tab === 'password' ? (
           <PasswordLogin />
         ) : (
           <WeChatLogin />
@@ -296,7 +356,7 @@ export default function AuthPage() {
             onClick={() => {
               setTab(() => {
                 if (tab != 'wechat') return 'wechat';
-                else return 'phone';
+                else return 'code';
               });
             }}
           >
@@ -309,13 +369,13 @@ export default function AuthPage() {
             className={styles['third-part-option']}
             onClick={() => {
               setTab(() => {
-                if (tab == 'email') return 'phone';
-                else return 'email';
+                if (tab == 'password') return 'code';
+                else return 'password';
               });
             }}
           >
-            {tab == 'email' ? <VerificationCodeIcon /> : <KeyIcon />}
-            <div>使用{tab == 'email' ? '验证码' : '密码'}登陆</div>
+            {tab == 'password' ? <VerificationCodeIcon /> : <KeyIcon />}
+            <div>使用{tab == 'password' ? '验证码' : '密码'}登陆</div>
           </div>
         </div>
       </div>
