@@ -119,7 +119,14 @@
 
   &:has(button:not(:only-child)) {
     box-shadow: var(--card-shadow);
-    height: 120px;
+    //height: 120px;
+    height: 80px;
+
+    &:not(:hover) {
+      box-shadow: var(--card-shadow);
+      height: 40px;
+      transition-delay: 3s;
+    }
   }
 
   height: 40px;
