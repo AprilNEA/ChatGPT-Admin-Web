@@ -7,6 +7,7 @@ import Iframe from 'react-iframe';
 
 import { IconButton } from '@/components/button';
 import { showToast } from '@/components/ui-lib';
+import { useUserData } from '@/hooks/data/use-user';
 import useIntervalAsync from '@/hooks/use-interval-async';
 import usePreventFormSubmit from '@/hooks/use-prevent-form';
 import BotIcon from '@/icons/bot.svg';
@@ -27,23 +28,30 @@ const weChatOauthAppId = process.env.NEXT_PUBLIC_WECHAT_OAUTH_APP_ID!;
 const weChatOauthRedirectUrl =
   process.env.NEXT_PUBLIC_WECHAT_OAUTH_REDIRECT_URL!;
 
-export function SetUsernameAndPassword() {
+export function SetUsernameAndPassword(props: { onClose: () => void }) {
   const { fetcher } = useStore();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isSubmitting, handleSubmit] = usePreventFormSubmit();
+  const { userData } = useUserData();
 
   async function setup() {
     if (!password) return showToast('密码不能为空');
     fetcher('/auth/bindPassword', {
-      method: 'POST',
+      method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password }),
+      body: JSON.stringify({
+        username: username == '' ? undefined : username,
+        password,
+      }),
     })
       .then((res) => res.json())
       .then((res) => {
         if (res.success) {
+          showToast('设置成功');
+          props.onClose();
         } else {
+          // TODO error
         }
       });
   }
@@ -54,7 +62,8 @@ export function SetUsernameAndPassword() {
         <input
           type="text"
           id="username"
-          value={username}
+          value={userData?.name ?? username}
+          disabled={!!userData?.name}
           className={styles['auth-input']}
           onChange={(e) => setUsername(e.target.value)}
           placeholder={`${Locales.Auth.Username}`}

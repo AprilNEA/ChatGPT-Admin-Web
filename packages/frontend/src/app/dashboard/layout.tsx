@@ -1,4 +1,4 @@
-import { Theme, ThemePanel } from '@radix-ui/themes';
+import { Theme } from '@radix-ui/themes';
 import '@radix-ui/themes/styles.css';
 
 import { AuthProvider } from '@/app/provider';
@@ -13,8 +13,8 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <AuthProvider admin={false}>
-      <Theme accentColor='teal'>{children}</Theme>
+    <AuthProvider admin={true}>
+      <Theme hasBackground={true}>{children}</Theme>
     </AuthProvider>
   );
 }

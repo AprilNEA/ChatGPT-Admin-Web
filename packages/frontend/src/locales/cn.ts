@@ -11,12 +11,14 @@ const cn = {
     WeChat: '微信',
     Username: '用户名',
     Password: '密码',
+    SetUp: '设置您的用户名和密码',
     Login: (type?: string) => `${type ?? ''}登录`,
     Register: (type?: string) => `${type ?? ''}注册`,
     Sent: (ttl: number) => `已发送(${ttl}s)`,
   },
   // Index Page
   Index: {
+    DefaultUser: '用户',
     Title: process.env.NEXT_PUBLIC_TITLE || 'ChatGPT Admin Web',
     SubTitle: '欢迎关注微信公众号：',
     PremiumLimit: (count: number) => `当前可用：${count} 条`,
@@ -47,6 +49,7 @@ const cn = {
     ContentBlock: '请检查文本中的敏感词，如有误杀请联系客服。',
   },
   ChatItem: {
+    DefaultTopic: '新的对话',
     ChatItemCount: (count: number) => `${count} 条对话`,
   },
   Chat: {

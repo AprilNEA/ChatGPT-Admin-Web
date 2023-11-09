@@ -13,12 +13,14 @@ const en: LocaleType = {
     WeChat: 'WeChat',
     Username: 'Username',
     Password: 'Password',
+    SetUp: 'Set your username and password',
     Login: (type?: string) => `${type ?? ''} Login`,
     Register: (type?: string) => `${type ?? ''} Register`,
     Sent: (ttl: number) => `Sent (${ttl}s)`,
   },
   // Index Page
   Index: {
+    DefaultUser: 'User',
     Title: TITLE,
     SubTitle: 'Welcome to follow WeChat official account:',
     PremiumLimit: (count: number) => `Currently available: ${count} items`,
@@ -51,7 +53,8 @@ const en: LocaleType = {
       'Please check the text for sensitive words. If there are any mistakes, please contact customer service.',
   },
   ChatItem: {
-    ChatItemCount: (count: number) => `${count} conversations`,
+    DefaultTopic: 'New Chat',
+    ChatItemCount: (count: number) => `${count} messages`,
   },
   Chat: {
     SubTitle: (count: number) => `${count} conversations with ${TITLE}`,
