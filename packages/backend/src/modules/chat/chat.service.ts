@@ -1,5 +1,6 @@
 import { encode as gpt435Encode } from 'gpt-tokenizer/esm/model/gpt-3.5-turbo';
 import { encode as gpt4Encode } from 'gpt-tokenizer/esm/model/gpt-4';
+import { CustomPrismaService } from 'nestjs-prisma';
 import OpenAI from 'openai';
 import {
   ChatCompletion,
@@ -7,12 +8,12 @@ import {
 } from 'openai/src/resources/chat/completions';
 import { Observable } from 'rxjs';
 
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { type ChatMessage, ChatMessageRole } from '@prisma/client';
 
 import { BizException } from '@/common/exceptions/biz.exception';
-import { DatabaseService } from '@/processors/database/database.service';
+import { ExtendedPrismaClient } from '@/processors/database/prisma.extension';
 
 import { ErrorCodeEnum } from 'shared/dist/error-code';
 
@@ -22,7 +23,8 @@ export class ChatService {
   private openai: OpenAI;
 
   constructor(
-    private prisma: DatabaseService,
+    @Inject('PrismaService')
+    private prisma: CustomPrismaService<ExtendedPrismaClient>,
     config: ConfigService,
   ) {
     this.openaiConfig = config.get('openai');
@@ -37,7 +39,7 @@ export class ChatService {
     currentTime = currentTime || new Date();
     const startTime = new Date(currentTime.getTime() - duration * 1000);
 
-    return this.prisma.chatMessage.count({
+    return this.prisma.client.chatMessage.count({
       where: {
         userId: userId,
         createdAt: {
@@ -52,13 +54,13 @@ export class ChatService {
 
   // TODO Redis 缓存优化
   async limitCheck(userId: number, modelId: number) {
-    // const user = await this.prisma.user.findUniqueOrThrow({
+    // const user = await this.prisma.client.user.findUniqueOrThrow({
     //   where: { id: userId },
     // });
     const currentTime = new Date();
 
     // 首先判断用户是否有包年包月套餐，检查套餐次数上线
-    const activatedOrders = await this.prisma.order.findMany({
+    const activatedOrders = await this.prisma.client.order.findMany({
       where: {
         AND: [
           {
@@ -85,7 +87,7 @@ export class ChatService {
     const productId =
       activatedOrders.length !== 0 ? activatedOrders[0].productId : 1;
 
-    const limit = await this.prisma.modelInProduct.findUnique({
+    const limit = await this.prisma.client.modelInProduct.findUnique({
       where: {
         modelId_productId: {
           modelId: modelId,
@@ -112,7 +114,7 @@ export class ChatService {
     memoryPrompt?: string,
     limit = 10,
   ) {
-    return this.prisma.$transaction(async (prisma) => {
+    return this.prisma.client.$transaction(async (prisma) => {
       const chatSession = await prisma.chatSession.upsert({
         where: {
           id: sessionId,
@@ -141,7 +143,7 @@ export class ChatService {
 
   /* 获取消息 */
   async getChatMessages(uid: number, sid: string, limit = 10) {
-    return this.prisma.chatSession.findUnique({
+    return this.prisma.client.chatSession.findUnique({
       where: {
         id: sid,
         userId: uid,
@@ -161,7 +163,7 @@ export class ChatService {
 
   /* 获取最近对话 */
   async getRecentChatSession(uid: number, limit = 10) {
-    return this.prisma.chatSession.findMany({
+    return this.prisma.client.chatSession.findMany({
       take: limit,
       where: {
         userId: uid,
@@ -247,7 +249,7 @@ ${message}
       stream: false,
     })) as ChatCompletion;
     const topic = result.choices[0].message.content;
-    await this.prisma.chatSession.update({
+    await this.prisma.client.chatSession.update({
       where: { id: sessionId },
       data: { topic },
     });
@@ -272,7 +274,7 @@ ${message}
     /* Request API Key */
     // key: string;
   }) {
-    const { name: model } = await this.prisma.model.findUniqueOrThrow({
+    const { name: model } = await this.prisma.client.model.findUniqueOrThrow({
       where: { id: modelId },
     });
 
@@ -316,8 +318,8 @@ ${message}
           const generated = tokens.join('');
           // const token = gpt435Encode(generated);
           /* 保存消息 Record messages */
-          await this.prisma.$transaction([
-            this.prisma.chatMessage.create({
+          await this.prisma.client.$transaction([
+            this.prisma.client.chatMessage.create({
               data: {
                 role: ChatMessageRole.User,
                 content: input,
@@ -326,7 +328,7 @@ ${message}
                 createdAt: new Date(time),
               },
             }),
-            this.prisma.chatMessage.create({
+            this.prisma.client.chatMessage.create({
               data: {
                 role: ChatMessageRole.Assistant,
                 content: generated,
@@ -344,7 +346,7 @@ ${message}
   }
 
   deleteChatMessage(userId: number, messageId: string) {
-    return this.prisma.$transaction(async (prisma) => {
+    return this.prisma.client.$transaction(async (prisma) => {
       const message = await prisma.chatMessage.update({
         where: {
           id: messageId,
@@ -363,7 +365,7 @@ ${message}
   }
 
   deleteChatSession(userId: number, sessionId: string) {
-    return this.prisma.$transaction(async (prisma) => {
+    return this.prisma.client.$transaction(async (prisma) => {
       const session = await prisma.chatSession.update({
         where: {
           id: sessionId,

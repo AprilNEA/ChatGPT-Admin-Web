@@ -15,7 +15,6 @@ import { BizException } from '@/common/exceptions/biz.exception';
 import { Payload } from '@/common/guards/auth.guard';
 import { JoiValidationPipe } from '@/common/pipes/joi';
 import { JWTPayload } from '@/libs/jwt/jwt.service';
-import { KeyPoolService } from '@/libs/key-pool';
 
 import { NewMessageDto } from 'shared';
 import { ErrorCodeEnum } from 'shared/dist/error-code';
@@ -30,10 +29,7 @@ const newMessageSchema = Joi.object({
 
 @Controller('chat')
 export class ChatController {
-  constructor(
-    private readonly chatService: ChatService,
-    private readonly keyPool: KeyPoolService,
-  ) {}
+  constructor(private readonly chatService: ChatService) {}
 
   /* 获取最近的 session 列表 */
   @Get('sessions')

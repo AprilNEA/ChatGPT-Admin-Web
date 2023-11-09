@@ -1,10 +1,15 @@
-import { Injectable } from '@nestjs/common';
+import { CustomPrismaService } from 'nestjs-prisma';
 
-import { DatabaseService } from '@/processors/database/database.service';
+import { Inject, Injectable } from '@nestjs/common';
+
+import { ExtendedPrismaClient } from '@/processors/database/prisma.extension';
 
 @Injectable()
 export class AppService {
-  constructor(private prisma: DatabaseService) {}
+  constructor(
+    @Inject('PrismaService')
+    private prisma: CustomPrismaService<ExtendedPrismaClient>,
+  ) {}
 
   getHello(): string {
     return 'Hello World!';
@@ -13,7 +18,7 @@ export class AppService {
   install() {}
 
   getRecentAnnouncement() {
-    return this.prisma.announcement.findFirst({
+    return this.prisma.client.announcement.findFirst({
       orderBy: {
         createdAt: 'desc',
       },
@@ -21,7 +26,7 @@ export class AppService {
   }
 
   getAllAnnouncement() {
-    return this.prisma.announcement.findMany({
+    return this.prisma.client.announcement.findMany({
       orderBy: {
         createdAt: 'desc',
       },
@@ -38,7 +43,7 @@ export class AppService {
     content?: string;
   }) {
     if (id && (title || content)) {
-      return this.prisma.announcement.update({
+      return this.prisma.client.announcement.update({
         where: {
           id,
         },
@@ -48,7 +53,7 @@ export class AppService {
         },
       });
     } else if (title && content) {
-      return this.prisma.announcement.create({
+      return this.prisma.client.announcement.create({
         data: {
           title,
           content,
@@ -58,7 +63,7 @@ export class AppService {
   }
 
   deleteAnnouncement(id: number) {
-    return this.prisma.announcement.delete({
+    return this.prisma.client.announcement.delete({
       where: {
         id,
       },

@@ -1,13 +1,18 @@
-import { Injectable } from '@nestjs/common';
+import { CustomPrismaService } from 'nestjs-prisma';
 
-import { DatabaseService } from '@/processors/database/database.service';
+import { Inject, Injectable } from '@nestjs/common';
+
+import { ExtendedPrismaClient } from '@/processors/database/prisma.extension';
 
 @Injectable()
 export class UserService {
-  constructor(private prisma: DatabaseService) {}
+  constructor(
+    @Inject('PrismaService')
+    private prisma: CustomPrismaService<ExtendedPrismaClient>,
+  ) {}
 
   async getInfo(userId: number) {
-    const user = await this.prisma.user.findUnique({
+    const user = await this.prisma.client.user.findUnique({
       where: {
         id: userId,
       },
@@ -16,10 +21,11 @@ export class UserService {
         role: true,
         email: true,
         phone: true,
+        password: true,
       },
     });
     const currentTime = new Date();
-    const activatedOrders = await this.prisma.order.findMany({
+    const activatedOrders = await this.prisma.client.order.findMany({
       where: {
         AND: [
           {
@@ -44,12 +50,13 @@ export class UserService {
 
     return {
       ...user,
+      todos: [...(!user.password ? ['password'] : [])],
       isPremium: activatedOrders.length > 0,
     };
   }
 
   async updateName(userId: number, name: string) {
-    const user = await this.prisma.user.update({
+    const user = await this.prisma.client.user.update({
       where: {
         id: userId,
       },
@@ -64,7 +71,7 @@ export class UserService {
   }
 
   async getSettings(userId: number) {
-    return this.prisma.chatSetting.findUnique({
+    return this.prisma.client.chatSetting.findUnique({
       where: {
         userId,
       },

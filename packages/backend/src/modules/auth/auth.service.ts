@@ -1,16 +1,17 @@
 import { compare, hashSync } from 'bcrypt';
 import { Redis } from 'ioredis';
 import * as Joi from 'joi';
+import { CustomPrismaService } from 'nestjs-prisma';
 
-import { InjectRedis, RedisService } from '@liaoliaots/nestjs-redis';
-import { Injectable } from '@nestjs/common';
+import { InjectRedis } from '@liaoliaots/nestjs-redis';
+import { Inject, Injectable } from '@nestjs/common';
 import { Role } from '@prisma/client';
 
 import { BizException } from '@/common/exceptions/biz.exception';
 import { EmailService } from '@/libs/email/email.service';
 import { JwtService } from '@/libs/jwt/jwt.service';
 import { SmsService } from '@/libs/sms/sms.service';
-import { DatabaseService } from '@/processors/database/database.service';
+import { ExtendedPrismaClient } from '@/processors/database/prisma.extension';
 
 import { IAccountStatus } from 'shared';
 import { ErrorCodeEnum } from 'shared/dist/error-code';
@@ -50,9 +51,9 @@ function generateRandomSixDigitNumber() {
 export class AuthService {
   constructor(
     @InjectRedis() private readonly redis: Redis,
+    @Inject('PrismaService')
+    private prisma: CustomPrismaService<ExtendedPrismaClient>,
     private jwt: JwtService,
-    private prisma: DatabaseService,
-    private redisService: RedisService,
     private emailService: EmailService,
     private smsService: SmsService,
   ) {}
@@ -125,7 +126,7 @@ export class AuthService {
 
     await this.#verifyCode(identity, code);
 
-    const existUser = await this.prisma.user.findMany({
+    const existUser = await this.prisma.client.user.findMany({
       where: {
         OR: [{ email }, { phone }],
       },
@@ -134,7 +135,7 @@ export class AuthService {
     let user;
     if (existUser.length != 1) {
       // 注册用户
-      user = await this.prisma.user.create({
+      user = await this.prisma.client.user.create({
         data: {
           email: email,
           phone: phone,
@@ -151,7 +152,7 @@ export class AuthService {
   async loginPassword({ identity, password }: ByPassword) {
     const { email, phone } = getPhoneOrEmail(identity);
 
-    const user = await this.prisma.user.findMany({
+    const user = await this.prisma.client.user.findMany({
       where: {
         OR: [{ email }, { phone }],
       },
@@ -168,7 +169,7 @@ export class AuthService {
 
   /* 添加密码 */
   async bindPassword(userId: number, password: string) {
-    const user = await this.prisma.user.findUniqueOrThrow({
+    const user = await this.prisma.client.user.findUniqueOrThrow({
       where: {
         id: userId,
       },
@@ -176,7 +177,7 @@ export class AuthService {
     if (user.password) {
       throw Error('Password already exists');
     }
-    await this.prisma.user.update({
+    await this.prisma.client.user.update({
       where: {
         id: userId,
       },
@@ -188,7 +189,7 @@ export class AuthService {
 
   /* 修改密码 */
   async changePassword(userId: number, password: string) {
-    await this.prisma.user.update({
+    await this.prisma.client.user.update({
       where: {
         id: userId,
       },
@@ -204,7 +205,7 @@ export class AuthService {
 
     await this.#verifyCode(identity, code);
 
-    const existUser = await this.prisma.user.findMany({
+    const existUser = await this.prisma.client.user.findMany({
       where: {
         OR: [{ email }, { phone }],
       },
@@ -225,7 +226,7 @@ export class AuthService {
   async bindIdentity(userId: number, identity: string, password?: string) {
     const { email, phone } = getPhoneOrEmail(identity);
 
-    const user = await this.prisma.user.findUniqueOrThrow({
+    const user = await this.prisma.client.user.findUniqueOrThrow({
       where: {
         id: userId,
       },
@@ -235,7 +236,7 @@ export class AuthService {
       if (user.email) {
         throw new BizException(ErrorCodeEnum.BindEmailExist);
       }
-      await this.prisma.user.update({
+      await this.prisma.client.user.update({
         where: {
           id: userId,
         },
@@ -249,7 +250,7 @@ export class AuthService {
       if (user.phone) {
         throw new BizException(ErrorCodeEnum.BindPhoneExist);
       }
-      await this.prisma.user.update({
+      await this.prisma.client.user.update({
         where: {
           id: userId,
         },
@@ -260,7 +261,7 @@ export class AuthService {
     }
 
     if (password) {
-      await this.prisma.user.update({
+      await this.prisma.client.user.update({
         where: {
           id: userId,
         },

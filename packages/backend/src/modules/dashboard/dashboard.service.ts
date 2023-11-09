@@ -1,16 +1,21 @@
-import { Injectable } from '@nestjs/common';
+import { CustomPrismaService } from 'nestjs-prisma';
 
-import { DatabaseService } from '@/processors/database/database.service';
+import { Inject, Injectable } from '@nestjs/common';
+
+import { ExtendedPrismaClient } from '@/processors/database/prisma.extension';
 
 @Injectable()
 export class DashboardService {
-  constructor(private prisma: DatabaseService) {}
+  constructor(
+    @Inject('PrismaService')
+    private prisma: CustomPrismaService<ExtendedPrismaClient>,
+  ) {}
 
   async listOpenaiKeys() {
-    return this.prisma.openAIKey.findMany();
+    return this.prisma.client.openAIKey.findMany();
   }
 
   async addOpenaiKey(key: string) {
-    return this.prisma.openAIKey.create({ data: { key } });
+    return this.prisma.client.openAIKey.create({ data: { key } });
   }
 }

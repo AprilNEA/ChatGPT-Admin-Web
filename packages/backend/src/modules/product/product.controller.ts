@@ -1,6 +1,6 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Put } from '@nestjs/common';
 
-import { Public } from '@/common/guards/auth.guard';
+import { Public, Role, Roles } from '@/common/guards/auth.guard';
 
 import { ProductService } from './product.service';
 
@@ -8,6 +8,7 @@ import { ProductService } from './product.service';
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
+  /* 获取所有产品 */
   @Public()
   @Get('all')
   listProduct() {
@@ -21,5 +22,15 @@ export class ProductController {
       success: true,
       data: await this.productService.listModel(),
     };
+  }
+
+  @Roles(Role.Admin)
+  @Get('category')
+  async getAllCategory() {}
+
+  @Roles(Role.Admin)
+  @Put('product')
+  async updateProduct() {
+
   }
 }

@@ -15,15 +15,29 @@ import { ChatSession } from 'shared';
 /* 左侧对话栏中最小对话单元 */
 export function ChatItem(props: {
   onClick?: () => void;
-  onDelete?: () => void;
   id: string;
   title: string;
   count: number;
   time: Date;
   selected: boolean;
 }) {
+  const { fetcher } = useStore();
+  const router = useRouter();
   // TODO text is too long may overflow
   const date = new Date(props.time);
+
+  async function onDelete() {
+    await fetcher(`/chat/sessions/${props.id}`, {
+      method: 'DELETE',
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        if (res.success) {
+          // TODO directly mutate data
+          router.refresh();
+        }
+      });
+  }
 
   return (
     <Link
@@ -46,7 +60,7 @@ export function ChatItem(props: {
             {date.toLocaleString()}
           </div>
         </div>
-        <div className={styles['chat-item-delete']} onClick={props.onDelete}>
+        <div className={styles['chat-item-delete']} onClick={onDelete}>
           <DeleteIcon />
         </div>
       </div>
@@ -81,7 +95,6 @@ export function ChatList() {
             time={item.updatedAt}
             count={item.messagesCount}
             selected={currentChatSessionId === item.id}
-            onDelete={() => {}}
           />
         ))}
     </div>

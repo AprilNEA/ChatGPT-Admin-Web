@@ -1,9 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { CustomPrismaService } from 'nestjs-prisma';
+
+import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { OAuthProvider } from '@prisma/client';
 
 import { JwtService } from '@/libs/jwt/jwt.service';
-import { DatabaseService } from '@/processors/database/database.service';
+import { ExtendedPrismaClient } from '@/processors/database/prisma.extension';
 
 import { ConfigType } from 'shared';
 
@@ -12,7 +14,8 @@ export class WechatService {
   private wechatConfig: ConfigType['wechat'];
 
   constructor(
-    private prisma: DatabaseService,
+    @Inject('PrismaService')
+    private prisma: CustomPrismaService<ExtendedPrismaClient>,
     private jwtService: JwtService,
     configService: ConfigService,
   ) {
@@ -74,7 +77,7 @@ export class WechatService {
 
   async loginByWeChat(token) {
     const user = (
-      await this.prisma.oAuth.findUnique({
+      await this.prisma.client.oAuth.findUnique({
         where: {
           provider_providerId: {
             provider: OAuthProvider.Wechat,
@@ -93,7 +96,7 @@ export class WechatService {
   }
 
   async registerByWeChat(token, userInfo) {
-    const user = await this.prisma.user.create({
+    const user = await this.prisma.client.user.create({
       data: {
         name: `wx_${token.openid}`,
         oauths: {

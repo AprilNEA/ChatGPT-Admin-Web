@@ -11,6 +11,7 @@ import { Role } from '@prisma/client';
 
 import { JWTPayload, JwtService } from '@/libs/jwt/jwt.service';
 
+export { Role } from '@prisma/client';
 export const ROLES_KEY = 'roles';
 export const IS_PUBLIC_KEY = 'isPublic';
 
