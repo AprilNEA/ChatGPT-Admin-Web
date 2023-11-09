@@ -54,7 +54,7 @@ export class OrderService {
       data: {
         id: this.getNextId(),
         type,
-        amount: product.price / 100,
+        amount: product.price, // unit is cent
         product: { connect: { id: productId } },
         user: { connect: { id: userId } },
       },

@@ -33,6 +33,7 @@ export class OrderController {
   @Post('new')
   async newOrder(@Payload('id') userId: number, @Body() data: newOrderDto) {
     const order = await this.orderService.createOrder(userId, data.productId);
+    // TODO 防止短时间内重复产生订单
     const result = await this.paymentService.xhStartPay({
       orderId: order.id,
       price: order.amount,
