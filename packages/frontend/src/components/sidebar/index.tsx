@@ -2,12 +2,14 @@
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { createRoot } from 'react-dom/client';
 import useSWR from 'swr';
 
+import { SetUsernameAndPassword } from '@/app/auth/page';
 import { ChatList } from '@/components/chat/chat-list';
 import { Loading } from '@/components/loading';
 import { Markdown } from '@/components/markdown';
-import { showModal } from '@/components/ui-lib';
+import { Modal, showModal } from '@/components/ui-lib';
 import { usePremiumData } from '@/hooks/data/use-premium';
 import { useUserData } from '@/hooks/data/use-user';
 import { useSwitchTheme } from '@/hooks/switch-theme';
@@ -15,11 +17,11 @@ import AddIcon from '@/icons/add.svg';
 import AnnouncementIcon from '@/icons/announcement.svg';
 import ChatGptIcon from '@/icons/chatgpt.svg';
 import CheckMarkIcon from '@/icons/checkmark.svg';
+import FileChatIcon from '@/icons/file-chat.svg';
+import MaskIcon from '@/icons/mask.svg';
 import PremiumIcon from '@/icons/premium.svg';
 import SettingsIcon from '@/icons/settings.svg';
 import UserIcon from '@/icons/user.svg';
-import FileChatIcon from '@/icons/file-chat.svg';
-import MaskIcon from '@/icons/mask.svg';
 import Locale from '@/locales';
 import { useStore } from '@/store';
 import styles from '@/styles/module/home.module.scss';
@@ -72,6 +74,29 @@ function Premium({ userData }: { userData: IUserData }) {
   );
 }
 
+function bindPassword() {
+  const div = document.createElement('div');
+  div.className = 'modal-mask';
+  document.body.appendChild(div);
+
+  const root = createRoot(div);
+  const closeModal = () => {
+    root.unmount();
+    div.remove();
+  };
+
+  div.onclick = (e) => {
+    if (e.target === div) {
+      closeModal();
+    }
+  };
+  root.render(
+    <Modal title={Locale.Auth.SetUp} onClose={closeModal}>
+      <SetUsernameAndPassword onClose={closeModal} />
+    </Modal>,
+  );
+}
+
 export function Sidebar({ children }: { children: React.ReactNode }) {
   const {
     showSideBar,
@@ -97,8 +122,32 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
         }
       }),
   );
-
-  const { userData } = useUserData();
+  const { data: userData, isLoading: isUserDataLoading } = useSWR<IUserData>(
+    '/user/info',
+    (url) =>
+      fetcher(url)
+        .then((res) => res.json())
+        .then((res) => {
+          if (res.success) {
+            if (res.data.todos) {
+              res.data.todos = res.data.todos.map((todo: string) => {
+                switch (todo) {
+                  case 'password':
+                    bindPassword();
+                    break;
+                  default:
+                    break;
+                }
+              });
+            }
+            return res.data;
+          }
+        }),
+    {
+      keepPreviousData: true,
+      revalidateOnFocus: false,
+    },
+  );
 
   const loading = !useHasHydrated();
 
@@ -110,10 +159,11 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
 
   return (
     <div
-      className={`${config.tightBorder && !isMobileScreen()
+      className={`${
+        config.tightBorder && !isMobileScreen()
           ? styles['tight-container']
           : styles.container
-        }`}
+      }`}
     >
       <div
         className={styles.sidebar + ` ${showSideBar && styles['sidebar-show']}`}
@@ -134,7 +184,10 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
         </div>
         <div className={styles['sidebar-newbtn']}>
           {!newbtnExpanded ? (
-            <button className={styles['sidebar-new']} onClick={() => setNewbtnExpanded(true)}>
+            <button
+              className={styles['sidebar-new']}
+              onClick={() => setNewbtnExpanded(true)}
+            >
               <div>
                 <div className={styles['icon']}>
                   <AddIcon />
@@ -146,7 +199,10 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
             <>
               <Link
                 href="/chat/new"
-                onClick={() => {setShowSideBar(false);setNewbtnExpanded(false)}}
+                onClick={() => {
+                  setShowSideBar(false);
+                  setNewbtnExpanded(false);
+                }}
                 className={styles['link-full']}
                 style={{ color: 'inherit', textDecoration: 'inherit' }}
               >
@@ -155,11 +211,16 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
                     <div className={styles['icon']}>
                       <AddIcon />
                     </div>
-                    <div className={styles['text']}>{Locale.Home.NewBlankChat}</div>
+                    <div className={styles['text']}>
+                      {Locale.Home.NewBlankChat}
+                    </div>
                   </div>
                 </button>
               </Link>
-              <button className={styles['sidebar-new']} style={{display:'none'}}>
+              <button
+                className={styles['sidebar-new']}
+                style={{ display: 'none' }}
+              >
                 <div>
                   <div className={styles['icon']}>
                     <FileChatIcon />
@@ -176,9 +237,7 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
                 </div>
               </button>
             </>
-          )
-          }
-
+          )}
         </div>
         <div
           className={styles['sidebar-body']}
@@ -211,7 +270,7 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
                   <UserIcon />
                 </div>
                 <div className={styles['account-name']}>
-                  {userData?.name ?? 'Username'}
+                  {userData?.name ?? Locale.Index.DefaultUser}
                 </div>
               </div>
               <Link

@@ -94,15 +94,17 @@ export function Modal(props: ModalProps) {
 
       <div className={styles['modal-content']}>{props.children}</div>
 
-      <div className={styles['modal-footer']}>
-        <div className={styles['modal-actions']}>
-          {props.actions?.map((action, i) => (
-            <div key={i} className={styles['modal-action']}>
-              {action}
-            </div>
-          ))}
+      {props.actions && (
+        <div className={styles['modal-footer']}>
+          <div className={styles['modal-actions']}>
+            {props.actions?.map((action, i) => (
+              <div key={i} className={styles['modal-action']}>
+                {action}
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
