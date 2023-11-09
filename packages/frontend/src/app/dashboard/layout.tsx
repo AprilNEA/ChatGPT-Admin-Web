@@ -14,7 +14,7 @@ export default function DashboardLayout({
 }) {
   return (
     <AuthProvider admin={false}>
-      <Theme accentColor='teal'>{children}<ThemePanel /></Theme>
+      <Theme accentColor='teal'>{children}</Theme>
     </AuthProvider>
   );
 }

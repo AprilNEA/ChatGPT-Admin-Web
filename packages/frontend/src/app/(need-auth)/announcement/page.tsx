@@ -68,16 +68,13 @@ export default function AnnouncePage() {
           {announcement ? (
             announcement.map((announce: any) => (
               <>
-                <div className={styles['announcement-header']}>
-                  <div>{`#${announce.id}`}</div>
-                  <div className={styles['announcement-date']}>
-                    {DateFormat(announce.updatedAt)}
-                  </div>
-                </div>
                 <List>
                   <ListItem>
                     <div className={styles['announce-body']}>
                       <div className={styles['title']}>{announce.title}</div>
+                      <div className={styles['announcement-date']}>
+                        {DateFormat(announce.updatedAt)}
+                      </div>
                       <Markdown content={announce.content}></Markdown>
                     </div>
                   </ListItem>

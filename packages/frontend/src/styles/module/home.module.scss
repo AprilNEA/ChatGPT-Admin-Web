@@ -154,7 +154,6 @@
     transition: background-color ease 0.3s;
 
     &:hover {
-      background-color: var(--secondary-hover-color);
       cursor: pointer;
     }
 
@@ -319,14 +318,19 @@
   right: -20px;
   transition: all ease 0.3s;
   opacity: 0;
+
+  svg {
+    height: 20px;
+    width: 20px;
+  }
 }
 
-.chat-item:hover > .chat-item-delete {
+.chat-item:hover > .chat-item-main > .chat-item-delete {
   opacity: 0.5;
-  right: 10px;
+  right: 7.5px;
 }
 
-.chat-item:hover > .chat-item-delete:hover {
+.chat-item:hover > .chat-item-main > .chat-item-delete:hover {
   opacity: 1;
 }
 
