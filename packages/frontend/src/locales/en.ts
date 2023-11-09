@@ -65,10 +65,14 @@ const en: LocaleType = {
       Copy: 'Copy',
       Stop: 'Stop',
       Retry: 'Retry',
+      Delete: 'Delete',
     },
     Typing: 'Typing...',
     Input: (submitKey: string) => `Type a message, ${submitKey} to send`,
     Send: 'Send',
+    ActionBar: {
+      Command: 'Command',
+    },
   },
   OrderHistory: {
     Title: '订单记录',
