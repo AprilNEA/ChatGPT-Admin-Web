@@ -35,7 +35,9 @@
     "js-yaml": "^4.1.0",
     "mint-filter": "^4.0.3",
     "nest-router": "^1.0.9",
+    "nestjs-prisma": "^0.22.0",
     "openai": "^4.14.0",
+    "prisma-extension-pagination": "^0.5.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",
     "spark-md5": "^3.0.2"
