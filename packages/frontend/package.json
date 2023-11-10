@@ -17,6 +17,7 @@
     "@types/ramda": "^0.29.7",
     "@upstash/redis": "^1.20.2",
     "array.prototype.at": "^1.1.1",
+    "client-only": "^0.0.1",
     "clsx": "^2.0.0",
     "cross-env": "^7.0.3",
     "edge-runtime": "^2.1.2",
