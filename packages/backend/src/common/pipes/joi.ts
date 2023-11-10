@@ -9,10 +9,13 @@ export class JoiValidationPipe implements PipeTransform {
   constructor(private schema: any) {}
 
   transform(value: any, metadata: ArgumentMetadata) {
-    const { error } = this.schema.validate(value);
+    const { error, value: validatedValue } = this.schema.validate(value, {
+      abortEarly: false,
+      stripUnknown: true,
+    });
     if (error) {
       throw new BizException(ErrorCodeEnum.ValidationError);
     }
-    return value;
+    return validatedValue;
   }
 }

@@ -19,6 +19,16 @@ export interface ChatSession {
   messagesCount: number;
 }
 
+export interface DashboardChatSession extends ChatSession {
+  user: {
+    id: string;
+    name: string;
+  };
+  _count: {
+    messages: number;
+  };
+}
+
 export interface ChatSessionWithMessage extends ChatSession {
   messages: ChatMessage[];
 }

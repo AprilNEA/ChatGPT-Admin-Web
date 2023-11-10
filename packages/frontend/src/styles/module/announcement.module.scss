@@ -6,17 +6,6 @@
     width: 800px;
     margin: 0 auto;
 
-    .announcement-header {
-        display: flex;
-        font-size: 0.9rem;
-        margin-left: 30px;;
-        margin-bottom: 10px;
-    }
-
-    .announcement-date {
-        margin-left: 10px;
-    }
-
     .announcement-coloum:not(:last-child) {
         margin-bottom: 20px;
     }
@@ -27,13 +16,21 @@
         padding: 10px;
         width: 100%;
         
+        .announcement-date {
+            display: flex;
+            width: 100%;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 200;
+            margin-bottom: 5px;
+        }
+
         .title {
             width: 100%;
             display: flex;
             justify-content: center;
-            font-weight: 500;
-            font-size: 1.2rem;
-            margin-bottom: 5px;
+            font-weight: 700;
+            font-size: 1.5rem;
         }
 
     }

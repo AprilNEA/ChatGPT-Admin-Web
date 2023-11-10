@@ -33,7 +33,7 @@ export class ChatController {
 
   /* 获取最近的 session 列表 */
   @Get('sessions')
-  getChatSession(@Payload('id') userId: number) {
+  getMyChatSession(@Payload('id') userId: number) {
     return this.chatService.getRecentChatSession(userId);
   }
 
@@ -71,7 +71,7 @@ export class ChatController {
     if (!data) {
       return {
         sid: sessionId,
-        topic: '新的话题',
+        topic: undefined,
         messages: [
           {
             role: 'system',

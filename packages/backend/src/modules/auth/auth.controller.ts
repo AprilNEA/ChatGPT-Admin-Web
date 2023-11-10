@@ -23,6 +23,7 @@ import {
 
 import {
   bindIdentitySchema,
+  bindPasswordSchema,
   forgetPasswordSchema,
   identitySchema,
   passwordSchema,
@@ -118,14 +119,17 @@ export class AuthController {
     };
   }
 
-  /* 设置密码 */
+  /* 设置密码，可首次添加用户名，不可修改用户名 */
   @Put('bindPassword')
   async bindPassword(
     @Payload('id') userId: number,
-    @Body('password', new JoiValidationPipe(passwordSchema))
-    password: string,
+    @Body(new JoiValidationPipe(bindPasswordSchema))
+    body: { username?: string; password: string },
   ) {
-    await this.authService.bindPassword(userId, password);
+    const user = await this.authService.bindPassword(userId, body.password);
+    if (!user.name) {
+      await this.authService.updateName(userId, body.username);
+    }
     return {
       success: true,
     };

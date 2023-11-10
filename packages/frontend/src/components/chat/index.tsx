@@ -11,18 +11,24 @@ import { Loading } from '@/components/loading';
 import { showModal } from '@/components/ui-lib';
 import { useModelData } from '@/hooks/data/use-model';
 import BrainIcon from '@/icons/brain.svg';
-import CopyIcon from '@/icons/copy.svg';
 import DownloadIcon from '@/icons/download.svg';
 import ExportIcon from '@/icons/export.svg';
+import TestIcon from '@/icons/test.svg';
+import DeleteIcon from '@/icons/delete-alt.svg';
+import ReloadIcon from '@/icons/reload.svg';
 import MenuIcon from '@/icons/menu.svg';
+import StopIcon from '@/icons/stop.svg';
 import SendWhiteIcon from '@/icons/send-white.svg';
 import ShoppingIcon from '@/icons/shopping.svg';
 import LoadingIcon from '@/icons/three-dots.svg';
+import CommandIcon from '@/icons/command.svg';
 import UserIcon from '@/icons/user.svg';
+import CopyIcon from '@/icons/copy.svg';
 import Locale from '@/locales';
 import { useStore } from '@/store';
 import { SubmitKey, Theme } from '@/store/shared';
 import styles from '@/styles/module/home.module.scss';
+import clsx from 'clsx';
 import {
   copyToClipboard,
   downloadAs,
@@ -267,6 +273,51 @@ export default function Chat() {
               <div className={styles['chat-message-container']}>
                 <div className={styles['chat-message-avatar']}>
                   <Avatar role={message.role} />
+                  {!isUser && (
+                    <div className={clsx(styles['chat-actionbar'],styles['chat-bubble-actionbar'])}>
+                      {
+                        message.isStreaming ?
+                          <div className={clsx(styles['chat-actionbar-item'],styles['no-hover'])} onClick={() => onUserStop()}>
+                            <div className={styles['icon']}>
+                              <StopIcon />
+                            </div>
+                            <div className={styles['text']}>
+                              {Locale.Chat.Actions.Stop}
+                            </div>
+                          </div> :
+                          <>
+                            <div className={styles['chat-actionbar-item']}
+                            // onClick={() => onResend(i)}
+                            >
+                              <div className={styles['icon']}>
+                                <ReloadIcon />
+                              </div>
+                              <div className={styles['text']}>
+                                {Locale.Chat.Actions.Retry}
+                              </div>
+                            </div>
+                            <div className={styles['chat-actionbar-item']}
+                            //onClick={() => onUserDelete()}
+                            >
+                              <div className={styles['icon']}>
+                                <DeleteIcon />
+                              </div>
+                              <div className={styles['text']}>
+                                {Locale.Chat.Actions.Delete}
+                              </div>
+                            </div>
+                            <div className={styles['chat-actionbar-item']} onClick={() => copyToClipboard(message.content)}>
+                              <div className={styles['icon']}>
+                                <CopyIcon />
+                              </div>
+                              <div className={styles['text']}>
+                                {Locale.Chat.Actions.Copy}
+                              </div>
+                            </div>
+                          </>
+                      }
+                    </div>
+                  )}
                 </div>
                 {message.isStreaming && (
                   <div className={styles['chat-message-status']}>
@@ -274,38 +325,12 @@ export default function Chat() {
                   </div>
                 )}
                 <div className={styles['chat-message-item']}>
-                  {!isUser && (
-                    <div className={styles['chat-message-top-actions']}>
-                      {message.isStreaming ? (
-                        <div
-                          className={styles['chat-message-top-action']}
-                          onClick={() => onUserStop()}
-                        >
-                          {Locale.Chat.Actions.Stop}
-                        </div>
-                      ) : (
-                        <div
-                          className={styles['chat-message-top-action']}
-                          // onClick={() => onResend(i)}
-                        >
-                          {Locale.Chat.Actions.Retry}
-                        </div>
-                      )}
-
-                      <div
-                        className={styles['chat-message-top-action']}
-                        onClick={() => copyToClipboard(message.content)}
-                      >
-                        {Locale.Chat.Actions.Copy}
-                      </div>
-                    </div>
-                  )}
                   {message.content.length === 0 && !isUser ? (
                     <LoadingIcon />
                   ) : (
                     <div
                       className="markdown-body"
-                      // onContextMenu={(e) => onRightClick(e, message)}
+                    // onContextMenu={(e) => onRightClick(e, message)}
                     >
                       <Markdown content={message.content} />
                     </div>
@@ -333,6 +358,16 @@ export default function Chat() {
       </div>
 
       <div className={styles['chat-input-panel']}>
+        <div className={styles['chat-actionbar']}>
+          <div className={styles['chat-actionbar-item']}>
+            <div className={styles['icon']}>
+              <CommandIcon />
+            </div>
+            <div className={styles['text']}>
+              {Locale.Chat.ActionBar.Command}
+            </div>
+          </div>
+        </div>
         <div className={styles['chat-input-panel-inner']}>
           <textarea
             ref={inputRef}

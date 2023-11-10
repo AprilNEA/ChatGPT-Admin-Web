@@ -177,12 +177,23 @@ export class AuthService {
     if (user.password) {
       throw Error('Password already exists');
     }
-    await this.prisma.client.user.update({
+    return await this.prisma.client.user.update({
       where: {
         id: userId,
       },
       data: {
         password: hashSync(password, SALT_ROUNDS),
+      },
+    });
+  }
+
+  async updateName(userId: number, name: string) {
+    await this.prisma.client.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        name: name,
       },
     });
   }

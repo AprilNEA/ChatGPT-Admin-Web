@@ -4,6 +4,11 @@ const email = Joi.string().email();
 const phone = Joi.string().pattern(/^[0-9]{11}$/);
 export const passwordSchema = Joi.string().min(8).max(20).required();
 
+export const bindPasswordSchema = Joi.object({
+  username: Joi.string().min(2).max(12).optional(),
+  password: passwordSchema.required(),
+});
+
 export const identitySchema = Joi.object({
   identity: Joi.alternatives().try(email, phone).required(),
 });

@@ -2,15 +2,18 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useEffect, useRef, useState } from 'react';
 import useSWR from 'swr';
 
+import ChatIcon from '@/icons/chat.svg';
 import DeleteIcon from '@/icons/delete.svg';
 import Locale from '@/locales';
 import { useStore } from '@/store';
 import styles from '@/styles/module/home.module.scss';
+import { DateFormat, DateFormat2 } from '@/utils/data-format';
 
 import { ChatSession } from 'shared';
+
+import Chat from '..';
 
 /* 左侧对话栏中最小对话单元 */
 export function ChatItem(props: {
@@ -18,13 +21,13 @@ export function ChatItem(props: {
   id: string;
   title: string;
   count: number;
-  time: Date;
+  time: string | number | Date;
   selected: boolean;
 }) {
   const { fetcher } = useStore();
   const router = useRouter();
-  // TODO text is too long may overflow
-  const date = new Date(props.time);
+
+  const date = DateFormat2(props.time);
 
   async function onDelete() {
     await fetcher(`/chat/sessions/${props.id}`, {
@@ -51,17 +54,20 @@ export function ChatItem(props: {
         }`}
         onClick={props.onClick}
       >
-        <div className={styles['chat-item-title']}>{props.title}</div>
-        <div className={styles['chat-item-info']}>
-          <div className={styles['chat-item-count']}>
-            {Locale.ChatItem.ChatItemCount(props.count)}
-          </div>
-          <div className={styles['chat-item-date']}>
-            {date.toLocaleString()}
-          </div>
+        <div className={styles['chat-item-icon']}>
+          <ChatIcon />
         </div>
-        <div className={styles['chat-item-delete']} onClick={onDelete}>
-          <DeleteIcon />
+        <div className={styles['chat-item-main']}>
+          <div className={styles['chat-item-title']}>{props.title}</div>
+          <div className={styles['chat-item-info']}>
+            <div className={styles['chat-item-count']}>
+              {Locale.ChatItem.ChatItemCount(props.count)}
+            </div>
+            <div className={styles['chat-item-date']}>{date}</div>
+          </div>
+          <div className={styles['chat-item-delete']} onClick={onDelete}>
+            <DeleteIcon />
+          </div>
         </div>
       </div>
     </Link>
@@ -91,7 +97,7 @@ export function ChatList() {
           <ChatItem
             key={i}
             id={item.id}
-            title={item.topic ?? '新的对话'}
+            title={item.topic ?? Locale.ChatItem.DefaultTopic}
             time={item.updatedAt}
             count={item.messagesCount}
             selected={currentChatSessionId === item.id}

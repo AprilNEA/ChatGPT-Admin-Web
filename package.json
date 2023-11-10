@@ -18,7 +18,7 @@
     "dev": "turbo run dev --parallel",
     "lint": "turbo run lint",
     "prettier": "prettier --write .",
-    "db:init": "prisma db push --schema=prisma/schema.prisma",
+    "db:init": "prisma db push --schema=prisma/schema.prisma && prisma db seed",
     "db:generate": "prisma generate --schema=prisma/schema.prisma"
   },
   "devDependencies": {
@@ -37,6 +37,7 @@
   },
   "pnpm": {
     "overrides": {
+      "nestjs-prisma>@prisma/client": "workspace:@nest-http/prisma@*",
       "@liaoliaots/nestjs-redis>@nestjs/common": "^10.0.0",
       "@liaoliaots/nestjs-redis>@nestjs/core": "^10.0.0",
       "@liaoliaots/nestjs-redis>@nestjs/terminus": "^10.0.0"

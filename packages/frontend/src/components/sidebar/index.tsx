@@ -2,12 +2,14 @@
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { createRoot } from 'react-dom/client';
 import useSWR from 'swr';
 
+import { SetUsernameAndPassword } from '@/app/auth/page';
 import { ChatList } from '@/components/chat/chat-list';
 import { Loading } from '@/components/loading';
 import { Markdown } from '@/components/markdown';
-import { showModal } from '@/components/ui-lib';
+import { Modal, showModal } from '@/components/ui-lib';
 import { usePremiumData } from '@/hooks/data/use-premium';
 import { useUserData } from '@/hooks/data/use-user';
 import { useSwitchTheme } from '@/hooks/switch-theme';
@@ -15,6 +17,8 @@ import AddIcon from '@/icons/add.svg';
 import AnnouncementIcon from '@/icons/announcement.svg';
 import ChatGptIcon from '@/icons/chatgpt.svg';
 import CheckMarkIcon from '@/icons/checkmark.svg';
+import FileChatIcon from '@/icons/file-chat.svg';
+import MaskIcon from '@/icons/mask.svg';
 import PremiumIcon from '@/icons/premium.svg';
 import SettingsIcon from '@/icons/settings.svg';
 import UserIcon from '@/icons/user.svg';
@@ -70,6 +74,29 @@ function Premium({ userData }: { userData: IUserData }) {
   );
 }
 
+function bindPassword() {
+  const div = document.createElement('div');
+  div.className = 'modal-mask';
+  document.body.appendChild(div);
+
+  const root = createRoot(div);
+  const closeModal = () => {
+    root.unmount();
+    div.remove();
+  };
+
+  div.onclick = (e) => {
+    if (e.target === div) {
+      closeModal();
+    }
+  };
+  root.render(
+    <Modal title={Locale.Auth.SetUp} onClose={closeModal}>
+      <SetUsernameAndPassword onClose={closeModal} />
+    </Modal>,
+  );
+}
+
 export function Sidebar({ children }: { children: React.ReactNode }) {
   const {
     showSideBar,
@@ -79,6 +106,7 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
     setLatestAnnouncementId,
     config,
   } = useStore();
+  const [newbtnExpanded, setNewbtnExpanded] = useState<boolean>(false);
 
   useSWR('/announcement/recent', (url) =>
     fetcher(url)
@@ -94,8 +122,32 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
         }
       }),
   );
-
-  const { userData } = useUserData();
+  const { data: userData, isLoading: isUserDataLoading } = useSWR<IUserData>(
+    '/user/info',
+    (url) =>
+      fetcher(url)
+        .then((res) => res.json())
+        .then((res) => {
+          if (res.success) {
+            if (res.data.todos) {
+              res.data.todos = res.data.todos.map((todo: string) => {
+                switch (todo) {
+                  case 'password':
+                    bindPassword();
+                    break;
+                  default:
+                    break;
+                }
+              });
+            }
+            return res.data;
+          }
+        }),
+    {
+      keepPreviousData: true,
+      revalidateOnFocus: false,
+    },
+  );
 
   const loading = !useHasHydrated();
 
@@ -130,32 +182,63 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
             <ChatGptIcon />
           </div>
         </div>
-        <Link
-          href="/chat/new"
-          onClick={() => setShowSideBar(false)}
-          className={styles['link-full']}
-          style={{ color: 'inherit', textDecoration: 'inherit' }}
-        >
-          <button className={styles['sidebar-newbtn']}>
-            <div>
-              <div className={styles['icon']}>
-                <AddIcon />
-              </div>
-              <div className={styles['text']}>{Locale.Home.NewChat}</div>
-            </div>
-            <Link
-              href="/announcement"
-              prefetch={true}
-              onClick={() => {
-                setShowSideBar(false);
-              }}
+        <div className={styles['sidebar-newbtn']}>
+          {!newbtnExpanded ? (
+            <button
+              className={styles['sidebar-new']}
+              onClick={() => setNewbtnExpanded(true)}
             >
-              <div className={styles['account-announcebtn']}>
-                <AnnouncementIcon />
+              <div>
+                <div className={styles['icon']}>
+                  <AddIcon />
+                </div>
+                <div className={styles['text']}>{Locale.Home.NewChat}</div>
               </div>
-            </Link>
-          </button>
-        </Link>
+            </button>
+          ) : (
+            <>
+              <Link
+                href="/chat/new"
+                onClick={() => {
+                  setShowSideBar(false);
+                  setNewbtnExpanded(false);
+                }}
+                className={styles['link-full']}
+                style={{ color: 'inherit', textDecoration: 'inherit' }}
+              >
+                <button className={styles['sidebar-new']}>
+                  <div>
+                    <div className={styles['icon']}>
+                      <AddIcon />
+                    </div>
+                    <div className={styles['text']}>
+                      {Locale.Home.NewBlankChat}
+                    </div>
+                  </div>
+                </button>
+              </Link>
+              <button
+                className={styles['sidebar-new']}
+                style={{ display: 'none' }}
+              >
+                <div>
+                  <div className={styles['icon']}>
+                    <FileChatIcon />
+                  </div>
+                  <div className={styles['text']}>{Locale.Home.FileChat}</div>
+                </div>
+              </button>
+              <button className={styles['sidebar-new']}>
+                <div>
+                  <div className={styles['icon']}>
+                    <MaskIcon />
+                  </div>
+                  <div className={styles['text']}>{Locale.Home.Mask}</div>
+                </div>
+              </button>
+            </>
+          )}
+        </div>
         <div
           className={styles['sidebar-body']}
           onClick={() => {
@@ -187,7 +270,7 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
                   <UserIcon />
                 </div>
                 <div className={styles['account-name']}>
-                  {userData?.name ?? 'Username'}
+                  {userData?.name ?? Locale.Index.DefaultUser}
                 </div>
               </div>
               <Link

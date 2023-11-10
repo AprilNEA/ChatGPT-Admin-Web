@@ -1,18 +1,22 @@
 /* T is list */
-export interface PaginationResult<T> {
+export interface IPagination<T> {
   data: T[];
-  pagination: Paginator;
+  meta: PageMeta;
 }
 
-export interface Paginator {
-  /* total number of articles */
-  total: number;
-  /* How many entries per page */
-  size: number;
-  /* current page */
+export interface PageMeta {
   currentPage: number;
-  /* Total pages */
-  totalPage: number;
+  isFirstPage: boolean;
+  isLastPage: boolean;
+  previousPage: number;
+  nextPage: number;
+  totalCount: number;
+  pageCount: number;
+}
+
+export interface CursorMeta {
+  hasPreviousPage: boolean;
   hasNextPage: boolean;
-  hasPrevPage: boolean;
+  startCursor: string;
+  endCursor: string;
 }

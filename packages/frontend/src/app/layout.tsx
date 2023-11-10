@@ -18,7 +18,6 @@ export default function RootLayout({
           name="viewport"
           content="width=device-width, userRef-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
         />
-        <link rel="manifest" href="/public/site.webmanifest"></link>
         <link rel="preconnect" href="https://fonts.googleapis.com"></link>
         <link rel="preconnect" href="https://fonts.gstatic.com"></link>
         <link

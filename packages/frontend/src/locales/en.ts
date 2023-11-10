@@ -13,12 +13,14 @@ const en: LocaleType = {
     WeChat: 'WeChat',
     Username: 'Username',
     Password: 'Password',
+    SetUp: 'Set your username and password',
     Login: (type?: string) => `${type ?? ''} Login`,
     Register: (type?: string) => `${type ?? ''} Register`,
     Sent: (ttl: number) => `Sent (${ttl}s)`,
   },
   // Index Page
   Index: {
+    DefaultUser: 'User',
     Title: TITLE,
     SubTitle: 'Welcome to follow WeChat official account:',
     PremiumLimit: (count: number) => `Currently available: ${count} items`,
@@ -51,7 +53,8 @@ const en: LocaleType = {
       'Please check the text for sensitive words. If there are any mistakes, please contact customer service.',
   },
   ChatItem: {
-    ChatItemCount: (count: number) => `${count} conversations`,
+    DefaultTopic: 'New Chat',
+    ChatItemCount: (count: number) => `${count} messages`,
   },
   Chat: {
     SubTitle: (count: number) => `${count} conversations with ${TITLE}`,
@@ -62,10 +65,14 @@ const en: LocaleType = {
       Copy: 'Copy',
       Stop: 'Stop',
       Retry: 'Retry',
+      Delete: 'Delete',
     },
     Typing: 'Typing...',
     Input: (submitKey: string) => `Type a message, ${submitKey} to send`,
     Send: 'Send',
+    ActionBar: {
+      Command: 'Command',
+    },
   },
   OrderHistory: {
     Title: '订单记录',
@@ -136,6 +143,9 @@ const en: LocaleType = {
   Home: {
     NewChat: 'New Chat',
     DeleteChat: 'Confirm delete selected conversation?',
+    NewBlankChat: 'Start Blank Chat',
+    FileChat: 'Start File Chat',
+    Mask: 'Select Mask',
   },
   Settings: {
     Title: 'Settings',

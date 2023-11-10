@@ -1,38 +1,59 @@
+'use client';
+
 import useSWR from 'swr';
 
-import { Table } from '@radix-ui/themes';
+import { Box, Button, Flex, Table } from '@radix-ui/themes';
+
+import { Loading } from '@/components/loading';
+import { Pagination } from '@/components/table';
+import { usePager } from '@/hooks/use-pager';
+import { useStore } from '@/store';
+
+import { DashboardChatSession, IPagination } from 'shared';
 
 export default function AdminChatPage() {
-  // const { data } = useSWR('/api/admin/chat', (url) => fetch(url).then((res) => res.json())
+  const { fetcher } = useStore();
+
+  const pager = usePager({});
+
+  const { data, isLoading } = useSWR<IPagination<DashboardChatSession>>(
+    `/dashboard/chat/sessions?page=${pager.page}&limit=${pager.limit}`,
+    (key) => fetcher(key).then((res) => res.json()),
+  );
+
+  if (isLoading) {
+    return <Loading />;
+  }
+
   return (
-    <Table.Root>
-      <Table.Header>
-        <Table.Row>
-          <Table.ColumnHeaderCell>Full name</Table.ColumnHeaderCell>
-          <Table.ColumnHeaderCell>Email</Table.ColumnHeaderCell>
-          <Table.ColumnHeaderCell>Group</Table.ColumnHeaderCell>
-        </Table.Row>
-      </Table.Header>
+    <Flex gap="3" direction="column" justify="center">
+      <Table.Root>
+        <Table.Header>
+          <Table.Row>
+            <Table.ColumnHeaderCell>#</Table.ColumnHeaderCell>
+            <Table.ColumnHeaderCell>主题</Table.ColumnHeaderCell>
+            <Table.ColumnHeaderCell>消息数量</Table.ColumnHeaderCell>
+            <Table.ColumnHeaderCell>消耗Token</Table.ColumnHeaderCell>
+            <Table.ColumnHeaderCell>用户</Table.ColumnHeaderCell>
+            <Table.ColumnHeaderCell>更新时间</Table.ColumnHeaderCell>
+          </Table.Row>
+        </Table.Header>
 
-      <Table.Body>
-        <Table.Row>
-          <Table.RowHeaderCell>Danilo Sousa</Table.RowHeaderCell>
-          <Table.Cell>danilo@example.com</Table.Cell>
-          <Table.Cell>Developer</Table.Cell>
-        </Table.Row>
-
-        <Table.Row>
-          <Table.RowHeaderCell>Zahra Ambessa</Table.RowHeaderCell>
-          <Table.Cell>zahra@example.com</Table.Cell>
-          <Table.Cell>Admin</Table.Cell>
-        </Table.Row>
-
-        <Table.Row>
-          <Table.RowHeaderCell>Jasper Eriksson</Table.RowHeaderCell>
-          <Table.Cell>jasper@example.com</Table.Cell>
-          <Table.Cell>Developer</Table.Cell>
-        </Table.Row>
-      </Table.Body>
-    </Table.Root>
+        <Table.Body>
+          {data &&
+            data.data?.map((row) => (
+              <Table.Row>
+                <Table.RowHeaderCell>{row.id}</Table.RowHeaderCell>
+                <Table.Cell>{row.topic ?? '未命名'}</Table.Cell>
+                <Table.Cell>{row._count.messages}</Table.Cell>
+                <Table.Cell></Table.Cell>
+                <Table.Cell>{row.user.id ?? row.user.name}</Table.Cell>
+                <Table.Cell>{row.updatedAt.toString()}</Table.Cell>
+              </Table.Row>
+            ))}
+        </Table.Body>
+      </Table.Root>
+      {data && <Pagination {...pager} meta={data.meta} />}
+    </Flex>
   );
 }

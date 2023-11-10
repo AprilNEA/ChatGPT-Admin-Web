@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import useSWR, { useSWRConfig } from 'swr';
+import useSWR from 'swr';
 
 import { IconButton } from '@/components/button';
 import { Markdown } from '@/components/markdown';
@@ -11,11 +11,12 @@ import CloseIcon from '@/icons/close.svg';
 import Locale, { changeLang, getLang } from '@/locales';
 import { useStore } from '@/store';
 import styles from '@/styles/module/announcement.module.scss';
+import { DateFormat } from '@/utils/data-format';
 
 export default function AnnouncePage() {
   const router = useRouter();
   const { fetcher } = useStore();
-  const { data: announcement, isLoading: isAnnouncementLoading } = useSWR(
+  const { data: announcements, isLoading: announcementsLoading } = useSWR(
     '/announcement/all',
     (url) =>
       fetcher(url)
@@ -27,22 +28,7 @@ export default function AnnouncePage() {
     },
   );
 
-  function DateFormat(time: string | number): string {
-    const date = new Date(time);
-
-    const day: string = ('0' + date.getDate()).slice(-2);
-    const month: string = ('0' + (date.getMonth() + 1)).slice(-2);
-    const year: number = date.getFullYear();
-
-    const hours: string = ('0' + date.getHours()).slice(-2);
-    const minutes: string = ('0' + date.getMinutes()).slice(-2);
-    const seconds: string = ('0' + date.getSeconds()).slice(-2);
-
-    const formattedDate: string = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-    return formattedDate;
-  }
-
-  if (isAnnouncementLoading) return <Loading />;
+  if (announcementsLoading) return <Loading />;
 
   return (
     <>
@@ -65,19 +51,16 @@ export default function AnnouncePage() {
       </div>
       <div className={styles['announcement']}>
         <div className={styles['announcement-coloum']}>
-          {announcement ? (
-            announcement.map((announce: any) => (
+          {announcements ? (
+            announcements.map((announce: any) => (
               <>
-                <div className={styles['announcement-header']}>
-                  <div>{`#${announce.id}`}</div>
-                  <div className={styles['announcement-date']}>
-                    {DateFormat(announce.updatedAt)}
-                  </div>
-                </div>
                 <List>
                   <ListItem>
                     <div className={styles['announce-body']}>
                       <div className={styles['title']}>{announce.title}</div>
+                      <div className={styles['announcement-date']}>
+                        {DateFormat(announce.updatedAt)}
+                      </div>
                       <Markdown content={announce.content}></Markdown>
                     </div>
                   </ListItem>
