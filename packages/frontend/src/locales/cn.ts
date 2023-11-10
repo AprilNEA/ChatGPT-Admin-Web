@@ -61,10 +61,14 @@ const cn = {
       Copy: '复制',
       Stop: '停止',
       Retry: '重试',
+      Delete: '删除',
     },
     Typing: '正在输入…',
     Input: (submitKey: string) => `输入消息，${submitKey} 发送`,
     Send: '发送',
+    ActionBar: {
+      Command: '命令',
+    },
   },
   OrderHistory: {
     Title: '订单记录',
