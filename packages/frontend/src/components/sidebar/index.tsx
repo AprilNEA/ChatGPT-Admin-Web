@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import useSWR from 'swr';
 
-import { SetUsernameAndPassword } from '@/app/auth/page';
+import { SetUsernameAndPassword } from '@/app/auth/modal';
 import { ChatList } from '@/components/chat/chat-list';
 import { Loading } from '@/components/loading';
 import { Markdown } from '@/components/markdown';

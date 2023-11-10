@@ -36,7 +36,7 @@ export default function AdminOrderPage() {
         <Table.Body>
           {data &&
             data.data?.map((row) => (
-              <Table.Row>
+              <Table.Row key={row.id}>
                 <Table.RowHeaderCell>{row.id}</Table.RowHeaderCell>
                 <Table.Cell>{row.status}</Table.Cell>
                 <Table.Cell>{row.user.name ?? row.user.id}</Table.Cell>
