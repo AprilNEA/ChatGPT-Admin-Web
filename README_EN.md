@@ -14,6 +14,56 @@
     <img alt="GitHub commit" src="https://img.shields.io/github/commit-activity/m/AprilNEA/ChatGPT-Admin-Web?style=flat-square"></a>
     <a href="https://github.com/AprilNEA/ChatGPT-Admin-Web/issues?q=is%3Aissue+is%3Aclosed" target="_blank">
     <img alt="GitHub closed issues" src="https://img.shields.io/github/issues-closed/AprilNEA/ChatGPT-Admin-Web.svg?style=flat-square"></a>
+<br/>    
+<img src="https://hits-app.vercel.app/hits?url=https%3A%2F%2Fgithub.com%2FAprilNEA%2FChatGPT-Admin-Web" />
+
 </div>
 <div align="left">CAW(ChatGPT-Admin-Web) is a self-hosted web application that provides out-of-the-box user management including a back-end interface as well as configurable payment plans and related payment interfaces.</div>
+
+
+<div align="center">
+
+[GitHub Sponsor](https://github.com/sponsors/AprilNEA) / [Afdian](https://afdian.net/a/aprilnea)
+
+</div>
+
+## Features
+
+- 🌈 Customizable appearance
+- 👻 Out-of-the-box user management
+- 💰 Payment plan configuration, one-click interfacing to payment interfaces
+- 🔐 Keyword filtering, replacement to ensure text security
+
+|                                                                           |                                                                           |
+|---------------------------------------------------------------------------|---------------------------------------------------------------------------|
+| <img src=https://s2.loli.net/2023/11/10/53Q4ZodyIhvmaHt.png width="500"/> |                                                                           |
+| <img src=https://s2.loli.net/2023/11/10/KoieRB9jnTxgCuz.png width="500"/> | <img src=https://s2.loli.net/2023/11/10/kI8z2auXcnFGwTe.png width="500"/> |
+
+## Start
+
+For configuration and installation, see [documentation](https://caw.sku.moe)
+
+## Versions
+
+| Version                                                       | Status                               | Note                            |
+|---------------------------------------------------------------|--------------------------------------|---------------------------------|
+| [V3](https://github.com/AprilNEA/ChatGPT-Admin-Web/tree/v3)   | :white_check_mark: Long-term support | Refactor with modern tech stack |
+| [V2](https://github.com/AprilNEA/ChatGPT-Admin-Web/tree/v2)   | :x: Deprecated                       | Flawed design                   |
+| [V1](https://github.com/AprilNEA/ChatGPT-Admin-Web/tree/main) | :o: No longer updated                | Redis database, less scalable   |
+
+## Project Status
+
+![Alt](https://repobeats.axiom.co/api/embed/67fc3464887e0956a6225b4c5c6579c2699d8363.svg "Repobeats analytics image")
+
+## Contributors
+
+<a href="https://github.com/AprilNEA/ChatGPT-Admin-Web/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=AprilNEA/ChatGPT-Admin-Web" />
+</a>
+
+## Donate
+
+Thank you for the inspiration to keep the program going.
+
+[GitHub Sponsor](https://github.com/sponsors/AprilNEA)  |  [Afdian](https://afdian.net/a/aprilnea)
 

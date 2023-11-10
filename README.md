@@ -14,11 +14,17 @@ English</a></h4>
     <img alt="GitHub commit" src="https://img.shields.io/github/commit-activity/m/AprilNEA/ChatGPT-Admin-Web?style=flat-square"></a>
     <a href="https://github.com/AprilNEA/ChatGPT-Admin-Web/issues?q=is%3Aissue+is%3Aclosed" target="_blank">
     <img alt="GitHub closed issues" src="https://img.shields.io/github/issues-closed/AprilNEA/ChatGPT-Admin-Web.svg?style=flat-square"></a>
+<br/>    
+<img src="https://hits-app.vercel.app/hits?url=https%3A%2F%2Fgithub.com%2FAprilNEA%2FChatGPT-Admin-Web" />
+
 </div>
 <div align="left">CAW 是一个自托管网络应用程序，提供开箱即用的用户管理，包括后台界面以及可配置的支付计划和相关支付界面。</div>
 
+<div align="center">
 
 [GitHub Sponsor](https://github.com/sponsors/AprilNEA) / [爱发电](https://afdian.net/a/aprilnea)
+
+</div>
 
 ## 功能 Features
 
@@ -26,6 +32,11 @@ English</a></h4>
 - 👻 开箱即用的用户管理
 - 💰 付费方案配置，一键对接支付接口
 - 🔐 关键词过滤、替换保证文本安全
+
+|                                                                           |                                                                           |
+|---------------------------------------------------------------------------|---------------------------------------------------------------------------|
+| <img src=https://s2.loli.net/2023/11/10/53Q4ZodyIhvmaHt.png width="500"/> |  |
+| <img src=https://s2.loli.net/2023/11/10/KoieRB9jnTxgCuz.png width="500"/> | <img src=https://s2.loli.net/2023/11/10/kI8z2auXcnFGwTe.png width="500"/> |
 
 ## 开始
 
@@ -55,4 +66,3 @@ English</a></h4>
 
 [GitHub Sponsor](https://github.com/sponsors/AprilNEA)  |  [爱发电](https://afdian.net/a/aprilnea)
 
-<img src="https://hits-app.vercel.app/hits?url=https%3A%2F%2Fgithub.com%2FAprilNEA%2FChatGPT-Admin-Web" />
