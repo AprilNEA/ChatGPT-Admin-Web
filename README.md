@@ -54,11 +54,14 @@ English</a></h4>
 
 ![Alt](https://repobeats.axiom.co/api/embed/67fc3464887e0956a6225b4c5c6579c2699d8363.svg "Repobeats analytics image")
 
+*动态：[Telegram Channel](https://t.me/ChatGPTAdminWebChannel)*
+
 ## 贡献者
 
 <a href="https://github.com/AprilNEA/ChatGPT-Admin-Web/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=AprilNEA/ChatGPT-Admin-Web" />
 </a>
+
 
 ## 捐赠
 

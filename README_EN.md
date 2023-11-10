@@ -55,6 +55,8 @@ For configuration and installation, see [documentation](https://caw.sku.moe)
 
 ![Alt](https://repobeats.axiom.co/api/embed/67fc3464887e0956a6225b4c5c6579c2699d8363.svg "Repobeats analytics image")
 
+News: [Telegram Channel](https://t.me/ChatGPTAdminWebChannel)*
+
 ## Contributors
 
 <a href="https://github.com/AprilNEA/ChatGPT-Admin-Web/graphs/contributors">
