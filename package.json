@@ -27,7 +27,8 @@
     "prettier": "latest",
     "ts-node": "latest",
     "turbo": "latest",
-    "typescript": "latest"
+    "typescript": "latest",
+    "prisma": "5.5.2"
   },
   "prisma": {
     "schema": "prisma/schema.prisma"
