@@ -42,7 +42,7 @@ export default function AdminChatPage() {
         <Table.Body>
           {data &&
             data.data?.map((row) => (
-              <Table.Row>
+              <Table.Row key={row.id}>
                 <Table.RowHeaderCell>{row.id}</Table.RowHeaderCell>
                 <Table.Cell>{row.topic ?? '未命名'}</Table.Cell>
                 <Table.Cell>{row._count.messages}</Table.Cell>

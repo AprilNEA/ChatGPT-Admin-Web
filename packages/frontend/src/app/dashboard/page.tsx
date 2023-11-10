@@ -27,7 +27,7 @@ export default function DashboardIndex() {
   return (
     <Grid columns="6" gap="3" width="auto">
       {analytics.map((item) => (
-        <Box>
+        <Box key={item.key}>
           <Text as="p" size="2" weight="medium">
             {item.label}
           </Text>

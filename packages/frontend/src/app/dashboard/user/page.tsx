@@ -36,7 +36,7 @@ export default function AdminUserPage() {
         <Table.Body>
           {data &&
             data.data?.map((row) => (
-              <Table.Row>
+              <Table.Row key={row.id}>
                 <Table.RowHeaderCell>{row.id}</Table.RowHeaderCell>
                 <Table.Cell>{row.name}</Table.Cell>
                 <Table.Cell>{row.role}</Table.Cell>
