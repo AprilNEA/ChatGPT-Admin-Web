@@ -7,12 +7,10 @@ export interface newOrderDto {
   productId: number;
 }
 
-export type IOrder = {
+export interface IOrder {
   id: number;
   type: OrderType;
   status: OrderStatus;
-  // type: any;
-  // status: any;
   count: number;
   amount: number;
   startAt: string;
@@ -23,4 +21,11 @@ export type IOrder = {
   createdAt: string;
   updatedAt: string;
   product: IProduct;
-};
+}
+
+export interface IAdminOrder extends IOrder {
+  user: {
+    id: number;
+    name: string;
+  };
+}

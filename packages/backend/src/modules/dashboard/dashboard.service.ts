@@ -4,6 +4,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { OrderStatus } from '@prisma/client';
 
 import { ExtendedPrismaClient } from '@/processors/database/prisma.extension';
+import { PagerQuery } from '@/shared';
 
 @Injectable()
 export class DashboardService {
@@ -32,7 +33,7 @@ export class DashboardService {
       session: await this.prisma.client.chatSession.count(),
       message: await this.prisma.client.chatMessage.count(),
       orderCount: order._count._all,
-      orderAmount: order._sum.amount,
+      orderAmount: order._sum.amount / 100,
     };
   }
 
@@ -44,13 +45,8 @@ export class DashboardService {
     return this.prisma.client.openAIKey.create({ data: { key } });
   }
 
-  async getAllChatSession({
-    page = 1,
-    limit = 10,
-  }: {
-    page?: number;
-    limit?: number;
-  }) {
+  /* 获取所有对话 */
+  async getAllChatSession({ page = 1, limit = 10 }: PagerQuery) {
     return this.prisma.client.chatSession
       .paginate({
         include: {
@@ -65,6 +61,84 @@ export class DashboardService {
               messages: true,
             },
           },
+        },
+      })
+      .withPages({
+        limit,
+        page,
+        includePageCount: true,
+      });
+  }
+
+  /* 获取所有消息 */
+  async getAllMessages({ page = 1, limit = 10 }: PagerQuery) {
+    return this.prisma.client.chatMessage
+      .paginate({
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+        },
+      })
+      .withPages({
+        limit,
+        page,
+        includePageCount: true,
+      });
+  }
+
+  /* 获取所有订单 */
+  async getAllOrders({ page = 1, limit = 10 }: PagerQuery) {
+    return this.prisma.client.order
+      .paginate({
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+          product: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+        },
+      })
+      .withPages({
+        limit,
+        page,
+        includePageCount: true,
+      });
+  }
+
+  /* 获取所有订单 */
+  async getAllUsers({ page = 1, limit = 10 }: PagerQuery) {
+    return this.prisma.client.user
+      .paginate({
+        select: {
+          id: true,
+          role: true,
+          name: true,
+          email: true,
+          phone: true,
+          isBlocked: true,
+          password: false,
+          createdAt: true,
+          _count: {
+            select: {
+              orders: true,
+              chatMessages: true,
+              chatSessions: true,
+            },
+          },
+        },
+        orderBy: {
+          createdAt: 'desc',
         },
       })
       .withPages({
