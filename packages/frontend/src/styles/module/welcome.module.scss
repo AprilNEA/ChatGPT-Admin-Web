@@ -13,37 +13,30 @@
     padding: 20px;
     display: flex;
     flex-direction: column;
-    height: 100%;
     align-items: center;
     max-width: 800px;
-    margin: 0 auto;
+    margin: auto;
 
     .title {
-        font-weight: 100;
         font-size: 2.5rem;
+        color: var(--inactive);
         justify-content: center;
-        padding-top: 80px;
-        margin-bottom: 50px;
     }
 
-    @media only screen and (max-width: 600px) {
+    @media only screen and (max-width: 800px) {
         .title {
-            font-weight: 300;
-            font-size: 1.5rem;
-            justify-content: center;
-            padding-top: 50px;
-            margin-bottom: 50px;
+            font-size: 2rem;
         }
     }
 
     .message {
         font-size: 1rem;
         margin-bottom: 50px;
+        color: var(--inactive);
     }
 
-    .caption {
-        font-size: 1rem;
-        font-weight: 200;
+    .logo {
+        opacity: 0.5;
         margin-bottom: 20px;
     }
 }

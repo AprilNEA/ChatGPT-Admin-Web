@@ -7,6 +7,7 @@ import { useUserData } from '@/hooks/data/use-user';
 import usePreventFormSubmit from '@/hooks/use-prevent-form';
 import Locales from '@/locales';
 import { useStore } from '@/store';
+import clsx from 'clsx';
 
 export function SetUsernameAndPassword(props: { onClose: () => void }) {
   const { fetcher } = useStore();
@@ -68,7 +69,7 @@ export function SetUsernameAndPassword(props: { onClose: () => void }) {
           disabled={isSubmitting}
           onClick={() => handleSubmit(undefined, setup)}
           text={Locales.Auth.Submit}
-          className={styles['auth-submit-btn']}
+          className={clsx(styles['auth-submit-btn'], styles['forceauth-button'])}
           type="primary"
         />
       </div>

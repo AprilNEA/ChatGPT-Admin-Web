@@ -6,6 +6,7 @@ import ReturnIcon from '@/icons/return.svg';
 import LoadingIcon from '@/icons/three-dots.svg';
 import Locale from '@/locales';
 import styles from '@/styles/module/ui-lib.module.scss';
+import clsx from 'clsx';
 
 export function Popover(props: {
   children: JSX.Element;
@@ -79,11 +80,13 @@ interface ModalProps {
   children?: JSX.Element;
   actions?: JSX.Element[];
   onClose?: () => void;
+  className?: string;
+  style?: React.CSSProperties;
 }
 
 export function Modal(props: ModalProps) {
   return (
-    <div className={styles['modal-container']}>
+    <div className={clsx(styles['modal-container'],props.className)} style={props.style}>
       <div className={styles['modal-header']}>
         <div className={styles['modal-title']}>{props.title}</div>
 
