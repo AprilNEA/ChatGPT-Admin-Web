@@ -1,9 +1,11 @@
 'use client';
 
 import Link from 'next/link';
+import clsx from 'clsx';
 import { useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import useSWR from 'swr';
+import Router from 'next/router';
 
 import { SetUsernameAndPassword } from '@/app/auth/modal';
 import { ChatList } from '@/components/chat/chat-list';
@@ -22,6 +24,9 @@ import MaskIcon from '@/icons/mask.svg';
 import PremiumIcon from '@/icons/premium.svg';
 import SettingsIcon from '@/icons/settings.svg';
 import UserIcon from '@/icons/user.svg';
+import MoreIcon from '@/icons/more.svg';
+import LogoutIcon from '@/icons/logout.svg';
+import PersonIcon from '@/icons/person.svg';
 import Locale from '@/locales';
 import { useStore } from '@/store';
 import styles from '@/styles/module/home.module.scss';
@@ -91,7 +96,7 @@ function bindPassword() {
     }
   };
   root.render(
-    <Modal title={Locale.Auth.SetUp} onClose={closeModal}>
+    <Modal title={Locale.Auth.SetUp} onClose={closeModal} className={styles['force-auth-modal']}>
       <SetUsernameAndPassword onClose={closeModal} />
     </Modal>,
   );
@@ -99,6 +104,7 @@ function bindPassword() {
 
 export function Sidebar({ children }: { children: React.ReactNode }) {
   const {
+    setSessionToken,
     showSideBar,
     setShowSideBar,
     fetcher,
@@ -107,6 +113,7 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
     config,
   } = useStore();
   const [newbtnExpanded, setNewbtnExpanded] = useState<boolean>(false);
+  const [morebtnExpanded, setMorebtnExpanded] = useState<boolean>(false);
 
   useSWR('/announcement/recent', (url) =>
     fetcher(url)
@@ -159,11 +166,10 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
 
   return (
     <div
-      className={`${
-        config.tightBorder && !isMobileScreen()
-          ? styles['tight-container']
-          : styles.container
-      }`}
+      className={`${config.tightBorder && !isMobileScreen()
+        ? styles['tight-container']
+        : styles.container
+        }`}
     >
       <div
         className={styles.sidebar + ` ${showSideBar && styles['sidebar-show']}`}
@@ -202,6 +208,7 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
                 onClick={() => {
                   setShowSideBar(false);
                   setNewbtnExpanded(false);
+                  setMorebtnExpanded(false);
                 }}
                 className={styles['link-full']}
                 style={{ color: 'inherit', textDecoration: 'inherit' }}
@@ -250,41 +257,92 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
 
         <div className={styles['sidebar-tail']}>
           {userData && <Premium userData={userData} />}
-          <Link
-            href="/profile"
-            onClick={() => {
-              setShowSideBar(false);
-            }}
-            style={{ color: 'inherit', textDecoration: 'inherit' }}
-            prefetch={true}
-            className={styles['link-full']}
-          >
-            <div className={styles['sidebar-accountbtn']}>
-              <div
-                className={styles['sidebar-account']}
+          <div className={styles['sidebar-accountbtn']}>
+            <div className={morebtnExpanded ? styles['sidebar-account-ext'] : clsx(styles['sidebar-account-ext'], styles['sidebar-account-ext-dis'])}>
+              <Link
+                href="/profile"
                 onClick={() => {
                   setShowSideBar(false);
+                  setNewbtnExpanded(false);
+                  setMorebtnExpanded(false);
                 }}
+                className={styles['link-full']}
+                style={{ color: 'inherit', textDecoration: 'inherit' }}
               >
-                <div className={styles['avatar']}>
-                  <UserIcon />
+                <div className={styles['sidebar-account-ext-item']}>
+                  <div className={styles['icon']}>
+                    <PersonIcon />
+                  </div>
+                  <div className={styles['text']}>
+                    {Locale.Index.Profile}
+                  </div>
                 </div>
-                <div className={styles['account-name']}>
-                  {userData?.name ?? Locale.Index.DefaultUser}
-                </div>
-              </div>
+              </Link>
               <Link
                 href="/settings"
                 onClick={() => {
                   setShowSideBar(false);
+                  setNewbtnExpanded(false);
+                  setMorebtnExpanded(false);
                 }}
+                className={styles['link-full']}
+                style={{ color: 'inherit', textDecoration: 'inherit' }}
               >
-                <div className={styles['account-settingbtn']}>
+              <div className={styles['sidebar-account-ext-item']}>
+                <div className={styles['icon']}>
                   <SettingsIcon />
                 </div>
+                <div className={styles['text']}>
+                  {Locale.Index.Settings}
+                </div>
+              </div>
               </Link>
+              <Link
+                href="/announcement"
+                onClick={() => {
+                  setShowSideBar(false);
+                  setNewbtnExpanded(false);
+                  setMorebtnExpanded(false);
+                }}
+                className={styles['link-full']}
+                style={{ color: 'inherit', textDecoration: 'inherit' }}
+              >
+              <div className={styles['sidebar-account-ext-item']}>
+                <div className={styles['icon']}>
+                  <AnnouncementIcon />
+                </div>
+                <div className={styles['text']}>
+                  {Locale.Index.Announcement}
+                </div>
+              </div>
+              </Link>
+              <div className={styles['sidebar-account-ext-item']} onClick={() => {
+                setSessionToken(undefined);
+                setShowSideBar(false);
+                setNewbtnExpanded(false);
+                setMorebtnExpanded(false);
+                Router.reload();
+              }}>
+                <div className={styles['icon']}>
+                  <LogoutIcon />
+                </div>
+                <div className={styles['text']}>
+                  {Locale.Index.LogOut}
+                </div>
+              </div>
             </div>
-          </Link>
+            <div className={styles['sidebar-account']} onClick={() => setMorebtnExpanded(!morebtnExpanded)}>
+              <div className={styles['avatar']}>
+                <UserIcon />
+              </div>
+              <div className={styles['account-name']}>
+                {userData?.name ?? Locale.Index.DefaultUser}
+              </div>
+              <div className={styles['account-settingbtn']}>
+                <MoreIcon />
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       <div className={styles['window-content']}>{children}</div>

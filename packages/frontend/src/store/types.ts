@@ -25,7 +25,7 @@ export interface SharedSlice {
 
   // auth
   sessionToken?: string;
-  setSessionToken: (token: string) => void;
+  setSessionToken: (token: string | undefined) => void;
 
   // layout
   latestAnnouncementId?: number;
