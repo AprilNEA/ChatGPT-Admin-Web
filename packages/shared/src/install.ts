@@ -2,6 +2,7 @@ interface BaseSettingOptions {
   label: string;
   description?: string;
   isOptional?: boolean;
+  value?: string | boolean | number;
 }
 
 interface TypeSettingSchema extends BaseSettingOptions {
