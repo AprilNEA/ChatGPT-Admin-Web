@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-
+import clsx from 'clsx';
 import { MinusIcon, PlusIcon } from '@radix-ui/react-icons';
 import { Button, Select, Switch, Table, TextField } from '@radix-ui/themes';
 
@@ -45,6 +45,7 @@ export function OptionListItem(props: {
           </Table.Cell>
           <Table.Cell>
             <Button
+              variant="outline"
               id={JSON.stringify(tableItems.length - 1)}
               onClick={(event) => {
                 let tableList = tableItems;
@@ -97,58 +98,62 @@ export function OptionListItem(props: {
   }
 
   return (
-    <div className={styles['option-list-item']}>
-      <div className={styles['item-info']}>
-        <div className={styles['label']}>{props.schema.label}</div>
-        <div className={styles['description']}>{props.schema.description}</div>
-      </div>
-      <div className={styles['item-value']}>
-        {props.schema.type === 'switch' ? (
-          <Switch
-            key={getKeyTree().join('.')}
-            onCheckedChange={(boolean) => {
-              installStore.updateItemRamda(getKeyTree(), boolean);
-            }}
-          ></Switch>
-        ) : props.schema.type === 'input' ? (
-          <TextField.Input
-            key={getKeyTree().join('.')}
-            onChange={(event) => {
-              installStore.updateItemRamda(getKeyTree(), event.target.value);
-            }}
-          ></TextField.Input>
-        ) : props.schema.type === 'select' ? (
-          <Select.Root
-            key={getKeyTree().join('.')}
-            onValueChange={(value) => {
-              installStore.updateItemRamda(getKeyTree(), value);
-            }}
-          >
-            <Select.Trigger />
-            <Select.Content position="popper">
-              {props.schema.selectOptions.map((option) => (
-                <Select.Item key={option} value={option}>
-                  {option}
-                </Select.Item>
-              ))}
-            </Select.Content>
-          </Select.Root>
-        ) : props.schema.type === 'multi-input' ||
-          props.schema.type === 'list' ? (
-          <Button
-            onClick={() => {
-              addSingleItem(
-                props.schema.type === 'multi-input'
-                  ? props.schema.keys
-                  : undefined,
-              );
-            }}
-          >
-            <PlusIcon />
-          </Button>
-        ) : (
-          ''
-        )}
+    <div className={props.masterKeyTree ? clsx(styles['option-list-item-nested'], styles['option-list-item']) : styles['option-list-item']}>
+      <div className={styles['item-main-area']}>
+        <div className={styles['item-info']}>
+          <div className={styles['label']}>{props.schema.label}</div>
+          <div className={styles['description']}>{props.schema.description}</div>
+        </div>
+        <div className={styles['item-value']}>
+          {props.schema.type === 'switch' ? (
+            <Switch
+              key={getKeyTree().join('.')}
+              onCheckedChange={(boolean) => {
+                installStore.updateItemRamda(getKeyTree(), boolean);
+              }}
+            ></Switch>
+          ) : props.schema.type === 'input' ? (
+            <TextField.Input
+              width={160}
+              key={getKeyTree().join('.')}
+              onChange={(event) => {
+                installStore.updateItemRamda(getKeyTree(), event.target.value);
+              }}
+            ></TextField.Input>
+          ) : props.schema.type === 'select' ? (
+            <Select.Root
+              key={getKeyTree().join('.')}
+              onValueChange={(value) => {
+                installStore.updateItemRamda(getKeyTree(), value);
+              }}
+            >
+              <Select.Trigger />
+              <Select.Content position="popper">
+                {props.schema.selectOptions.map((option) => (
+                  <Select.Item key={option} value={option}>
+                    {option}
+                  </Select.Item>
+                ))}
+              </Select.Content>
+            </Select.Root>
+          ) : props.schema.type === 'multi-input' ||
+            props.schema.type === 'list' ? (
+            <Button
+              variant="outline"
+              onClick={() => {
+                addSingleItem(
+                  props.schema.type === 'multi-input'
+                    ? props.schema.keys
+                    : undefined,
+                );
+              }}
+            >
+              <PlusIcon />
+            </Button>
+          ) : (
+            ''
+          )}
+        </div>
       </div>
       <div className={styles['item-additional-area']}>
         {props.schema.items ? (
@@ -162,7 +167,7 @@ export function OptionListItem(props: {
         ) : props.schema.type === 'multi-input' ||
           props.schema.type === 'list' ? (
           <Table.Root>
-            {props.schema.type === 'multi-input' ? (
+            {props.schema.type === 'multi-input' && tableItems.length !== 0 ? (
               <Table.Header>
                 <Table.Row>
                   {props.schema.keys.map((key) => (

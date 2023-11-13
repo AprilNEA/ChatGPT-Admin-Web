@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import ramda from 'ramda'
+import * as ramda from 'ramda'
   
 interface InstallStoreState {
     items: { [key: string]: string | boolean | number | object | object[] | string[] | null };
