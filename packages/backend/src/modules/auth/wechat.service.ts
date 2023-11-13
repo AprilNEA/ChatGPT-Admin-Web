@@ -1,9 +1,9 @@
 import { CustomPrismaService } from 'nestjs-prisma';
 
 import { Inject, Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { OAuthProvider } from '@prisma/client';
 
+import { ConfigService } from '@/common/config';
 import { JwtService } from '@/libs/jwt/jwt.service';
 import { ExtendedPrismaClient } from '@/processors/database/prisma.extension';
 

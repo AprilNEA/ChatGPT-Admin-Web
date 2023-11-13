@@ -3,13 +3,15 @@ import {
   ExecutionContext,
   Injectable,
   SetMetadata,
-  UnauthorizedException,
   createParamDecorator,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Role } from '@prisma/client';
 
+import { BizException } from '@/common/exceptions/biz.exception';
 import { JWTPayload, JwtService } from '@/libs/jwt/jwt.service';
+
+import { ErrorCodeEnum } from 'shared/dist/error-code';
 
 export { Role } from '@prisma/client';
 export const ROLES_KEY = 'roles';
@@ -25,10 +27,6 @@ export const Payload = createParamDecorator(
     return payload;
   },
 );
-
-export interface AuthUser {
-  userId: string;
-}
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -47,17 +45,16 @@ export class AuthGuard implements CanActivate {
     const token = this.extractTokenFromHeader(request);
     if (!token) {
       if (isPublic) return true;
-      throw new UnauthorizedException();
+      throw new BizException(ErrorCodeEnum.AuthFail);
     } else {
       try {
         request['payload'] = await this.jwtService.verify(token);
       } catch {
         if (isPublic) return true;
-        throw new UnauthorizedException();
+        throw new BizException(ErrorCodeEnum.AuthFail);
       }
     }
 
-    /* RBAC */
     const roles = this.reflector.getAllAndOverride<Role[]>('roles', [
       context.getHandler(),
       context.getClass(),
@@ -67,12 +64,8 @@ export class AuthGuard implements CanActivate {
     return this.matchRoles(roles, request['payload']?.role);
   }
 
-  /* Check if there are elements in the payload array that are also in the roles array. */
   private matchRoles(roles: Role[], payload: Role): boolean {
     return roles.includes(payload);
-    // return payload.some((role) =>
-    //   roles.map((role) => role.toLowerCase()).includes(role.toLowerCase()),
-    // );
   }
 
   private extractTokenFromHeader(request: Request): string | undefined {

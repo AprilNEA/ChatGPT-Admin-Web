@@ -2,9 +2,9 @@ import { CustomPrismaModule } from 'nestjs-prisma';
 
 import { RedisModule } from '@liaoliaots/nestjs-redis';
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 
+import { ConfigModule } from '@/common/config';
 import { AuthGuard } from '@/common/guards/auth.guard';
 import { JwtModule } from '@/libs/jwt/jwt.module';
 import { AuthModule } from '@/modules/auth/auth.module';
@@ -17,14 +17,10 @@ import { ExtendedPrismaConfigService } from '@/processors/database/prisma.servic
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import configuration from './configuration';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      load: [configuration],
-      isGlobal: true,
-    }),
+    ConfigModule,
     CustomPrismaModule.forRootAsync({
       name: 'PrismaService',
       useClass: ExtendedPrismaConfigService,
@@ -32,7 +28,7 @@ import configuration from './configuration';
     }),
     RedisModule.forRoot({
       config: {
-        url: configuration().redis.url,
+        url: process.env.REDIS_URL,
       },
     }),
     AuthModule,

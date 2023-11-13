@@ -2,8 +2,6 @@ import { StateCreator } from 'zustand';
 
 import { LocalConfig, SharedSlice, StoreType } from '@/store/types';
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL!;
-
 export enum SubmitKey {
   Enter = 'Enter',
   CtrlEnter = 'Ctrl + Enter',
@@ -53,13 +51,18 @@ export const createSharedStore: StateCreator<StoreType, [], [], SharedSlice> = (
 
   // utils
   fetcher(url: string, init?: RequestInit) {
-    return fetch(`${BASE_URL}/api${url}`, {
+    return fetch(`/api${url}`, {
       ...init,
       headers: {
         ...init?.headers,
         'Content-Type': 'application/json',
         Authorization: `Bearer ${get().sessionToken}`,
       },
+    }).then((res) => {
+      if (res.status === 401) {
+        set({ sessionToken: undefined });
+      }
+      return res;
     });
   },
   // Config

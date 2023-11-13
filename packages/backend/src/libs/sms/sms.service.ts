@@ -1,5 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+
+import { ConfigService } from '@/common/config';
+
+import { ConfigType } from 'shared';
 
 type ISMSArgs = {
   to: string;
@@ -8,9 +11,11 @@ type ISMSArgs = {
 
 @Injectable()
 export class SmsService {
-  private smsConfig = this.configService.get('sms');
+  private readonly smsConfig: ConfigType['sms'];
 
-  constructor(private configService: ConfigService) {}
+  constructor(configService: ConfigService) {
+    this.smsConfig = configService.get('sms') ?? {};
+  }
 
   async uni(args: ISMSArgs) {
     if (!this.smsConfig.uni.apiKey || !this.smsConfig.uni.signature) {

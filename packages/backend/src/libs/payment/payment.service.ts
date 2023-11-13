@@ -1,7 +1,8 @@
 import * as md5 from 'spark-md5';
 
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+
+import { ConfigService } from '@/common/config';
 
 import { ConfigType } from 'shared';
 
@@ -38,10 +39,10 @@ function sortAndSignParameters(parameters: PaymentArgs | CallbackBody): string {
 
 @Injectable()
 export class PaymentService {
-  private xhConfig: ConfigType['payment']['xunhu'];
+  private paymentConfig: ConfigType['payment'];
 
   constructor(configService: ConfigService) {
-    this.xhConfig = configService.get<ConfigType['payment']>('payment').xunhu;
+    this.paymentConfig = configService.get('payment');
   }
 
   async xhStartPay({
@@ -55,25 +56,26 @@ export class PaymentService {
     attach: string;
     title?: string;
   }) {
+    const xhConfig = this.paymentConfig.xunhu;
     const fetchBody: PaymentArgs = {
       version: '1.1',
-      appid: this.xhConfig.appId,
+      appid: xhConfig.appId,
       trade_order_id: orderId,
-      total_fee: price,
+      total_fee: price / 100,
       title: title ?? 'ChatGPT Admin Web',
       time: Math.floor(Date.now() / 1000),
-      notify_url: `${this.xhConfig.notifyUrl}/api/order/callback/xunhu`,
-      return_url: this.xhConfig.returnUrl, // After the user has successfully made the payment, we will automatically redirect the user's browser to this URL.
-      callback_url: this.xhConfig.returnUrl, // After the user cancels the payment, we may guide the user to redirect to this URL to make the payment again.
+      notify_url: `${xhConfig.notifyUrl}/api/order/callback/xunhu`,
+      return_url: xhConfig.returnUrl, // After the user has successfully made the payment, we will automatically redirect the user's browser to this URL.
+      callback_url: xhConfig.returnUrl, // After the user cancels the payment, we may guide the user to redirect to this URL to make the payment again.
       // plugins: string;
       attach, // Return as is during callback. 📢We use it to confirm that the order has not been tampered with.
       nonce_str: orderId, // 1. Avoid server page caching 2. Prevent security keys from being guessed
       type: 'WAP',
-      wap_url: this.xhConfig.returnUrl,
-      wap_name: this.xhConfig.wapName,
+      wap_url: xhConfig.returnUrl,
+      wap_name: xhConfig.wapName,
     };
     const stringA = sortAndSignParameters(fetchBody);
-    const hash = md5.hash(stringA + this.xhConfig.appSecret);
+    const hash = md5.hash(stringA + xhConfig.appSecret);
 
     const resp = await fetch('https://api.xunhupay.com/payment/do.html', {
       cache: 'no-store',
@@ -103,7 +105,8 @@ export class PaymentService {
      Currently only the appId is being validated.
      In the future, attach will also need to be validated to improve security.
      */
-    if (body.appid.toString() !== this.xhConfig.appId.toString()) return null;
+    if (body.appid.toString() !== this.paymentConfig.xunhu.appId.toString())
+      return null;
 
     /* == Verify Signature == */
     // const trueHash = body.hash!

@@ -6,8 +6,9 @@ import {
 } from 'jose';
 
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { Role } from '@prisma/client';
+
+import { ConfigService } from '@/common/config';
 
 export type JWTPayload = JWTPayloadDefault & {
   id: number;

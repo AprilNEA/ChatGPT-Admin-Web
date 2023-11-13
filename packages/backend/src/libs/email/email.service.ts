@@ -1,5 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+
+import { ConfigService } from '@/common/config';
+
+import { ConfigType } from 'shared';
 
 type IEmailArgs = {
   from: string;
@@ -10,12 +13,14 @@ type IEmailArgs = {
 
 @Injectable()
 export class EmailService {
-  private emailConfig = this.configService.get('email');
+  private readonly emailConfig: ConfigType['email'];
 
-  constructor(private configService: ConfigService) {}
+  constructor(configService: ConfigService) {
+    this.emailConfig = configService.get('email');
+  }
 
   /* Resend email */
-  async resend(args: IEmailArgs) {
+  async #resend(args: IEmailArgs) {
     const res = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
@@ -33,7 +38,7 @@ export class EmailService {
   }
 
   /* Elastic Email sender */
-  async elastic(args: IEmailArgs) {
+  async #elastic(args: IEmailArgs) {
     const params = {
       apikey: this.emailConfig.elastic.apiKey,
       from: args.from,
@@ -60,7 +65,7 @@ export class EmailService {
    * This is a program for sending emails, with the email service provided by Mailgun.
    * Need further processing of error reporting for emails.
    */
-  async mailgun(args: IEmailArgs) {
+  async #mailgun(args: IEmailArgs) {
     const url = `https://api.mailgun.net/v3/${this.emailConfig.mailgun.domain}/messages`;
 
     const formData = new URLSearchParams();
@@ -93,13 +98,14 @@ export class EmailService {
       content: `你的激活码是 ${code}`,
     };
 
-    switch (this.configService.get('email').use?.toLowerCase()) {
+    switch (this.emailConfig.use?.toLowerCase()) {
       case 'resend':
-        return this.resend(args);
+        return this.#resend(args);
       case 'elastic':
-        return this.elastic(args);
+        return this.#elastic(args);
       case 'mailgun':
-        return this.mailgun(args);
+        return this.#mailgun(args);
+      case undefined:
       default:
         return false;
     }
