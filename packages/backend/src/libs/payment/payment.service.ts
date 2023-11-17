@@ -61,7 +61,7 @@ export class PaymentService {
       version: '1.1',
       appid: xhConfig.appId,
       trade_order_id: orderId,
-      total_fee: price / 100,
+      total_fee: price / 100, // 此处为实际价格，单位为元
       title: title ?? 'ChatGPT Admin Web',
       time: Math.floor(Date.now() / 1000),
       notify_url: `${xhConfig.notifyUrl}/api/order/callback/xunhu`,
