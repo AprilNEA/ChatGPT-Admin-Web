@@ -93,7 +93,9 @@ export class DashboardController {
 
   @Public()
   @Get('install')
-  install() {}
+  install() {
+    return this.configService.getConfigSchema();
+  }
 
   @Get('config')
   getAllConfig() {

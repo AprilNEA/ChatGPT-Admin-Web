@@ -38,13 +38,42 @@ const CONFIG_SCHEMA: ISettingSchema[] = [
     items: [
       {
         key: 'frontend',
-        type: 'input',
+        type: 'input' as any,
         label: '前端端口',
       },
       {
         key: 'backend',
-        type: 'input',
+        type: 'input' as any,
         label: '后端端口',
+      },
+    ],
+  },
+  {
+    key: 'jwt',
+    label: 'JWT',
+    items: [
+      {
+        key: 'algorithm',
+        type: 'select' as any,
+        label: '算法',
+        selectOptions: ['HS256', 'RS256'],
+      },
+      {
+        key: 'secret',
+        type: 'input' as any,
+        label: '密钥',
+      },
+    ],
+  },
+  {
+    key: 'email',
+    label: '邮箱',
+    items: [
+      {
+        key: 'use',
+        type: 'select' as any,
+        label: '启用',
+        selectOptions: ['disable', 'resend'],
       },
     ],
   },
@@ -66,11 +95,15 @@ export class ConfigService {
       : this.defaultConfig;
   }
 
-  getInstallConfigItem() {
-    if (fs.existsSync(this.configFilePath)) {
-      throw new BizException(ErrorCodeEnum.ConfigExists);
-    }
-    return [];
+  getConfigSchema() {
+    // if (fs.existsSync(this.configFilePath)) {
+    //   throw new BizException(ErrorCodeEnum.ConfigExists);
+    // }
+    return CONFIG_SCHEMA;
+  }
+
+  getConfigSchemaValue() {
+    return {};
   }
 
   get<K extends keyof ConfigType>(key: K): ConfigType[K] {

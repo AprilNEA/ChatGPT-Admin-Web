@@ -1,14 +1,21 @@
 'use client';
 
-import { useState } from 'react';
 import clsx from 'clsx';
+import { ChangeEvent, useState } from 'react';
+
 import { MinusIcon, PlusIcon } from '@radix-ui/react-icons';
 import { Button, Select, Switch, Table, TextField } from '@radix-ui/themes';
 
 import useInstallStore from '@/store/install';
 import styles from '@/styles/module/radix-ui-lib.module.scss';
 
-import { ISettingSchema } from 'shared';
+import {
+  ISettingResult,
+  ISettingSchema,
+  MultiInputSettingSchema,
+  SelectSettingSchema,
+  TypeSettingSchema,
+} from 'shared';
 
 export function OptionListRoot(props: {
   children: JSX.Element | JSX.Element[];
@@ -16,176 +23,276 @@ export function OptionListRoot(props: {
   return <div className={styles['option-list-root']}>{props.children}</div>;
 }
 
-export function OptionListItem(props: {
+/* 开关选项 */
+function SwitchItem(props: {
   schema: ISettingSchema;
-  masterKeyTree?: string[];
+  value: boolean;
+  onCheckedChange: (boolean: boolean) => void;
 }) {
-  const installStore = useInstallStore();
-  const [tableItems, setTableItems] = useState<JSX.Element[]>([]);
+  return (
+    <Switch
+      checked={props.value ?? !!props.schema.value ?? false}
+      onCheckedChange={props.onCheckedChange}
+    />
+  );
+}
 
-  function getKeyTree() {
-    return [...(props.masterKeyTree ?? props.schema.key)];
-  }
+/* 输入选项 */
+function InputItem(props: {
+  schema: TypeSettingSchema;
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+}) {
+  return (
+    <TextField.Input
+      width={160}
+      onChange={(e) => {
+        console.log(e.target.value);
+        props.onChange(e);
+      }}
+    />
+  );
+}
 
-  function addSingleItem(keys?: string[]) {
-    if (!keys) {
-      const item = (
+/* 选择 */
+function SelectItem(props: {
+  schema: SelectSettingSchema;
+  onValueChange: (value: string) => void;
+}) {
+  return (
+    <Select.Root onValueChange={props.onValueChange}>
+      <Select.Trigger />
+      <Select.Content position="popper">
+        {props.schema.selectOptions.map((option) => (
+          <Select.Item key={option} value={option}>
+            {option}
+          </Select.Item>
+        ))}
+      </Select.Content>
+    </Select.Root>
+  );
+}
+
+/* List组件 */
+function ListInputHeaderArea(props: {
+  schema: TypeSettingSchema;
+  addValue: () => void;
+}) {
+  return (
+    <Button variant="outline" onClick={props.addValue}>
+      <PlusIcon />
+    </Button>
+  );
+}
+
+function ListInputChildrenArea(props: { schema: TypeSettingSchema }) {
+  return (
+    <Table.Root>
+      <Table.Body>
         <Table.Row>
-          <Table.Cell>
-            <TextField.Input
-              key={null}
-              id={JSON.stringify(tableItems.length - 1)}
-              onChange={(event) => {
-                installStore.updateItemRamda(
-                  [...getKeyTree(), parseInt(event.currentTarget.id)],
-                  event.target.value,
-                );
-              }}
-            ></TextField.Input>
-          </Table.Cell>
+          {/*{props.schema.keys.map((key, index) => (*/}
+          {/*  <Table.Cell key={index}>*/}
+          {/*    <TextField.Input*/}
+          {/*    // id={JSON.stringify(values.length - 1)}*/}
+          {/*    // onChange={(event) => {*/}
+          {/*    //   installStore.updateItemRamda(*/}
+          {/*    //     [...getKeyTree(), parseInt(event.currentTarget.id), key],*/}
+          {/*    //     event.target.value,*/}
+          {/*    //   );*/}
+          {/*    // }}*/}
+          {/*    />*/}
+          {/*  </Table.Cell>*/}
+          {/*))}*/}
           <Table.Cell>
             <Button
-              variant="outline"
-              id={JSON.stringify(tableItems.length - 1)}
-              onClick={(event) => {
-                let tableList = tableItems;
-                tableList.splice(parseInt(event.currentTarget.id), 1);
-                setTableItems(tableList);
-              }}
+            // id={JSON.stringify(tableItems.length - 1)}
+            // onClick={(event) => {
+            //   let tableList = tableItems;
+            //   tableList.splice(parseInt(event.currentTarget.id), 1);
+            //   setTableItems(tableList);
+            // }}
             >
               <MinusIcon />
             </Button>
           </Table.Cell>
         </Table.Row>
-      );
-      setTableItems([...tableItems, item]);
-      return;
-    }
+      </Table.Body>
+    </Table.Root>
+  );
+}
 
-    const item = (
-      <Table.Row>
-        {keys.map((key: string) => {
-          return (
-            <Table.Cell key={null}>
-              <TextField.Input
-                key={key}
-                id={JSON.stringify(tableItems.length - 1)}
-                onChange={(event) => {
-                  installStore.updateItemRamda(
-                    [...getKeyTree(), parseInt(event.currentTarget.id), key],
-                    event.target.value,
-                  );
+function MultiInputHeaderArea(props: {
+  schema: MultiInputSettingSchema;
+  addKeyValue: () => void;
+}) {
+  return (
+    <Button variant="outline" onClick={props.addKeyValue}>
+      <PlusIcon />
+    </Button>
+  );
+}
+
+function MultiInputChildrenArea(props: {
+  values: { [key: string]: string }[];
+  schema: MultiInputSettingSchema;
+  onKeyValueChange: (index: number, key: string, value: string) => void;
+  removeKeyValue: (index: number) => void;
+}) {
+  return (
+    <Table.Root>
+      <Table.Header>
+        <Table.Row>
+          {props.schema.keys.map((key, index) => (
+            <Table.ColumnHeaderCell key={`Head.${index}`}>
+              {key}
+            </Table.ColumnHeaderCell>
+          ))}
+          <Table.ColumnHeaderCell>Actions</Table.ColumnHeaderCell>
+        </Table.Row>
+      </Table.Header>
+
+      <Table.Body>
+        {props.values?.map((row, indexRow) => (
+          <Table.Row key={`Row.${indexRow}`}>
+            {Object.entries(row).map(([k, v], indexCol) => (
+              <Table.Cell key={`Row.${indexRow}-Col.${indexCol}`}>
+                <TextField.Input
+                  value={v}
+                  onChange={(event) =>
+                    props.onKeyValueChange(indexRow, k, event.target.value)
+                  }
+                />
+              </Table.Cell>
+            ))}
+            <Table.Cell>
+              <Button
+                onClick={() => {
+                  props.removeKeyValue(indexRow);
                 }}
-              ></TextField.Input>
+              >
+                <MinusIcon />
+              </Button>
             </Table.Cell>
-          );
-        })}
-        <Table.Cell>
-          <Button
-            id={JSON.stringify(tableItems.length - 1)}
-            onClick={(event) => {
-              let tableList = tableItems;
-              tableList.splice(parseInt(event.currentTarget.id), 1);
-              setTableItems(tableList);
-            }}
-          >
-            <MinusIcon />
-          </Button>
-        </Table.Cell>
-      </Table.Row>
-    );
-    setTableItems([...tableItems, item]);
+          </Table.Row>
+        ))}
+      </Table.Body>
+    </Table.Root>
+  );
+}
+
+/**
+ * 树形结构的配置选项
+ * @param schema 节点结构
+ * @param masterKeyTree 父树路径
+ */
+export function OptionNode({
+  schema,
+  masterKeyTree = [],
+}: {
+  schema: ISettingSchema;
+  masterKeyTree?: string[];
+}) {
+  const {
+    settings,
+    getSettingItem,
+    updateSettingItem,
+    addEmptyValue,
+    addEmptyKeyValue,
+    updateKeyValue,
+    removeKeyValue,
+  } = useInstallStore();
+
+  /* 获取当前节点的完整路径 */
+  function getKeyTree() {
+    return [...masterKeyTree, schema.key];
   }
 
+  let headerArea, childrenArea;
+  switch (schema.type) {
+    case 'switch':
+      headerArea = (
+        <SwitchItem
+          schema={schema}
+          value={getSettingItem(getKeyTree()) as boolean}
+          onCheckedChange={(e) => updateSettingItem(getKeyTree(), e)}
+        />
+      );
+      break;
+    case 'input':
+      headerArea = (
+        <InputItem
+          schema={schema}
+          onChange={(e) => updateSettingItem(getKeyTree(), e.target.value)}
+        />
+      );
+      break;
+    case 'select':
+      headerArea = (
+        <SelectItem
+          schema={schema}
+          onValueChange={(value) => updateSettingItem(getKeyTree(), value)}
+        />
+      );
+      break;
+    case 'list':
+      headerArea = (
+        <ListInputHeaderArea
+          schema={schema}
+          addValue={() => addEmptyValue(masterKeyTree)}
+        />
+      );
+      childrenArea = <ListInputChildrenArea schema={schema} />;
+      break;
+    case 'multi-input':
+      headerArea = (
+        <MultiInputHeaderArea
+          schema={schema}
+          addKeyValue={() => addEmptyKeyValue(getKeyTree(), schema.keys)}
+        />
+      );
+      childrenArea = (
+        <MultiInputChildrenArea
+          values={getSettingItem(getKeyTree()) as { [key: string]: string }[]}
+          schema={schema}
+          onKeyValueChange={(index, key, value) =>
+            updateKeyValue(getKeyTree(), index, key, value)
+          }
+          removeKeyValue={(index) => removeKeyValue(getKeyTree(), index)}
+        />
+      );
+      break;
+    case undefined: // items
+      if (schema.items) {
+        childrenArea = schema.items.map((item) => (
+          <OptionNode
+            schema={item}
+            key={[...getKeyTree(), item.key].join('.')}
+            masterKeyTree={getKeyTree()}
+          />
+        ));
+      }
+    default:
+      break;
+  }
+  console.log('[Setting]', settings);
   return (
-    <div className={props.masterKeyTree ? clsx(styles['option-list-item-nested'], styles['option-list-item']) : styles['option-list-item']}>
+    <div
+      className={
+        masterKeyTree
+          ? clsx(styles['option-list-item-nested'], styles['option-list-item'])
+          : styles['option-list-item']
+      }
+    >
+      {/* Main Area, Header and Input Area */}
       <div className={styles['item-main-area']}>
         <div className={styles['item-info']}>
-          <div className={styles['label']}>{props.schema.label}</div>
-          <div className={styles['description']}>{props.schema.description}</div>
+          <div className={styles['label']}>{schema.label}</div>
+          <div className={styles['description']}>{schema.description}</div>
         </div>
-        <div className={styles['item-value']}>
-          {props.schema.type === 'switch' ? (
-            <Switch
-              key={getKeyTree().join('.')}
-              onCheckedChange={(boolean) => {
-                installStore.updateItemRamda(getKeyTree(), boolean);
-              }}
-            ></Switch>
-          ) : props.schema.type === 'input' ? (
-            <TextField.Input
-              width={160}
-              key={getKeyTree().join('.')}
-              onChange={(event) => {
-                installStore.updateItemRamda(getKeyTree(), event.target.value);
-              }}
-            ></TextField.Input>
-          ) : props.schema.type === 'select' ? (
-            <Select.Root
-              key={getKeyTree().join('.')}
-              onValueChange={(value) => {
-                installStore.updateItemRamda(getKeyTree(), value);
-              }}
-            >
-              <Select.Trigger />
-              <Select.Content position="popper">
-                {props.schema.selectOptions.map((option) => (
-                  <Select.Item key={option} value={option}>
-                    {option}
-                  </Select.Item>
-                ))}
-              </Select.Content>
-            </Select.Root>
-          ) : props.schema.type === 'multi-input' ||
-            props.schema.type === 'list' ? (
-            <Button
-              variant="outline"
-              onClick={() => {
-                addSingleItem(
-                  props.schema.type === 'multi-input'
-                    ? props.schema.keys
-                    : undefined,
-                );
-              }}
-            >
-              <PlusIcon />
-            </Button>
-          ) : (
-            ''
-          )}
-        </div>
+        <div className={styles['item-value']}>{!!headerArea && headerArea}</div>
       </div>
+      {/* Children item including group, list, multi-input */}
       <div className={styles['item-additional-area']}>
-        {props.schema.items ? (
-          props.schema.items.map((item) => (
-            <OptionListItem
-              schema={item}
-              key={[...getKeyTree(), item.key].join('.')}
-              masterKeyTree={[...getKeyTree(), item.key]}
-            />
-          ))
-        ) : props.schema.type === 'multi-input' ||
-          props.schema.type === 'list' ? (
-          <Table.Root>
-            {props.schema.type === 'multi-input' && tableItems.length !== 0 ? (
-              <Table.Header>
-                <Table.Row>
-                  {props.schema.keys.map((key) => (
-                    <Table.ColumnHeaderCell key={key}>
-                      {key}
-                    </Table.ColumnHeaderCell>
-                  ))}
-                  <Table.ColumnHeaderCell>Actions</Table.ColumnHeaderCell>
-                </Table.Row>
-              </Table.Header>
-            ) : (
-              ''
-            )}
-            <Table.Body>{tableItems}</Table.Body>
-          </Table.Root>
-        ) : (
-          ''
-        )}
+        {!!childrenArea && childrenArea}
       </div>
     </div>
   );

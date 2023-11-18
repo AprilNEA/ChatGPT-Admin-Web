@@ -1,31 +1,31 @@
-interface BaseSettingOptions {
+export interface BaseSettingOptions {
   label: string;
   description?: string;
   isOptional?: boolean;
   value?: string | boolean | number;
 }
 
-interface TypeSettingSchema extends BaseSettingOptions {
+export interface TypeSettingSchema extends BaseSettingOptions {
   key: string;
   type: 'switch' | 'input' | 'list';
   items?: never;
 }
 
-interface MultiInputSettingSchema extends BaseSettingOptions {
+export interface MultiInputSettingSchema extends BaseSettingOptions {
   key: string;
   keys: string[];
   type: 'multi-input';
   items?: never;
 }
 
-interface SelectSettingSchema extends BaseSettingOptions {
+export interface SelectSettingSchema extends BaseSettingOptions {
   key: string;
   type: 'select';
   items?: never;
   selectOptions: string[];
 }
 
-interface ItemsSettingSchema extends BaseSettingOptions {
+export interface ItemsSettingSchema extends BaseSettingOptions {
   key: string;
   type?: never;
   items: ISettingSchema[];
@@ -38,7 +38,16 @@ export type ISettingSchema =
   | SelectSettingSchema
   | MultiInputSettingSchema;
 
+export type ISettingResultValue =
+  | string
+  | boolean
+  | number
+  | string[]
+  | number[]
+  | Record<string, string | number | boolean>[]
+  | ISettingResult;
+
 /* 回传表单的数据 */
 export interface ISettingResult {
-  [key: string]: string | boolean | number | ISettingResult;
+  [key: string]: ISettingResultValue;
 }

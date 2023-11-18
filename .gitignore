@@ -3,6 +3,7 @@ config.yaml
 prisma/client/
 
 .env
+config.json
 apps/server/.env
 
 # IDE
