@@ -27,7 +27,7 @@ export const createSharedStore: StateCreator<StoreType, [], [], SharedSlice> = (
   get,
 ) => ({
   // Auth
-  setSessionToken(token: string) {
+  setSessionToken(token: string | undefined) {
     set({ sessionToken: token });
   },
 

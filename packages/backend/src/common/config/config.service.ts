@@ -95,15 +95,17 @@ export class ConfigService {
       : this.defaultConfig;
   }
 
-  getConfigSchema() {
-    // if (fs.existsSync(this.configFilePath)) {
-    //   throw new BizException(ErrorCodeEnum.ConfigExists);
-    // }
+  /* 结构 */
+  getConfigSchema(isPublic = false) {
+    if (isPublic && fs.existsSync(this.configFilePath)) {
+      throw new BizException(ErrorCodeEnum.ConfigExists);
+    }
     return CONFIG_SCHEMA;
   }
 
-  getConfigSchemaValue() {
-    return {};
+  /* 获取默认值 */
+  getDefaultValue() {
+    return this.defaultConfig;
   }
 
   get<K extends keyof ConfigType>(key: K): ConfigType[K] {

@@ -25,9 +25,9 @@ export class ChatService {
   constructor(
     @Inject('PrismaService')
     private prisma: CustomPrismaService<ExtendedPrismaClient>,
-  ) // config: ConfigService,
-  {
-    // this.openaiConfig = config.get('openai');
+    configService: ConfigService,
+  ) {
+    this.openaiConfig = configService.get('openai');
   }
 
   /* 获取指定用户最近时间内消息的总计，用于limit */

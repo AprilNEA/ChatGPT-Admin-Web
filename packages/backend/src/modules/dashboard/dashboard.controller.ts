@@ -94,12 +94,24 @@ export class DashboardController {
   @Public()
   @Get('install')
   install() {
-    return this.configService.getConfigSchema();
+    return {
+      success: true,
+      data: {
+        schema: this.configService.getConfigSchema(true),
+        value: this.configService.getDefaultValue(),
+      },
+    };
   }
 
   @Get('config')
   getAllConfig() {
-    return this.configService.getAll();
+    return {
+      success: true,
+      data: {
+        schema: this.configService.getConfigSchema(),
+        value: this.configService.getAll(),
+      },
+    };
   }
 
   @Put('config')

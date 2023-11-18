@@ -40,11 +40,13 @@ function SwitchItem(props: {
 /* 输入选项 */
 function InputItem(props: {
   schema: TypeSettingSchema;
+  value: string;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
 }) {
   return (
     <TextField.Input
       width={160}
+      value={props.value ?? props.schema.value ?? ''}
       onChange={(e) => {
         console.log(e.target.value);
         props.onChange(e);
@@ -56,10 +58,14 @@ function InputItem(props: {
 /* 选择 */
 function SelectItem(props: {
   schema: SelectSettingSchema;
+  value: string;
   onValueChange: (value: string) => void;
 }) {
   return (
-    <Select.Root onValueChange={props.onValueChange}>
+    <Select.Root
+      value={props.value ?? props.schema.value ?? ''}
+      onValueChange={props.onValueChange}
+    >
       <Select.Trigger />
       <Select.Content position="popper">
         {props.schema.selectOptions.map((option) => (
@@ -221,6 +227,7 @@ export function OptionNode({
       headerArea = (
         <InputItem
           schema={schema}
+          value={getSettingItem(getKeyTree()) as string}
           onChange={(e) => updateSettingItem(getKeyTree(), e.target.value)}
         />
       );
@@ -229,6 +236,7 @@ export function OptionNode({
       headerArea = (
         <SelectItem
           schema={schema}
+          value={getSettingItem(getKeyTree()) as string}
           onValueChange={(value) => updateSettingItem(getKeyTree(), value)}
         />
       );
@@ -273,7 +281,7 @@ export function OptionNode({
     default:
       break;
   }
-  console.log('[Setting]', settings);
+
   return (
     <div
       className={
