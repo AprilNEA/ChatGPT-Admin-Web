@@ -25,6 +25,7 @@
     "@nestjs/platform-fastify": "^10.2.8",
     "@prisma/client": "workspace:@nest-http/prisma@*",
     "bcrypt": "^5.1.0",
+    "dotenv": "^16.3.1",
     "fastify": "^4.24.3",
     "gpt-tokenizer": "^2.1.2",
     "ioredis": "^5.3.2",
