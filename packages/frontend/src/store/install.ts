@@ -1,32 +1,66 @@
-import { create } from 'zustand'
-import ramda from 'ramda'
-  
+import * as ramda from 'ramda';
+import { create } from 'zustand';
+
+import { ISettingResult, ISettingResultValue } from 'shared';
+
+type pathLens = (string | number)[];
+
 interface InstallStoreState {
-    items: { [key: string]: string | boolean | number | object | object[] | string[] | null };
-    addItem: (key: string, item: string | boolean | number | object | object[] | string[] | number[] | null) => void;
-    updateItem: (key: string, updatedItem: Partial<string | boolean | number | object | object[] | string[] | number[]>) => void;
-    getItem: (key: string) => string | boolean | number | object | object[] | string[] | number[] | null;
-    updateItemRamda: (path: (string | number)[], key: string | boolean | number) => void;
-    getAll: () => { [key: string]: string | boolean | number | object | object[] | string[] | number[] | null};
+  settings: ISettingResult;
+  _getFullPath: (key: pathLens) => pathLens;
+  getSettingItem: (path: pathLens) => ISettingResultValue | undefined;
+  updateSettingItem: (path: pathLens, value: ISettingResultValue) => void;
+  addEmptyValue: (path: pathLens) => void;
+  addEmptyKeyValue: (path: pathLens, keys: string[]) => void;
+  updateKeyValue: (
+    path: pathLens,
+    index: number,
+    key: string,
+    value: ISettingResultValue,
+  ) => void;
+  removeKeyValue: (path: pathLens, index: number) => void;
 }
-  
-  
+
 const useInstallStore = create<InstallStoreState>((set, get) => ({
-    items: {},
-    addItem: (key, item) =>
-        set((state) => ({ items: { ...state.items, [key]: item } })),
-    updateItem: (key, updatedItem) =>
-        set((state) => ({
-            items: {
-                ...state.items,
-                [key]: updatedItem,
-            },
-        })),
-    getItem: (key) => get().items[key] || null,
-    getAll: () => get().items,
-    updateItemRamda: (path, key) => 
-        set(ramda.over(ramda.lensPath(path), () => key)),
+  settings: {},
+  _getFullPath: (key) => ['settings', ...key],
+  getSettingItem: (path) => ramda.path(path, get().settings),
+  updateSettingItem: (path, value) =>
+    set(ramda.over(ramda.lensPath(get()._getFullPath(path)), () => value)),
+  addEmptyValue: (path) => {
+    set(
+      ramda.over(ramda.lensPath(get()._getFullPath(path)), (old) => [
+        ...old,
+        '',
+      ]),
+    );
+  },
+  addEmptyKeyValue: (path, keys) => {
+    set(
+      ramda.over(ramda.lensPath(get()._getFullPath(path)), (old) => {
+        const newPart = keys.reduce((obj, key) => ({ ...obj, [key]: '' }), {});
+        return !!old ? [...old, newPart] : [newPart];
+      }),
+    );
+  },
+  updateKeyValue: (path, index, key, value) => {
+    set(
+      ramda.over(
+        ramda.lensPath([...get()._getFullPath(path), index]),
+        (old) => ({
+          ...old,
+          [key]: value,
+        }),
+      ),
+    );
+  },
+  removeKeyValue: (path, index) => {
+    set(
+      ramda.over(ramda.lensPath(get()._getFullPath(path)), (oldArray) =>
+        ramda.remove(index, 1, oldArray),
+      ),
+    );
+  },
 }));
-  
+
 export default useInstallStore;
-  

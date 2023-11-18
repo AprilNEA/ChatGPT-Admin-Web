@@ -2,6 +2,9 @@ export enum ErrorCodeEnum {
   /* 200 */
   OutOfQuota = 20001,
 
+  /* 400 */
+  ConfigExists = 40000,
+
   /* 403 */
   AuthFail = 40300,
   PasswordError = 40301,
@@ -29,4 +32,6 @@ export enum ErrorCodeEnum {
   EmailError = 50003,
   SmsError = 50004,
   WechatError = 50005,
+
+  UnknownError = 99999,
 }

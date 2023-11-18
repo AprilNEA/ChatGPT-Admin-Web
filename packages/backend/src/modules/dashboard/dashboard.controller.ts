@@ -1,6 +1,7 @@
-import { Controller, Delete, Get, Post, Query } from '@nestjs/common';
+import { Controller, Delete, Get, Post, Put, Query } from '@nestjs/common';
 
-import { Role, Roles } from '@/common/guards/auth.guard';
+import { ConfigService } from '@/common/config/config.service';
+import { Public, Role, Roles } from '@/common/guards/auth.guard';
 import { JoiValidationPipe } from '@/common/pipes/joi';
 import { PagerQuery, PagerQuerySchema } from '@/shared';
 
@@ -9,7 +10,10 @@ import { DashboardService } from './dashboard.service';
 @Roles(Role.Admin)
 @Controller('dashboard')
 export class DashboardController {
-  constructor(private readonly dashboardService: DashboardService) {}
+  constructor(
+    private readonly dashboardService: DashboardService,
+    private readonly configService: ConfigService,
+  ) {}
 
   @Get('analytics')
   async getAnalytics() {
@@ -85,5 +89,34 @@ export class DashboardController {
       data,
       meta,
     };
+  }
+
+  @Public()
+  @Get('install')
+  install() {
+    return {
+      success: true,
+      data: {
+        schema: this.configService.getConfigSchema(true),
+        value: this.configService.getDefaultValue(),
+      },
+    };
+  }
+
+  @Get('config')
+  getAllConfig() {
+    return {
+      success: true,
+      data: {
+        schema: this.configService.getConfigSchema(),
+        value: this.configService.getAll(),
+      },
+    };
+  }
+
+  @Put('config')
+  updateConfig() {
+    // this.configService.updateConfig({ '1': '2' });
+    return {};
   }
 }

@@ -9,9 +9,9 @@ import {
 import { Observable } from 'rxjs';
 
 import { Inject, Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { type ChatMessage, ChatMessageRole } from '@prisma/client';
 
+import { ConfigService } from '@/common/config';
 import { BizException } from '@/common/exceptions/biz.exception';
 import { ExtendedPrismaClient } from '@/processors/database/prisma.extension';
 
@@ -25,9 +25,9 @@ export class ChatService {
   constructor(
     @Inject('PrismaService')
     private prisma: CustomPrismaService<ExtendedPrismaClient>,
-    config: ConfigService,
+    configService: ConfigService,
   ) {
-    this.openaiConfig = config.get('openai');
+    this.openaiConfig = configService.get('openai');
   }
 
   /* 获取指定用户最近时间内消息的总计，用于limit */

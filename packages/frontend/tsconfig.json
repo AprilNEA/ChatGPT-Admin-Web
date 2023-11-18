@@ -27,10 +27,7 @@
       "@/*": [
         "./src/*"
       ]
-    },
-    "types": [
-      "@edge-runtime/types"
-    ]
+    }
   },
   "include": [
     "**/*.ts",

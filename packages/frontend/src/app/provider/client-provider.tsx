@@ -14,7 +14,7 @@ export function AuthProvider({
   children: React.ReactNode;
   admin?: boolean;
 }) {
-  const { sessionToken } = useStore();
+  const { sessionToken, setSessionToken } = useStore();
 
   const pathname = usePathname();
   const router = useRouter();

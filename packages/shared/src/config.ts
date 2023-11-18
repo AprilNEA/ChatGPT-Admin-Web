@@ -1,14 +1,15 @@
 export interface ConfigType {
-  debug: boolean;
+  mode: 'nginx' | 'docker' | 'debug';
+  title: string;
   port: {
     frontend: number;
     backend: number;
   };
   jwt: {
-    algorithm: string;
-    secret: string;
-    publicKey: string;
-    privateKey: string;
+    algorithm: 'HS256' | 'ES256';
+    secret?: string;
+    publicKey?: string;
+    privateKey?: string;
   };
   redis: {
     url: string;
@@ -17,14 +18,31 @@ export interface ConfigType {
     url: string;
   };
   openai: {
-    baseUrl?: string;
-    endpoint?: string;
-    keys: string[];
-    keyPath: string;
+    baseUrl: string;
+    keys: string;
+  };
+  sms: {
+    use?: 'aliyun' | 'tencent' | 'uni';
+    uni?: {
+      signature: string;
+      templateId: string;
+      apiKey: string;
+      apiSecret?: string;
+    };
   };
   email: {
-    use: 'resend';
-    resend?: {
+    use?: 'smtp' | 'resend' | 'mailgun' | 'elastic';
+    domain: string;
+    sender?: string;
+    smtp: {};
+    resend: {
+      apiKey: string;
+    };
+    mailgun: {
+      apiKey: string;
+      domain: string;
+    };
+    elastic: {
       apiKey: string;
     };
   };
@@ -35,7 +53,8 @@ export interface ConfigType {
     };
   };
   payment: {
-    xunhu: {
+    use: 'xunhu';
+    xunhu?: {
       wapName: string;
       appId: string;
       appSecret: string;

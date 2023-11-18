@@ -196,23 +196,7 @@
     cursor: pointer;
   }
 
-  animation: buttonClick 0.4s;
-}
-
-.account-announcebtn {
-  height: 40px;
-  width: 40px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  svg {
-    fill: var(--black);
-    height: 20px;
-    width: 20px;
-    margin-right: 10px;
-    margin-left: 10px;
-  }
+  animation: slide-in ease 0.3s;
 }
 
 .sidebar-body {
@@ -239,6 +223,7 @@
 }
 
 .chat-item {
+  animation: slide-in ease 0.3s;
   display: flex;
   margin: 10px;
   padding: 10px;
@@ -361,6 +346,7 @@
   padding-top: 20px;
 
   .sidebar-premium {
+    
     overflow: hidden;
     user-select: none;
     outline: none;
@@ -371,7 +357,7 @@
     transform: scale(1);
     transition: 0.3s;
     background-color: transparent;
-    width: calc(100% - 20px);
+    width: calc(100% - 24px);
 
     &:active {
       transform: scale(0.95);
@@ -411,18 +397,21 @@
   }
 
   .sidebar-accountbtn {
+
+    &:has(.sidebar-account-ext-dis) {
+      background-color: transparent;
+    }
+
+    background-color: var(--secondary-hover-color);
     overflow: hidden;
-    user-select: none;
-    outline: none;
-    border: none;
     border-radius: 10px;
     padding: 10px;
     display: flex;
     align-items: center;
     height: 40px;
-    transition: background-color ease 0.3s;
+    transition: all ease 0.3s;
     justify-content: space-between;
-    margin: 0 12px 0 12px;
+    margin: 5px 12px 0 12px;
 
     &:hover {
       background-color: var(--secondary-hover-color);
@@ -432,6 +421,7 @@
     .sidebar-account {
       display: flex;
       align-items: center;
+      width: 100%;
 
       .avatar {
         height: 40px;
@@ -461,7 +451,7 @@
         text-overflow: ellipsis;
         overflow: hidden;
         white-space: nowrap;
-        max-width: 160px;
+        max-width: 140px;
       }
     }
   }
@@ -475,6 +465,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-left: auto;
 
   svg {
     fill: var(--black);
@@ -821,4 +812,61 @@
       margin-right: 5px;
     }
   }
+}
+
+.force-auth-modal {
+  max-width: 400px;
+}
+
+.sidebar-account-ext {
+  opacity: 1;
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  bottom: 65px;
+  margin: 12px -10px;
+  width: calc(100% - 48px);
+  background-color: var(--white);
+  border-radius: 10px;
+  border: 2px solid var(--inactive);
+  overflow: hidden;
+  transition: all ease 0.1s;
+  box-shadow: var(--card-shadow);
+
+  .sidebar-account-ext-item {
+    padding: 10px;
+    display: flex;
+    width: calc(100% - 20px);
+    transition: all ease 0.3s;
+
+    &:hover {
+      background-color: var(--secondary-hover-color);
+      cursor: pointer;
+    }
+
+    .icon {
+      width: 40px;
+      display: flex;
+      justify-content: center;
+      margin-right: 10px;
+
+      svg {
+        fill: var(--black);
+        height: 20px;
+        width: 20px;
+      }
+    }
+
+    .text {
+      font-family: "Poppins", "Noto Sans SC", "SF Pro SC", "SF Pro Text", "SF Pro Icons", "PingFang SC", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+      font-size: 14px;
+      text-align: center;
+    }
+  }
+}
+
+.sidebar-account-ext-dis {
+  opacity: 0;
+  pointer-events: none;
+  bottom: 60px;
 }
