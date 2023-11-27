@@ -2,7 +2,7 @@
 
 import useSWR from 'swr';
 
-import { Box, Button, Flex, Table } from '@radix-ui/themes';
+import { Flex, Table } from '@radix-ui/themes';
 
 import { Loading } from '@/components/loading';
 import { Pagination } from '@/components/table';

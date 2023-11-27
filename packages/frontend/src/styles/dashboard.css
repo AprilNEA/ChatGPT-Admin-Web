@@ -1,28 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 html, body {
-  height: 100%;
-  width: 100%;
-  margin: 0;
-  padding: 0;
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
 }
 
 section {
-  display: grid;
-  grid-template-areas:
+    display: grid;
+    grid-template-areas:
           "header header"
           "content content"
           "content content";
-  height: 100%;
-  width: 100%;
-  grid-template-rows: 80px 1fr;
-  grid-template-columns: 250px 1fr;
+    height: 100%;
+    width: 100%;
+    grid-template-rows: 80px 1fr;
+    grid-template-columns: 250px 1fr;
+}
 
-  header {
+header {
     grid-area: header;
     display: flex;
 
@@ -33,9 +38,9 @@ section {
     border-bottom: solid;
     border-bottom-color: lightgrey;
     box-shadow: 0 2px 1px -1px lightgrey;
-  }
+}
 
-  main {
+main {
     grid-area: content;
     display: block;
     margin: 20px;
@@ -44,5 +49,4 @@ section {
     border: solid 1px lightgrey;
     border-radius: 10px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
 }
