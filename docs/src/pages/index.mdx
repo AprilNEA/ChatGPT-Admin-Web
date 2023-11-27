@@ -1,4 +1,5 @@
 import {useSSG} from 'nextra/ssg'
+import { Cards, Card } from 'nextra/components'
 
 export const getStaticProps = async ({params}) => {
     const githubRepo = await fetch(`https://api.github.com/repos/AprilNEA/ChatGPT-Admin-Web`)
@@ -47,21 +48,12 @@ export const Stars = () => {
 
 这是一个由 [ChatGPT-Next-Web](https://github.com/Yidadaa/ChatGPT-Next-Web) 二次开发的项目。
 
-本项目分为前台和后台，前台目前完全可用，而**后台面板仍然处于开发当中**。
-
-前台意味着用户可以注册、登录、问答、付费，你可以限制用户的对话次数直到他购买了会员也可以进行推广营销。
-
-后台意味着你可以可视化的管理所有用户，而不是在数据库中搜寻用户主键。
-
-由于后台正在开发中，所以你不得不在安装项目期间设置好一切。
+<Cards>
+  <Card title="手动安装" href="/start" />
+  <Card title="更新日志" href="/update-log" />
+</Cards>
 
 ## 捐赠
-
-无论是无私地开源此项目还是撰写该文档以供各位部署自己的项目，开发者作为一个大一的学生都花费了大量的个人精力。
-
-同时该项目自开源以来完全免费，我们慷慨地公布了一切，您最好的回报方式是在 Github 上点一个 Star.
-
-如果您愿意以在金钱上支持我们，我们也提供以下方式（*部分捐赠等级提供部署指导*）。感谢您的鼓励，能让该项目持续发展。
 
 [GitHub Sponsor](https://github.com/sponsors/AprilNEA) | [爱发电](https://afdian.net/a/aprilnea)
 

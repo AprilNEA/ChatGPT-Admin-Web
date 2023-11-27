@@ -4,7 +4,8 @@
   "config": "配置",
   "faq": "常见问题",
   "development": "开发",
-  "upgrade": "升级",
+  "update-log": "更新日志",
+  "v1tov3": "从 v1 升级",
   "github_link": {
     "title": "Github",
     "href": "https://github.com/AprilNEA/ChatGPT-Admin-Web",
