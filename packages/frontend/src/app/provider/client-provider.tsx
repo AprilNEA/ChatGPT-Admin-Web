@@ -1,8 +1,11 @@
 'use client';
 
-import { usePathname, useRouter } from 'next/navigation';
-import { useCallback, useEffect, useState } from 'react';
+import { usePathname, useRouter, useServerInsertedHTML } from 'next/navigation';
+import React, { useCallback, useEffect, useState } from 'react';
 import { SWRConfig } from 'swr';
+
+import { StyleProvider, createCache, extractStyle } from '@ant-design/cssinjs';
+import type Entity from '@ant-design/cssinjs/es/Cache';
 
 import { Loading } from '@/components/loading';
 import { useStore } from '@/store';
@@ -68,3 +71,24 @@ export function SWRProvider({ children }: { children: React.ReactNode }) {
     <SWRConfig value={{ provider: () => new Map() }}>{children}</SWRConfig>
   );
 }
+
+export const StyledComponentsRegistry = ({
+  children,
+}: React.PropsWithChildren) => {
+  const cache = React.useMemo<Entity>(() => createCache(), []);
+  const isServerInserted = React.useRef<boolean>(false);
+  useServerInsertedHTML(() => {
+    // 避免 css 重复插入
+    if (isServerInserted.current) {
+      return;
+    }
+    isServerInserted.current = true;
+    return (
+      <style
+        id="antd"
+        dangerouslySetInnerHTML={{ __html: extractStyle(cache, true) }}
+      />
+    );
+  });
+  return <StyleProvider cache={cache}>{children}</StyleProvider>;
+};

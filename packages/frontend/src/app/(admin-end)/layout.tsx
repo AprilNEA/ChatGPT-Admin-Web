@@ -4,7 +4,7 @@ import { Button, Theme } from '@radix-ui/themes';
 import '@radix-ui/themes/styles.css';
 
 import { AuthProvider } from '@/app/provider';
-import '@/styles/dashboard.scss';
+import '@/styles/dashboard.css';
 
 export const metadata = {
   title: 'CAW Dashboard',
