@@ -52,11 +52,13 @@
   padding: 10px;
   width: 100%;
   position: relative;
+
   .wechat-part-title {
     border: none;
     background-color: transparent;
     font-weight: bold;
   }
+
   .wechat-login-container {
     border-radius: 2rem;
     width: 200px;
@@ -82,6 +84,7 @@
   align-items: center;
   margin-top: 50px;
   margin-bottom: 30px;
+
   .divider-line {
     border-radius: 1px;
     width: 100%;
@@ -96,6 +99,7 @@
     padding: 0 6px 0 6px;
   }
 }
+
 .third-part-login-options {
   display: flex;
   width: 100%;
@@ -122,9 +126,11 @@
       margin-left: 10px;
     }
   }
+
   .third-part-option:active {
     opacity: 0.9;
   }
+
   .third-part-option:hover {
     background-color: var(--secondary-hover-color);
   }
@@ -217,4 +223,27 @@
 
 .forceauth-button {
   padding: 10px 16px;
+}
+
+@media screen and (max-width: 500px) {
+  .auth-page {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    height: calc(100% - 10rem);
+    flex-direction: column;
+
+    .auth-container {
+      box-shadow: none;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      border-radius: 2rem;
+      width: calc(100% - 40px);
+      margin: 0;
+      padding: 20px;
+    }
+  }
 }
