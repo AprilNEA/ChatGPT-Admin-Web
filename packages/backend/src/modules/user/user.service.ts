@@ -18,6 +18,7 @@ export class UserService {
         id: userId,
       },
       select: {
+        id: true,
         name: true,
         role: true,
         email: true,
