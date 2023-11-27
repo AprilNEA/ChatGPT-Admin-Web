@@ -11,6 +11,7 @@ export class UserService {
     private prisma: CustomPrismaService<ExtendedPrismaClient>,
   ) {}
 
+  /* 获取用户信息 */
   async getInfo(userId: number) {
     const user = await this.prisma.client.user.findUnique({
       where: {
@@ -24,6 +25,8 @@ export class UserService {
         password: true,
       },
     });
+    const isPasswordSet = !!user.password;
+    delete user.password;
     const currentTime = new Date();
     const activatedOrders = await this.prisma.client.order.findMany({
       where: {
@@ -50,7 +53,7 @@ export class UserService {
 
     return {
       ...user,
-      todos: [...(!user.password ? ['password'] : [])],
+      todos: [...(!isPasswordSet ? ['password'] : [])],
       isPremium: activatedOrders.length > 0,
     };
   }
