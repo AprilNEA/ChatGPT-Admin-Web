@@ -18,8 +18,8 @@
     "dev": "turbo run dev --parallel",
     "lint": "turbo run lint",
     "prettier": "prettier --write .",
-    "db:init": "prisma db push --schema=prisma/schema.prisma && prisma db seed",
-    "db:generate": "prisma generate --schema=prisma/schema.prisma"
+    "db:init": "prisma db push && prisma db seed",
+    "db:generate": "prisma generate"
   },
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "latest",
@@ -31,7 +31,8 @@
     "prisma": "5.5.2"
   },
   "prisma": {
-    "schema": "prisma/schema.prisma"
+    "schema": "prisma/schema.prisma",
+    "seed": "ts-node prisma/seed.ts"
   },
   "engines": {
     "node": ">=18"
