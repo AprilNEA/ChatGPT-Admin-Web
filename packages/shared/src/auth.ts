@@ -22,15 +22,3 @@ export interface forgetPasswordDto {
   code: string;
   newPassword: string;
 }
-
-/* 密码登录 DTO */
-export interface byPasswordDto {
-  identity: string;
-  password: string;
-}
-
-/* 绑定身份 DTO */
-export interface bindIdentityDto {
-  identity: string;
-  password?: string;
-}

@@ -13,19 +13,14 @@ import { Payload, Public } from '@/common/guards/auth.guard';
 import { JoiValidationPipe } from '@/common/pipes/joi';
 import { WechatService } from '@/modules/auth/wechat.service';
 
-import {
-  bindIdentityDto,
-  byPasswordDto,
-  forgetPasswordDto,
-  identityDto,
-  validateCodeDto,
-} from 'shared';
+import { forgetPasswordDto, identityDto, validateCodeDto } from 'shared';
 
 import {
   bindIdentitySchema,
-  bindPasswordSchema,
   forgetPasswordSchema,
   identitySchema,
+  initAdminSchema,
+  initPasswordSchema,
   passwordSchema,
   validateCodeSchema,
   withPasswordSchema,
@@ -39,11 +34,21 @@ export class AuthController {
     private wechatService: WechatService,
   ) {}
 
+  @Public()
+  @UsePipes(new JoiValidationPipe(initAdminSchema))
+  @Post('admin/setup')
+  async initAdmin(@Body() data: { identity: string; password: string }) {
+    await this.authService.initAdmin(data.identity, data.password);
+    return {
+      success: true,
+    };
+  }
+
   /* 方法一：密码登录 */
   @Public()
   @UsePipes(new JoiValidationPipe(withPasswordSchema))
   @Post('password')
-  async password(@Body() data: byPasswordDto) {
+  async password(@Body() data: { identity: string; password: string }) {
     return {
       success: true,
       ...(await this.authService.loginPassword(data)),
@@ -119,30 +124,39 @@ export class AuthController {
     };
   }
 
-  /* 设置密码，可首次添加用户名，不可修改用户名 */
-  @Put('bindPassword')
-  async bindPassword(
+  @Put('initUsername')
+  async initName(
     @Payload('id') userId: number,
-    @Body(new JoiValidationPipe(bindPasswordSchema))
-    body: { username?: string; password: string },
+    @Body(new JoiValidationPipe(initPasswordSchema))
+    body: { username: string },
   ) {
-    const user = await this.authService.bindPassword(userId, body.password);
-    if (!user.name) {
-      await this.authService.updateName(userId, body.username);
-    }
+    await this.authService.initUsername(userId, body.username);
     return {
       success: true,
     };
   }
 
-  /* 绑定账户 */
+  /* 首次设置密码，可首次添加用户名，不可修改用户名 */
+  @Put('initPassword')
+  async initPassword(
+    @Payload('id') userId: number,
+    @Body(new JoiValidationPipe(initPasswordSchema))
+    body: { password: string },
+  ) {
+    await this.authService.initPassword(userId, body.password);
+    return {
+      success: true,
+    };
+  }
+
+  /* 绑定账户（邮箱或者密码） */
   @Put('bindIdentity')
   @UsePipes(new JoiValidationPipe(bindIdentitySchema))
-  async bindIdentity(
+  async initIdentity(
     @Payload('id') userId: number,
-    @Body() data: bindIdentityDto,
+    @Body() data: { identity: string },
   ) {
-    await this.authService.bindIdentity(userId, data.identity, data.password);
+    await this.authService.bindIdentity(userId, data.identity, true);
     return {
       success: true,
     };
