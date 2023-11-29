@@ -16,6 +16,7 @@ import { Steps } from 'nextra/components'
   cd ChatGPT-Admin-Web
   pnpm install
   ```
+  > pnpm 安装：`npm i -g pnpm`
 
   ### 初始化数据库
 
@@ -24,13 +25,17 @@ import { Steps } from 'nextra/components'
   export DATABASE_URL=postgres://postgres:your_password@localhost:5432/postgres
   ```
   > 可通过 Docker 快速启动一个 PostgreSQL 数据库
-  > docker run -itd --name caw -e POSTGRES_PASSWORD=your_password -p 5432:5432 -d postgres
+  >
+  > `docker run -itd --name caw -e POSTGRES_PASSWORD=your_password -p 5432:5432 -d postgres`
 
   在项目根目录运行：
+
   ```bash
   pnpm run db:init
   ```
+
   你会看见如下输出，则表明数据库已经初始化成功：
+
   ```bash
   > chatgpt-admin-web@3.1.0 db:init /path/to/ChatGPT-Admin-Web
   > prisma db push && prisma db seed
@@ -60,7 +65,9 @@ import { Steps } from 'nextra/components'
   ```bash
   turbo run start
   ```
+
   项目默认运行在 `http://localhost:3000`。
+
   首次打开应自动转跳`http://localhost:3000/install`设置管理员账户和密码，设置成功后即可登录。
 
 </Steps>
