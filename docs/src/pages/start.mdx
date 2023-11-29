@@ -8,86 +8,60 @@ import { Steps } from 'nextra/components'
 </Callout>
 
 <Steps>
-  ### 步骤一：克隆项目
+  ### 克隆项目并安装依赖
 
   ```bash
   git clone https://github.com/AprilNEA/ChatGPT-Admin-Web.git
   git checkout v3
   cd ChatGPT-Admin-Web
-  ```
-
-  ### 步骤二：安装依赖
-
-  ``` bash pnpm
   pnpm install
   ```
 
-  ### 步骤三：配置项目
+  ### 初始化数据库
 
-  在目录的根目录参照一下`config.json`填写相关配置
-  ```json
+  设置`DATABASE_URL`环境变量，例如：
+  ```bash
+  export DATABASE_URL=postgres://postgres:your_password@localhost:5432/postgres
+  ```
+  > 可通过 Docker 快速启动一个 PostgreSQL 数据库
+  > docker run -itd --name caw -e POSTGRES_PASSWORD=your_password -p 5432:5432 -d postgres
+
+  在项目根目录运行：
+  ```bash
+  pnpm run db:init
+  ```
+  你会看见如下输出，则表明数据库已经初始化成功：
+  ```bash
+  > chatgpt-admin-web@3.1.0 db:init /path/to/ChatGPT-Admin-Web
+  > prisma db push && prisma db seed
+
+  Environment variables loaded from .env
+  Prisma schema loaded from prisma/schema.prisma
+  Datasource "db": PostgreSQL database "postgres", schema "public" at "localhost:5434"
+
+  🚀 Your database is now in sync with your Prisma schema. Done in 245ms
+
+  ✔ Generated Prisma Client (v5.3.1) to ./prisma/client in 297ms
+
+  Environment variables loaded from .env
+  Running seed command `ts-node prisma/seed.ts` ...
   {
-    "mode": "nginx",
-    "title": "ChatGPT Admin Web",
-    "postgres": {
-    "url": "postgres://postgres:t@localhost:5433/postgres"
-    },
-    "redis": {
-      "enable": false
-    },
-    "port": {
-      "frontend": 3000,
-      "backend": 3001
-    },
-    "jwt": {
-      "algorithm": "HS256",
-      "secret": "jRn7UY9uub24"
-    },
-    "openai": {
-      "baseUrl": "https://api.openai.com/v1",
-      "keys": [
-        "sk-ffffff"
-      ]
-    },
-    "email": {
-      "use": "resend",
-      "domain": "exmaple.com",
-      "resend": {
-        "apiKey": "ffffff"
-      }
-    },
-    "sms": {
-      "use": "uni",
-      "uni": {
-        "signature": "XX科技",
-        "apiKey": "ffffff",
-        "apiSecret": ""
-      }
-    },
-    "payment": {
-      "use": "xunhu",
-      "xunhu": {
-        "wapName": "XX科技",
-        "appId": "123456",
-        "appSecret": "ffffff",
-        "notifyUrl": "ffffff",
-        "returnUrl": "ffffff"
-      }
-    }
+    models: {count: 2},
+    categories: {count: 1},
+    products: {count: 1},
+    limits: {count: 1}
   }
 
+  🌱 The seed command has been executed.
+
   ```
 
-  ### 步骤四：构建项目
-  ```bash
-  turbo run build
-  ```
-
-  ### 步骤五：启动项目
+  ### 启动项目
   ```bash
   turbo run start
   ```
   项目默认运行在 `http://localhost:3000`。
+  首次打开应自动转跳`http://localhost:3000/install`设置管理员账户和密码，设置成功后即可登录。
 
 </Steps>
 
