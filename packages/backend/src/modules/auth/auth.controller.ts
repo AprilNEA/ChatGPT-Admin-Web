@@ -16,14 +16,14 @@ import { WechatService } from '@/modules/auth/wechat.service';
 import { forgetPasswordDto, identityDto, validateCodeDto } from 'shared';
 
 import {
+  ForgetPasswordSchema,
+  InitAdminSchema,
+  InitPasswordSchema,
+  PasswordLoginSchema,
+  PasswordSchema,
+  RequireCodeSchema,
+  ValidateCodeSchema,
   bindIdentitySchema,
-  forgetPasswordSchema,
-  identitySchema,
-  initAdminSchema,
-  initPasswordSchema,
-  passwordSchema,
-  validateCodeSchema,
-  withPasswordSchema,
 } from './auth.dto';
 import { AuthService } from './auth.service';
 
@@ -35,7 +35,7 @@ export class AuthController {
   ) {}
 
   @Public()
-  @UsePipes(new JoiValidationPipe(initAdminSchema))
+  @UsePipes(new JoiValidationPipe(InitAdminSchema))
   @Post('admin/setup')
   async initAdmin(@Body() data: { identity: string; password: string }) {
     await this.authService.initAdmin(data.identity, data.password);
@@ -46,7 +46,7 @@ export class AuthController {
 
   /* 方法一：密码登录 */
   @Public()
-  @UsePipes(new JoiValidationPipe(withPasswordSchema))
+  @UsePipes(new JoiValidationPipe(PasswordLoginSchema))
   @Post('password')
   async password(@Body() data: { identity: string; password: string }) {
     return {
@@ -60,14 +60,14 @@ export class AuthController {
   @Public()
   @Get('validateCode')
   async newValidateCode(
-    @Query(new JoiValidationPipe(identitySchema)) query: identityDto,
+    @Query(new JoiValidationPipe(RequireCodeSchema)) query: identityDto,
   ) {
     return await this.authService.newValidateCode(query.identity);
   }
 
   /** 2.通过验证码登录/注册，自动识别邮箱或手机号 */
   @Public()
-  @UsePipes(new JoiValidationPipe(validateCodeSchema))
+  @UsePipes(new JoiValidationPipe(ValidateCodeSchema))
   @Post('validateCode')
   async loginByCode(@Body() data: validateCodeDto) {
     return {
@@ -100,7 +100,7 @@ export class AuthController {
   /* 忘记密码 */
   @Public()
   @Post('forgetPassword')
-  @UsePipes(new JoiValidationPipe(forgetPasswordSchema))
+  @UsePipes(new JoiValidationPipe(ForgetPasswordSchema))
   async forgetPassword(@Body() data: forgetPasswordDto) {
     await this.authService.forgetPassword(
       data.identity,
@@ -116,7 +116,7 @@ export class AuthController {
   @Put('changePassword')
   async changePassword(
     @Payload('id') userId: number,
-    @Body('password', new JoiValidationPipe(passwordSchema)) password: string,
+    @Body('password', new JoiValidationPipe(PasswordSchema)) password: string,
   ) {
     await this.authService.changePassword(userId, password);
     return {
@@ -127,7 +127,7 @@ export class AuthController {
   @Put('initUsername')
   async initName(
     @Payload('id') userId: number,
-    @Body(new JoiValidationPipe(initPasswordSchema))
+    @Body(new JoiValidationPipe(InitPasswordSchema))
     body: { username: string },
   ) {
     await this.authService.initUsername(userId, body.username);
@@ -140,7 +140,7 @@ export class AuthController {
   @Put('initPassword')
   async initPassword(
     @Payload('id') userId: number,
-    @Body(new JoiValidationPipe(initPasswordSchema))
+    @Body(new JoiValidationPipe(InitPasswordSchema))
     body: { password: string },
   ) {
     await this.authService.initPassword(userId, body.password);
