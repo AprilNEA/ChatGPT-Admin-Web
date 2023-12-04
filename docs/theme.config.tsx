@@ -1,7 +1,7 @@
 export default {
   logo: <span>ChatGPT Admin Web</span>,
   project: {
-    link: 'https://github.com/ArilNEA/ChatGPT-Admin-Web',
+    link: 'https://github.com/AprilNEA/ChatGPT-Admin-Web',
   },
   sidebar: {
     defaultMenuCollapseLevel: 1,
