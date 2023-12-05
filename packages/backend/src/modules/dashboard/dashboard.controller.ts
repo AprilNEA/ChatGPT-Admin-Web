@@ -1,4 +1,12 @@
-import { Controller, Delete, Get, Post, Put, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Post,
+  Put,
+  Query,
+} from '@nestjs/common';
 
 import { ConfigService } from '@/common/config/config.service';
 import { Public, Role, Roles } from '@/common/guards/auth.guard';
@@ -91,18 +99,6 @@ export class DashboardController {
     };
   }
 
-  @Public()
-  @Get('install')
-  install() {
-    return {
-      success: true,
-      data: {
-        schema: this.configService.getConfigSchema(true),
-        value: this.configService.getDefaultValue(),
-      },
-    };
-  }
-
   @Get('config')
   getAllConfig() {
     return {
@@ -115,8 +111,10 @@ export class DashboardController {
   }
 
   @Put('config')
-  updateConfig() {
-    // this.configService.updateConfig({ '1': '2' });
-    return {};
+  async updateConfig(@Body() data: any) {
+    return {
+      success: true,
+      data: await this.configService.updateConfig(data),
+    };
   }
 }

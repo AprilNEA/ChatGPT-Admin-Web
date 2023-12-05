@@ -13,22 +13,17 @@ import { Payload, Public } from '@/common/guards/auth.guard';
 import { JoiValidationPipe } from '@/common/pipes/joi';
 import { WechatService } from '@/modules/auth/wechat.service';
 
-import {
-  bindIdentityDto,
-  byPasswordDto,
-  forgetPasswordDto,
-  identityDto,
-  validateCodeDto,
-} from 'shared';
+import { forgetPasswordDto, identityDto, validateCodeDto } from 'shared';
 
 import {
+  ForgetPasswordSchema,
+  InitAdminSchema,
+  InitPasswordSchema,
+  PasswordLoginSchema,
+  PasswordSchema,
+  RequireCodeSchema,
+  ValidateCodeSchema,
   bindIdentitySchema,
-  bindPasswordSchema,
-  forgetPasswordSchema,
-  identitySchema,
-  passwordSchema,
-  validateCodeSchema,
-  withPasswordSchema,
 } from './auth.dto';
 import { AuthService } from './auth.service';
 
@@ -39,11 +34,21 @@ export class AuthController {
     private wechatService: WechatService,
   ) {}
 
+  @Public()
+  @UsePipes(new JoiValidationPipe(InitAdminSchema))
+  @Post('admin/setup')
+  async initAdmin(@Body() data: { identity: string; password: string }) {
+    await this.authService.initAdmin(data.identity, data.password);
+    return {
+      success: true,
+    };
+  }
+
   /* 方法一：密码登录 */
   @Public()
-  @UsePipes(new JoiValidationPipe(withPasswordSchema))
+  @UsePipes(new JoiValidationPipe(PasswordLoginSchema))
   @Post('password')
-  async password(@Body() data: byPasswordDto) {
+  async password(@Body() data: { identity: string; password: string }) {
     return {
       success: true,
       ...(await this.authService.loginPassword(data)),
@@ -55,14 +60,14 @@ export class AuthController {
   @Public()
   @Get('validateCode')
   async newValidateCode(
-    @Query(new JoiValidationPipe(identitySchema)) query: identityDto,
+    @Query(new JoiValidationPipe(RequireCodeSchema)) query: identityDto,
   ) {
     return await this.authService.newValidateCode(query.identity);
   }
 
   /** 2.通过验证码登录/注册，自动识别邮箱或手机号 */
   @Public()
-  @UsePipes(new JoiValidationPipe(validateCodeSchema))
+  @UsePipes(new JoiValidationPipe(ValidateCodeSchema))
   @Post('validateCode')
   async loginByCode(@Body() data: validateCodeDto) {
     return {
@@ -95,7 +100,7 @@ export class AuthController {
   /* 忘记密码 */
   @Public()
   @Post('forgetPassword')
-  @UsePipes(new JoiValidationPipe(forgetPasswordSchema))
+  @UsePipes(new JoiValidationPipe(ForgetPasswordSchema))
   async forgetPassword(@Body() data: forgetPasswordDto) {
     await this.authService.forgetPassword(
       data.identity,
@@ -111,7 +116,7 @@ export class AuthController {
   @Put('changePassword')
   async changePassword(
     @Payload('id') userId: number,
-    @Body('password', new JoiValidationPipe(passwordSchema)) password: string,
+    @Body('password', new JoiValidationPipe(PasswordSchema)) password: string,
   ) {
     await this.authService.changePassword(userId, password);
     return {
@@ -119,30 +124,39 @@ export class AuthController {
     };
   }
 
-  /* 设置密码，可首次添加用户名，不可修改用户名 */
-  @Put('bindPassword')
-  async bindPassword(
+  @Put('initUsername')
+  async initName(
     @Payload('id') userId: number,
-    @Body(new JoiValidationPipe(bindPasswordSchema))
-    body: { username?: string; password: string },
+    @Body(new JoiValidationPipe(InitPasswordSchema))
+    body: { username: string },
   ) {
-    const user = await this.authService.bindPassword(userId, body.password);
-    if (!user.name) {
-      await this.authService.updateName(userId, body.username);
-    }
+    await this.authService.initUsername(userId, body.username);
     return {
       success: true,
     };
   }
 
-  /* 绑定账户 */
+  /* 首次设置密码，可首次添加用户名，不可修改用户名 */
+  @Put('initPassword')
+  async initPassword(
+    @Payload('id') userId: number,
+    @Body(new JoiValidationPipe(InitPasswordSchema))
+    body: { password: string },
+  ) {
+    await this.authService.initPassword(userId, body.password);
+    return {
+      success: true,
+    };
+  }
+
+  /* 绑定账户（邮箱或者密码） */
   @Put('bindIdentity')
   @UsePipes(new JoiValidationPipe(bindIdentitySchema))
-  async bindIdentity(
+  async initIdentity(
     @Payload('id') userId: number,
-    @Body() data: bindIdentityDto,
+    @Body() data: { identity: string },
   ) {
-    await this.authService.bindIdentity(userId, data.identity, data.password);
+    await this.authService.bindIdentity(userId, data.identity, true);
     return {
       success: true,
     };

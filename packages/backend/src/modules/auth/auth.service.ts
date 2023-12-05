@@ -168,14 +168,14 @@ export class AuthService {
   }
 
   /* 添加密码 */
-  async bindPassword(userId: number, password: string) {
+  async initPassword(userId: number, password: string) {
     const user = await this.prisma.client.user.findUniqueOrThrow({
       where: {
         id: userId,
       },
     });
     if (user.password) {
-      throw Error('Password already exists');
+      throw new BizException(ErrorCodeEnum.BindPasswordExist);
     }
     return await this.prisma.client.user.update({
       where: {
@@ -187,15 +187,25 @@ export class AuthService {
     });
   }
 
-  async updateName(userId: number, name: string) {
-    await this.prisma.client.user.update({
+  /* 用户名不可修改 */
+  async initUsername(userId: number, name: string) {
+    const user = await this.prisma.client.user.findUniqueOrThrow({
       where: {
         id: userId,
       },
-      data: {
-        name: name,
-      },
     });
+    if (user.name) {
+      throw new BizException(ErrorCodeEnum.NameDuplicated);
+    } else {
+      await this.prisma.client.user.update({
+        where: {
+          id: userId,
+        },
+        data: {
+          name: name,
+        },
+      });
+    }
   }
 
   /* 修改密码 */
@@ -234,7 +244,7 @@ export class AuthService {
   }
 
   /* 绑定用户身份 */
-  async bindIdentity(userId: number, identity: string, password?: string) {
+  async bindIdentity(userId: number, identity: string, init = false) {
     const { email, phone } = getPhoneOrEmail(identity);
 
     const user = await this.prisma.client.user.findUniqueOrThrow({
@@ -270,16 +280,19 @@ export class AuthService {
         },
       });
     }
+  }
 
-    if (password) {
-      await this.prisma.client.user.update({
-        where: {
-          id: userId,
-        },
-        data: {
-          password: hashSync(password, SALT_ROUNDS),
-        },
-      });
+  async initAdmin(identity: string, password: string) {
+    if ((await this.prisma.client.user.count()) > 0) {
+      throw new BizException(ErrorCodeEnum.AdminExists);
     }
+    const { email, phone } = getPhoneOrEmail(identity);
+    await this.prisma.client.user.create({
+      data: {
+        role: Role.Admin,
+        email,
+        phone,
+      },
+    });
   }
 }

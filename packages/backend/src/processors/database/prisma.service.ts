@@ -16,7 +16,7 @@ export class ExtendedPrismaConfigService
   private readonly url: string;
 
   constructor(configService: ConfigService) {
-    this.url = configService.get('postgres').url ?? process.env.DATABASE_URL;
+    this.url = configService?.get('postgres')?.url ?? process.env.DATABASE_URL;
   }
 
   createPrismaClient(): ExtendedPrismaClient {

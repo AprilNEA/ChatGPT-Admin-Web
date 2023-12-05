@@ -2,38 +2,43 @@ import * as Joi from 'joi';
 
 const email = Joi.string().email();
 const phone = Joi.string().pattern(/^[0-9]{11}$/);
-export const passwordSchema = Joi.string().min(8).max(20).required();
 
-export const bindPasswordSchema = Joi.object({
-  username: Joi.string().min(2).max(12).optional(),
-  password: passwordSchema.required(),
+export const IdentitySchema = Joi.alternatives().try(email, phone).required();
+export const PasswordSchema = Joi.string().min(8).max(20).required();
+
+export const RequireCodeSchema = Joi.object({
+  identity: IdentitySchema,
 });
 
-export const identitySchema = Joi.object({
-  identity: Joi.alternatives().try(email, phone).required(),
-});
-
-export const validateCodeSchema = Joi.object({
-  identity: Joi.alternatives().try(email, phone).required(),
+export const ValidateCodeSchema = Joi.object({
+  identity: IdentitySchema,
   code: Joi.string()
     .pattern(/^[0-9]{6}$/)
     .required(),
 });
 
-export const forgetPasswordSchema = Joi.object({
+export const InitPasswordSchema = Joi.object({
+  password: PasswordSchema.required(),
+});
+
+export const ForgetPasswordSchema = Joi.object({
   identity: Joi.alternatives().try(email, phone).required(),
   code: Joi.string()
     .pattern(/^[0-9]{6}$/)
     .required(),
-  newPassword: passwordSchema.required(),
+  newPassword: PasswordSchema.required(),
 });
 
-export const withPasswordSchema = Joi.object({
-  identity: Joi.alternatives().try(email, phone).required(),
-  password: passwordSchema.required(),
+export const PasswordLoginSchema = Joi.object({
+  identity: IdentitySchema,
+  password: PasswordSchema.required(),
 });
 
 export const bindIdentitySchema = Joi.object({
-  identity: Joi.alternatives().try(email, phone).required(),
-  password: passwordSchema.optional(),
+  identity: IdentitySchema,
+});
+
+export const InitAdminSchema = Joi.object({
+  identity: IdentitySchema,
+  password: PasswordSchema.required(),
 });

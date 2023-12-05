@@ -90,22 +90,12 @@ export class ConfigService {
   }
 
   private loadConfig(): void {
-    this.config = fs.existsSync(this.configFilePath)
-      ? JSON.parse(fs.readFileSync(this.configFilePath, 'utf8'))
-      : this.defaultConfig;
+    this.config = JSON.parse(fs.readFileSync(this.configFilePath, 'utf8'));
   }
 
-  /* 结构 */
-  getConfigSchema(isPublic = false) {
-    if (isPublic && fs.existsSync(this.configFilePath)) {
-      throw new BizException(ErrorCodeEnum.ConfigExists);
-    }
+  /* 获取配置文件结构 */
+  getConfigSchema() {
     return CONFIG_SCHEMA;
-  }
-
-  /* 获取默认值 */
-  getDefaultValue() {
-    return this.defaultConfig;
   }
 
   get<K extends keyof ConfigType>(key: K): ConfigType[K] {
@@ -116,6 +106,7 @@ export class ConfigService {
     return this.config;
   }
 
+  /* 更新配置文件 */
   updateConfig(updateConfig: Partial<ConfigType>) {
     const newConfig = { ...this.config, ...updateConfig };
     const jsonData = JSON.stringify(newConfig, null, 2);

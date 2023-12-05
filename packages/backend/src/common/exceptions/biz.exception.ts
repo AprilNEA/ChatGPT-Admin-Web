@@ -12,8 +12,11 @@ export const ErrorCode = Object.freeze<
     429,
   ],
 
-  /* 403 */
+  /* 400 */
+  [ErrorCodeEnum.AdminExists]: ['Admin already exists', '管理员已存在', 400],
   [ErrorCodeEnum.ConfigExists]: ['Config already exists', '配置已存在', 400],
+
+  /* 403 */
   [ErrorCodeEnum.AuthFail]: ['Auth failed', '认证失败', 401],
   [ErrorCodeEnum.PasswordError]: ['The password is incorrect', '密码错误', 400],
   [ErrorCodeEnum.CodeValidationError]: [
@@ -28,12 +31,17 @@ export const ErrorCode = Object.freeze<
   ],
   [ErrorCodeEnum.PhoneDuplicated]: [
     'The phone already bind with another account',
-    '手机号ban',
+    '该手机号已与另一个账户绑定',
     400,
   ],
   [ErrorCodeEnum.EmailDuplicated]: [
     'This email already bind with another account',
-    '邮箱已存在',
+    '该邮箱已与另一个账户绑定',
+    400,
+  ],
+  [ErrorCodeEnum.NameDuplicated]: [
+    'This name is already taken',
+    '此名称已被占用',
     400,
   ],
   [ErrorCodeEnum.BindEmailExist]: [
@@ -46,6 +54,17 @@ export const ErrorCode = Object.freeze<
     '手机已存在',
     400,
   ],
+  [ErrorCodeEnum.BindNameExist]: [
+    'The account already had name',
+    '此账户已有名称',
+    400,
+  ],
+  [ErrorCodeEnum.BindPasswordExist]: [
+    'The account already had password',
+    '此账户已有密码',
+    400,
+  ],
+
   /* 404 */
   [ErrorCodeEnum.NotFound]: ['Not found', '未找到', 400],
   [ErrorCodeEnum.SessionNotFound]: ['Session not found', '会话未找到', 400],
