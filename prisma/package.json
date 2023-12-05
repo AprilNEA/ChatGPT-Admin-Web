@@ -1,6 +1,7 @@
 {
   "name": "@nest-http/prisma",
   "description": "",
+  "version": "5.6.0",
   "private": true,
   "main": "./client/index.js",
   "exports": {
@@ -22,7 +23,7 @@
     "seed": "ts-node ./seed.ts"
   },
   "dependencies": {
-    "@prisma/client": "5.3.1"
+    "@prisma/client": "5.6.0"
   },
   "devDependencies": {
     "prisma": "*",
