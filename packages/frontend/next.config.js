@@ -32,9 +32,7 @@ const nextConfig = {
     return [
       {
         source: '/api/:slug*',
-        destination: `http://localhost:${
-          config.port.backend ?? '3001'
-        }/api/:slug*`,
+        destination: `https://chat.xjt.lu/api/:slug*`,
       },
     ];
   },

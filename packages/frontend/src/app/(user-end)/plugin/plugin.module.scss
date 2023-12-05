@@ -1,0 +1,195 @@
+@import "@/styles/window";
+
+.plugin-body {
+    height: 100%;
+    width: 100%;
+    flex: 1;
+    display: flex;
+
+    .plugin-sidebar {
+        width: 50px;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        border-right: rgba(0, 0, 0, 0.1) 1px solid;
+        padding: 10px;
+
+        .plugin-sidebar-item,
+        .plugin-sidebar-item-selected {
+            &:not(:last-child) {
+                margin-bottom: 10px;
+            }
+
+            &.plugin-sidebar-item-selected {
+                border-color: var(--primary);
+
+                &:hover {
+                    box-shadow: var(--primary-shadow);
+                    border-color: var(--primary);
+                }
+
+                .item-logo {
+                    svg {
+                        fill: var(--primary);
+                    }
+                }
+            }
+
+            animation: slide-in ease 0.3s;
+            transform: scale(1);
+            height: 50px;
+            width: 50px;
+            background-color: var(--white);
+            border-radius: 10px;
+            border-color: var(--white);
+            border-style: solid;
+            border-width: 3px;
+            transition: 0.3s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            &:hover {
+                border-color: var(--inactive);
+                box-shadow: var(--shadow);
+                cursor: pointer;
+            }
+
+            &:active {
+                transform: scale(0.95);
+                transition: 0;
+            }
+
+            .item-logo {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+
+                svg {
+                    height: 25px;
+                    width: 25px;
+                    fill: var(--black);
+                }
+            }
+        }
+    }
+
+    .plugin-body {
+        height: 100%;
+        width: 100%;
+        padding: 15px;
+        padding-left: 0;
+        display: flex;
+        animation: slide-in ease 0.3s;
+        overflow: scroll;
+
+        .plugin-section {
+            width: 100%;
+
+            .plugin-section-title {
+                margin-left: 15px;
+                font-size: 1rem;
+                font-weight: 500;
+                margin-bottom: 10px;
+            }
+
+            .plugin-section-body {
+                width: 100%;
+                display: flex;
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+
+            &:not(:last-child) {
+                margin-bottom: 15px;
+            }
+        }
+    }
+}
+
+.plugin {
+    transform: scale(1);
+    width: 240px;
+    height: 200px;
+    border: rgba(0, 0, 0, 0.1) 1px solid;
+    border-radius: 20px;
+    margin-bottom: 15px;
+    margin-left: 15px;
+    display: flex;
+    flex-direction: column;
+    transition: 0.3s;
+    transform: scale(1);
+    animation: slide-in ease 0.3s;
+
+    &:hover {
+        border-color: var(--inactive);
+        box-shadow: var(--shadow);
+        cursor: pointer;
+    }
+
+    &:active {
+        transform: scale(0.95);
+        transition: 0;
+    }
+
+    .plugin-poster {
+        height: 150px;
+        border-bottom: rgba(0, 0, 0, 0.1) 1px solid;
+        border-radius: 20px 20px 0 0;
+        overflow: hidden;
+    }
+
+    .plugin-content {
+        display: flex;
+        align-items: center;
+        height: 50px;
+        padding: 0 15px;
+
+        .plugin-type {
+            margin-right: 10px;
+            
+            svg {
+                height: 25px;
+                width: 25px;
+                fill: var(--black);
+            }
+        }
+
+        .plugin-info {
+            display: flex;
+            flex-direction: column;
+
+            .plugin-name {
+                font-size: 1rem;
+                font-weight: 500;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                text-wrap: nowrap;
+                width: 180px;
+            }
+
+            .plugin-description {
+                font-size: 0.75rem;
+                font-weight: 400;
+                color: var(--inactive);
+                text-overflow: ellipsis;
+                overflow: hidden;
+                text-wrap: nowrap;
+                width: 170px;
+                margin-top: -5px;
+            }
+        }
+    }
+}
+
+@keyframes slide-in {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+  
+    to {
+      opacity: 1;
+      transform: translateY(0px);
+    }
+  }

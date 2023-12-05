@@ -36,6 +36,11 @@ const cn = {
     PremiumUser: '高级用户',
     NormalUser: '普通用户',
   },
+  Plugin: {
+    Title: '插件',
+    Explore: '探索插件',
+    User: '我的插件',
+  },
   Announcement: {
     Title: '公告',
     NoEntry: '暂无公告',
@@ -140,7 +145,7 @@ const cn = {
     NewBlankChat: '开始空白对话',
     DeleteChat: '确认删除选中的对话？',
     FileChat: '开始文件对话',
-    Mask: '选择面具',
+    Plugin: '选择插件',
   },
   Settings: {
     Title: '设置',

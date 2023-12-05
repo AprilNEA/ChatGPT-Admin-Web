@@ -21,7 +21,7 @@ import ChatGptIcon from '@/icons/chatgpt.svg';
 import CheckMarkIcon from '@/icons/checkmark.svg';
 import FileChatIcon from '@/icons/file-chat.svg';
 import LogoutIcon from '@/icons/logout.svg';
-import MaskIcon from '@/icons/mask.svg';
+import PluginIcon from '@/icons/plugin.svg';
 import MoreIcon from '@/icons/more.svg';
 import PersonIcon from '@/icons/person.svg';
 import PremiumIcon from '@/icons/premium.svg';
@@ -170,11 +170,10 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
 
   return (
     <div
-      className={`${
-        config.tightBorder && !isMobileScreen()
+      className={`${config.tightBorder && !isMobileScreen()
           ? styles['tight-container']
           : styles.container
-      }`}
+        }`}
     >
       <div
         className={styles.sidebar + ` ${showSideBar && styles['sidebar-show']}`}
@@ -229,25 +228,27 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
                   </div>
                 </button>
               </Link>
-              <button
-                className={styles['sidebar-new']}
-                style={{ display: 'none' }}
-              >
-                <div>
-                  <div className={styles['icon']}>
-                    <FileChatIcon />
-                  </div>
-                  <div className={styles['text']}>{Locale.Home.FileChat}</div>
-                </div>
-              </button>
+
               <button className={styles['sidebar-new']}>
-                <div>
-                  <div className={styles['icon']}>
-                    <MaskIcon />
+                <Link
+                  href="/plugin"
+                  onClick={() => {
+                    setShowSideBar(false);
+                    setNewbtnExpanded(false);
+                    setMorebtnExpanded(false);
+                  }}
+                  className={styles['link-full']}
+                  style={{ color: 'inherit', textDecoration: 'inherit' }}
+                >
+                  <div>
+                    <div className={styles['icon']}>
+                      <PluginIcon />
+                    </div>
+                    <div className={styles['text']}>{Locale.Home.Plugin}</div>
                   </div>
-                  <div className={styles['text']}>{Locale.Home.Mask}</div>
-                </div>
+                </Link>
               </button>
+
             </>
           )}
         </div>
@@ -268,9 +269,9 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
                 morebtnExpanded
                   ? styles['sidebar-account-ext']
                   : clsx(
-                      styles['sidebar-account-ext'],
-                      styles['sidebar-account-ext-dis'],
-                    )
+                    styles['sidebar-account-ext'],
+                    styles['sidebar-account-ext-dis'],
+                  )
               }
             >
               <Link
