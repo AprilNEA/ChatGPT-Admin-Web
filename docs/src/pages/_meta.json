@@ -1,6 +1,6 @@
 {
   "index": "主页",
-  "install": "安装",
+  "quickstart": "快速开始",
   "upgrade": {
     "title": "升级"
   },

@@ -1,7 +1,6 @@
-import { Callout } from 'nextra/components'
-import { Steps } from 'nextra/components'
+import { Callout, Steps } from 'nextra/components'
 
-## 本地部署
+## 快速开始
 <Callout type="info" emoji="ℹ️">
   **Prerequisite** You should have installed Node.js (version 18.10.0 or
   higher).
@@ -12,7 +11,6 @@ import { Steps } from 'nextra/components'
 
   ```bash
   git clone https://github.com/AprilNEA/ChatGPT-Admin-Web.git
-  git checkout v3
   cd ChatGPT-Admin-Web
   pnpm install
   ```
@@ -61,6 +59,15 @@ import { Steps } from 'nextra/components'
 
   ```
 
+  设置`REDIS_URL`环境变量，例如：
+  ```bash
+  export REDIS_URL=redis://localhost:6379/0
+  ```
+  > 可通过 Docker 快速启动一个 Redis 数据库
+  >
+  > `docker run -p 6379:6379 -it redis/redis-stack:latest`
+
+
   ### 启动项目
   ```bash
   turbo run start
@@ -68,7 +75,10 @@ import { Steps } from 'nextra/components'
 
   项目默认运行在 `http://localhost:3000`。
 
-  首次打开应自动转跳`http://localhost:3000/install`设置管理员账户和密码，设置成功后即可登录。
+  <Callout type="warning" emoji="👷‍♀️">
+    Dashboard is coming soon.
+  </Callout>
+  ~~首次打开应自动转跳`http://localhost:3000/install`设置管理员账户和密码，设置成功后即可登录。~~
 
 </Steps>
 
