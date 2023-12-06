@@ -9,8 +9,9 @@ import usePreventFormSubmit from '@/hooks/use-prevent-form';
 import Locales from '@/locales';
 import { useStore } from '@/store';
 
-export function SetUsernameAndPassword(props: { onClose: () => void }) {
+export function SetPassword(props: { onClose: () => void }) {
   const { fetcher } = useStore();
+
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isSubmitting, handleSubmit] = usePreventFormSubmit();
@@ -18,23 +19,45 @@ export function SetUsernameAndPassword(props: { onClose: () => void }) {
 
   async function setup() {
     if (!password) return showToast('密码不能为空');
-    fetcher('/auth/bindPassword', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        username: username == '' ? undefined : username,
-        password,
-      }),
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        if (res.success) {
-          showToast('设置成功');
-          props.onClose();
-        } else {
-          // TODO error
-        }
-      });
+
+    await Promise.all([
+      fetcher('/auth/initPassword', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          password,
+        }),
+      })
+        .then((res) => res.json())
+        .then((res) => {
+          if (res.success) {
+            showToast('密码设置成功');
+            props.onClose();
+          } else {
+            // TODO error
+          }
+        }),
+      ...(!!userData?.name
+        ? [
+            fetcher('/auth/initUsername', {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                username,
+              }),
+            })
+              .then((res) => res.json())
+              .then((res) => {
+                if (res.success) {
+                  showToast('用户名设置成功');
+                  props.onClose();
+                } else {
+                  // TODO error
+                }
+              }),
+          ]
+        : []),
+    ]);
   }
 
   return (
