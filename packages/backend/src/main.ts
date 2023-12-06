@@ -28,7 +28,11 @@ async function bootstrap() {
   app.useGlobalFilters(new AllExceptionFilter());
   app.useGlobalFilters(new PrismaExceptionFilter());
   app.setGlobalPrefix('api');
-  await app.listen(configService.get('port').backend ?? 3001);
+  await app.listen(
+    configService.get('backend').port ??
+      configService.get('port')?.backend ??
+      3001,
+  );
 }
 
 bootstrap();

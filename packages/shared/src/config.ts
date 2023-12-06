@@ -1,7 +1,16 @@
 export interface ConfigType {
   mode: 'nginx' | 'docker' | 'debug';
   title: string;
-  port: {
+  frontend: {
+    port: number;
+    url: string;
+  };
+  backend: {
+    port: number;
+    url: string;
+  };
+  /* Deprecated in 3.1 */
+  port?: {
     frontend: number;
     backend: number;
   };
