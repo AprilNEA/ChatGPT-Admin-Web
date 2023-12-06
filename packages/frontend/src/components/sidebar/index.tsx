@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import useSWR from 'swr';
 
-import { SetUsernameAndPassword } from '@/app/auth/modal';
+import { SetPassword } from '@/app/auth/modal';
 import { ChatList } from '@/components/chat/chat-list';
 import { Loading } from '@/components/loading';
 import { Markdown } from '@/components/markdown';
@@ -21,9 +21,9 @@ import ChatGptIcon from '@/icons/chatgpt.svg';
 import CheckMarkIcon from '@/icons/checkmark.svg';
 import FileChatIcon from '@/icons/file-chat.svg';
 import LogoutIcon from '@/icons/logout.svg';
-import PluginIcon from '@/icons/plugin.svg';
 import MoreIcon from '@/icons/more.svg';
 import PersonIcon from '@/icons/person.svg';
+import PluginIcon from '@/icons/plugin.svg';
 import PremiumIcon from '@/icons/premium.svg';
 import SettingsIcon from '@/icons/settings.svg';
 import UserIcon from '@/icons/user.svg';
@@ -101,7 +101,7 @@ function bindPassword() {
       onClose={closeModal}
       className={styles['force-auth-modal']}
     >
-      <SetUsernameAndPassword onClose={closeModal} />
+      <SetPassword onClose={closeModal} />
     </Modal>,
   );
 }
@@ -170,10 +170,11 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
 
   return (
     <div
-      className={`${config.tightBorder && !isMobileScreen()
+      className={`${
+        config.tightBorder && !isMobileScreen()
           ? styles['tight-container']
           : styles.container
-        }`}
+      }`}
     >
       <div
         className={styles.sidebar + ` ${showSideBar && styles['sidebar-show']}`}
@@ -248,7 +249,6 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
                   </div>
                 </Link>
               </button>
-
             </>
           )}
         </div>
@@ -269,9 +269,9 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
                 morebtnExpanded
                   ? styles['sidebar-account-ext']
                   : clsx(
-                    styles['sidebar-account-ext'],
-                    styles['sidebar-account-ext-dis'],
-                  )
+                      styles['sidebar-account-ext'],
+                      styles['sidebar-account-ext-dis'],
+                    )
               }
             >
               <Link
