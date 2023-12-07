@@ -1,0 +1,131 @@
+import { Callout, Steps } from 'nextra/components'
+
+## 快速开始
+<Callout type="info" emoji="ℹ️">
+  **Prerequisite** You should have installed Node.js (version 18.10.0 or
+  higher).
+</Callout>
+
+<Steps>
+  ### 克隆项目并安装依赖
+
+  ```bash
+  git clone https://github.com/AprilNEA/ChatGPT-Admin-Web.git
+  cd ChatGPT-Admin-Web
+  pnpm install
+  ```
+  > pnpm 安装：`npm i -g pnpm`
+
+  ### 初始化数据库
+
+  设置`DATABASE_URL`环境变量，例如：
+  ```bash
+  export DATABASE_URL=postgres://postgres:your_password@localhost:5432/postgres
+  ```
+  > 可通过 Docker 快速启动一个 PostgreSQL 数据库
+  >
+  > `docker run -itd --name caw -e POSTGRES_PASSWORD=your_password -p 5432:5432 -d postgres`
+
+  在项目根目录运行：
+
+  ```bash
+  pnpm run db:init
+  ```
+
+  你会看见如下输出，则表明数据库已经初始化成功：
+
+  ```bash
+  > chatgpt-admin-web@3.1.0 db:init /path/to/ChatGPT-Admin-Web
+  > prisma db push && prisma db seed
+
+  Environment variables loaded from .env
+  Prisma schema loaded from prisma/schema.prisma
+  Datasource "db": PostgreSQL database "postgres", schema "public" at "localhost:5434"
+
+  🚀 Your database is now in sync with your Prisma schema. Done in 245ms
+
+  ✔ Generated Prisma Client (v5.3.1) to ./prisma/client in 297ms
+
+  Environment variables loaded from .env
+  Running seed command `ts-node prisma/seed.ts` ...
+  {
+    models: {count: 2},
+    categories: {count: 1},
+    products: {count: 1},
+    limits: {count: 1}
+  }
+
+  🌱 The seed command has been executed.
+
+  ```
+
+  设置`REDIS_URL`环境变量，例如：
+  ```bash
+  export REDIS_URL=redis://localhost:6379/0
+  ```
+  > 可通过 Docker 快速启动一个 Redis 数据库
+  >
+  > `docker run -p 6379:6379 -d redis/redis-stack:latest`
+
+
+  ### 启动项目
+  ```bash
+  pnpm run start
+  ```
+
+  项目默认运行在 `http://localhost:3000`。
+
+  首次运行项目会自动生成`config.json`, 并导入`DATABASE_URL`和`REDIS_URL`环境变量，后续更改可直接修改`config.json`。
+
+  <Callout type="warning" emoji="👷‍♀️">
+    Dashboard is coming soon.
+  </Callout>
+
+  ~~首次打开应自动转跳`http://localhost:3000/install`设置管理员账户和密码，设置成功后即可登录。~~
+
+</Steps>
+
+## 配置
+
+<Callout type="info" emoji="ℹ️">
+  邮件服务仅 Resend 通过测试。
+  短信服务仅 UniSMS 通过测试。
+  支付服务仅 Xunhu 通过测试。
+</Callout>
+
+```json
+{
+  ...// 自动生成部分
+
+  "openai": {
+    "baseUrl": "https://api.openai.com/v1",
+    "keys": [
+      "fff"
+    ]
+  },
+  "email": {
+    "use": "resend",
+    "domain": "example.com",
+    "resend": {
+      "apiKey": "fff"
+    }
+  },
+  "sms": {
+    "use": "uni",
+    "uni": {
+      "signature": "XX科技",
+      "apiKey": "ffffff"
+    }
+  },
+  "payment": {
+    "use": "xunhu",
+    "xunhu": {
+      "wapName": "XX科技",
+      "appId": "ffffff",
+      "appSecret": "ffffff",
+      "notifyUrl": "https://example.com",
+      "returnUrl": "https://example.com"
+    }
+  }
+}
+```

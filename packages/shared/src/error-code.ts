@@ -35,7 +35,9 @@ export enum ErrorCodeEnum {
   DatabaseError,
   RedisError,
   EmailError,
+  EmailNotSetup,
   SmsError,
+  SmsNotSetup,
   WechatError,
 
   UnknownError = 99999,

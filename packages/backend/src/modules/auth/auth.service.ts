@@ -14,7 +14,7 @@ import { SmsService } from '@/libs/sms/sms.service';
 import { ExtendedPrismaClient } from '@/processors/database/prisma.extension';
 
 import { IAccountStatus } from 'shared';
-import { ErrorCodeEnum } from 'shared/dist/error-code';
+import { ErrorCodeEnum } from 'shared';
 
 type ByPassword = {
   identity: string;
@@ -109,10 +109,17 @@ export class AuthService {
       await this.redis.setex(identity, newTtl, code);
 
       if (email) {
+        if (!this.emailService.status()) {
+          throw new BizException(ErrorCodeEnum.EmailNotSetup);
+        }
         await this.emailService.sendCode(identity, code);
       } else if (phone) {
+        if (!this.smsService.status()) {
+          throw new BizException(ErrorCodeEnum.SmsNotSetup);
+        }
         await this.smsService.sendCode(identity, code);
       }
+
       return {
         success: true,
         ttl: newTtl,

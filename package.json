@@ -16,6 +16,7 @@
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev --parallel",
+    "start": "turbo run start",
     "lint": "turbo run lint",
     "prettier": "prettier --write .",
     "db:init": "prisma db push && prisma db seed",
@@ -28,7 +29,7 @@
     "ts-node": "latest",
     "turbo": "latest",
     "typescript": "latest",
-    "prisma": "5.5.2"
+    "prisma": "5.6.0"
   },
   "prisma": {
     "schema": "prisma/schema.prisma",
@@ -39,10 +40,12 @@
   },
   "pnpm": {
     "overrides": {
-      "nestjs-prisma>@prisma/client": "workspace:@nest-http/prisma@*",
       "@liaoliaots/nestjs-redis>@nestjs/common": "^10.0.0",
       "@liaoliaots/nestjs-redis>@nestjs/core": "^10.0.0",
       "@liaoliaots/nestjs-redis>@nestjs/terminus": "^10.0.0"
+    },
+    "allowedDeprecatedVersions": {
+      "sourcemap-codec": "1.4.8"
     }
   },
   "packageManager": "pnpm@8.6.3"

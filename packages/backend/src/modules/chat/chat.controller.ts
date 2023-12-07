@@ -17,7 +17,7 @@ import { JoiValidationPipe } from '@/common/pipes/joi';
 import { JWTPayload } from '@/libs/jwt/jwt.service';
 
 import { NewMessageDto } from 'shared';
-import { ErrorCodeEnum } from 'shared/dist/error-code';
+import { ErrorCodeEnum } from 'shared';
 
 import { ChatService } from './chat.service';
 

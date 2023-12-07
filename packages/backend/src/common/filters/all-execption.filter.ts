@@ -7,7 +7,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 
-import { ErrorCodeEnum } from 'shared/dist/error-code';
+import { ErrorCodeEnum } from 'shared';
 
 @Catch()
 export class AllExceptionFilter implements ExceptionFilter {

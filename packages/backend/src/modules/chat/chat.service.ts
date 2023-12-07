@@ -15,7 +15,7 @@ import { ConfigService } from '@/common/config';
 import { BizException } from '@/common/exceptions/biz.exception';
 import { ExtendedPrismaClient } from '@/processors/database/prisma.extension';
 
-import { ErrorCodeEnum } from 'shared/dist/error-code';
+import { ErrorCodeEnum } from 'shared';
 
 @Injectable()
 export class ChatService {

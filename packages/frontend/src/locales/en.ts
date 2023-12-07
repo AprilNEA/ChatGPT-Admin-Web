@@ -38,6 +38,11 @@ const en: LocaleType = {
     PremiumUser: 'Premium User',
     NormalUser: 'Normal User',
   },
+  Plugin: {
+    Title: 'Plugin',
+    Explore: '探索插件',
+    User: '我的插件',
+  },
   Announcement: {
     Title: 'Announcement',
     NoEntry: 'No announcement yet',
@@ -146,7 +151,7 @@ const en: LocaleType = {
     DeleteChat: 'Confirm delete selected conversation?',
     NewBlankChat: 'Start Blank Chat',
     FileChat: 'Start File Chat',
-    Mask: 'Select Mask',
+    Plugin: 'Select Plugin',
   },
   Settings: {
     Title: 'Settings',

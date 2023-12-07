@@ -4,17 +4,7 @@ const CONFIG_FILE = path.join(__dirname, '../../config.json');
 
 const config = fs.existsSync(CONFIG_FILE)
   ? JSON.parse(fs.readFileSync('../../config.json', 'utf8'))
-  : {
-      mode: 'dev',
-      title: 'ChatGPT Admin Web',
-      port: {
-        frontend: 3000,
-        backend: 3001,
-      },
-      jwt: {
-        algorithm: 'HS256',
-      },
-    };
+  : {};
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -32,8 +22,8 @@ const nextConfig = {
     return [
       {
         source: '/api/:slug*',
-        destination: `http://localhost:${
-          config.port.backend ?? '3001'
+        destination: `${
+          config?.backend?.url ?? 'http://localhost:3001'
         }/api/:slug*`,
       },
     ];
