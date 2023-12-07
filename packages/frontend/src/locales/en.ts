@@ -40,6 +40,8 @@ const en: LocaleType = {
   },
   Plugin: {
     Title: 'Plugin',
+    Explore: '探索插件',
+    User: '我的插件',
   },
   Announcement: {
     Title: 'Announcement',
