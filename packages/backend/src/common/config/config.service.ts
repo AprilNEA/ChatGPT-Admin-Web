@@ -3,10 +3,7 @@ import { join } from 'path';
 
 import { Injectable } from '@nestjs/common';
 
-import { BizException } from '@/common/exceptions/biz.exception';
-
 import { ConfigType, ISettingSchema } from 'shared';
-import { ErrorCodeEnum } from 'shared/dist/error-code';
 
 const CONFIG_SCHEMA: ISettingSchema[] = [
   {
