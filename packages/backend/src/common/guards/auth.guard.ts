@@ -11,7 +11,7 @@ import { Role } from '@prisma/client';
 import { BizException } from '@/common/exceptions/biz.exception';
 import { JWTPayload, JwtService } from '@/libs/jwt/jwt.service';
 
-import { ErrorCodeEnum } from 'shared/dist/error-code';
+import { ErrorCodeEnum } from 'shared';
 
 export { Role } from '@prisma/client';
 export const ROLES_KEY = 'roles';

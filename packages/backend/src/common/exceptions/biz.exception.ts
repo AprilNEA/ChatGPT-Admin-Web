@@ -1,6 +1,6 @@
 import { HttpException } from '@nestjs/common';
 
-import { ErrorCodeEnum } from 'shared/dist/error-code';
+import { ErrorCodeEnum } from 'shared';
 
 export const ErrorCode = Object.freeze<
   Record<ErrorCodeEnum, [string, string, number]>

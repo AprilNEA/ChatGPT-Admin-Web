@@ -2,7 +2,7 @@ import { ArgumentMetadata, Injectable, PipeTransform } from '@nestjs/common';
 
 import { BizException } from '@/common/exceptions/biz.exception';
 
-import { ErrorCodeEnum } from 'shared/dist/error-code';
+import { ErrorCodeEnum } from 'shared';
 
 @Injectable()
 export class JoiValidationPipe implements PipeTransform {

@@ -14,7 +14,7 @@ import { SmsService } from '@/libs/sms/sms.service';
 import { ExtendedPrismaClient } from '@/processors/database/prisma.extension';
 
 import { IAccountStatus } from 'shared';
-import { ErrorCodeEnum } from 'shared/dist/error-code';
+import { ErrorCodeEnum } from 'shared';
 
 type ByPassword = {
   identity: string;

@@ -7,3 +7,4 @@ export * from './types/database';
 export * from './user';
 export * from './install';
 export { Role } from '@prisma/client';
+export { ErrorCodeEnum } from './error-code';
