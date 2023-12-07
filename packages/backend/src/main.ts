@@ -12,7 +12,7 @@ import { PrismaExceptionFilter } from '@/common/filters/prisma-client-execption'
 
 import { AppModule } from './app.module';
 
-const CONFIG_PATH = join(__dirname, '../../config.json');
+const CONFIG_PATH = join(__dirname, '../../../config.json');
 
 const DEFAULT_CONFIG = {
   mode: 'nginx',
