@@ -6,6 +6,15 @@
         "^db:generate"
       ]
     },
+    "backend#build": {
+      "dependsOn": [
+        "db:generate",
+        "shared#build"
+      ],
+      "outputs": [
+        "packages/backend/dist/**"
+      ]
+    },
     "build": {
       "dependsOn": [
         "db:generate",
@@ -25,6 +34,7 @@
     },
     "start": {
       "dependsOn": [
+        "build",
         "^start"
       ]
     },
