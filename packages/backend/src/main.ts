@@ -36,7 +36,7 @@ function checkConfig() {
   if (!fs.existsSync(CONFIG_PATH)) {
     if (!process.env.DATABASE_URL || !process.env.REDIS_URL) {
       console.error(
-        '请设置环境变量 DATABASE_URL 和 REDIS_URL\n' +
+        '请设置环境变量 DATABASE_URL 和 REDIS_URL' +
           'Please set the environment variables DATABASE_URL and REDIS_URL.',
       );
       process.exit();
