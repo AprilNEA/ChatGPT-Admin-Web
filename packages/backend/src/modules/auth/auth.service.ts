@@ -109,10 +109,17 @@ export class AuthService {
       await this.redis.setex(identity, newTtl, code);
 
       if (email) {
+        if (!this.emailService.status()) {
+          throw new BizException(ErrorCodeEnum.EmailNotSetup);
+        }
         await this.emailService.sendCode(identity, code);
       } else if (phone) {
+        if (!this.smsService.status()) {
+          throw new BizException(ErrorCodeEnum.SmsNotSetup);
+        }
         await this.smsService.sendCode(identity, code);
       }
+
       return {
         success: true,
         ttl: newTtl,

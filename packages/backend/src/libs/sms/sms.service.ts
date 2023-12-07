@@ -42,6 +42,10 @@ export class SmsService {
     return result.code === '0';
   }
 
+  status() {
+    return !!this.smsConfig?.use;
+  }
+
   async sendCode(to: string, code: number | string) {
     switch (this.smsConfig.use?.toLowerCase()) {
       case 'uni':

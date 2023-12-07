@@ -90,6 +90,10 @@ export class EmailService {
     return response.ok;
   }
 
+  status() {
+    return !!this.emailConfig?.use;
+  }
+
   async sendCode(to: string, code: number | string) {
     const args = {
       from: this.emailConfig.sender || `no-reply@${this.emailConfig.domain}`,

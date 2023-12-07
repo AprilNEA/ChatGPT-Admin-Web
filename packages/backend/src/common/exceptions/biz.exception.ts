@@ -84,7 +84,9 @@ export const ErrorCode = Object.freeze<
   [ErrorCodeEnum.DatabaseError]: ['Database error', '数据库错误', 500],
   [ErrorCodeEnum.RedisError]: ['Redis error', 'Redis错误', 500],
   [ErrorCodeEnum.EmailError]: ['Email error', '邮件错误', 500],
+  [ErrorCodeEnum.EmailNotSetup]: ['Email not setup', '邮件未设置', 500],
   [ErrorCodeEnum.SmsError]: ['Sms error', '短信错误', 500],
+  [ErrorCodeEnum.SmsNotSetup]: ['Sms not setup', '短信未设置', 500],
   [ErrorCodeEnum.WechatError]: ['Wechat error', '微信错误', 500],
   [ErrorCodeEnum.UnknownError]: ['Unknown error', '未知错误', 500],
 });
