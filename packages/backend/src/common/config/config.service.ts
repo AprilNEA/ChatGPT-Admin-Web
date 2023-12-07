@@ -8,18 +8,6 @@ import { BizException } from '@/common/exceptions/biz.exception';
 import { ConfigType, ISettingSchema } from 'shared';
 import { ErrorCodeEnum } from 'shared/dist/error-code';
 
-const DEFAULT_CONFIG = {
-  mode: 'nginx',
-  title: 'ChatGPT Admin Web',
-  port: {
-    frontend: 3000,
-    backend: 3001,
-  },
-  jwt: {
-    algorithm: 'HS256',
-  },
-};
-
 const CONFIG_SCHEMA: ISettingSchema[] = [
   {
     key: 'mode',
@@ -82,7 +70,6 @@ const CONFIG_SCHEMA: ISettingSchema[] = [
 @Injectable()
 export class ConfigService {
   private config: ConfigType;
-  private readonly defaultConfig = DEFAULT_CONFIG;
   private readonly configFilePath = join(__dirname, '../../../config.json');
 
   constructor() {
@@ -90,7 +77,11 @@ export class ConfigService {
   }
 
   private loadConfig(): void {
-    this.config = JSON.parse(fs.readFileSync(this.configFilePath, 'utf8'));
+    if (fs.existsSync(this.configFilePath)) {
+      this.config = JSON.parse(fs.readFileSync(this.configFilePath, 'utf8'));
+    } else {
+      console.error('配置文件缺失。\nConfiguration file is missing.');
+    }
   }
 
   /* 获取配置文件结构 */
