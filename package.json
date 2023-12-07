@@ -16,6 +16,7 @@
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev --parallel",
+    "start": "turbo run start",
     "lint": "turbo run lint",
     "prettier": "prettier --write .",
     "db:init": "prisma db push && prisma db seed",
