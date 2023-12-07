@@ -75,17 +75,57 @@ import { Callout, Steps } from 'nextra/components'
 
   项目默认运行在 `http://localhost:3000`。
 
+  首次运行项目会自动生成`config.json`, 并导入`DATABASE_URL`和`REDIS_URL`环境变量，后续更改可直接修改`config.json`。
+
   <Callout type="warning" emoji="👷‍♀️">
     Dashboard is coming soon.
   </Callout>
+
   ~~首次打开应自动转跳`http://localhost:3000/install`设置管理员账户和密码，设置成功后即可登录。~~
 
 </Steps>
 
+## 配置
 
+<Callout type="info" emoji="ℹ️">
+  邮件服务仅 Resend 通过测试。
+  短信服务仅 UniSMS 通过测试。
+  支付服务仅 Xunhu 通过测试。
+</Callout>
 
+```json
+{
+  ...// 自动生成部分
 
-
-
-
-
+  "openai": {
+    "baseUrl": "https://api.openai.com/v1",
+    "keys": [
+      "fff"
+    ]
+  },
+  "email": {
+    "use": "resend",
+    "domain": "example.com",
+    "resend": {
+      "apiKey": "fff"
+    }
+  },
+  "sms": {
+    "use": "uni",
+    "uni": {
+      "signature": "XX科技",
+      "apiKey": "ffffff"
+    }
+  },
+  "payment": {
+    "use": "xunhu",
+    "xunhu": {
+      "wapName": "XX科技",
+      "appId": "ffffff",
+      "appSecret": "ffffff",
+      "notifyUrl": "https://example.com",
+      "returnUrl": "https://example.com"
+    }
+  }
+}
+```
