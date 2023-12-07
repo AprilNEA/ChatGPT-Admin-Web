@@ -40,7 +40,7 @@ English</a></h4>
 
 ## 开始
 
-配置及安装请查看[文档](https://caw.sku.moe)
+配置及安装请查看[文档](https://manual.sku.moe/project/chatgpt-admin-web)
 
 ## 版本
 

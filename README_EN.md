@@ -41,7 +41,7 @@
 
 ## Start
 
-For configuration and installation, see [documentation](https://caw.sku.moe)
+For configuration and installation, see [documentation](https://manual.sku.moe/project/chatgpt-admin-web)
 
 ## Versions
 
