@@ -7,6 +7,12 @@
     "start": "next start",
     "lint": "next lint"
   },
+  "nextBundleAnalysis": {
+    "budget": null,
+    "budgetPercentIncreaseRed": 20,
+    "minimumChangeThreshold": 0,
+    "showDetails": true
+  },
   "dependencies": {
     "@radix-ui/colors": "^3.0.0",
     "@radix-ui/react-icons": "^1.3.0",
