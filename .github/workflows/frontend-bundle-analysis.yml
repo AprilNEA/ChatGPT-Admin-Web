@@ -30,7 +30,7 @@ jobs:
           cache: 'pnpm'
 
       - name: Install Dependencies
-        run: pnpm i
+        run: pnpm install
 
       - name: Restore Next.js Build
         uses: actions/cache@v3
@@ -46,7 +46,7 @@ jobs:
 
       - name: Build Next.js App
         # change this if your site requires a custom build command
-        run: cd packages/frontend && ./node_modules/.bin/next build
+        run: ./node_modules/.bin/turbo run build --filter frontend
 
       # Here's the first place where next-bundle-analysis' own script is used
       # This step pulls the raw bundle stats for the current bundle
