@@ -11,6 +11,7 @@
       ]
     },
     "frontend#build": {
+      "inputs": ["config.json"],
       "dependsOn": [
         "shared#build"
       ],
@@ -39,10 +40,8 @@
         "!.next/cache/**"
       ]
     },
-    "test": {
-      "dependsOn": [
-        "^test"
-      ]
+    "//#test": {
+      "dependsOn": []
     },
     "start": {
       "dependsOn": [
