@@ -1,0 +1,53 @@
+{
+  "compilerOptions": {
+    "module": "CommonJS",
+    "declaration": true,
+    "strictNullChecks": true,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "target": "es2021",
+    "sourceMap": true,
+    "outDir": "./dist",
+    "baseUrl": ".",
+    "noImplicitAny": false,
+    "incremental": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "paths": {
+      "frontend": [
+        "./packages/frontend/src"
+      ],
+      "frontend/*": [
+        "./packages/frontend/src/*"
+      ],
+      "backend": [
+        "./packages/backend/src"
+      ],
+      "backend/*": [
+        "./packages/backend/src/*"
+      ],
+      "shared": [
+        "./packages/shared/src"
+      ],
+      "shared/*": [
+        "./packages/shared/src/*"
+      ],
+      "@test": [
+        "."
+      ],
+      "@test/*": [
+        "./*"
+      ],
+      "@prisma/client": [
+        "./prisma/client"
+      ]
+    }
+  },
+  "exclude": [
+    "dist",
+    "tmp"
+  ]
+}

@@ -1,9 +1,6 @@
 import { describe, expect, test } from 'vitest';
 
-import { AuthDTO } from '../../src/dto';
-import { toBeSafe } from '../schema';
-
-expect.extend({ toBeSafe });
+import { AuthDTO } from 'shared';
 
 describe('[DTO] Auth', () => {
   test('normal email is safe for identity', () => {

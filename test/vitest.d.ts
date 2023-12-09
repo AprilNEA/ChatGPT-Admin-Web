@@ -1,7 +1,5 @@
-import type { Assertion, AsymmetricMatchersContaining } from 'vitest';
-
 interface CustomMatchers<R = unknown> {
-  toBeSafe(): R;
+  toBeFoo(): R;
 }
 
 declare module 'vitest' {

@@ -29,11 +29,10 @@
   },
   "include": [
     "src/**/*",
-    "test/**/*",
-    "vitest.d.ts",
-    "node_modules/@prisma/client/*.d.ts"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "dist",
+    "test"
   ]
 }
