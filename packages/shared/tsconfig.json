@@ -28,7 +28,8 @@
     }
   },
   "include": [
-    "src/**/*"
+    "src/**/*",
+    "@prisma/client/*.d.ts"
   ],
   "exclude": [
     "node_modules"

@@ -26,8 +26,8 @@ export class UserService {
         password: true,
       },
     });
-    const isPasswordSet = !!user.password;
-    delete user.password;
+    const isPasswordSet = !!user.newPassword;
+    delete user.newPassword;
     const currentTime = new Date();
     const activatedOrders = await this.prisma.client.order.findMany({
       where: {

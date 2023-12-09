@@ -69,7 +69,7 @@ export class AuthService {
     let status: IAccountStatus = 'ok';
     if (!user.email && !user.phone) {
       status = 'bind';
-    } else if (!user.password) {
+    } else if (!user.newPassword) {
       status = 'password';
     }
     return {
@@ -215,14 +215,35 @@ export class AuthService {
     }
   }
 
-  /* 修改密码 */
-  async changePassword(userId: number, password: string) {
+  /* Utils to change user password
+   * old password will be checked when old password is passed
+   */
+  async changePassword({
+    userId,
+    newPassword,
+    oldPassword,
+  }: {
+    userId: number;
+    newPassword: string;
+    oldPassword?: string;
+  }) {
+    if (oldPassword) {
+      const user = await this.prisma.client.user.findUniqueOrThrow({
+        where: {
+          id: userId,
+        },
+      });
+      const isPasswordCorrect = await compare(oldPassword, user.password);
+      if (!isPasswordCorrect) {
+        throw new BizException(ErrorCodeEnum.PasswordError);
+      }
+    }
     await this.prisma.client.user.update({
       where: {
         id: userId,
       },
       data: {
-        password: hashSync(password, SALT_ROUNDS),
+        password: hashSync(newPassword, SALT_ROUNDS),
       },
     });
   }
@@ -245,7 +266,7 @@ export class AuthService {
     } else {
       user = existUser[0];
     }
-    await this.changePassword(user.id, password);
+    await this.changePassword({ userId: user.id, newPassword: password });
 
     return this.#signWithCheck(user);
   }

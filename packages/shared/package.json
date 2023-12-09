@@ -1,5 +1,6 @@
 {
   "name": "shared",
+  "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -8,5 +9,9 @@
   },
   "dependencies": {
     "@prisma/client": "workspace:@nest-http/prisma@*"
+  },
+  "devDependencies": {
+    "typescript": "*",
+    "zod": "*"
   }
 }
