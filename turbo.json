@@ -10,6 +10,14 @@
         "^db:generate"
       ]
     },
+    "frontend#build": {
+      "dependsOn": [
+        "shared#build"
+      ],
+      "outputs": [
+        "packages/backend/.next/**"
+      ]
+    },
     "backend#build": {
       "dependsOn": [
         "db:generate",

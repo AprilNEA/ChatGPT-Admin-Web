@@ -46,7 +46,7 @@ jobs:
 
       - name: Build Next.js App
         # change this if your site requires a custom build command
-        run: ./node_modules/.bin/turbo run build --filter frontend
+        run: pnpm run build:frontend
 
       # Here's the first place where next-bundle-analysis' own script is used
       # This step pulls the raw bundle stats for the current bundle
