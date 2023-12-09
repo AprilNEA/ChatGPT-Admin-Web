@@ -51,6 +51,19 @@ For configuration and installation, see [documentation](https://manual.sku.moe/p
 | [V2](https://github.com/AprilNEA/ChatGPT-Admin-Web/tree/v2)   | :x: Deprecated                       | Flawed design                   |
 | [V1](https://github.com/AprilNEA/ChatGPT-Admin-Web/tree/main) | :o: No longer updated                | Redis database, less scalable   |
 
+[Update Log](https://manual.sku.moe/project/chatgpt-admin-web/update-log)
+
+
+## 技术栈
+
+| Part     | Tech               |
+|:---------|:-------------------|
+| Frontend | Next.js            |
+| Backend  | Nest.js            |
+| Database | PostgreSQL & Redis |
+
+You can go to [Developer Manual](https://manual.sku.moe/project/chatgpt-admin-web/development) for more technical details.
+
 ## Project Status
 
 ![Alt](https://repobeats.axiom.co/api/embed/67fc3464887e0956a6225b4c5c6579c2699d8363.svg "Repobeats analytics image")
