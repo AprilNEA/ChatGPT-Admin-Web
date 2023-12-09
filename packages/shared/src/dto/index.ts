@@ -62,3 +62,10 @@ export namespace AuthDTO {
 }
 
 export namespace ChatDTO {}
+
+export namespace OrderDTO {
+  export const NewOrderSchema = z.object({
+    productId: z.number(),
+  });
+  export type NewOrderDto = z.infer<typeof NewOrderSchema>;
+}

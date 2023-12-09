@@ -15,10 +15,11 @@ import { Role } from '@prisma/client';
 
 import { Payload, Roles } from '@/common/guards/auth.guard';
 import { Public } from '@/common/guards/auth.guard';
+import { ZodValidationPipe } from '@/common/pipes/zod';
 import { JWTPayload } from '@/libs/jwt/jwt.service';
 import { PaymentService } from '@/libs/payment/payment.service';
 
-import { newOrderDto } from 'shared';
+import { OrderDTO } from 'shared';
 
 import { OrderService } from './order.service';
 
@@ -31,8 +32,12 @@ export class OrderController {
 
   /* 新建订单 */
   @Post('new')
-  async newOrder(@Payload('id') userId: number, @Body() data: newOrderDto) {
-    const order = await this.orderService.createOrder(userId, data.productId);
+  async newOrder(
+    @Payload('id') userId: number,
+    @Body(new ZodValidationPipe(OrderDTO.NewOrderSchema))
+    body: OrderDTO.NewOrderDto,
+  ) {
+    const order = await this.orderService.createOrder(userId, body.productId);
     // TODO 防止短时间内重复产生订单
     const result = await this.paymentService.xhStartPay({
       orderId: order.id,

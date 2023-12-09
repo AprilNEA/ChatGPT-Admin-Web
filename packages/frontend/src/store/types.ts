@@ -1,6 +1,11 @@
 import { SubmitKey, Theme } from '@/store/shared';
 
-import { ChatMessage, ChatMessageRole, ChatSession } from 'shared';
+import {
+  BaseResponse,
+  ChatMessage,
+  ChatMessageRole,
+  ChatSession,
+} from 'shared';
 
 export type LocalConfig = {
   theme: Theme;
@@ -36,6 +41,10 @@ export interface SharedSlice {
   // utils
   clearData: () => void;
   fetcher: (url: string, options?: RequestInit) => Promise<Response>;
+  jsonFetcher: <T = any>(
+    url: string,
+    options?: RequestInit,
+  ) => Promise<BaseResponse<T>>;
 }
 
 export interface ChatSlice {

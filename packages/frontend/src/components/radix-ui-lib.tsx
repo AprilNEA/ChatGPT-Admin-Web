@@ -17,12 +17,6 @@ import {
   TypeSettingSchema,
 } from 'shared';
 
-export function OptionListRoot(props: {
-  children: JSX.Element | JSX.Element[];
-}) {
-  return <div className={styles['option-list-root']}>{props.children}</div>;
-}
-
 /* 开关选项 */
 function SwitchItem(props: {
   schema: ISettingSchema;

@@ -1,4 +1,7 @@
+'use client';
+
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 import { Button } from '@radix-ui/themes';
 
@@ -40,13 +43,21 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const pathname = usePathname();
   return (
     <AuthProvider admin={true}>
       <section>
         <header>
           {navs.map((nav) => (
             <Link href={`/dashboard${nav.path}`} key={nav.path}>
-              <Button mx="2" size="4" variant="surface" radius="large">
+              <Button
+                mx="2"
+                size="2"
+                variant={
+                  pathname === `/dashboard${nav.path}` ? 'surface' : 'soft'
+                }
+                radius="large"
+              >
                 {nav.name}
               </Button>
             </Link>
