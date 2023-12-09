@@ -1,11 +1,13 @@
 import { Body, Controller, Get, Post, Put, Query } from '@nestjs/common';
 import { Role } from '@prisma/client';
 
+import { ConfigService } from '@/common/config';
+import { BizException } from '@/common/exceptions/biz.exception';
 import { Payload, Public } from '@/common/guards/auth.guard';
 import { ZodValidationPipe } from '@/common/pipes/zod';
 import { WechatService } from '@/modules/auth/wechat.service';
 
-import { AuthDTO } from 'shared';
+import { AuthDTO, ErrorCodeEnum } from 'shared';
 
 import { AuthService } from './auth.service';
 
@@ -14,6 +16,7 @@ export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private wechatService: WechatService,
+    private configService: ConfigService,
   ) {}
 
   @Public()
@@ -28,17 +31,35 @@ export class AuthController {
     };
   }
 
-  /* 方法一：密码登录 */
+  /* 方法一：密码登录
+   * WARN: 当邮箱和短信通知均为开启时，用户可直接通过该接口注册
+   * WARN: When both email and SMS notification are enabled,
+   *        users can register directly through this interface.
+   */
   @Public()
   @Post('password')
   async password(
     @Body(new ZodValidationPipe(AuthDTO.PasswordLoginSchema))
     body: AuthDTO.PasswordLoginDto,
   ) {
-    return {
-      success: true,
-      ...(await this.authService.loginPassword(body)),
-    };
+    try {
+      return {
+        success: true,
+        ...(await this.authService.loginPassword(body)),
+      };
+    } catch (e) {
+      if (
+        e instanceof BizException &&
+        e.code === ErrorCodeEnum.UserNotExist &&
+        this.configService.checkNotifierEnable(false) === false // It won't hold as long as one is enabled
+      ) {
+        return {
+          success: true,
+          ...(await this.authService.registerPassword(body)),
+        };
+      }
+      throw e;
+    }
   }
 
   /* 方法二：验证码登录/注册 */
@@ -61,7 +82,7 @@ export class AuthController {
   ) {
     return {
       success: true,
-      ...(await this.authService.WithValidateCode(data.identity, data.code)),
+      ...(await this.authService.withValidateCode(data.identity, data.code)),
     };
   }
 

@@ -88,6 +88,38 @@ export class AuthService {
     }
   }
 
+  async #register({
+    identity,
+    password,
+  }: {
+    identity: string;
+    password?: string;
+  }) {
+    const { email, phone } = getPhoneOrEmail(identity);
+
+    const existUser = await this.prisma.client.user.findMany({
+      where: {
+        OR: [{ email }, { phone }],
+      },
+    });
+
+    let user;
+    if (existUser.length != 1) {
+      // 注册用户
+      user = await this.prisma.client.user.create({
+        data: {
+          email: email,
+          phone: phone,
+          role: Role.User,
+          password: password ? hashSync(password, SALT_ROUNDS) : undefined,
+        },
+      });
+    } else {
+      user = existUser[0];
+    }
+    return this.#signWithCheck(user);
+  }
+
   /* 添加验证码 */
   async newValidateCode(identity: string) {
     const { email, phone } = getPhoneOrEmail(identity);
@@ -127,32 +159,18 @@ export class AuthService {
     }
   }
 
+  /* Only used when email and sms service both disabled */
+  registerPassword(data: ByPassword) {
+    return this.#register(data);
+  }
+
   /* 通过验证码登录/注册 */
-  async WithValidateCode(identity: string, code: string) {
+  async withValidateCode(identity: string, code: string) {
     const { email, phone } = getPhoneOrEmail(identity);
 
     await this.#verifyCode(identity, code);
 
-    const existUser = await this.prisma.client.user.findMany({
-      where: {
-        OR: [{ email }, { phone }],
-      },
-    });
-
-    let user;
-    if (existUser.length != 1) {
-      // 注册用户
-      user = await this.prisma.client.user.create({
-        data: {
-          email: email,
-          phone: phone,
-          role: Role.User,
-        },
-      });
-    } else {
-      user = existUser[0];
-    }
-    return this.#signWithCheck(user);
+    return this.#register({ identity });
   }
 
   /* 通过密码登录 */
@@ -165,11 +183,11 @@ export class AuthService {
       },
     });
     if (user.length != 1) {
-      throw Error('User does not exist');
+      throw new BizException(ErrorCodeEnum.UserNotExist);
     }
     const isPasswordCorrect = await compare(password, user[0].password);
     if (!isPasswordCorrect) {
-      throw Error('Password is incorrect');
+      throw new BizException(ErrorCodeEnum.PasswordError);
     }
     return this.#signWithCheck(user[0]);
   }

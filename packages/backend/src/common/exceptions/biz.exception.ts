@@ -92,11 +92,15 @@ export const ErrorCode = Object.freeze<
 });
 
 export class BizException extends HttpException {
+  code: ErrorCodeEnum;
+
   constructor(code: ErrorCodeEnum) {
     const [message, chMessage, statusCode] = ErrorCode[code];
     super(
       HttpException.createBody({ success: false, code, message, chMessage }),
       statusCode,
     );
+
+    this.code = code;
   }
 }
