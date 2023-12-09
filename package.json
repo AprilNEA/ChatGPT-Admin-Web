@@ -18,6 +18,7 @@
     "dev": "turbo run dev --parallel",
     "start": "turbo run start",
     "lint": "turbo run lint",
+    "test": "vitest",
     "prettier": "prettier --write .",
     "db:init": "prisma db push && prisma db seed",
     "db:generate": "prisma generate"
@@ -30,6 +31,7 @@
     "turbo": "latest",
     "typescript": "latest",
     "prisma": "5.6.0",
+    "vitest": "^1.0.2",
     "zod": "latest"
   },
   "prisma": {

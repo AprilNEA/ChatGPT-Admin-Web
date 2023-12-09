@@ -5,13 +5,15 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "dev": "tsc --watch",
-    "build": "tsc --build"
+    "build": "tsc --build",
+    "test": "vitest"
   },
   "dependencies": {
     "@prisma/client": "workspace:@nest-http/prisma@*"
   },
   "devDependencies": {
     "typescript": "*",
+    "vitest": "*",
     "zod": "*"
   }
 }
