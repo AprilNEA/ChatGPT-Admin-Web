@@ -15,7 +15,7 @@
     <a href="https://github.com/AprilNEA/ChatGPT-Admin-Web/issues?q=is%3Aissue+is%3Aclosed" target="_blank">
     <img alt="GitHub closed issues" src="https://img.shields.io/github/issues-closed/AprilNEA/ChatGPT-Admin-Web.svg?style=flat-square"></a>
 <br/>    
-<img src="https://hits-app.vercel.app/hits?url=https%3A%2F%2Fgithub.com%2FAprilNEA%2FChatGPT-Admin-Web" />
+<img src="https://hits.siyue.best/v1/hits?url=https://github.com/AprilNEA/ChatGPT-Admin-Web" />
 
 </div>
 <div align="left">CAW(ChatGPT-Admin-Web) is a self-hosted web application that provides out-of-the-box user management including a back-end interface as well as configurable payment plans and related payment interfaces.</div>

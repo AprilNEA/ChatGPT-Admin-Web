@@ -15,7 +15,7 @@ English</a></h4>
     <a href="https://github.com/AprilNEA/ChatGPT-Admin-Web/issues?q=is%3Aissue+is%3Aclosed" target="_blank">
     <img alt="GitHub closed issues" src="https://img.shields.io/github/issues-closed/AprilNEA/ChatGPT-Admin-Web.svg?style=flat-square"></a>
 <br/>    
-<img src="https://hits-app.vercel.app/hits?url=https%3A%2F%2Fgithub.com%2FAprilNEA%2FChatGPT-Admin-Web" />
+<img src="https://hits.siyue.best/v1/hits?url=https://github.com/AprilNEA/ChatGPT-Admin-Web" />
 
 </div>
 <div align="left">CAW 是一个自托管网络应用程序，提供开箱即用的用户管理，包括后台界面以及可配置的支付计划和相关支付界面。</div>
