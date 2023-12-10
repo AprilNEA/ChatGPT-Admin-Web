@@ -17,11 +17,6 @@
     "incremental": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
-    "types": [
-      "node",
-      "vitest/globals",
-      "./vitest.d.ts"
-    ],
     "baseUrl": ".",
     "paths": {
       "frontend": [
@@ -54,8 +49,7 @@
     }
   },
   "include": [
-    "./**/*.ts",
-    "./vitest.d.ts"
+    "./**/*.ts"
   ],
   "exclude": [
     "node_modules"
