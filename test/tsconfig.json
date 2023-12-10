@@ -1,0 +1,63 @@
+{
+  "compilerOptions": {
+    "module": "CommonJS",
+    "declaration": true,
+    "strict": true,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "target": "es2022",
+    "sourceMap": true,
+    "outDir": "./dist",
+    "noEmit": true,
+    "allowJs": true,
+    "noImplicitAny": false,
+    "incremental": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "types": [
+      "node",
+      "vitest/globals",
+      "./vitest.d.ts"
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "frontend": [
+        "../packages/frontend/src"
+      ],
+      "frontend/*": [
+        "../packages/frontend/src/*"
+      ],
+      "backend": [
+        "../packages/backend/src"
+      ],
+      "backend/*": [
+        "../packages/backend/src/*"
+      ],
+      "shared": [
+        "../packages/shared/src"
+      ],
+      "shared/*": [
+        "../packages/shared/src/*"
+      ],
+      "@test": [
+        "."
+      ],
+      "@test/*": [
+        "./*"
+      ],
+      "@prisma/client": [
+        "../prisma/client"
+      ]
+    }
+  },
+  "include": [
+    "./**/*.ts",
+    "./vitest.d.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

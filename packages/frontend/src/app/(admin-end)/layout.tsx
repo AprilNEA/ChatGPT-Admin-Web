@@ -4,7 +4,7 @@ import '@radix-ui/themes/styles.css';
 import '@/styles/dashboard.css';
 
 export const metadata = {
-  title: 'CAW Dashboard',
+  title: 'Dashboard ｜ ChatGPT Admin ',
 };
 
 export default function AdminEndLayout({

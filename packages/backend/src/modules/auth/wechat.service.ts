@@ -7,7 +7,7 @@ import { ConfigService } from '@/common/config';
 import { JwtService } from '@/libs/jwt/jwt.service';
 import { ExtendedPrismaClient } from '@/processors/database/prisma.extension';
 
-import { ConfigType } from 'shared';
+import { ConfigType } from 'shared/';
 
 @Injectable()
 export class WechatService {

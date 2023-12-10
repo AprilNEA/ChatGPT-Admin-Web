@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import React, { FormEvent, useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Iframe from 'react-iframe';
 
 import { IconButton } from '@/components/button';
@@ -19,8 +19,6 @@ import Locales from '@/locales';
 import { useStore } from '@/store';
 import '@/styles/globals.scss';
 import '@/styles/prism.scss';
-
-import { validateCodeDto } from 'shared';
 
 import styles from './auth.module.scss';
 

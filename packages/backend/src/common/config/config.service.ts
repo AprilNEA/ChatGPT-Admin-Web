@@ -101,4 +101,26 @@ export class ConfigService {
     fs.writeFileSync(this.configFilePath, jsonData, 'utf8');
     this.loadConfig();
   }
+
+  checkEmailEnable() {
+    return (
+      this.get('email') &&
+      this.get('email').use &&
+      this.get('email').use !== 'disable'
+    );
+  }
+
+  checkSMSEnable() {
+    return (
+      this.get('sms') &&
+      this.get('sms').use &&
+      this.get('sms').use !== 'disable'
+    );
+  }
+
+  checkNotifierEnable(all = false) {
+    return all
+      ? this.checkEmailEnable() && this.checkSMSEnable()
+      : this.checkEmailEnable() || this.checkSMSEnable();
+  }
 }

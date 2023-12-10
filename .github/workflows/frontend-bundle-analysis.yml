@@ -12,7 +12,12 @@ defaults:
 
 jobs:
   analyze:
+    name: Frontend Analyze Bundle
     runs-on: ubuntu-latest
+    env:
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+
     steps:
       - name: Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.12.0
@@ -20,6 +25,14 @@ jobs:
           access_token: ${{ github.token }}
 
       - uses: actions/checkout@v4
+
+      - name: Cache turbo build setup
+        uses: actions/cache@v3
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-
 
       - uses: pnpm/action-setup@v2.4.0
 
@@ -30,7 +43,7 @@ jobs:
           cache: 'pnpm'
 
       - name: Install Dependencies
-        run: pnpm i
+        run: pnpm install
 
       - name: Restore Next.js Build
         uses: actions/cache@v3
@@ -46,7 +59,7 @@ jobs:
 
       - name: Build Next.js App
         # change this if your site requires a custom build command
-        run: cd packages/frontend && ./node_modules/.bin/next build
+        run: pnpm run build:frontend
 
       # Here's the first place where next-bundle-analysis' own script is used
       # This step pulls the raw bundle stats for the current bundle

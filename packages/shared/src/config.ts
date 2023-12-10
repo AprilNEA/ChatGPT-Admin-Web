@@ -31,7 +31,7 @@ export interface ConfigType {
     keys: string;
   };
   sms: {
-    use?: 'aliyun' | 'tencent' | 'uni';
+    use?: 'disable' | 'aliyun' | 'tencent' | 'uni';
     uni?: {
       signature: string;
       templateId: string;
@@ -40,7 +40,7 @@ export interface ConfigType {
     };
   };
   email: {
-    use?: 'smtp' | 'resend' | 'mailgun' | 'elastic';
+    use?: 'disable' | 'smtp' | 'resend' | 'mailgun' | 'elastic';
     domain: string;
     sender?: string;
     smtp: {};

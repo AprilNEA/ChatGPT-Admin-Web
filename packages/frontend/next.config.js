@@ -11,6 +11,7 @@ const nextConfig = {
   env: {
     NEXT_PUBLIC_TITLE: config?.title ?? 'ChatGPT Admin Web',
   },
+  transpilePackages: ['shared'],
   webpack(config) {
     config.module.rules.push({
       test: /\.svg$/,

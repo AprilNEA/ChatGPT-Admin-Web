@@ -65,6 +65,11 @@ export const createSharedStore: StateCreator<StoreType, [], [], SharedSlice> = (
       return res;
     });
   },
+  jsonFetcher(url, init) {
+    return get()
+      .fetcher(url, init)
+      .then((res) => res.json());
+  },
   // Config
   config: {
     ...DEFAULT_CONFIG,

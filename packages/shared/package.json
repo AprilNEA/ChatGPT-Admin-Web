@@ -1,12 +1,19 @@
 {
   "name": "shared",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "scripts": {
-    "dev": "tsc --watch",
-    "build": "tsc --build"
+    "dev": "tsc --build tsconfig.json --watch",
+    "build": "tsc --build tsconfig.build.json",
+    "test": "vitest run",
+    "test:dev": "vitest watch"
   },
   "dependencies": {
     "@prisma/client": "workspace:@nest-http/prisma@*"
+  },
+  "devDependencies": {
+    "typescript": "*",
+    "vitest": "*",
+    "zod": "*"
   }
 }

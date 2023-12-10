@@ -10,6 +10,15 @@
         "^db:generate"
       ]
     },
+    "frontend#build": {
+      "inputs": ["config.json"],
+      "dependsOn": [
+        "shared#build"
+      ],
+      "outputs": [
+        "packages/backend/.next/**"
+      ]
+    },
     "backend#build": {
       "dependsOn": [
         "db:generate",
@@ -31,10 +40,8 @@
         "!.next/cache/**"
       ]
     },
-    "test": {
-      "dependsOn": [
-        "^test"
-      ]
+    "//#test": {
+      "dependsOn": []
     },
     "start": {
       "dependsOn": [
