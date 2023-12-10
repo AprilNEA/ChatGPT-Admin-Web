@@ -280,7 +280,7 @@ ${message}
 
     const histories: OpenAI.ChatCompletionMessage[] = messages.map(
       ({ role, content }) => ({
-        role: role.toLowerCase() as OpenAI.ChatCompletionRole,
+        role: role.toLowerCase() as unknown as OpenAI.ChatCompletionRole,
         content,
       }),
     );
