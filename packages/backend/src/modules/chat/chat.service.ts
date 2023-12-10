@@ -278,12 +278,10 @@ ${message}
       where: { id: modelId },
     });
 
-    const histories: OpenAI.ChatCompletionMessage[] = messages.map(
-      ({ role, content }) => ({
-        role: role.toLowerCase() as unknown as OpenAI.ChatCompletionRole,
-        content,
-      }),
-    );
+    const histories = messages.map(({ role, content }) => ({
+      role: role.toLowerCase() as OpenAI.ChatCompletionRole,
+      content,
+    })) as OpenAI.ChatCompletionMessage[];
 
     const stream = await this.#streamChat({
       model: model,
