@@ -263,6 +263,7 @@ ${message}
     input,
     modelId,
     messages, // key,
+    topic,
   }: {
     userId: number;
     sessionId: string;
@@ -273,6 +274,7 @@ ${message}
     messages: ChatMessage[];
     /* Request API Key */
     // key: string;
+    topic?: string;
   }) {
     const { name: model } = await this.prisma.client.model.findUniqueOrThrow({
       where: { id: modelId },
@@ -338,6 +340,24 @@ ${message}
             }),
           ]);
           subscriber.complete();
+          /* 首次对话自动总结对话，
+           * First conversation automatically summarizes the conversation
+           */
+          if (!topic) {
+            await this.summarizeTopic(
+              [
+                ...histories,
+                { role: 'user', content: input },
+                {
+                  role: 'assistant',
+                  content: generated,
+                },
+              ]
+                .map((m) => `${m.role}: ${m.content}`)
+                .join('\n'),
+              sessionId,
+            );
+          }
         }
       })();
     });
