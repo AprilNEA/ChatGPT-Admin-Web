@@ -1,12 +1,13 @@
 import * as ramda from 'ramda';
 import { create } from 'zustand';
 
-import { ISettingResult, ISettingResultValue } from 'shared';
+import { ISettingResultValue } from 'shared';
 
 type pathLens = (string | number)[];
 
 interface InstallStoreState {
-  settings: ISettingResult;
+  settings: any;
+  // settings: ISettingResult;
   _getFullPath: (key: pathLens) => pathLens;
   getSettingItem: (path: pathLens) => ISettingResultValue | undefined;
   updateSettingItem: (path: pathLens, value: ISettingResultValue) => void;

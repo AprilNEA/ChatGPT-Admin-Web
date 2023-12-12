@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
 
-import { AuthDTO } from 'shared';
+import { AuthDTO, ConfigSchema } from 'shared';
 
 describe('[DTO] Auth', () => {
   test('normal email is safe for identity', () => {
@@ -17,5 +17,63 @@ describe('[DTO] Auth', () => {
   });
   test('6-digit is safe for validate code', () => {
     expect(AuthDTO.codeSchema.safeParse('123456')).toBeSafe();
+  });
+});
+
+const DEFAULT_CONFIG = {
+  mode: 'nginx',
+  title: 'ChatGPT Admin Web',
+  frontend: {
+    port: '3000',
+    url: 'https://localhost:3000',
+  },
+  backend: {
+    port: '3001',
+    url: 'http://localhost:3001',
+  },
+  postgres: {
+    url: 'postgres://postgres:t@localhost:5433/postgres',
+  },
+  redis: {
+    url: 'redis://localhost:6379/0',
+    enable: false,
+  },
+  jwt: {
+    algorithm: 'HS256',
+    secret: 'ffffff',
+  },
+};
+
+describe('Config', () => {
+  test('default schema is safe', () => {
+    expect(ConfigSchema.safeParse(DEFAULT_CONFIG)).toBeSafe();
+  });
+  test('string/number port is safe', () => {
+    expect(
+      ConfigSchema.safeParse({
+        ...DEFAULT_CONFIG,
+        frontend: {
+          ...DEFAULT_CONFIG.frontend,
+          port: '3000',
+        },
+        backend: {
+          ...DEFAULT_CONFIG.backend,
+          port: 3001,
+        },
+      }),
+    ).toBeSafe();
+  });
+  test('compatible with older port representations', () => {
+    expect(
+      ConfigSchema.safeParse({
+        ...DEFAULT_CONFIG,
+        frontend: undefined,
+        backend: undefined,
+        port: {
+          frontend: '3000',
+          backend: 3001,
+        },
+      }),
+    ).toBeSafe();
   });
 });
