@@ -3,7 +3,6 @@
 import useSWR from 'swr';
 
 import { Box, Grid, Text } from '@radix-ui/themes';
-import { Card, LineChart, Title } from '@tremor/react';
 
 import { Loading } from '@/components/loading';
 import { useStore } from '@/store';
@@ -32,14 +31,14 @@ export default function DashboardIndex() {
   return (
     <Grid columns="6" gap="3" width="auto">
       {analytics.map((item) => (
-        <Card key={item.key}>
+        <Box key={item.key}>
           <Text as="p" size="2" weight="medium">
             {item.label}
           </Text>
           <Text as="p" size="6" weight="bold">
             {data[item.key]}
           </Text>
-        </Card>
+        </Box>
       ))}
     </Grid>
   );

@@ -19,8 +19,16 @@ export type JWTPayload = JWTPayloadDefault & {
 export class JwtService {
   constructor(private configService: ConfigService) {}
 
-  async getKey(type: 'public' | 'private') {
+  async getKey(type: 'public' | 'private', refresh = false) {
     switch (this.configService.get('jwt').algorithm) {
+      case 'HS256':
+        if (refresh) {
+          const refreshSecret = this.configService.get('jwt')?.refreshSecret;
+          if (refreshSecret) {
+            return new TextEncoder().encode(refreshSecret);
+          }
+        }
+        return new TextEncoder().encode(this.configService.get('jwt').secret);
       case 'ES256':
         if (type === 'private') {
           return await importJWK(
@@ -32,15 +40,20 @@ export class JwtService {
           JSON.parse(this.configService.get('jwt').publicKey),
           'ES256',
         );
-      case 'HS256':
-        return new TextEncoder().encode(this.configService.get('jwt').secret);
     }
   }
 
-  async sign(payload: JWTPayload): Promise<string> {
+  async sign(
+    payload: JWTPayload,
+    duration = 7 * 24 * 60 * 60,
+    refresh = false,
+  ): Promise<string> {
     const iat = Math.floor(Date.now() / 1000); // Not before: Now
-    const exp = iat + 7 * 24 * 60 * 60; // One week
-    return await new SignJWT({ ...payload })
+    const exp = iat + duration; // One week
+    return await new SignJWT({
+      ...payload,
+      ...(refresh ? { sub: 'refresh' } : {}),
+    })
       .setProtectedHeader({
         alg: this.configService.get('jwt').algorithm,
         typ: 'JWT',
@@ -48,7 +61,7 @@ export class JwtService {
       .setExpirationTime(exp)
       .setIssuedAt(iat)
       .setNotBefore(iat)
-      .sign(await this.getKey('private'));
+      .sign(await this.getKey('private', refresh));
   }
 
   async verify(token: string): Promise<JWTPayload> {

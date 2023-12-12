@@ -30,7 +30,9 @@ export interface SharedSlice {
 
   // auth
   sessionToken?: string;
-  setSessionToken: (token: string | undefined) => void;
+  refreshToken?: string;
+  setAuthToken: (sessionToken: string, refreshToken: string) => void;
+  clearAuthToken: () => void;
 
   // layout
   latestAnnouncementId?: number;
