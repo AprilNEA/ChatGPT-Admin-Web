@@ -234,7 +234,7 @@ export class ChatService {
 
   async summarizeTopic(message: string, sessionId: string) {
     const result = (await this.#chat({
-      input: `Give me the topic title about the following text by use as few words as possible.
+      input: `summarize the text in 4 words.
 Text: """
 ${message}
 """`,
@@ -242,8 +242,7 @@ ${message}
       histories: [
         {
           role: 'system',
-          content:
-            'You are an assistant who uses a few words to summarize conversations',
+          content: 'You are an assistant who uses 4 words to summarize text',
         },
       ],
       stream: false,
