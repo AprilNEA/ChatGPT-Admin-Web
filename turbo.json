@@ -8,6 +8,9 @@
     "db:generate": {
       "dependsOn": [
         "^db:generate"
+      ],
+      "outputs": [
+        ".client/**"
       ]
     },
     "frontend#build": {
@@ -16,7 +19,8 @@
         "shared#build"
       ],
       "outputs": [
-        "packages/backend/.next/**"
+        ".next/**",
+        "!.next/cache/**"
       ]
     },
     "backend#build": {
@@ -25,7 +29,7 @@
         "shared#build"
       ],
       "outputs": [
-        "packages/backend/dist/**"
+        "dist/**"
       ]
     },
     "build": {
@@ -35,7 +39,6 @@
       ],
       "outputs": [
         "dist/**",
-        "client/**",
         ".next/**",
         "!.next/cache/**"
       ]
