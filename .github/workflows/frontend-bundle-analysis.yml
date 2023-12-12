@@ -3,7 +3,9 @@ name: Frontend Bundle Analysis
 on:
   pull_request:
   push:
-    branches: [v3]
+    branches: [
+      v3
+    ]
   workflow_dispatch:
 
 defaults:
@@ -45,20 +47,7 @@ jobs:
       - name: Install Dependencies
         run: pnpm install
 
-      - name: Restore Next.js Build
-        uses: actions/cache@v3
-        id: restore-build-cache
-        env:
-          cache-name: cache-next-build
-        with:
-          # if you use a custom build directory, replace all instances of `.next` in this file with your build directory
-          # ex: if your app builds to `dist`, replace `.next` with `dist`
-          path: packages/frontend/.next/cache
-          # change this if you prefer a more strict cache
-          key: ${{ runner.os }}-build-${{ env.cache-name }}
-
       - name: Build Next.js App
-        # change this if your site requires a custom build command
         run: pnpm run build:frontend
 
       # Here's the first place where next-bundle-analysis' own script is used
