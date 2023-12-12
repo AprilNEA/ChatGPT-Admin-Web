@@ -338,6 +338,7 @@ export class AuthService {
         role: Role.Admin,
         email,
         phone,
+        password: hashSync(password, SALT_ROUNDS),
       },
     });
   }
