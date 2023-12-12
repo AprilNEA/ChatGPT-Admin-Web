@@ -71,7 +71,7 @@ export default function PricingPage() {
   const { fetcher, setShowSideBar } = useStore();
   const [currentCategoryIndex, setCurrentCategoryIndex] = useState(0);
 
-  const { data: categories, isLoading } = useSWR<ICategory[]>(
+  const { data: categories, isLoading } = useSWR<ICategory[], any, string>(
     '/product/all',
     (url) => fetcher(url).then((res) => res.json()),
   );

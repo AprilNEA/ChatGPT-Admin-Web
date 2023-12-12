@@ -16,9 +16,12 @@ export default function AdminChatPage() {
 
   const pager = usePager({});
 
-  const { data, isLoading } = useSWR<IPagination<DashboardChatSession>>(
-    `/dashboard/chat/sessions?page=${pager.page}&limit=${pager.limit}`,
-    (key: string) => fetcher(key).then((res) => res.json()),
+  const { data, isLoading } = useSWR<
+    IPagination<DashboardChatSession>,
+    any,
+    string
+  >(`/dashboard/chat/sessions?page=${pager.page}&limit=${pager.limit}`, (key) =>
+    fetcher(key).then((res) => res.json()),
   );
 
   if (isLoading) {
