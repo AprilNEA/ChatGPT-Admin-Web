@@ -55,7 +55,6 @@
   },
   "include": [
     "./**/*.ts",
-    "./vitest.d.ts"
   ],
   "exclude": [
     "node_modules"

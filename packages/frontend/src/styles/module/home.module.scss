@@ -286,7 +286,8 @@
 }
 
 .chat-item-main {
-  flex: 1;
+  width: calc(100% - 50px);
+  overflow: hidden;
 }
 
 .chat-item-title {
@@ -304,8 +305,12 @@
   right: -20px;
   transition: all ease 0.3s;
   opacity: 0;
+  background: linear-gradient(to right, transparent, 5% , var(--white));
+  padding-left: 10px;
 
   svg {
+    opacity: 0;
+    transition: all ease 0.3s;
     height: 20px;
     width: 20px;
     fill: var(--black);
@@ -313,12 +318,18 @@
 }
 
 .chat-item:hover>.chat-item-main>.chat-item-delete {
-  opacity: 0.5;
+  opacity: 1;
   right: 7.5px;
+
+  svg {
+    opacity: 0.5;
+  }
 }
 
 .chat-item:hover>.chat-item-main>.chat-item-delete:hover {
-  opacity: 1;
+  svg {
+    opacity: 1;
+  }
 }
 
 .chat-item-info {

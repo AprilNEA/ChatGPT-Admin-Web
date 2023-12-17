@@ -10,7 +10,6 @@ import useInstallStore from '@/store/install';
 import styles from '@/styles/module/radix-ui-lib.module.scss';
 
 import {
-  ISettingResult,
   ISettingSchema,
   MultiInputSettingSchema,
   SelectSettingSchema,

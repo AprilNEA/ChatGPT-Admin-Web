@@ -62,10 +62,7 @@ export class AuthService {
    * 1. 检查是否绑定账户
    * 2. 检查是否设置密码
    */
-  async #signWithCheck(user: any): Promise<{
-    token: string;
-    status: IAccountStatus;
-  }> {
+  async #signWithCheck(user: any) {
     let status: IAccountStatus = 'ok';
     if (!user.email && !user.phone) {
       status = 'bind';
@@ -73,7 +70,11 @@ export class AuthService {
       status = 'password';
     }
     return {
-      token: await this.jwt.sign({ id: user.id, role: user.role }),
+      sessionToken: await this.jwt.sign({ id: user.id, role: user.role }),
+      refreshToken: await this.jwt.sign(
+        { id: user.id, role: user.role },
+        30 * 24 * 60 * 60,
+      ),
       status,
     };
   }
@@ -341,5 +342,9 @@ export class AuthService {
         password: hashSync(password, SALT_ROUNDS),
       },
     });
+  }
+
+  async refresh(userId: number, userRole: string) {
+    return this.#signWithCheck({ id: userId, role: userRole });
   }
 }

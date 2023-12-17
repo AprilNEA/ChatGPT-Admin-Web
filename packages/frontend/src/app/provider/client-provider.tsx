@@ -4,6 +4,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import React, { useCallback, useEffect, useState } from 'react';
 import { SWRConfig } from 'swr';
 
+import authMiddleware from '@/app/provider/auth-middleware';
 import { Loading } from '@/components/loading';
 import { useStore } from '@/store';
 
@@ -14,7 +15,8 @@ export function AuthProvider({
   children: React.ReactNode;
   admin?: boolean;
 }) {
-  const { sessionToken, setSessionToken } = useStore();
+  const { sessionToken, refreshToken, setAuthToken, clearAuthToken } =
+    useStore();
 
   const pathname = usePathname();
   const router = useRouter();
@@ -25,12 +27,36 @@ export function AuthProvider({
     if (!sessionToken) return false;
 
     try {
+      const payload = JSON.parse(atob(sessionToken.split('.')[1]));
       if (admin) {
-        const payload = JSON.parse(atob(sessionToken.split('.')[1]));
         if (payload.role !== 'Admin') {
           return false;
         }
       }
+      return payload.exp >= Date.now() / 1000;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function refreshSession() {
+    if (!refreshToken) return false;
+
+    try {
+      const payload = JSON.parse(atob(refreshToken.split('.')[1]));
+      if (payload.exp <= Date.now() / 1000) {
+        return false;
+      }
+      fetch('/api/auth/refresh', {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${refreshToken}`,
+        },
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          setAuthToken(data.sessionToken, data.refreshSession);
+        });
       return true;
     } catch (e) {
       return false;
@@ -40,21 +66,30 @@ export function AuthProvider({
   const validate = useCallback(() => {
     const isValid = validateSession();
     if (!isValid) {
-      if (admin) {
-        return router.push('/');
-      }
-      return router.push('/auth');
-    } else {
-      setIsValidating(false);
-      if (pathname.startsWith('/auth')) {
-        return router.push('/');
+      if (!refreshSession()) {
+        clearAuthToken();
+        if (admin) {
+          return router.push('/');
+        }
+        return router.push('/auth');
       }
     }
-  }, [pathname, validateSession, router, admin]);
+    setIsValidating(false);
+    if (pathname.startsWith('/auth')) {
+      return router.push('/');
+    }
+  }, [
+    router,
+    pathname,
+    clearAuthToken,
+    validateSession,
+    refreshSession,
+    admin,
+  ]);
 
   useEffect(() => {
     validate();
-  }, [pathname, validate]);
+  }, [pathname, sessionToken, refreshToken, validate]);
 
   if (isValidating) {
     return <Loading />;
@@ -65,6 +100,8 @@ export function AuthProvider({
 
 export function SWRProvider({ children }: { children: React.ReactNode }) {
   return (
-    <SWRConfig value={{ provider: () => new Map() }}>{children}</SWRConfig>
+    <SWRConfig value={{ use: [authMiddleware], provider: () => new Map() }}>
+      {children}
+    </SWRConfig>
   );
 }
