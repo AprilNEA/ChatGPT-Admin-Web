@@ -2,7 +2,7 @@
 
 import clsx from 'clsx';
 import Link from 'next/link';
-import Router from 'next/router';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import useSWR from 'swr';
@@ -107,15 +107,17 @@ function bindPassword() {
 }
 
 export function Sidebar({ children }: { children: React.ReactNode }) {
+  const router = useRouter();
   const {
-    setSessionToken,
+    fetcher,
+    clearAuthToken,
     showSideBar,
     setShowSideBar,
-    fetcher,
     latestAnnouncementId,
     setLatestAnnouncementId,
     config,
   } = useStore();
+  // componentState
   const [newbtnExpanded, setNewbtnExpanded] = useState<boolean>(false);
   const [morebtnExpanded, setMorebtnExpanded] = useState<boolean>(false);
 
@@ -133,6 +135,7 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
         }
       }),
   );
+
   const { data: userData, isLoading: isUserDataLoading } = useSWR<IUserData>(
     '/user/info',
     (url) =>
@@ -159,6 +162,11 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
       revalidateOnFocus: false,
     },
   );
+
+  function logout() {
+    clearAuthToken();
+    router.push('/auth');
+  }
 
   const loading = !useHasHydrated();
 
@@ -329,13 +337,7 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
               </Link>
               <div
                 className={styles['sidebar-account-ext-item']}
-                onClick={() => {
-                  setSessionToken(undefined);
-                  setShowSideBar(false);
-                  setNewbtnExpanded(false);
-                  setMorebtnExpanded(false);
-                  Router.reload();
-                }}
+                onClick={logout}
               >
                 <div className={styles['icon']}>
                   <LogoutIcon />

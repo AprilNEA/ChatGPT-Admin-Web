@@ -29,7 +29,7 @@ const weChatOauthRedirectUrl =
 /* 验证码登录/注册 */
 function ValidateCodeLogin() {
   const router = useRouter();
-  const { fetcher, setSessionToken } = useStore();
+  const { fetcher, setAuthToken } = useStore();
   const [identity, setIdentity] = useState('');
   const [ifCodeSent, setIfCodeSent] = useState(false);
   const [validateCode, setValidateCode] = useState('');
@@ -65,7 +65,7 @@ function ValidateCodeLogin() {
       .then((res) => res.json())
       .then((res) => {
         if (res.success) {
-          setSessionToken(res.token);
+          setAuthToken(res.sessionToken, res.refreshToken);
           return router.push('/');
         } else {
           showToast(res.message);
@@ -151,7 +151,7 @@ function ValidateCodeLogin() {
 /* 密码登录 */
 const PasswordLogin: React.FC = () => {
   const router = useRouter();
-  const { fetcher, setSessionToken } = useStore();
+  const { fetcher, setAuthToken } = useStore();
   const [identity, setIdentity] = useState('');
   const [password, setPassword] = useState('');
   const [isSubmitting, handleSubmit] = usePreventFormSubmit();
@@ -165,7 +165,7 @@ const PasswordLogin: React.FC = () => {
       .then((res) => res.json())
       .then((res) => {
         if (res.success) {
-          setSessionToken(res.token);
+          setAuthToken(res.sessionToken, res.refreshToken);
           router.push('/');
         } else {
           router.refresh();

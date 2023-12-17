@@ -164,7 +164,7 @@ export class ChatController {
       modelId: data.modelId,
       input: data.content,
       messages: chatSession.messages,
-      // key,
+      topic: chatSession.topic,
     });
   }
 }

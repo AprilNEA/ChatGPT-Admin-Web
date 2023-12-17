@@ -8,7 +8,6 @@ export * from './order';
 export * from './product';
 export * from './types/database';
 export * from './user';
-export * from './install';
 
 export type BaseResponse<T> = BaseResponseSuccess<T> | BaseResponseFailure;
 

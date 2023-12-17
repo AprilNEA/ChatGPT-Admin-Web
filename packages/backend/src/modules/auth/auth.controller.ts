@@ -5,6 +5,7 @@ import { ConfigService } from '@/common/config';
 import { BizException } from '@/common/exceptions/biz.exception';
 import { Payload, Public } from '@/common/guards/auth.guard';
 import { ZodValidationPipe } from '@/common/pipes/zod';
+import { JWTPayload } from '@/libs/jwt/jwt.service';
 import { WechatService } from '@/modules/auth/wechat.service';
 
 import { AuthDTO, ErrorCodeEnum } from 'shared';
@@ -183,6 +184,14 @@ export class AuthController {
     return {
       success: true,
       data: roles,
+    };
+  }
+
+  @Get('refresh')
+  async refresh(@Payload() payload: JWTPayload) {
+    return {
+      success: true,
+      ...(await this.authService.refresh(payload.id, payload.role)),
     };
   }
 }

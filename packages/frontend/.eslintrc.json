@@ -7,8 +7,7 @@
   },
   "rules": {
     "@next/next/no-html-link-for-pages": [
-      "error",
-      "packages/frontend/src/app"
+      "off"
     ]
   }
 }
