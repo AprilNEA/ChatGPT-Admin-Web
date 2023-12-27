@@ -5,11 +5,6 @@ import '@/styles/globals.scss';
 import '@/styles/markdown.scss';
 import '@/styles/prism.scss';
 
-export const metadata = {
-  title: process.env.NEXT_PUBLIC_TITLE || 'ChatGPT Admin Web',
-  description: 'Your personal ChatGPT Bot.',
-};
-
 export default function ChatLayout({
   children,
 }: {

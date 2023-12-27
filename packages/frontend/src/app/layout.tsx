@@ -2,8 +2,8 @@
 import { SWRProvider } from '@/app/provider';
 
 export const metadata = {
-  title: process.env.NEXT_PUBLIC_TITLE || 'ChatGPT Admin Web',
-  description: 'Your personal ChatGPT Bot.',
+  title: process.env.NEXT_PUBLIC_TITLE,
+  description: process.env.NEXT_PUBLIC_DESCRIPTION,
 };
 
 export default function RootLayout({

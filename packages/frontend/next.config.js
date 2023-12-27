@@ -10,6 +10,8 @@ const config = fs.existsSync(CONFIG_FILE)
 const nextConfig = {
   env: {
     NEXT_PUBLIC_TITLE: config?.title ?? 'ChatGPT Admin Web',
+    NEXT_PUBLIC_DESCRIPTION:
+      config?.description ?? 'Your personal ChatGPT Bot.',
   },
   transpilePackages: ['shared'],
   webpack(config) {
