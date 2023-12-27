@@ -296,20 +296,22 @@ export default function AuthPage() {
           <div className={styles['divider-text']}>OR</div>
           <div className={styles['divider-line']} />
         </div>
-        <div className={styles['third-part-login-options']}>
-          <div
-            className={styles['third-part-option']}
-            onClick={() => {
-              setTab(() => {
-                if (tab != 'wechat') return 'wechat';
-                else return 'code';
-              });
-            }}
-          >
-            {tab == 'wechat' ? <VerificationCodeIcon /> : <WechatLogo />}
-            <div>使用{tab == 'wechat' ? '验证码' : '微信'}登陆</div>
+        {process.env.WECHAT && (
+          <div className={styles['third-part-login-options']}>
+            <div
+              className={styles['third-part-option']}
+              onClick={() => {
+                setTab(() => {
+                  if (tab != 'wechat') return 'wechat';
+                  else return 'code';
+                });
+              }}
+            >
+              {tab == 'wechat' ? <VerificationCodeIcon /> : <WechatLogo />}
+              <div>使用{tab == 'wechat' ? '验证码' : '微信'}登陆</div>
+            </div>
           </div>
-        </div>
+        )}
         <div className={styles['third-part-login-options']}>
           <div
             className={styles['third-part-option']}
