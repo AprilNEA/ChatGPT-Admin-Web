@@ -1,4 +1,4 @@
-export const TITLE = process.env.NEXT_PUBLIC_TITLE || 'ChatGPT Admin Web';
+export const TITLE = process.env.TITLE || 'ChatGPT Admin Web';
 
 const cn = {
   // Auth Page
@@ -19,7 +19,7 @@ const cn = {
   // Index Page
   Index: {
     DefaultUser: '用户',
-    Title: process.env.NEXT_PUBLIC_TITLE || 'ChatGPT Admin Web',
+    Title: TITLE,
     SubTitle: '欢迎关注微信公众号：',
     PremiumLimit: (count: number) => `当前可用：${count} 条`,
     UpgradePremium: '升级到高级版',
@@ -59,6 +59,7 @@ const cn = {
     ChatItemCount: (count: number) => `${count} 条对话`,
   },
   Chat: {
+    Onboarding: process.env.ONBOARDING ?? '你好，请问有什么可以帮助您？',
     SubTitle: (count: number) => `与 ${TITLE} 的 ${count} 条对话`,
     Actions: {
       ChatList: '查看消息列表',

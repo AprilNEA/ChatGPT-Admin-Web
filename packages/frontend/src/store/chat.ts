@@ -1,5 +1,6 @@
 import { StateCreator } from 'zustand';
 
+import Locales from '@/locales';
 import { ChatSlice, StoreType } from '@/store/types';
 import { TextLineStream } from '@/utils/text_line_stream';
 
@@ -63,7 +64,7 @@ export const createChatStore: StateCreator<StoreType, [], [], ChatSlice> = (
         currentChatSessionMessages: [
           {
             role: 'system',
-            content: '你好，请问有什么可以帮助您？',
+            content: Locales.Chat.Onboarding,
             modelId: 1,
             createdAt: new Date(),
             updatedAt: new Date(),

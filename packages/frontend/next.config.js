@@ -9,9 +9,17 @@ const config = fs.existsSync(CONFIG_FILE)
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   env: {
-    NEXT_PUBLIC_TITLE: config?.title ?? 'ChatGPT Admin Web',
-    NEXT_PUBLIC_DESCRIPTION:
-      config?.description ?? 'Your personal ChatGPT Bot.',
+    TITLE: config?.brand?.title ?? config?.title ?? 'ChatGPT Admin Web',
+    DESCRIPTION:
+      config?.brand?.description ??
+      config?.description ??
+      'Your personal ChatGPT Bot.',
+    LOGO: config?.brand?.logo?.index,
+    LOGO_BOT: config?.brand?.logo?.bot,
+    LOGO_LOGIN: config?.brand?.logo?.login,
+    LOGO_LOADING: config?.brand?.logo?.loading,
+    LOGO_SIDEBAR: config?.brand?.logo?.sidebar,
+    ONBOARDING: config?.brand?.onboarding,
   },
   transpilePackages: ['shared'],
   webpack(config) {

@@ -1,5 +1,15 @@
+import { v4 as uuidv4 } from 'uuid';
+
 import { showToast } from '@/components/ui-lib';
 import Locale from '@/locales';
+
+export const randomUUID = () => {
+  if ('crypto' in window && 'randomUUID' in crypto) {
+    return crypto.randomUUID();
+  } else {
+    return uuidv4();
+  }
+};
 
 export function trimTopic(topic: string) {
   return topic.replace(/[，。！？、,.!?]*$/, '');
