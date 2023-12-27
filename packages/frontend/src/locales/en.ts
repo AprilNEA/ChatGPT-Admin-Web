@@ -63,6 +63,7 @@ const en: LocaleType = {
     ChatItemCount: (count: number) => `${count} messages`,
   },
   Chat: {
+    Onboarding: process.env.ONBOARDING ?? 'Welcome to use AI Chatting Room',
     SubTitle: (count: number) => `${count} conversations with ${TITLE}`,
     Actions: {
       ChatList: 'View Message List',

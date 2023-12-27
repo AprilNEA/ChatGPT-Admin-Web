@@ -2,8 +2,8 @@
 import { SWRProvider } from '@/app/provider';
 
 export const metadata = {
-  title: process.env.NEXT_PUBLIC_TITLE,
-  description: process.env.NEXT_PUBLIC_DESCRIPTION,
+  title: process.env.TITLE,
+  description: process.env.DESCRIPTION,
 };
 
 export default function RootLayout({

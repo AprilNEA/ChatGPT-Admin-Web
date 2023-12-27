@@ -270,11 +270,18 @@ export default function AuthPage() {
   return (
     <div className={styles['auth-page']}>
       <div className={`no-dark ${styles['auth-logo']}`}>
-        <BotIcon />
+        {!!process.env.LOGO_LOGIN ? (
+          <Image
+            src={process.env.LOGO_LOGIN}
+            alt="Logo"
+            width={100}
+            height={100}
+          />
+        ) : (
+          <BotIcon />
+        )}
       </div>
-      <div className={styles['auth-title']}>
-        {process.env.NEXT_PUBLIC_TITLE}
-      </div>
+      <div className={styles['auth-title']}>{Locales.Index.Title}</div>
       <div className={styles['auth-tips']}></div>
       <div className={styles['auth-container']}>
         {tab === 'code' ? (

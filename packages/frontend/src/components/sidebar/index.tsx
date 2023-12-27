@@ -1,6 +1,7 @@
 'use client';
 
 import clsx from 'clsx';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -198,7 +199,16 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
             </div>
           )}
           <div className={styles['sidebar-logo']}>
-            <ChatGptIcon />
+            {process.env.LOGO_SIDEBAR ? (
+              <Image
+                src={process.env.LOGO_SIDEBAR}
+                alt="Logo"
+                width="48"
+                height="48"
+              />
+            ) : (
+              <ChatGptIcon />
+            )}
           </div>
         </div>
         <div className={styles['sidebar-newbtn']}>

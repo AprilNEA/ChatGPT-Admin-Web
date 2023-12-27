@@ -12,7 +12,15 @@ declare module '*.svg';
 declare namespace NodeJS {
   interface ProcessEnv {
     NODE_ENV: 'development' | 'production';
-    NEXT_PUBLIC_TITLE: string;
-    NEXT_PUBLIC_DESCRIPTION: string;
+    TITLE: string;
+    DESCRIPTION: string;
+
+    LOGO?: string;
+    LOGO_BOT?: string;
+    LOGO_LOGIN?: string;
+    LOGO_LOADING?: string;
+    LOGO_SIDEBAR?: string;
+
+    ONBOARDING?: string;
   }
 }

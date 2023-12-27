@@ -1,4 +1,5 @@
 import dynamic from 'next/dynamic';
+import Image from 'next/image';
 
 import BotIcon from '@/icons/bot.svg';
 import LoadingIcon from '@/icons/three-dots.svg';
@@ -19,8 +20,18 @@ const Emoji = dynamic(async () => (await import('emoji-picker-react')).Emoji, {
 export function Avatar(props: { role: ChatMessage['role'] }) {
   const config = useStore((state) => state.config);
 
-  if (props.role === 'assistant') {
-    return <BotIcon className={styles['user-avtar']} />;
+  if (props.role !== 'user') {
+    return process.env.LOGO_BOT ? (
+      <Image
+        src={process.env.LOGO_BOT}
+        alt="Logo"
+        className={styles['user-avtar']}
+        width="30"
+        height="30"
+      />
+    ) : (
+      <BotIcon className={styles['user-avtar']} />
+    );
   }
 
   return (
