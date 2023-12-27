@@ -79,7 +79,7 @@ export default function SetupPage() {
           type="text"
           value={identity}
           onChange={(e) => setIdentity(e.target.value)}
-          placeholder="Admin Indentity"
+          placeholder="Admin Phone/Email"
         />
         <TextField.Input
           type="password"
