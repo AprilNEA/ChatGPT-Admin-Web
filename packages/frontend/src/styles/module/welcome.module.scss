@@ -33,6 +33,10 @@
         font-size: 1rem;
         margin-bottom: 50px;
         color: var(--inactive);
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        white-space: pre-wrap;
+        text-align: center;
     }
 
     .logo {

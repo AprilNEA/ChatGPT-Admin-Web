@@ -274,8 +274,11 @@ export default function AuthPage() {
           <Image
             src={process.env.LOGO_LOGIN}
             alt="Logo"
-            width={100}
-            height={100}
+            width={48}
+            height={48}
+            style={{
+              marginBottom: '0.5rem',
+            }}
           />
         ) : (
           <BotIcon />
